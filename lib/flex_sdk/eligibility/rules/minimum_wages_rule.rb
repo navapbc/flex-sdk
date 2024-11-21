@@ -8,7 +8,6 @@ module Eligibility
       end
 
       def evaluate(employee, claim)
-        puts @threshold
         employee[:wages] >= @threshold
       end
     end

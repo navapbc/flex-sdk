@@ -4,9 +4,11 @@ rules:
   - type: MinimumWagesRule
     params:
       threshold: 6000
+      exclude: true
   - type: CustomRules
     params:
-      - field: :hours_worked
-        rule: MinimumHoursRule 
-        operator: ">="
-        value: 500
+      rules:
+        - field: :hours_worked
+          rule: MinimumHoursRule 
+          operator: ">="
+          value: 500

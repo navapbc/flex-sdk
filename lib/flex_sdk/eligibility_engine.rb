@@ -18,14 +18,17 @@ module FlexSdk
         type = rule_config['type']
         params = rule_config['params'] || {}
 
+        next if params['exclude']
+
         if type == 'CustomRules'
           # Create a CustomRule for each definition under CustomRules
-          params.map { |custom_rule_def| Eligibility::Rules::CustomRule.new(custom_rule_def) }
+          sub_rules = params['rules'] || []
+          sub_rules.map { |custom_rule_def| Eligibility::Rules::CustomRule.new(custom_rule_def) }
         else
           # Dynamically instantiate other rules
           Object.const_get("Eligibility::Rules::#{type}").new(params)
         end
-      end
+      end.compact # Remove nil values from array
     end
 
     def self.debug_rules
