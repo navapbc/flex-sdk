@@ -1,0 +1,6 @@
+# This is defined (or updated? Investigate) by the consuming app
+
+rules:
+  - type: MinimumWagesRule
+    params:
+      threshold: 6000
