@@ -1,9 +1,9 @@
-class Application < ApplicationRecord
-  # Universal Fields
-  t.string :first_name
-  t.string :last_name
-  t.string :ssn
-  t.date   :date_of_birth
-  
+class EligibilityEngine
+  def initialize(rules)
+    @rules = MinimumWagesRuls
+  end
+
+  def evaluate(employee, claim)
+    @rules.all? { |rule| rule.ned.evaluate(employee, claim)}
+  end
 end
-  
