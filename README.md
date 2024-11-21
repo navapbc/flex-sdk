@@ -8,6 +8,8 @@ In the dummy app, you can use classes defined in FlexSdk by calling them as foll
 To test live in the dummy app, navigate to `test/dummy` and run `rails console`. From there, you can call any class within the engine using:
 `FlexSdk::ClassName.method_name(method_params)`
 
+ex: `FlexSdk::EligibilityEngine.evaluate({wages: 7000, hours_worked: 300}, {})`
+
 ## Installation
 Add this line to your application's Gemfile:
 

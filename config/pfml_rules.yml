@@ -1,6 +1,12 @@
-# This is defined (or updated? Investigate) by the consuming app
+# This is defined by the consuming app -- should move there?
 
 rules:
   - type: MinimumWagesRule
     params:
       threshold: 6000
+  - type: CustomRules
+    params:
+      - field: :hours_worked
+        rule: MinimumHoursRule 
+        operator: ">="
+        value: 500
