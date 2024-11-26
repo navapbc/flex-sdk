@@ -5,7 +5,8 @@ gemspec
 
 gem "puma"
 
-gem "sqlite3"
+# Use postgresql as the database for Active Record
+gem "pg"
 
 gem "propshaft"
 
