@@ -1,4 +1,4 @@
-class CreateFlexSdkPaidLeaveApplication < ActiveRecord::Migration[8.0]
+class CreateFlexSdkPaidLeaveApplications < ActiveRecord::Migration[8.0]
   def change
     create_table :flex_sdk_paid_leave_applications do |t|
       t.string :applicant_id
@@ -7,8 +7,8 @@ class CreateFlexSdkPaidLeaveApplication < ActiveRecord::Migration[8.0]
       t.string :applicant_last_name, null: false
       t.string :applicant_email
       t.string :applicant_phone
-      t.string :leave_type, null: false
 
+      t.string :leave_type, null: false
       t.date :applicant_date_of_birth
       t.string :status, default: 'in_progress', null: false
       t.datetime :submitted_at
