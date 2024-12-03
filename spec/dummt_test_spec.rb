@@ -1,5 +1,6 @@
 # spec/dummy_test_spec.rb
 require "rails_helper"
+include ActionDispatch::TestProcess
 
 RSpec.describe "Dummy Test" do
   it "runs a basic test" do

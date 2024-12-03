@@ -25,8 +25,10 @@ Rails.application.configure do
     config.action_controller.perform_caching = false
   end
 
-  config.log_level = :debug
   config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new(Rails.root.join("log", "development.log"))
+
+  config.log_level = :debug
 
 
   # Change to :null_store to avoid any caching.
