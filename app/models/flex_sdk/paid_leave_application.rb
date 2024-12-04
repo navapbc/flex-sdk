@@ -11,7 +11,6 @@ module FlexSdk
     validates :leave_type, inclusion: { in: LEAVE_TYPES }
 
     def submit
-      puts "HERE"
       update!(status: "submitted")
       ActiveSupport::Notifications.instrument(
         "application_submitted.flex_sdk_paid_leave_application",
