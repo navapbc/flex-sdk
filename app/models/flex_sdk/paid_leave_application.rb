@@ -13,10 +13,7 @@ module FlexSdk
     def submit
       Rails.logger.debug("Submitting application: #{inspect}")
       update!(status: "submitted")
-      Rails.logger.debug(ActiveSupport::Notifications.instrument(
-        "application_submitted.flex_sdk_paid_leave_application",
-        application: self
-      ))
+
       puts "BBBBB"
       ActiveSupport::Notifications.instrument(
         "application_submitted.flex_sdk_paid_leave_application",
