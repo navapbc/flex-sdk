@@ -9,15 +9,16 @@ RSpec.describe FlexSdk::PaidLeaveApplicationBusinessProcess, type: :model do
         applicant_first_name: "Princess",
         applicant_last_name: "Carolyn"
       )
-      
-
+      application.submit
+      puts "1223234"
       puts application.status
+      puts ActiveSupport::Notifications.notifier.listeners_for("application_submitted.flex_sdk_paid_leave_application")
       
       process = FlexSdk::PaidLeaveApplicationBusinessProcess.find_by(application_id: application.id)
       expect(process).to be_present
 
-      # task = process.tasks.find_by(type: "FindEmploymentRecordTask")
-      # expect(task_.to be_present)
+      task = process.tasks.find_by(type: "FindEmploymentRecordTask")
+      expect(task_.to be_present)
     end
   end
 end

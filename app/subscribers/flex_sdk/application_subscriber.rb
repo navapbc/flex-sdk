@@ -3,7 +3,7 @@ module FlexSdk
     def application_submitted(event)
       application = event.payload[:application]
       puts application.id
-
+      puts "herererererere"
       process = PaidLeaveApplicationBusinessProcess.create(application_id: application.id)
       puts process
 
