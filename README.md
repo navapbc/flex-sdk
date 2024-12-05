@@ -3,7 +3,7 @@ The FlexSdk engine is primarily designed to simplify the implementation of compl
 
 This codebase consists of the Engine itself, and a "dummy" application within it to allow for testing.
 
-The eligibility engine and similar code in `/Users/leslie/Code/flex-sdk/lib/flex_sdk` is not yet integrated with with the stubbed workflows.
+The eligibility engine and similar code in `flex-sdk/lib/flex_sdk` is not yet integrated with with the stubbed workflows.
 
 Overriding and customizing the eligibility engine is done via `.yml` files such as the one in `flex-sdk/test/dummy/config/pfml_rules.yml`
 
