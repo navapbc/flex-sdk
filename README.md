@@ -9,7 +9,7 @@ Overriding and customizing the eligibility engine is done via `.yml` files such 
 
 Currently implementing those customizations is done by importing the path to the `.yml` file in `flex-sdk/lib/flex_sdk/eligibility_engine.rb` -- This is not ideal. Importing the overrides should move elsewhere on later iterations.
 
-## Getting Started
+## Getting Started (ie, using in your application)
 
 1. Install the Engine: Add `flex-sdk` to your Gemfile and run `bundle install`.
 
