@@ -19,11 +19,23 @@ Currently implementing those customizations is done by importing the path to the
 
 4. Subscribe to Events: Implement custom behavior by subscribing to `ActiveSupport::Notifications` events.
 
-## Usage
-In the dummy app, you can use classes defined in FlexSdk by calling them as follows:
-`FlexSdk::ClassName.method_name(method_params)`
+## Testing
 
-To test live in the dummy app, navigate to `test/dummy` and run `rails console`. From there, you can call any class within the engine using:
+### Rspec
+`cd` into the overarching `flex-sdk` folder, then ensure you have a database and that migrations have been run
+
+Create a database with `rake db:create`, and run migrations with `rails db:migrate`
+
+Run `bundle exec rspec` to run all the tests.
+
+### Manually
+You need to have the `dummy` application installed, a database created, and migrations ran. See section on Rspec for database instructions.
+
+`cd` into `test/dummy`, run `bundle install` and `rails db:migrate`.
+
+To test the engine manually through the application, run `rails console`
+
+From there, you can call `flex_sdk` classes like so :
 `FlexSdk::ClassName.method_name(method_params)`
 
 ex: `FlexSdk::EligibilityEngine.evaluate({wages: 7000, hours_worked: 300}, {})`
