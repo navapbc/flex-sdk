@@ -7,7 +7,7 @@ The eligibility engine and similar code in `/Users/leslie/Code/flex-sdk/lib/flex
 
 Overriding and customizing the eligibility engine is done via `.yml` files such as the one in `flex-sdk/test/dummy/config/pfml_rules.yml`
 
-Currently implementing those customizations is done by importing the path to the `.yml` file in `/Users/leslie/Code/flex-sdk/lib/flex_sdk/eligibility_engine.rb` -- This is not ideal. Importing the overrides should move elsewhere on later iterations.
+Currently implementing those customizations is done by importing the path to the `.yml` file in `flex-sdk/lib/flex_sdk/eligibility_engine.rb` -- This is not ideal. Importing the overrides should move elsewhere on later iterations.
 
 ## Getting Started
 
