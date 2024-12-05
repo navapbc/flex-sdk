@@ -3,4 +3,3 @@ module FlexSdk
     # Add any specific logic or attributes for this task type here
   end
 end
-  

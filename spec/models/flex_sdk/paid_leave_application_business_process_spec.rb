@@ -10,7 +10,7 @@ RSpec.describe FlexSdk::PaidLeaveApplicationBusinessProcess, type: :model do
         applicant_last_name: "Carolyn"
       )
       application.submit
-      
+
       process = FlexSdk::PaidLeaveApplicationBusinessProcess.find_by(application_id: application.id)
       expect(process).to be_present
 

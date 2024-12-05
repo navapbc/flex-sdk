@@ -1,5 +1,5 @@
 require_relative "boot"
-require_relative '../../../lib/flex_sdk'
+require_relative "../../../lib/flex_sdk"
 
 require "rails/all"
 

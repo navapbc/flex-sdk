@@ -10,7 +10,7 @@ class CreateFlexSdkPaidLeaveApplications < ActiveRecord::Migration[8.0]
 
       t.string :leave_type, null: false
       t.date :applicant_date_of_birth
-      t.string :status, default: 'in_progress', null: false
+      t.string :status, default: "in_progress", null: false
       t.datetime :submitted_at
       t.string :program_type
       t.timestamps

@@ -1,7 +1,7 @@
 module FlexSdk
   class PaidLeaveApplication < ApplicationForm
     self.table_name = "flex_sdk_paid_leave_applications"
-    #Program-specific fields
+    # Program-specific fields
     validates :leave_type, presence: true
 
     # Example leave types -- will vary by state need to be configurable

@@ -7,7 +7,7 @@ class CreateFlexSdkPaidLeaveApplications < ActiveRecord::Migration[8.0]
         t.string :applicant_last_name, null: false
         t.string :applicant_email
         t.string :applicant_phone
-  
+
         t.string :leave_type, null: false
         t.date :applicant_date_of_birth
         t.string :status, default: 'in_progress', null: false
@@ -16,5 +16,4 @@ class CreateFlexSdkPaidLeaveApplications < ActiveRecord::Migration[8.0]
         t.timestamps
       end
     end
-  end
-  
+end

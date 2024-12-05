@@ -4,8 +4,8 @@ module FlexSdk
       application = event.payload[:application]
       process = PaidLeaveApplicationBusinessProcess.create(application_id: application.id)
       process.run
-      
-      return application.id
+
+      application.id
     end
   end
 end

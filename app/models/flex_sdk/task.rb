@@ -2,10 +2,10 @@ module FlexSdk
   class Task < ApplicationRecord
     self.table_name = "flex_sdk_tasks"
     belongs_to :flex_sdk_business_process, class_name: "BusinessProcess", foreign_key: "flex_sdk_business_process_id"
-end
+  end
 
 class FindEmploymentRecordTask < Task
-  end
+end
 
   class CheckLeaveBalanceTask < Task
   end

@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
     t.bigint "application_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["application_id"], name: "index_flex_sdk_business_processes_on_application_id"
+    t.index [ "application_id" ], name: "index_flex_sdk_business_processes_on_application_id"
   end
 
   create_table "flex_sdk_paid_leave_applications", force: :cascade do |t|
@@ -42,7 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["flex_sdk_business_process_id"], name: "index_flex_sdk_tasks_on_flex_sdk_business_process_id"
+    t.index [ "flex_sdk_business_process_id" ], name: "index_flex_sdk_tasks_on_flex_sdk_business_process_id"
   end
 
   add_foreign_key "flex_sdk_business_processes", "flex_sdk_paid_leave_applications", column: "application_id"

@@ -6,6 +6,3 @@
 
 # # General application environment settings
 # ENV['RAILS_ENV'] = 'test'
-
-
-
