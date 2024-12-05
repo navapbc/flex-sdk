@@ -1,10 +1,10 @@
-module Eligibility 
+module Eligibility
   module Rules
     class CustomRule < BaseEligibilityRule
       def initialize(params = {})
-        @field = params.fetch('field').to_sym
-        @operator = params.fetch('operator')
-        @value = params.fetch('value')
+        @field = params.fetch("field").to_sym
+        @operator = params.fetch("operator")
+        @value = params.fetch("value")
       end
 
       def evaluate(employee, claim)

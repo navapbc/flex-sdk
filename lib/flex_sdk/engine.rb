@@ -10,5 +10,13 @@ module FlexSdk
         app.config.paths["db/migrate"].concat(config.paths["db/migrate"].expanded)
       end
     end
+
+    initializer "flex_sdk.subscribers" do
+      # Load the subscriber explicitly
+      require_dependency "flex_sdk/application_subscriber"
+
+      # Ensure the subscriber is initialized
+      FlexSdk::ApplicationSubscriber
+    end
   end
 end

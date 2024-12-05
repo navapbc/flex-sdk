@@ -20,6 +20,14 @@ test:
   <<: *default
   database: test_db
 
+test:
+  adapter: postgresql
+  database: test_db
+  username: postgres
+  password:
+  host: localhost
+  port: 5432
+
 
 
 production:
