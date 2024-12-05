@@ -26,9 +26,10 @@ Rails.application.configure do
   end
 
   config.logger = Logger.new(STDOUT)
-  config.logger = Logger.new(Rails.root.join("log", "development.log"))
 
-  config.log_level = :debug
+  # Don't believe are necessary for console logging--not getting rid of yet just in case
+  # config.logger = Logger.new(Rails.root.join("log", "development.log"))
+  # config.log_level = :debug
 
 
   # Change to :null_store to avoid any caching.
