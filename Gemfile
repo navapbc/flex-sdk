@@ -14,5 +14,5 @@ gem "propshaft"
 gem "rubocop-rails-omakase", require: false
 
 group :development, :test do
-  gem "rspec-rails", "~> 7.0.0"
+  gem "rspec-rails", "~> 7.1.0"
 end
