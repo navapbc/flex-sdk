@@ -1,0 +1,72 @@
+<% content_for :title, t(".title") %>
+<%= content_for :main_col_class, "bg-base-lightest" %>
+
+<h1 class="font-heading-2xl">
+  <%= t(".title") %>
+</h1>
+<p class="usa-intro">
+  <%= t('.intro') %>
+</p>
+
+<div class="grid-row">
+  <ul class="usa-card-group">
+    <li class="usa-card grid-col-12 mobile-lg:grid-col-6">
+      <div class="usa-card__container">
+        <div class="usa-card__header">
+          <h2 class="usa-card__heading">
+            <%= t('.applicant_heading') %>
+          </h2>
+        </div>
+        <div class="usa-card__media">
+          <div class="usa-card__img">
+            <%= image_tag 'applicant.jpg', alt: "Man with two younger children" %>
+          </div>
+        </div>
+        <div class="usa-card__body">
+          <p>
+            <%= t('.applicant_body') %>
+          </p>
+        </div>
+        <div class="usa-card__footer">
+          <a href="<%= users_new_applicant_registration_path %>" class="usa-button">
+            <%= t('.applicant_signup') %>
+          </a>
+          <p>
+            <a class="usa-link" href="<%= new_user_session_path %>">
+              <%= t('.or_sign_in') %>
+            </a>
+          </p>
+        </div>
+      </div>
+    </li>
+    <li class="usa-card grid-col-12 mobile-lg:grid-col-6">
+      <div class="usa-card__container">
+        <div class="usa-card__header">
+          <h2 class="usa-card__heading">
+            <%= t('.employer_heading') %>
+          </h2>
+        </div>
+        <div class="usa-card__media">
+          <div class="usa-card__img">
+            <%= image_tag 'employer.jpg', alt: "Person at a desk using a laptop" %>
+          </div>
+        </div>
+        <div class="usa-card__body">
+          <p>
+            <%= t('.employer_body') %>
+          </p>
+        </div>
+        <div class="usa-card__footer">
+          <a href="<%= users_new_employer_registration_path %>" class="usa-button">
+            <%= t('.employer_signup') %>
+          </a>
+          <p>
+            <a class="usa-link" href="<%= new_user_session_path %>">
+              <%= t('.or_sign_in') %>
+            </a>
+          </p>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
