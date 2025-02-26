@@ -1,6 +1,0 @@
-en:
-  <%= plural_file_name %>:
-    index:
-    show:
-    new:
-    edit:

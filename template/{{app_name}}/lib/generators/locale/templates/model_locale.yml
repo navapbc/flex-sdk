@@ -1,4 +1,0 @@
-en:
-  activerecord:
-    attributes:
-      <%= file_name %>:

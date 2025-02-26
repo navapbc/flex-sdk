@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-# Since CI runs tests from within the container, which
-# sets RAILS_ENV to development, we need to override it:
-export RAILS_ENV=test
-
-bundle exec rspec --format documentation
