@@ -1,3 +1,9 @@
+PATH
+  remote: engines/flex
+  specs:
+    flex (0.1.0)
+      rails (>= 7.1.5.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -469,6 +475,7 @@ DEPENDENCIES
   factory_bot_rails
   faker (~> 3.2)
   faraday
+  flex!
   importmap-rails
   jbuilder
   jwt
