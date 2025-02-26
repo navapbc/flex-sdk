@@ -31,13 +31,13 @@ FROM base AS build
 # Install packages needed to build gems
 RUN apt-get update -qq \
     && apt-get install --no-install-recommends -y \
-        build-essential \
-        git \
-        libpq-dev \
-        libvips \
-        libyaml-dev \
-        pkg-config \
-        npm \
+    build-essential \
+    git \
+    libpq-dev \
+    libvips \
+    libyaml-dev \
+    pkg-config \
+    npm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,6 +46,11 @@ COPY package.json package-lock.json ./
 
 # Install npm packages
 RUN npm install
+
+# Copy the engines/flex directory
+# The flex engine is not available on a public Ruby gem registry.
+# We need to copy it into the Docker image so that bundle install can find it.
+COPY engines/flex /rails/engines/flex
 
 
 ##########################################################################################
@@ -58,8 +63,8 @@ ENV RAILS_ENV="development"
 # Install packages needed for development
 RUN apt-get update -qq \
     && apt-get install --no-install-recommends -y \
-        postgresql-client \
-        graphviz \
+    postgresql-client \
+    graphviz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -117,9 +122,9 @@ ENV RAILS_ENV="production" \
 # Install packages needed for deployment
 RUN apt-get update -qq \
     && apt-get install -y --no-install-recommends \
-        libvips \
-        libyaml-dev \
-        postgresql-client \
+    libvips \
+    libyaml-dev \
+    postgresql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
