@@ -8,7 +8,7 @@ How to use my plugin.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "flex"
+gem "flex", path: "engines/flex"
 ```
 
 And then execute:
