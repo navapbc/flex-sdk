@@ -9,11 +9,6 @@ app_name:
     The app name can not be empty.
     {% endif %}
 
-app_local_port:
-  type: int
-  help: "The port to be used in local development of '{{ app_name }}'"
-  default: 3000
-
 _envops:
   trim_blocks: true
   lstrip_blocks: true
