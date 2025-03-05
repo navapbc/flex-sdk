@@ -26,6 +26,7 @@ jobs:
           path: project-repo
           repository: ${{ matrix.project.repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
