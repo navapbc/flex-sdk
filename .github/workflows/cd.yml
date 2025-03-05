@@ -26,6 +26,7 @@ jobs:
           path: project-repo
           repository: ${{ matrix.project.repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,15 +36,15 @@ jobs:
       - name: Install nava-platform CLI
         run: pipx install --python "$(which python)" git+https://github.com/navapbc/platform-cli
 
+      - name: Update application template
+        working-directory: project-repo
+        run: nava-platform app update --template-uri ${{ github.server_url }}/${{ github.repository }} --version HEAD . ${{ matrix.project.app }}
+
       - name: Configure git
         working-directory: project-repo
         run: |
           git config user.name nava-platform-bot
           git config user.email platform-admins@navapbc.com
-
-      - name: Update application template
-        working-directory: project-repo
-        run: nava-platform app update --template-uri ${{ github.server_url }}/${{ github.repository }} --version HEAD . ${{ matrix.project.app }}
 
       - name: Push changes to project repo
         working-directory: project-repo
