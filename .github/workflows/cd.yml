@@ -40,6 +40,7 @@ jobs:
         run: |
           git config user.name nava-platform-bot
           git config user.email platform-admins@navapbc.com
+          git config --global url."https://nava-platform-bot:${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}@github.com/navapbc/".insteadOf "https://github.com/navapbc/"
 
       - name: Update application template
         working-directory: project-repo
