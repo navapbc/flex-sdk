@@ -1,0 +1,51 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+okay_coffee:
+  business_name: Okay Coffee
+  business_type: Coffee Shop
+  id: 1
+
+good_coffee:
+  business_name: Good Coffee
+  business_type: Coffee Shop
+  id: 2
+
+cat_cafe:
+  business_name: Cat Cafe
+  business_type: Coffee Shop
+  id: 3
+
+hamburgers_deluxe:
+  business_name: Hamburgers Deluxe
+  business_type: Fast Food
+  id: 4
+
+taco_town:
+  business_name: Taco Town
+  business_type: Fast Food
+  id: 5
+
+pizza_palace:
+  business_name: Pizza Palace
+  business_type: Restaurant
+  id: 6
+
+sushi_sensation:
+  business_name: Sushi Sensation
+  business_type: Restaurant
+  id: 7
+
+integrity_medical_hospital:
+  business_name: Integrity Medical Hospital
+  business_type: Hospital
+  id: 8
+
+saint_johns_hospital:
+  business_name: Saint John's Hospital
+  business_type: Hospital
+  id: 9
+
+quick_care_clinic:
+  business_name: Quick Care Clinic
+  business_type: Medical Clinic
+  id: 10
