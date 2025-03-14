@@ -1,0 +1,20 @@
+plugins:
+  - rubocop-rspec
+require:
+  - rubocop-rails-accessibility
+inherit_gem:
+  pundit: config/rubocop-rspec.yml
+  rubocop-rails-omakase: rubocop.yml
+AllCops:
+  Exclude:
+    - lib/templates/**/*
+    - engines/**/*
+
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 4
