@@ -23,4 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: make lint-ci
+      - name: Set up
+        run: bundle install
+
+      - name: Lint
+        run: make lint-ci
