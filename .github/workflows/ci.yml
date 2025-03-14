@@ -23,8 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up
-        run: bundle install
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
       - name: Lint
         run: make lint-ci
