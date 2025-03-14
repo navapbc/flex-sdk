@@ -14,7 +14,7 @@ on:
 
 defaults:
   run:
-    working-directory: template/{{app_name}}/engines/flex/**
+    working-directory: template/{{app_name}}/engines/flex
 
 jobs:
   lint:
