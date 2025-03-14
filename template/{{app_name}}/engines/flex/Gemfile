@@ -15,7 +15,7 @@ gem "sprockets-rails"
 
 group :development do
   # Linting
-  gem 'rubocop-rails-omakase', require: false
-  gem 'rubocop-rspec', require: false
+  gem "rubocop-rails-omakase", require: false
+  gem "rubocop-rspec", require: false
   gem "rubocop-rails-accessibility"
 end

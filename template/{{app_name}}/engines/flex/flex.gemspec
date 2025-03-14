@@ -3,8 +3,8 @@ require_relative "lib/flex/version"
 Gem::Specification.new do |spec|
   spec.name        = "flex"
   spec.version     = Flex::VERSION
-  spec.authors     = ["TODO: Write your name"]
-  spec.email       = ["TODO: Write your email address"]
+  spec.authors     = [ "TODO: Write your name" ]
+  spec.email       = [ "TODO: Write your email address" ]
   spec.homepage    = "TODO"
   spec.summary     = "TODO: Summary of Flex."
   spec.description = "TODO: Description of Flex."
