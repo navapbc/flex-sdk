@@ -4,7 +4,7 @@
 
 ## Context
 
-> Testing instructions, background context, more in-depth details of the implementation, and anything else you'd like to call out or ask reviewers.
+> Background context, more in-depth details of the implementation, and anything else you'd like to call out or ask reviewers.
 
 ## Testing
 
