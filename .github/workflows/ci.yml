@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - template/{{app_name}}/engines/flex/**
+      - .github/workflows/ci.yml
+  pull_request:
+    paths:
+      - template/{{app_name}}/engines/flex/**
+      - .github/workflows/ci.yml
+
+defaults:
+  run:
+    working-directory: template/{{app_name}}/engines/flex
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: template/{{app_name}}/engines/flex
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Lint
+        run: make lint-ci
