@@ -7,6 +7,10 @@ module Flex
 
     validate :prevent_changes_if_submitted, on: :update
 
+    def submit_form
+      update(status: :submitted)
+    end
+
     private
 
     def prevent_changes_if_submitted

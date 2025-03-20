@@ -15,7 +15,7 @@ module Flex
         end
 
         it "allows changes to status" do
-          expect(application_form.update(status: :submitted)).to be true
+          expect(application_form.submit_form).to be true
           expect(application_form.reload.status).to eq("submitted")
         end
 
@@ -30,8 +30,7 @@ module Flex
         before do
           application_form.business_name = "Test Business"
           application_form.business_type = "Restaurant"
-          application_form.status = :submitted
-          application_form.save
+          application_form.submit_form
         end
 
         it "prevents changes to status" do
