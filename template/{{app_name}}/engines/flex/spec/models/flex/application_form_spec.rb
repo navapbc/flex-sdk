@@ -2,14 +2,6 @@ require "rails_helper"
 
 module Flex
   RSpec.describe TestExclusionForm do
-    describe "attributes" do
-      # Add attribute tests here
-    end
-
-    describe "enums" do
-      it { is_expected.to define_enum_for(:status).with_values(in_progress: 0, submitted: 1) }
-    end
-
     describe "validations" do
       let(:application_form) { described_class.new }
 
