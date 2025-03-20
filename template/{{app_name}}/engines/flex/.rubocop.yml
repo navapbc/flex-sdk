@@ -1,0 +1,9 @@
+plugins:
+  - rubocop-rspec
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
