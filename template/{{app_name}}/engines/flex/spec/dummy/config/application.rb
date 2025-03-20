@@ -18,7 +18,7 @@ module Dummy
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.factory_bot.definition_file_paths = ["spec/factories"]
+    config.factory_bot.definition_file_paths = [ "spec/factories" ]
 
     # Configuration for the application, engines, and railties goes here.
     #

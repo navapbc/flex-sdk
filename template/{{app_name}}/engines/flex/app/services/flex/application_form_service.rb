@@ -26,7 +26,7 @@ module Flex
     private
 
     def is_status_submitted?(id)
-      status = @repository.find_fields(id, ['status'])
+      status = @repository.find_fields(id, [ "status" ])
       status == ApplicationForm.statuses[:submitted]
     end
   end
