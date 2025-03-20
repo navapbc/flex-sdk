@@ -1,6 +1,7 @@
 require "rails_helper"
 
 module Flex
+  # Using TestExclusionForm to test the ApplicationForm abstract class
   RSpec.describe TestExclusionForm do
     describe "validations" do
       let(:application_form) { described_class.new }
