@@ -11,7 +11,7 @@ spec/**/tmp/*
 
 # for a library or gem, you might want to ignore these files since the code is
 # intended to run in multiple environments; otherwise, check them in:
-Gemfile.lock
+# Gemfile.lock
 
 # Ignore local storage files created for local testing
 spec/dummy/storage/*.sqlite[0-9]
