@@ -1,10 +1,10 @@
 # These items were pulled from https://github.com/github/gitignore/blob/main/Rails.gitignore
 
 # Ignore all logfiles and tempfiles.
-test/**/log/*
-test/**/tmp/*
-!test/**/log/.keep
-!test/**/tmp/.keep
+spec/**/log/*
+spec/**/tmp/*
+!spec/**/log/.keep
+!spec/**/tmp/.keep
 
 # VS Code workspace
 *.code-workspace
@@ -14,5 +14,5 @@ test/**/tmp/*
 Gemfile.lock
 
 # Ignore local storage files created for local testing
-test/dummy/storage/*.sqlite[0-9]
-test/dummy/db/*.sqlite[0-9]
+spec/dummy/storage/*.sqlite[0-9]
+spec/dummy/db/*.sqlite[0-9]
