@@ -4,6 +4,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative './dummy/config/environment'
 
 ENGINE_ROOT = File.join(File.dirname(__FILE__), '../')
+SPEC_DIR = File.join(ENGINE_ROOT, 'spec')
 
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -27,7 +28,9 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+# Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+
+require 'support/factory_bot'
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -36,13 +39,13 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
-ActiveRecord::Migrator.migrations_paths = File.join(ENGINE_ROOT, 'spec/dummy/db/migrate')
+ActiveRecord::Migrator.migrations_paths = File.join(SPEC_DIR, 'dummy/db/migrate')
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
-    Rails.root.join('spec/fixtures')
+    File.join(SPEC_DIR, 'fixtures')
   ]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
