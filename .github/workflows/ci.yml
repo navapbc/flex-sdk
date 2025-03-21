@@ -21,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        job_name: [Lint, Test]
         make_command: [lint-ci, test]
 
     steps:
