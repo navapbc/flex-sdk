@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - template/{{app_name}}/engines/flex/**
-      - .github/workflows/ci.yml
   pull_request:
     paths:
       - template/{{app_name}}/engines/flex/**
@@ -17,9 +14,15 @@ defaults:
     working-directory: template/{{app_name}}/engines/flex
 
 jobs:
-  lint:
-    name: Lint
+  ci:
+    name: ${{ matrix.make_command }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        make_command: [lint-ci, test]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,5 +33,4 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Lint
-        run: make lint-ci
+      - run: make ${{ matrix.make_command }}
