@@ -33,5 +33,4 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Run check
-        run: make ${{ matrix.make_command }}
+      - run: make ${{ matrix.make_command }}
