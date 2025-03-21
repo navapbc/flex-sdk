@@ -17,9 +17,16 @@ defaults:
     working-directory: template/{{app_name}}/engines/flex
 
 jobs:
-  lint:
-    name: Lint
+  ci:
+    name: ${{ matrix.job_name }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job_name: [Lint, Test]
+        make_command: [lint-ci, test]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -31,4 +38,4 @@ jobs:
         run: bundle install
 
       - name: Lint
-        run: make lint-ci
+        run: make ${{ matrix.make_command }}
