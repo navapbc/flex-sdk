@@ -52,7 +52,7 @@ class CreatePaidLeaveBusinessExclusionForms < ActiveRecord::Migration[8.0]
       t.text :business_type
       t.integer :status, default: 0 # This ensures that the status column, which is present on ApplicationForm, gets created and defaults to "in_progress"
 
-      t.timestamps # if you want your table and model to have auto-generated created_on and updated_on fields, add this
+      t.timestamps # if you want your table and model to have auto-generated created_at and updated_at fields, add this
     end
   end
 end
