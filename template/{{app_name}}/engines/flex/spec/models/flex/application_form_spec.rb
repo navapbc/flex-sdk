@@ -1,6 +1,4 @@
 require "rails_helper"
-# require_relative "../../../app/models/flex/application_form" # File.expand_path('../../../app/models/flex/application_form.rb', __FILE__)
-# require File.expand_path('../../../../app/models/flex/application_form', __FILE__)
 
 module Flex
   # Using PassportApplicationForm to test the ApplicationForm abstract class
