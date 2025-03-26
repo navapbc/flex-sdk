@@ -3,12 +3,14 @@ module Flex
     self.abstract_class = true
 
     attribute :status, :integer, default: 0
+    protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
-    validate :prevent_changes_if_submitted, on: :update
+    before_update :prevent_changes_if_submitted
 
-    def submit_form
-      update(status: :submitted)
+    def submit_application
+      self[:status] = :submitted
+      save
     end
 
     private
@@ -16,6 +18,7 @@ module Flex
     def prevent_changes_if_submitted
       if status_was == "submitted"
         errors.add(:base, "Cannot modify a submitted application")
+        throw :abort
       end
     end
   end
