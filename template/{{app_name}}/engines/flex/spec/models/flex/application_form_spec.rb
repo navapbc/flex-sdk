@@ -39,7 +39,7 @@ module Flex
           expect(application_form.status).to eq("in_progress")
         end
 
-        it "allows changes to status" do
+        it "updates status to submitted upon submitting application" do
           expect(application_form.submit_application).to be true
           expect(application_form.status).to eq("submitted")
         end
@@ -59,11 +59,16 @@ module Flex
           application_form.submit_application
         end
 
-        it "prevents changes to attributes" do
-          expect(application_form.update(first_name: "Jane", last_name: "Smith")).to be(false)
-          expect(application_form.errors[:base]).to include('Cannot modify a submitted application')
-          expect(application_form.reload.first_name).to eq("John")
-          expect(application_form.reload.last_name).to eq("Doe")
+        it "prevents attribute updates from being saved" do
+          did_update = application_form.update(first_name: "Jane", last_name: "Smith")
+          errors = application_form.errors[:base]
+
+          application_form.reload # reloading the model to ensure that the update did not go through to the database
+
+          expect(did_update).to be(false)
+          expect(errors).to include('Cannot modify a submitted application')
+          expect(application_form.first_name).to eq("John")
+          expect(application_form.last_name).to eq("Doe")
         end
       end
     end
