@@ -17,6 +17,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
     t.string "business_name", null: false
     t.string "business_type", null: false
     t.integer "status", default: 0
-    t.index [ "business_name" ], name: "index_flex_test_exclusion_forms_on_business_name", unique: true
+    t.index ["business_name"], name: "index_flex_test_exclusion_forms_on_business_name", unique: true
+  end
+
+  create_table :flex_passport_cases do |t|
+    t.integer :status, default: 0, null: false
+    t.integer :passport_id, null: false
+
+    t.timestamps
   end
 end
