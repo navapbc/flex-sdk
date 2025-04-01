@@ -6,7 +6,7 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
-    before_update :prevent_changes_if_submitted
+    before_update :prevent_changes_if_submitted, if: :was_submitted?
 
     def submit_application
       self[:status] = :submitted
@@ -15,11 +15,13 @@ module Flex
 
     private
 
+    def was_submitted?
+      status_was == "submitted"
+    end
+
     def prevent_changes_if_submitted
-      if status_was == "submitted"
-        errors.add(:base, "Cannot modify a submitted application")
-        throw :abort
-      end
+      errors.add(:base, "Cannot modify a submitted application")
+      throw :abort
     end
   end
 end
