@@ -19,9 +19,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
   end
 
   create_table :flex_passport_cases do |t|
+    t.string :passport_id, null: false, unique: true, default: -> { "gen_random_uuid()" }
     t.integer :status, default: 0, null: false
-    t.integer :passport_id, null: false
+    t.integer :passport_application_form_id, null: false
+    t.index :flex_passport_cases, :passport_application_form_id, unique: true
 
     t.timestamps
   end
+
+  foreign_key :flex_passport_cases, :flex_passport_application_forms, column: :passport_application_form_id
 end
