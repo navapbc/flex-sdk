@@ -18,12 +18,12 @@ Creating a new Flex form using ApplicationForm is relatively simple and can be c
 
 #### Example using the Rails CLI
 
-Let's pretend that I'm creating a new form to get basic business information for paid leave business exclusions.
+Let's pretend that I'm creating a new form to process passport applications.
 
 ##### Step 1: Run the Rails CLI
 
 ```shell
-bin/rails generate model PaidLeaveBusinessExclusionForm business_name:string business_type:string # Add whatever other attributes you'd like
+bin/rails generate model PassportApplicationForm first_name:string last_name:string date_of_birth:date # Add whatever other attributes you'd like
 ```
 
 _**Alternatively**, you can choose to use the `bin/rails generate scaffold` command to generate additional files, such as views, to use with your form._
@@ -31,8 +31,8 @@ _**Alternatively**, you can choose to use the `bin/rails generate scaffold` comm
 ##### Step 2: Change your model to extend from ApplicationForm
 
 ```ruby
-# models/flex/paid_leave_business_exclusion_form.rb
-class PaidLeaveBusinessExclusionForm < ApplicationForm # <-- ensure that you're extending from ApplicationForm, not ApplicationRecord
+# models/flex/passport_application_form.rb
+class PassportApplicationForm < ApplicationForm # <-- ensure that you're extending from ApplicationForm, not ApplicationRecord
   # Attributes and methods here
 end
 ```
@@ -41,18 +41,19 @@ end
 
 Since ApplicationForm is an abstract class it does not generate any tables or migrations on its own. The migration will be implemented by any children that implement ApplicationForm.
 
-An example migration:
+An example migration, based on the PassportApplicationForm example from above:
 
 ```ruby
 # db/migrate/migration_file_name_here.rb
-class CreatePaidLeaveBusinessExclusionForms < ActiveRecord::Migration[8.0]
+class CreateFlexPassportApplicationForms < ActiveRecord::Migration[8.0]
   def change
-    create_table :paid_leave_business_exclusion_forms do |t|
-      t.string :business_name
-      t.text :business_type
+    create_table :flex_passport_application_forms do |t|
+      t.string :first_name
+      t.string :last_namen
+      t.date :date_of_birth
       t.integer :status, default: 0 # This ensures that the status column, which is present on ApplicationForm, gets created and defaults to "in_progress"
 
-      t.timestamps # if you want your table and model to have auto-generated created_on and updated_on fields, add this
+      t.timestamps # if you want your table and model to have auto-generated created_at and updated_at fields, add this
     end
   end
 end

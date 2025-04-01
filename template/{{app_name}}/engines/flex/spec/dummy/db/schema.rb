@@ -11,12 +11,12 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
-  create_table "flex_test_exclusion_forms", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "business_name", null: false
-    t.string "business_type", null: false
+  create_table "flex_passport_application_forms", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.date "date_of_birth", null: false
     t.integer "status", default: 0
-    t.index [ "business_name" ], name: "index_flex_test_exclusion_forms_on_business_name", unique: true
+
+    t.timestamps
   end
 end

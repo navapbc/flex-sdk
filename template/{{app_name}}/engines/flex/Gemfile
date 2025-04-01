@@ -10,13 +10,13 @@ gem "sqlite3"
 
 gem "sprockets-rails"
 
+# Start debugger with binding.b [https://github.com/ruby/debug]
+# gem "debug", ">= 1.0.0"
+
 group :development, :test do
   gem "shoulda-matchers", "~> 6.0"
   gem "rspec-rails", "~> 7.0.0"
 end
-
-# Start debugger with binding.b [https://github.com/ruby/debug]
-# gem "debug", ">= 1.0.0"
 
 group :development do
   # Linting
