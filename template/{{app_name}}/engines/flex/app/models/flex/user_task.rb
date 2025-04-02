@@ -1,3 +1,4 @@
+require_relative '../concerns/step'
 module Flex
   class UserTask
     include Step
@@ -5,15 +6,8 @@ module Flex
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
-    self.abstract_class = true
-
-    attr_accessor :name
 
     validates :name, presence: true
-    
-    def execute(kase)
-      raise NoMethodError, "Children must implement the `execute` method"
-    end
 
     def persisted?
       false
