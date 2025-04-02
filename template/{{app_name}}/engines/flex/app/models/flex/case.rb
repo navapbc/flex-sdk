@@ -6,7 +6,7 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, open: 0, closed: 1
 
-    attribute readonly :business_process
+    readonly attribute :business_process
     attribute :business_process_current_step, :string
 
     readonly attribute :passport_id, :string, default: SecureRandom.uuid
