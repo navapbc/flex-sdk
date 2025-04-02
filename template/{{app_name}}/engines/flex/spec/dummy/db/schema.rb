@@ -11,18 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_04_01_120000) do
-  create_table "flex_business_processes", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "description"
-    t.integer "status", default: 0, null: false
-    t.string "type"
-    t.integer "case_id", null: false
-    t.string "current_step"
-    t.index ["case_id"], name: "index_flex_business_processes_on_case_id"
-
-    t.timestamps
-  end
-
   create_table "flex_passport_application_forms", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -42,6 +30,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_01_120000) do
     t.timestamps
   end
 
-  add_foreign_key "flex_business_processes", "flex_passport_cases", column: "case_id"
+  create_table "flex_business_processes", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "status", default: 0, null: false
+    t.string "type"
+    # t.integer "case_id", null: false
+    t.string "current_step"
+    # t.index ["case_id"], name: "index_flex_business_processes_on_case_id"
+    t.references :case, null: false, polymorphic: true
+
+    t.timestamps
+  end
+
+  # add_foreign_key "flex_business_processes", "flex_passport_cases", column: "case_id"
   add_foreign_key "flex_passport_cases", "flex_passport_application_forms", column: "passport_application_form_id"
 end

@@ -6,7 +6,9 @@ module Flex
     self.table_name = "flex_business_processes"
     include Step
 
-    belongs_to :case, class_name: 'Flex::Case', foreign_key: 'case_id'
+    belongs_to :case, class_name: 'Flex::Case', foreign_key: 'case_id', polymorphic: true
+
+    readonly attribute :type, :string
 
     attribute :status, :integer, default: 0
     enum :status, pending: 0, in_progress: 1, completed: 2 # Just temporary statuses
@@ -41,7 +43,7 @@ module Flex
     def execute_steps(steps)
       while !completed?
         step = steps[current_step]
-        result = step.execute(kase)
+        result = step.execute(self.case)
         if result
           increment_current_step(steps)
         end
