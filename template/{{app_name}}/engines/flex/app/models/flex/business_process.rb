@@ -13,11 +13,22 @@ module Flex
     validates :name, presence: true
     
     def execute(kase)
-      raise NotImplementedError, "Subclasses must implement the `execute` method"
+      raise "Business process #{name} is already started or has been completed" unless status == "pending"
+
+      steps = get_steps
+      first_step_key, first_step_value = steps.first
+
+      self.status = "in_progress"
+      self.current_step = first_step_key
+      self.save!
+
+      step.execute(self.kase)
     end
 
-    def defineSteps(steps)
-      @steps = steps
+    protected
+
+    def get_steps()
+      raise NotImplementedError, "Subclasses must implement the `get_steps` method"
     end
   end
 end
