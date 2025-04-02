@@ -1,4 +1,5 @@
 require "rails_helper"
+require_relative '../../dummy/app/models/flex/forms/passport_application_form'
 
 module Flex
   # Using PassportApplicationForm to test the ApplicationForm abstract class

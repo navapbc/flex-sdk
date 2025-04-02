@@ -1,8 +1,9 @@
 require 'rails_helper'
+require_relative '../../dummy/app/models/flex/cases/passport_case'
 
 module Flex
   RSpec.describe PassportCase, type: :model do
-    let(:test_case) { described_class.new(passport_id: rand(1..1000)) }
+    let(:test_case) { described_class.new }
 
     describe 'status attribute' do
       it 'defaults to open' do
