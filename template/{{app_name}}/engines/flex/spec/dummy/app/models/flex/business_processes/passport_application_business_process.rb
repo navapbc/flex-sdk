@@ -6,8 +6,9 @@ module Flex
     
     def get_steps
       {
-        "step_1": Step1.new,
-        "step_2": Step2.new
+        "step_1": CollectUserInformationUserTask.new,
+        "step_2": TakePassportPhotoUserTask.new,
+        "step_3": VerifyIdentitySystemProcess.new
       }
     end
   end
