@@ -1,7 +1,7 @@
 module Flex
   class CollectUserInformationUserTask < UserTask
     def execute(kase)
-      kase.passport_application_form.has_all_necessary_fields?
+      kase.passport_application_form.submitted?
     end
   end
 end

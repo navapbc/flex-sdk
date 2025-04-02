@@ -1,5 +1,5 @@
 module Flex
-  class CollectUserInformationUserTask < SystemProcess
+  class VerifyIdentitySystemProcess < SystemProcess
     def execute(kase)
       false
     end

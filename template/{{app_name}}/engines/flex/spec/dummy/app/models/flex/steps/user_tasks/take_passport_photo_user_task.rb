@@ -1,5 +1,5 @@
 module Flex
-  class CollectUserInformationUserTask < UserTask
+  class PassportPhotoUserTask < UserTask
     def execute(kase)
       false
     end
