@@ -13,6 +13,16 @@ module Flex
       save
     end
 
+    def submitted?
+      status == "submitted"
+    end
+
+    protected
+
+    def is_submitting?
+      status_was == "in_progress" && status == "submitted"
+    end
+
     private
 
     def was_submitted?
