@@ -37,8 +37,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_01_120000) do
     t.integer "status", default: 0, null: false
     t.string "type"
     t.bigint "case_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["case_id"], name: "index_flex_business_processes_on_case_id"
     t.foreign_key "flex_passport_cases", column: "case_id"
 
