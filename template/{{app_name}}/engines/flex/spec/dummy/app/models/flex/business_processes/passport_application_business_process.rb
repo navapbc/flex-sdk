@@ -1,6 +1,5 @@
 module Flex
   class PassportApplicationBusinessProcess < BusinessProcess
-    # Add your custom business process logic here
     
     protected
     
