@@ -7,7 +7,7 @@ module Flex
     private
 
     def create_passport_application_business_process
-      business_processes << PassportApplicationBusinessProcess.new({:case => self, :name => 'Passport Application Process'})
+      business_processes << PassportApplicationBusinessProcess.create({:case => self, :name => 'Passport Application Process'})
     end
   end
 end
