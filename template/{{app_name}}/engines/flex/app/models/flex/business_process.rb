@@ -1,35 +1,23 @@
 module Flex
-  class BusinessProcess
+  class BusinessProcess < ApplicationRecord
     include Step
-    include ActiveModel::Model
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
+    self.abstract_class = true
 
-    attr_accessor :name, :description, :steps, :start, :transitions
+    belongs_to :kase, class_name: 'Flex::Case', foreign_key: 'case_id'
+
+    attr_accessor :name, :description, :steps, :current_step
+
+    attribute :status, :integer, default: 0
+    enum status: { pending: 0, in_progress: 1, completed: 2, failed: 3 } # Just temporary statuses
 
     validates :name, presence: true
     
     def execute(kase)
-      kase.business_process_current_step = start
-      kase.save
-      steps[start].execute(kase)
-    end
-
-    def defineStart(step_name)
-      @start = step_name
+      raise NotImplementedError, "Subclasses must implement the `execute` method"
     end
 
     def defineSteps(steps)
       @steps = steps
-    end
-
-    def defineTransitions(transitions)
-      @transitions = transitions
-    end
-
-    def persisted?
-      false
     end
   end
 end
