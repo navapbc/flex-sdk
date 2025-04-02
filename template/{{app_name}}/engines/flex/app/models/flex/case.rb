@@ -9,6 +9,8 @@ module Flex
     attribute readonly :business_process
     attribute :business_process_current_step, :string
 
+    readonly attribute :passport_id, :string, default: SecureRandom.uuid
+
     def close
       self[:status] = :closed
       save
