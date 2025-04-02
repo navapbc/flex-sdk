@@ -8,6 +8,10 @@ module Flex
 
     after_create :create_passport_case
 
+    def has_all_necessary_fields?
+      first_name.present? && last_name.present? && date_of_birth.present?
+    end
+
     private
 
     def create_passport_case
