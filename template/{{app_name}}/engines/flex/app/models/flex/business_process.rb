@@ -1,14 +1,15 @@
+require_relative '../concerns/step'
 module Flex
   class BusinessProcess < ApplicationRecord
-    include Step
     self.abstract_class = true
+    self.inheritance_column = "type"
+    self.table_name = "flex_business_processes"
+    include Step
 
-    belongs_to :kase, class_name: 'Flex::Case', foreign_key: 'case_id'
-
-    attr_accessor :name, :description, :steps, :current_step
+    belongs_to :case, class_name: 'Flex::Case', foreign_key: 'case_id'
 
     attribute :status, :integer, default: 0
-    enum status: { pending: 0, in_progress: 1, completed: 2 } # Just temporary statuses
+    enum :status, pending: 0, in_progress: 1, completed: 2 # Just temporary statuses
 
     validates :name, presence: true
     
