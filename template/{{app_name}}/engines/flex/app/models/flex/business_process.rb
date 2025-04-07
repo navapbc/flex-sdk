@@ -1,3 +1,4 @@
+require_relative "../concerns/step"
 module Flex
   class BusinessProcess
     include Step
@@ -12,24 +13,20 @@ module Flex
     
     def execute(kase)
       kase.business_process_current_step = start
-      kase.save
+      kase.save!
       steps[start].execute(kase)
     end
 
-    def defineStart(step_name)
+    def define_start(step_name)
       @start = step_name
     end
 
-    def defineSteps(steps)
+    def define_steps(steps)
       @steps = steps
     end
 
-    def defineTransitions(transitions)
+    def define_transitions(transitions)
       @transitions = transitions
-    end
-
-    def persisted?
-      false
     end
   end
 end
