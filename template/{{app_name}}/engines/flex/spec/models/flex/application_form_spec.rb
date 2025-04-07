@@ -32,7 +32,7 @@ module Flex
           application_form.first_name = "John"
           application_form.last_name = "Doe"
           application_form.date_of_birth = generate_random_date_of_birth
-          application_form.save
+          application_form.save!
         end
 
         it "defaults to in progress" do
@@ -40,6 +40,7 @@ module Flex
         end
 
         it "updates status to submitted upon submitting application" do
+          expect(application_form.errors).to be_empty
           expect(application_form.submit_application).to be true
           expect(application_form.status).to eq("submitted")
         end
@@ -56,6 +57,7 @@ module Flex
           application_form.first_name = "John"
           application_form.last_name = "Doe"
           application_form.date_of_birth = generate_random_date_of_birth
+          application_form.save!
           application_form.submit_application
         end
 
