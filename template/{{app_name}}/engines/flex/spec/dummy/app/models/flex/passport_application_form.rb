@@ -25,7 +25,7 @@ module Flex
     private
 
     def create_passport_case
-      passport_case = PassportCase.create!({ passport_application_form: self })
+      PassportCase.create!({ passport_application_form: self })
     end
   end
 end
