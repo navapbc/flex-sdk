@@ -1,0 +1,30 @@
+module Flex
+  class BusinessProcessSimpleFactory
+    def self.create_passport_application_business_process
+      business_process = BusinessProcess.new
+      business_process.name = 'Passport Application Process'
+      business_process.description = 'Process for applying for a passport'
+      business_process.define_steps(self.create_passport_application_business_process_steps)
+      business_process.define_transitions(
+        default: {
+          "collect application info" => 'verify identity',
+          "verify identity" => 'review passport photo',
+          "review passport photo" => 'end',
+        }
+      )
+      business_process.define_start('collect application info')
+      business_process
+    end
+
+    private
+
+    def self.create_passport_application_business_process_steps
+      {
+        'collect application info' => SystemProcess.new(->(kase) { kase.passport_application_form.has_all_necessary_fields? }),
+        'verify identity' => SystemProcess.new(->(_kase) { true }), # simulate verifying identity
+        'review passport photo' => SystemProcess.new(->(_kase) { true }), # simulate reviewing passport photo
+        'end' => SystemProcess.new(->(kase) { kase.close }) # close case
+      }
+    end
+  end
+end
