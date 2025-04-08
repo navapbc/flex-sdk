@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-# This is currently a working "sanity test" for the Case management module changes.
-
 module Flex
   RSpec.describe PassportApplicationForm, type: :model do
     let(:test_form) { described_class.new }
