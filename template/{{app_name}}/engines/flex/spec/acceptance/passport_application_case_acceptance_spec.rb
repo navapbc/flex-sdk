@@ -29,7 +29,6 @@ module Flex
 
       # approve application
       kase.approve
-      kase.reload
       expect(kase.business_process_current_step).to eq ("end")
       expect(kase.status).to eq ("closed")
     end
