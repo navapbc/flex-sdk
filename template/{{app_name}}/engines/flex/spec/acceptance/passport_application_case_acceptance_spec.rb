@@ -4,7 +4,7 @@ module Flex
   RSpec.describe PassportApplicationForm, type: :model do
     let(:test_form) { described_class.new }
 
-    it "happy path from Loren's example" do
+    it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
       test_form.save!
 
