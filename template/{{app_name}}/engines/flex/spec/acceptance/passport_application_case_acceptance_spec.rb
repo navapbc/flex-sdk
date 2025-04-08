@@ -6,20 +6,19 @@ module Flex
 
     it "happy path from Loren's example" do
       # create new application
-      app = test_form
-      app.save!
+      test_form.save!
 
       # check case created
-      kase = PassportCase.find(app.case_id)
+      kase = PassportCase.find(test_form.case_id)
       expect(kase).not_to be_nil
       expect(kase.business_process_current_step).to eq ("collect application info")
 
       # submit application
-      app.first_name = "John"
-      app.last_name = "Doe"
-      app.date_of_birth = Date.new(1990, 1, 1)
-      app.save!
-      app.submit_application
+      test_form.first_name = "John"
+      test_form.last_name = "Doe"
+      test_form.date_of_birth = Date.new(1990, 1, 1)
+      test_form.save!
+      test_form.submit_application
       kase.reload
       expect(kase.business_process_current_step).to eq ("verify identity")
 
