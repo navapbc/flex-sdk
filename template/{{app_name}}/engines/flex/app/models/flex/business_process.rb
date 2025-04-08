@@ -10,7 +10,7 @@ module Flex
     attr_accessor :name, :description, :steps, :start, :transitions
 
     validates :name, presence: true
-    
+
     def execute(kase)
       steps = get_remaining_steps(kase.business_process_current_step)
       steps.each { |key, step| step.execute(kase) unless key == "end" }
@@ -50,7 +50,7 @@ module Flex
         break if current_step.nil?
       end
 
-      steps.map{|step_name| [step_name, @steps[step_name]]}.to_h
+      steps.map { |step_name| [ step_name, @steps[step_name] ] }.to_h
     end
   end
 end

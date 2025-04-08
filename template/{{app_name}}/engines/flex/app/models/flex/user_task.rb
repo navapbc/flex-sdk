@@ -14,7 +14,7 @@ module Flex
       @task_management_service = task_management_service
       # @task_management_service.create_task
     end
-    
+
     def execute(kase)
       @task_management_service.create_task(name, "eventually will contain details about a case instead of static string")
     end

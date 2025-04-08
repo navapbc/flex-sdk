@@ -9,7 +9,7 @@ module Flex
         {
           "collect application info" => 'verify identity',
           "verify identity" => 'review passport photo',
-          "review passport photo" => 'end',
+          "review passport photo" => 'end'
         }
       )
       business_process.define_start('collect application info')

@@ -11,7 +11,7 @@ module Flex
 
       # check case created
       kase = PassportCase.find(app.case_id)
-      expect(kase).not_to be nil
+      expect(kase).not_to be_nil
       expect(kase.business_process_current_step).to eq ("collect application info")
 
       # submit application
@@ -34,8 +34,7 @@ module Flex
     end
 
     describe "when creating a form" do
-      it "should create an associated case" do
-
+      it "creates an associated case" do
       end
     end
 

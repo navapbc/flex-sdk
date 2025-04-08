@@ -14,7 +14,7 @@ module Flex
     def initialize(callback)
       @callback = callback
     end
-    
+
     def execute(kase)
       @callback.call(kase)
     end
