@@ -16,7 +16,7 @@ lint-ci: ## Run the linter, but don't fix anything
 test: ## Run the test suite
 	bundle exec rspec
 
-test-watch: ## Run the test suite
+test-watch: ## Watch for file changes and run the test suite
 	bundle exec guard
 
 help: ## Prints the help documentation and info about each command
