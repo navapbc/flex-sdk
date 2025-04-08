@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe BusinessProcess do
-    let(:business_process) { BusinessProcess.new }
+    let(:business_process) { described_class.new }
 
     describe 'validations' do
       it 'requires a name' do
@@ -13,15 +13,15 @@ module Flex
     end
 
     describe '#execute' do
-      let(:transitions) {{
+      let(:transitions) { {
         "review passport photo" => 'end',
         "collect application info" => 'verify identity',
-        "verify identity" => 'review passport photo',
+        "verify identity" => 'review passport photo'
       }}
-      let(:mock_step) { double('step') }
-      let(:mock_step2) { double('step') }
-      let(:mock_case) { double('case', business_process_current_step: 'step1') }
-      
+      let(:mock_step) { instance_double(Step) }
+      let(:mock_step2) { instance_double(Step) }
+      let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
+
       before do
         business_process.define_steps({
           "step1" => mock_step,
@@ -29,16 +29,17 @@ module Flex
         })
         business_process.define_transitions({
           "step1" => 'step2',
-          "step2" => 'end',
+          "step2" => 'end'
         })
         business_process.define_start('step1')
         allow(mock_step).to receive(:execute)
+        allow(mock_step2).to receive(:execute)
       end
 
       it 'executes remaining steps' do
-        expect(mock_step).to receive(:execute).with(mock_case)
-        expect(mock_step2).to receive(:execute).with(mock_case)
         business_process.execute(mock_case)
+        expect(mock_step).to have_received(:execute).with(mock_case)
+        expect(mock_step2).to have_received(:execute).with(mock_case)
       end
     end
   end

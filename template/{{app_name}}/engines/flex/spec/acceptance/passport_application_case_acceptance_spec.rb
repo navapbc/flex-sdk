@@ -6,7 +6,7 @@ module Flex
 
     it "happy path from Loren's example" do
       # create new application
-      app = PassportApplicationForm.new
+      app = test_form
       app.save!
 
       # check case created
@@ -33,10 +33,10 @@ module Flex
       expect(kase.status).to eq ("closed")
     end
 
-    describe "when creating a form" do
-      it "creates an associated case" do
-      end
-    end
+    # describe "when creating a form" do
+    #   it "creates an associated case" do
+    #   end
+    # end
 
     # describe 'when submitting a form' do
     #   it 'should not create a case if ' do
