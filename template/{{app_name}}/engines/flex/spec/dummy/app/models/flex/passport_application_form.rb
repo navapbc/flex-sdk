@@ -4,8 +4,6 @@ require_relative "../flex/passport_case"
 module Flex
   class PassportApplicationForm < ApplicationForm
     after_create :create_passport_case
-    
-    has_one :passport_case, class_name: 'Flex::PassportCase'
 
     attribute :first_name, :string
     attribute :last_name, :string
