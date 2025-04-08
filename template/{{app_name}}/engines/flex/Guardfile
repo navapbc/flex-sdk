@@ -37,7 +37,7 @@ guard :rspec, cmd: "bundle exec rspec" do
   watch(rspec.spec_files)
 
   # Dummy application
-  # Ignore writes to spec/dummy/log/test.log since that gets written during test runs
+  # Ignore spec/dummy/log/test.log since that gets written during test runs
   watch(%r{^#{rspec.spec_dir}/dummy/(?!log/test\.log)}) { rspec.spec_dir }
 
   # Ruby files
