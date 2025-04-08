@@ -12,7 +12,7 @@ module Flex
       app.save!
 
       # check case created
-      kase = PassportCase.find(app.passport_case.id)
+      kase = PassportCase.find(app.case_id)
       expect(kase).not_to be nil
       expect(kase.business_process_current_step).to eq ("collect application info")
 
