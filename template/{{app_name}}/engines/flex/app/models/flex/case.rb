@@ -9,8 +9,6 @@ module Flex
     readonly attribute :business_process
     attribute :business_process_current_step, :string
 
-    # tasks: Task[] Maybe?
-
     def close
       self[:status] = :closed
       save
