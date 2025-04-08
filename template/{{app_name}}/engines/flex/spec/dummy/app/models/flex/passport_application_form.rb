@@ -19,8 +19,9 @@ module Flex
 
     def submit_application
       if has_all_necessary_fields?
-        # passport_case.update!(business_process_current_step: "verify identity")
         super
+        # this is temporary and will be changed in another PR when implementing an event-based approach
+        PassportCase.find(case_id).mark_application_info_collected
       end
     end
 
