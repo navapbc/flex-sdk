@@ -13,11 +13,6 @@ module Flex
     end
 
     describe '#execute' do
-      let(:transitions) { {
-        "review passport photo" => 'end',
-        "collect application info" => 'verify identity',
-        "verify identity" => 'review passport photo'
-      }}
       let(:mock_step) { instance_double(Step) }
       let(:mock_step2) { instance_double(Step) }
       let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
@@ -36,10 +31,11 @@ module Flex
         allow(mock_step2).to receive(:execute)
       end
 
-      it 'executes remaining steps' do
+      it 'executes first step but not the second step' do
         business_process.execute(mock_case)
+
         expect(mock_step).to have_received(:execute).with(mock_case)
-        expect(mock_step2).to have_received(:execute).with(mock_case)
+        expect(mock_step2).not_to have_received(:execute).with(mock_case)
       end
     end
   end
