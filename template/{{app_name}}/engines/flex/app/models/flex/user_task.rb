@@ -18,9 +18,5 @@ module Flex
     def execute(kase)
       @task_management_service.create_task(name, "eventually will contain details about a case instead of static string")
     end
-
-    def persisted?
-      false
-    end
   end
 end
