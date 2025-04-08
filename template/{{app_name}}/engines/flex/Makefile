@@ -1,7 +1,8 @@
 .PHONY: \
 	lint \
 	lint-ci \
-	test
+	test \
+	test-watch
 
 setup:
 	bundle install
@@ -14,6 +15,9 @@ lint-ci: ## Run the linter, but don't fix anything
 
 test: ## Run the test suite
 	bundle exec rspec
+
+test-watch: ## Run the test suite
+	bundle exec guard
 
 help: ## Prints the help documentation and info about each command
 	@grep -Eh '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
