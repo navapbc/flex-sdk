@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative "../../dummy/app/factories/business_process_simple_factory"
 
 module Flex
   RSpec.describe BusinessProcess do
