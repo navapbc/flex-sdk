@@ -1,13 +1,17 @@
+require 'singleton'
+# require_relative "../../../../app/models/flex/business_process"
+
 module Flex
   class PassportApplicationBusinessProcessManager
     include Singleton
 
-    attr_reader :business_process
+    attr_accessor :business_process
 
     private
 
-    def initialize
-      @business_process = create_passport_application_business_process
+    def self._load
+      instance.business_process = instance.create_passport_application_business_process
+      instance
     end
 
     def create_passport_application_business_process
