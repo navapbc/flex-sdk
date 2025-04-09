@@ -24,6 +24,9 @@ module Dummy
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    config.eager_load_paths << Rails.root.join("business_processes")
+    # config.eager_load_paths << Rails.root.join("app/business_processes")
+    # config.autoload_paths << Rails.root.join("app/business_processes")
+    # config.autoload_paths << Rails.root.join("spec/acceptance")
+    # config.autoload_paths << Rails.root.join("spec/acceptance/flex")
   end
 end
