@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe PassportCase, type: :model do
-    let(:test_case) { described_class.new(passport_id: rand(1..1000)) }
+    let(:test_case) { described_class.new }
 
     describe 'status attribute' do
       it 'defaults to open' do
