@@ -14,7 +14,7 @@ module Flex
       self[:status] = :closed
       save
     end
-    
+
     def reopen
       self[:status] = :open
       save
