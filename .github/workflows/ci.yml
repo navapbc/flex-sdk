@@ -31,10 +31,6 @@ jobs:
           working-directory: template/{{app_name}}/engines/flex
 
       - name: Install dependencies
-        run: |
-          make setup
-          bundle --version
-          bundle exec rails --version
-          ruby --version
+        run: bundle install
 
       - run: make ${{ matrix.make_command }}
