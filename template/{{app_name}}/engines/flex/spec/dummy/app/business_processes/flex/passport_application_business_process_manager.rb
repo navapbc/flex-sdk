@@ -1,5 +1,4 @@
 require 'singleton'
-# require_relative "../../../../app/models/flex/business_process"
 
 module Flex
   class PassportApplicationBusinessProcessManager
@@ -9,9 +8,8 @@ module Flex
 
     private
 
-    def self._load
-      instance.business_process = instance.create_passport_application_business_process
-      instance
+    def initialize
+      @business_process = create_passport_application_business_process
     end
 
     def create_passport_application_business_process
