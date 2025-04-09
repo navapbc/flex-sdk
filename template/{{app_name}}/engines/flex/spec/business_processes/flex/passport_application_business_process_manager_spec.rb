@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative '../dummy/app/business_processes/passport_application_business_process_manager'
 
 module Flex
   RSpec.describe PassportApplicationBusinessProcessManager do
