@@ -23,15 +23,5 @@ module Flex
       self[:business_process_current_step] = "end"
       close
     end
-
-    def open
-      self[:status] = :open
-      save
-    end
-
-    def close
-      self[:status] = :closed
-      save
-    end
   end
 end
