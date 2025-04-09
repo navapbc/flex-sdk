@@ -27,7 +27,7 @@ module Flex
         end
       end
 
-      context "when form is in progress" do
+      context "when attempting to update case_id" do
         before do
           application_form.first_name = "John"
           application_form.last_name = "Doe"
@@ -35,11 +35,29 @@ module Flex
           application_form.save
         end
 
+        it "prevents direct status updates when setting status directly" do
+          expect { application_form.case_id = 22 }.to raise_error(NoMethodError)
+        end
+
+        it "prevents direct status updates when calling update method" do
+          expect { application_form.update(case_id: 341) }.to raise_error(NoMethodError)
+        end
+      end
+
+      context "when form is in progress" do
+        before do
+          application_form.first_name = "John"
+          application_form.last_name = "Doe"
+          application_form.date_of_birth = generate_random_date_of_birth
+          application_form.save!
+        end
+
         it "defaults to in progress" do
           expect(application_form.status).to eq("in_progress")
         end
 
         it "updates status to submitted upon submitting application" do
+          expect(application_form.errors).to be_empty
           expect(application_form.submit_application).to be true
           expect(application_form.status).to eq("submitted")
         end
@@ -56,6 +74,7 @@ module Flex
           application_form.first_name = "John"
           application_form.last_name = "Doe"
           application_form.date_of_birth = generate_random_date_of_birth
+          application_form.save!
           application_form.submit_application
         end
 
