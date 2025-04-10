@@ -18,7 +18,7 @@ module Flex
 
     private
 
-    def initialize 
+    def initialize
       # setting initialize to private so that we cannot make new instances of it
     end
   end

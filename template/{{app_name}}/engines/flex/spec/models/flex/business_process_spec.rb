@@ -10,12 +10,12 @@ module Flex
     end
 
     describe 'executing a business process' do
-      let(:mock_steps) { { 
+      let(:mock_steps) { {
         "user_task" => instance_double(UserTask,),
         "system_process" => instance_double(SystemProcess),
         "user_task_2" => instance_double(UserTask),
-        "system_process_2" => instance_double(SystemProcess),
-        } 
+        "system_process_2" => instance_double(SystemProcess)
+        }
       }
       let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
 
@@ -35,7 +35,7 @@ module Flex
       ].each do |starting_step|
         it "only executes the starting step (#{starting_step}) in the business process and not any additional steps" do
           business_process.define_start(starting_step)
-          
+
           business_process.execute(mock_case)
 
           expect(mock_steps[starting_step]).to have_received(:execute).with(mock_case)
@@ -56,7 +56,7 @@ module Flex
             business_process.add_event_listener("flex.test_event", -> { puts "Another listener" })
           }.to raise_error("Event listener for flex.test_event already exists")
         end
-  
+
         it 'allows adding multiple event listeners' do
           expect {
             business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })
@@ -68,7 +68,7 @@ module Flex
 
         it 'adds the event listener to events being listened to' do
           business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })
-          
+
           expect(business_process.get_events_being_listened_to).to include("flex.test_event")
         end
 
@@ -78,7 +78,7 @@ module Flex
           expect(mock_events_manager).to have_received(:subscribe).with("flex.test_event", anything)
         end
       end
-      
+
       describe '#remove_event_listener' do
         before do
           allow(mock_events_manager).to receive(:unsubscribe)
@@ -89,7 +89,7 @@ module Flex
             business_process.remove_event_listener("flex.non_existent_event")
           }.to raise_error("No event listener found for flex.non_existent_event")
         end
-  
+
         it 'does not raise an error when attempting to remove an existing event listener if the event listener exists' do
           business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })
 
