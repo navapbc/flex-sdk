@@ -99,7 +99,7 @@ module Flex
         end
 
         it 'unsubscribes the event listener from the events manager' do
-          subscription = double("subscription")
+          subscription = instance_double(ActiveSupport::Subscriber)
           allow(mock_events_manager).to receive(:subscribe).and_return(subscription)
           business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })
 
