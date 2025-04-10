@@ -32,7 +32,18 @@ module Flex
     def add_event_listener(event_key, callback)
       raise "Event listener for #{event_key} already exists" if @event_listeners.key?(event_key)
 
-      @event_listeners[event_key] = callback
+      @event_listeners[event_key] = EventsManager.subscribe(event_key, callback)
+    end
+
+    def remove_event_listener(event_key)
+      raise "No event listener found for #{event_key}" unless @event_listeners.key?(event_key)
+
+      EventsManager.unsubscribe(@event_listeners[event_key])
+      @event_listeners.delete(event_key)
+    end
+
+    def get_events_being_listened_to
+      @event_listeners.keys
     end
   end
 end
