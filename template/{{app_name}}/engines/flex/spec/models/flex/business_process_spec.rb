@@ -30,6 +30,7 @@ module Flex
       ].each do |starting_step|
         it "only executes the starting step (#{starting_step}) in the business process and not any additional steps" do
           business_process.define_start(starting_step)
+          
           business_process.execute(mock_case)
 
           expect(mock_steps[starting_step]).to have_received(:execute).with(mock_case)
