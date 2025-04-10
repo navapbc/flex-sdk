@@ -48,6 +48,15 @@ module Flex
         }.to raise_error("Event listener for flex.test_event already exists")
       end
 
+      it 'allows adding multiple event listeners' do
+        expect {
+          business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })
+          business_process.add_event_listener("flex.test_event2", -> { puts "Step 2 completed" })
+          business_process.add_event_listener("flex.test_event3", -> { puts "Step 3 completed" })
+          business_process.add_event_listener("flex.test_event4", -> { puts "Step 4 completed" })
+        }.not_to raise_error
+      end
+
     end
   end
 end
