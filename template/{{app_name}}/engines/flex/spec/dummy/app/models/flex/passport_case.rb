@@ -7,7 +7,7 @@ module Flex
       self[:business_process_current_step] = value
     end
 
-    # readonly @business_process = PassportApplicationBusinessProcessManager.instance.business_process
+    @business_process = PassportApplicationBusinessProcessManager.instance.business_process
 
     def mark_application_info_collected
       self[:business_process_current_step] = "verify identity"
@@ -22,16 +22,6 @@ module Flex
     def approve
       self[:business_process_current_step] = "end"
       close
-    end
-
-    def open
-      self[:status] = :open
-      save
-    end
-
-    def close
-      self[:status] = :closed
-      save
     end
   end
 end
