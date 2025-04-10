@@ -38,7 +38,7 @@ module Flex
       end
     end
 
-    xdescribe '#add_event_listener' do
+    describe '#add_event_listener' do
       
       it 'raises an error if an event listener with that event key already exists' do
         business_process.add_event_listener("flex.test_event", -> { puts "Step 1 completed" })

@@ -4,6 +4,8 @@ module Flex
 
     attr_accessor :name, :description, :steps, :start, :transitions
 
+    @event_listener = nil
+
     def initialize(name:, description: "", steps: {}, start: "", transitions: {})
       @name = name
       @description = description
@@ -26,6 +28,12 @@ module Flex
 
     def define_transitions(transitions)
       @transitions = transitions
+    end
+
+    def add_event_listener(event_key, callback)
+      raise "Event listener for #{event_key} already exists" unless @event_listener.nil?
+
+      @event_listener = callback
     end
   end
 end
