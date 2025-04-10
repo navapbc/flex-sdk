@@ -2,15 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe BusinessProcess do
-    let(:business_process) { described_class.new }
-
-    describe 'validations' do
-      it 'requires a name' do
-        expect(business_process.valid?).to be false
-        business_process.name = 'Test Process'
-        expect(business_process.valid?).to be true
-      end
-    end
+    let(:business_process) { described_class.new(name: "Test Business Process") }
 
     describe '#execute' do
       let(:mock_step) { instance_double(UserTask) }

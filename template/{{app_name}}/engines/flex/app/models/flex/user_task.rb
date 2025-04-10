@@ -1,16 +1,12 @@
 module Flex
   class UserTask
-    include ActiveModel::Model
-    include ActiveModel::Validations
     include Step
 
-    attr_accessor :name
+    attr_accessor :name, :task_management_service
 
-    validates :name, presence: true
-
-    def initialize(task_management_service)
+    def initialize(name:, task_management_service:)
+      @name = name
       @task_management_service = task_management_service
-      # @task_management_service.create_task
     end
 
     def execute(kase)

@@ -1,15 +1,12 @@
 module Flex
   class SystemProcess
-    include ActiveModel::Model
-    include ActiveModel::Validations
     include Step
 
     attr_accessor :name
     attr_accessor :callback
 
-    validates :name, :callback, presence: true
-
-    def initialize(callback)
+    def initialize(name:, callback:)
+      @name = name
       @callback = callback
     end
 

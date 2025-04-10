@@ -1,12 +1,16 @@
 module Flex
   class BusinessProcess
-    include ActiveModel::Model
-    include ActiveModel::Validations
     include Step
 
     attr_accessor :name, :description, :steps, :start, :transitions
 
-    validates :name, presence: true
+    def initialize(name:, description: "", steps: {}, start: "", transitions: {})
+      @name = name
+      @description = description
+      @steps = steps
+      @start = start
+      @transitions = transitions
+    end
 
     def execute(kase)
       steps[start].execute(kase)
