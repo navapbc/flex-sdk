@@ -2,7 +2,7 @@ module Flex
   class PassportApplicationBusinessProcessManager
     include Singleton
 
-    attr_accessor :business_process
+    attr_reader :business_process
 
     private
 
