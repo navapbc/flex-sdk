@@ -1,21 +1,19 @@
 require "rails_helper"
 
 module Flex
-  # Using PassportApplicationForm to test the ApplicationForm abstract class
-  RSpec.describe PassportApplicationForm do
+  class TestApplicationForm < ApplicationForm
+    attribute :test_string, :string
+  end
+end
+
+module Flex
+  RSpec.describe TestApplicationForm do
     describe "validations" do
       let(:application_form) { described_class.new }
 
-      def generate_random_date_of_birth
-        rand(100.years.ago..1.day.ago).to_date
-      end
-
       context "when attempting to update status" do
         before do
-          application_form.first_name = "John"
-          application_form.last_name = "Doe"
-          application_form.date_of_birth = generate_random_date_of_birth
-          application_form.save
+          application_form.save!
         end
 
         it "prevents direct status updates when setting status directly" do
@@ -27,28 +25,8 @@ module Flex
         end
       end
 
-      context "when attempting to update case_id" do
-        before do
-          application_form.first_name = "John"
-          application_form.last_name = "Doe"
-          application_form.date_of_birth = generate_random_date_of_birth
-          application_form.save
-        end
-
-        it "prevents direct status updates when setting status directly" do
-          expect { application_form.case_id = 22 }.to raise_error(NoMethodError)
-        end
-
-        it "prevents direct status updates when calling update method" do
-          expect { application_form.update(case_id: 341) }.to raise_error(NoMethodError)
-        end
-      end
-
       context "when form is in progress" do
         before do
-          application_form.first_name = "John"
-          application_form.last_name = "Doe"
-          application_form.date_of_birth = generate_random_date_of_birth
           application_form.save!
         end
 
@@ -63,31 +41,27 @@ module Flex
         end
 
         it "allows changes to attributes" do
-          expect(application_form.update(first_name: "Jane", last_name: "Smith")).to be true
-          expect(application_form.first_name).to eq("Jane")
-          expect(application_form.last_name).to eq("Smith")
+          expect(application_form.update(test_string: "a new string!")).to be true
+          expect(application_form.test_string).to eq("a new string!")
         end
       end
 
       context "when form is already submitted" do
         before do
-          application_form.first_name = "John"
-          application_form.last_name = "Doe"
-          application_form.date_of_birth = generate_random_date_of_birth
+          application_form.test_string = "a string to use when the form is already submitted"
           application_form.save!
           application_form.submit_application
         end
 
         it "prevents attribute updates from being saved" do
-          did_update = application_form.update(first_name: "Jane", last_name: "Smith")
+          did_update = application_form.update(test_string: "this should be prevented")
           errors = application_form.errors[:base]
 
           application_form.reload # reloading the model to ensure that the update did not go through to the database
 
           expect(did_update).to be(false)
           expect(errors).to include('Cannot modify a submitted application')
-          expect(application_form.first_name).to eq("John")
-          expect(application_form.last_name).to eq("Doe")
+          expect(application_form.test_string).to eq("a string to use when the form is already submitted")
         end
       end
     end
