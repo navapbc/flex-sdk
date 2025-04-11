@@ -23,8 +23,6 @@ module Flex
         # this is temporary and will be changed in another PR when implementing an event-based approach
         PassportCase.find(case_id).mark_application_info_collected
       end
-
-      EventsManager.publish("passport_application_submitted", self) if has_all_necessary_fields?
     end
 
     protected
