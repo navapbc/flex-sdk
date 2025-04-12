@@ -12,6 +12,9 @@ module Flex
 
       before do
         stub_const("Flex::EventsManager", mock_events_manager)
+        allow(PassportApplicationBusinessProcessManager.instance)
+          .to receive(:business_process)
+          .and_return(instance_double(BusinessProcess, execute: true))
         passport_application_form.first_name = "John"
         passport_application_form.last_name = "Doe"
         passport_application_form.date_of_birth = generate_random_date_of_birth

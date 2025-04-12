@@ -4,6 +4,11 @@ module Flex
   RSpec.describe PassportCase, type: :model do
     let(:test_case) { described_class.new }
 
+    before do
+      allow(Flex::PassportApplicationBusinessProcessManager.instance).to receive(:business_process)
+        .and_return(double("BusinessProcess", execute: true))
+    end
+
     describe 'status attribute' do
       it 'defaults to open' do
         expect(test_case.status).to eq('open')
