@@ -1,8 +1,11 @@
 module Flex
   class EventsManager
     def self.subscribe(event_key, callback)
-      subscription = ActiveSupport::Notifications.subscribe("flex.events.#{event_key}") do |_name, _started, _finished, _unique_id, payload|
-        callback.call(payload)
+      subscription = ActiveSupport::Notifications.subscribe(event_key) do |name, _started, _finished, _unique_id, payload|
+        callback.call({
+          name: name,
+          payload: payload
+        })
       end
 
       subscription
