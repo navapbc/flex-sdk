@@ -32,7 +32,7 @@ module Flex
     end
 
     def publish_event
-      EventsManager.publish("application_submitted", event_payload)
+      EventsManager.publish("application_submitted", self.event_payload)
     end
   end
 end
