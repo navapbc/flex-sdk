@@ -19,22 +19,22 @@ module Flex
       business_process.define_steps(
         {
           "collect_application_info" => UserTask.new(
-            name: "Collect App Info", 
+            name: "Collect App Info",
             task_management_service: UserTaskCreatorService
           ),
           "verify_identity" => SystemProcess.new(name: "Verify Identity", callback: ->(kase) {
             IdentityVerifierService.new(kase).verify_identity # IdentityVerifierService would publish an event when verify_identity completes
           }),
           "manual_adjudicator_review" => UserTask.new(name: "Manual Adjudicator Review", task_management_service: AdjudicatorTaskCreatorService), # create an adjudicator task for manual review
-          "review_passport_photo" => SystemProcess.new(name: "Review Passport Photo", callback: -> (kase) {
+          "review_passport_photo" => SystemProcess.new(name: "Review Passport Photo", callback: ->(kase) {
             PhotoVerifierService.new(kase).verify_photo # PhotoVerifierService would publish an event when verify_photo completes
           }),
-          "notify_user_passport_approved" => SystemProcess.new(name: "Notify Passport Approval", callback: -> (kase) {
+          "notify_user_passport_approved" => SystemProcess.new(name: "Notify Passport Approval", callback: ->(kase) {
             UserNotifierService.new(kase).send_notification("approval") # UserNotifierService would publish an event when send_notification completes
           }),
-          "notify_user_passport_rejected" => SystemProcess.new(name: "Notify Passport Rejection", callback: -> (kase) {
+          "notify_user_passport_rejected" => SystemProcess.new(name: "Notify Passport Rejection", callback: ->(kase) {
             UserNotifierService.new(kase).send_notification("rejection") # UserNotifierService would publish an event when send_notification completes
-          }),
+          })
         }
       )
       business_process.define_transitions(

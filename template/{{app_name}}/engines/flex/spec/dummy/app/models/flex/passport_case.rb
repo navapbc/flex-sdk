@@ -6,8 +6,8 @@ module Flex
 
     after_create :initialize_business_process
 
-    private 
-    
+    private
+
     def initialize_business_process
       business_process = PassportApplicationBusinessProcessManager.instance.business_process
       business_process.execute({ case_id: id })

@@ -5,7 +5,6 @@ module Flex
     end
 
     def send_notification(template)
-      
     end
   end
 end

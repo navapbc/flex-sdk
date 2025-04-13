@@ -49,7 +49,7 @@ module Flex
         allow(mock_events_manager).to receive(:unsubscribe)
       end
 
-      it 'should start listening to events defined in transitions' do
+      it 'starts listening to events defined in transitions' do
         business_process.define_transitions({
           "step1" => { "event1" => "step2" },
           "step2" => { "event2" => "end" }
@@ -59,7 +59,7 @@ module Flex
         expect(mock_events_manager).to have_received(:subscribe).with("event2", anything)
       end
 
-      it 'should stop listening to events when transitions are redefined and then subscribe to the new events' do
+      it 'stops listening to events when transitions are redefined and then subscribe to the new events' do
         business_process.define_transitions({
           "step1" => { "event1" => "step2" },
           "step2" => { "event2" => "end" }
