@@ -8,9 +8,10 @@ module Flex
       # create new application
       test_form.save!
 
-      # check case created
+      # check case created and open with correct current step
       kase = PassportCase.find(test_form.case_id)
       expect(kase).not_to be_nil
+      expect(kase.status).to eq ("open")
       expect(kase.business_process_current_step).to eq ("collect_application_info")
 
       # submit application
@@ -38,7 +39,6 @@ module Flex
       expect(kase.business_process_current_step).to eq ("end")
 
       # check case status
-      kase.reload
       expect(kase.status).to eq ("closed")
     end
   end
