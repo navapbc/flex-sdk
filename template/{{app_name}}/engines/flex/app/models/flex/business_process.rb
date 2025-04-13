@@ -44,7 +44,11 @@ module Flex
       next_step = @transitions[current_step][event[:name]]
       kase.business_process_current_step = next_step
       kase.save!
-      @steps[next_step].execute(kase)
+      if next_step == "end"
+        kase.close
+      else
+        @steps[next_step].execute(kase)
+      end
     end
 
     def get_event_names_from_transitions
