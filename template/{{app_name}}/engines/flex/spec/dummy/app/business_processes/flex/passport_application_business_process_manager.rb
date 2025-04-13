@@ -29,11 +29,11 @@ module Flex
           "review_passport_photo" => SystemProcess.new(name: "Review Passport Photo", callback: -> (kase) {
             PhotoVerifierService.new(kase).verify_photo # PhotoVerifierService would publish an event when verify_photo completes
           }),
-          "notify_user_passport_approved" => SystemProcess.new(name: "Notify Passport Approval", callback: -> (kase_id) {
-            UserNotifierService.new(kase).send_notification(:approval_template) # UserNotifierService would publish an event when send_notification completes
+          "notify_user_passport_approved" => SystemProcess.new(name: "Notify Passport Approval", callback: -> (kase) {
+            UserNotifierService.new(kase).send_notification("approval") # UserNotifierService would publish an event when send_notification completes
           }),
           "notify_user_passport_rejected" => SystemProcess.new(name: "Notify Passport Rejection", callback: -> (kase) {
-            UserNotifierService.new(kase).send_notification(:rejection_template) # UserNotifierService would publish an event when send_notification completes
+            UserNotifierService.new(kase).send_notification("rejection") # UserNotifierService would publish an event when send_notification completes
           }),
         }
       )
