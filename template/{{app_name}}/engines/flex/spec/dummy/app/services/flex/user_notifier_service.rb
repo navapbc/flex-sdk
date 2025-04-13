@@ -4,7 +4,7 @@ module Flex
       @kase = kase
     end
 
-    def notify_user
+    def send_notification(template)
       
     end
   end
