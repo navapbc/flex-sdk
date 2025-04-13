@@ -18,6 +18,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
     t.timestamps
   end
 
+  create_table :flex_test_cases do |t|
+    t.integer :status, default: 0, null: false
+    t.string :business_process_current_step
+
+    t.timestamps
+  end
+
   create_table :flex_passport_application_forms, force: :cascade do |t|
     t.string :first_name
     t.string :last_name

@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 module Flex
-  RSpec.describe PassportCase, type: :model do
-    let(:test_case) { described_class.new }
+  class TestCase < Case
+    # A simple test case to test the Case abstract class functionality
+  end
+end
 
-    before do
-      allow(Flex::PassportApplicationBusinessProcessManager.instance).to receive(:business_process)
-        .and_return(double("BusinessProcess", execute: true))
-    end
+module Flex
+  RSpec.describe TestCase, type: :model do
+    let(:test_case) { described_class.new }
 
     describe 'status attribute' do
       it 'defaults to open' do
