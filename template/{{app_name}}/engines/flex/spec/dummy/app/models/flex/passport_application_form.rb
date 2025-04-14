@@ -1,5 +1,3 @@
-require_relative "../../../../../app/models/flex/application_form"
-
 module Flex
   class PassportApplicationForm < ApplicationForm
     before_create :create_passport_case, unless: -> { has_case_id? }
@@ -18,11 +16,14 @@ module Flex
     end
 
     def submit_application
-      if has_all_necessary_fields?
-        super
-        # this is temporary and will be changed in another PR when implementing an event-based approach
-        PassportCase.find(case_id).mark_application_info_collected
-      end
+      has_all_necessary_fields? ? super : false
+    end
+
+    protected
+
+    def event_payload
+      parent_payload = super
+      parent_payload.merge({ case_id: case_id })
     end
 
     private

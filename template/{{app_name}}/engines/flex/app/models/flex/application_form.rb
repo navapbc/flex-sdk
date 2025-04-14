@@ -10,7 +10,14 @@ module Flex
 
     def submit_application
       self[:status] = :submitted
-      save
+      save!
+      publish_event
+    end
+
+    protected
+
+    def event_payload
+      { id: id }
     end
 
     private
@@ -22,6 +29,10 @@ module Flex
     def prevent_changes_if_submitted
       errors.add(:base, "Cannot modify a submitted application")
       throw :abort
+    end
+
+    def publish_event
+      EventsManager.publish("application_submitted", self.event_payload)
     end
   end
 end

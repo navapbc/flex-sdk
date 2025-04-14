@@ -1,7 +1,13 @@
 require 'rails_helper'
 
 module Flex
-  RSpec.describe PassportCase, type: :model do
+  class TestCase < Case
+    # A simple test case to test the Case abstract class functionality
+  end
+end
+
+module Flex
+  RSpec.describe TestCase, type: :model do
     let(:test_case) { described_class.new }
 
     describe 'status attribute' do
