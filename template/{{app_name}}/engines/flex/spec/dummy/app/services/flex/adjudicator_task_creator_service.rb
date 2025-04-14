@@ -1,6 +1,8 @@
 module Flex
   class AdjudicatorTaskCreatorService
-    def self.create_task(name:, details:)
+    include TaskHandlerService
+
+    def self.create_task(kase:)
     end
   end
 end

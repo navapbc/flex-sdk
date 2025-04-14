@@ -1,6 +1,8 @@
 module Flex
   class UserTaskCreatorService
-    def self.create_task(name:, details:)
+    include TaskHandlerService
+
+    def self.create_task(kase:)
       # Logic to create a user task
     end
   end
