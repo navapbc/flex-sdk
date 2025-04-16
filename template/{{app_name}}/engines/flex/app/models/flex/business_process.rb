@@ -28,10 +28,7 @@ module Flex
     end
 
     def define_transitions(transitions)
-      if @subscriptions.any?
-        stop_listening_all_events
-      end
-
+      stop_listening_for_events
       @transitions = transitions
       start_listening_for_events
     end
@@ -64,7 +61,7 @@ module Flex
       end
     end
 
-    def stop_listening_all_events
+    def stop_listening_for_events
       @subscriptions.each do |event_name, subscription|
         EventManager.unsubscribe(subscription)
       end
