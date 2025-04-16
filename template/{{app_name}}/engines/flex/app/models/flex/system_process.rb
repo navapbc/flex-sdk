@@ -5,7 +5,7 @@ module Flex
     attr_accessor :name
     attr_accessor :callback
 
-    def initialize(name:, callback:)
+    def initialize(name, callback)
       @name = name
       @callback = callback
     end
