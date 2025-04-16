@@ -13,27 +13,27 @@ module Flex
     def create_passport_application_business_process
       business_process = BusinessProcess.new(
         name: 'Passport Application Process',
-        type: PassportCase,
+        find_case_callback: ->(case_id) { PassportCase.find(case_id) },
         description: 'Process for applying for a passport'
       )
       business_process.define_steps(
         {
           "collect_application_info" => UserTask.new(
-            name: "Collect App Info",
-            task_management_service: UserTaskCreatorService
+            "Collect App Info",
+            UserTaskCreationService
           ),
-          "verify_identity" => SystemProcess.new(name: "Verify Identity", callback: ->(kase) {
-            IdentityVerifierService.new(kase).verify_identity # IdentityVerifierService would publish an event when verify_identity completes
+          "verify_identity" => SystemProcess.new("Verify Identity", ->(kase) {
+            IdentityVerificationService.new(kase).verify_identity # IdentityVerificationService would publish an event when verify_identity completes
           }),
-          "manual_adjudicator_review" => UserTask.new(name: "Manual Adjudicator Review", task_management_service: AdjudicatorTaskCreatorService), # create an adjudicator task for manual review
-          "review_passport_photo" => SystemProcess.new(name: "Review Passport Photo", callback: ->(kase) {
-            PhotoVerifierService.new(kase).verify_photo # PhotoVerifierService would publish an event when verify_photo completes
+          "manual_adjudicator_review" => UserTask.new("Manual Adjudicator Review", AdjudicatorTaskCreationService), # create an adjudicator task for manual review
+          "review_passport_photo" => SystemProcess.new("Review Passport Photo", ->(kase) {
+            PhotoVerificationService.new(kase).verify_photo # PhotoVerificationService would publish an event when verify_photo completes
           }),
-          "notify_user_passport_approved" => SystemProcess.new(name: "Notify Passport Approval", callback: ->(kase) {
-            UserNotifierService.new(kase).send_notification("approval") # UserNotifierService would publish an event when send_notification completes
+          "notify_user_passport_approved" => SystemProcess.new("Notify Passport Approval", ->(kase) {
+            UserNotificationService.new(kase).send_notification("approval") # UserNotificationService would publish an event when send_notification completes
           }),
-          "notify_user_passport_rejected" => SystemProcess.new(name: "Notify Passport Rejection", callback: ->(kase) {
-            UserNotifierService.new(kase).send_notification("rejection") # UserNotifierService would publish an event when send_notification completes
+          "notify_user_passport_rejected" => SystemProcess.new("Notify Passport Rejection", ->(kase) {
+            UserNotificationService.new(kase).send_notification("rejection") # UserNotificationService would publish an event when send_notification completes
           })
         }
       )

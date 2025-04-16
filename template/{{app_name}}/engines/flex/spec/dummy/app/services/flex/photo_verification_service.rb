@@ -1,10 +1,10 @@
 module Flex
-  class UserNotifierService
+  class PhotoVerificationService
     def initialize(kase)
       @kase = kase
     end
 
-    def send_notification(template)
+    def verify_photo
     end
   end
 end

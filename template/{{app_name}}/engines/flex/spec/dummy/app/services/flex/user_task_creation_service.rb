@@ -1,5 +1,5 @@
 module Flex
-  class UserTaskCreatorService
+  class UserTaskCreationService
     include TaskHandlerService
 
     def self.create_task(kase:)

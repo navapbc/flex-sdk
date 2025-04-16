@@ -4,10 +4,10 @@ module Flex
 
     attr_accessor :name, :description, :steps, :start, :transitions
 
-    def initialize(name:, type:, description: "", steps: {}, start: "", transitions: {})
+    def initialize(name:, find_case_callback:, description: "", steps: {}, start: "", transitions: {})
       @subscriptions = {}
       @name = name
-      @type = type # recognizing this is a code smell that we will want to address in the future
+      @find_case_callback = find_case_callback
       @description = description
       define_start(start)
       define_steps(steps)
@@ -28,10 +28,7 @@ module Flex
     end
 
     def define_transitions(transitions)
-      if @subscriptions.any?
-        stop_listening_all_events
-      end
-
+      stop_listening_for_events
       @transitions = transitions
       start_listening_for_events
     end
@@ -39,7 +36,7 @@ module Flex
     private
 
     def handle_event(event)
-      kase = @type.find(event[:payload][:case_id])
+      kase = @find_case_callback.call(event[:payload][:case_id])
       current_step = kase.business_process_current_step
       next_step = @transitions[current_step][event[:name]]
       kase.business_process_current_step = next_step
@@ -57,16 +54,13 @@ module Flex
 
     def start_listening_for_events
       get_event_names_from_transitions.each do |event_name|
-        new_subscription = EventsManager.subscribe(event_name, ->(event) {
-          handle_event(event)
-        })
-        @subscriptions[event_name] = new_subscription
+        @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
     end
 
-    def stop_listening_all_events
+    def stop_listening_for_events
       @subscriptions.each do |event_name, subscription|
-        EventsManager.unsubscribe(subscription)
+        EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
     end

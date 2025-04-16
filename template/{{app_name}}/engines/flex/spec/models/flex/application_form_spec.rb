@@ -10,10 +10,10 @@ module Flex
   RSpec.describe TestApplicationForm do
     describe "validations" do
       let(:application_form) { described_class.new }
-      let(:mock_events_manager) { class_double(EventsManager) }
+      let(:mock_events_manager) { class_double(EventManager) }
 
       before do
-        stub_const("Flex::EventsManager", mock_events_manager)
+        stub_const("Flex::EventManager", mock_events_manager)
         application_form.save!
       end
 
