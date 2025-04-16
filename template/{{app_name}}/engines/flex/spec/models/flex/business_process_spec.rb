@@ -2,8 +2,10 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe BusinessProcess do
-    let(:business_process) { described_class.new(name: "Test Business Process", type: PassportCase) }
-    let(:mock_events_manager) { class_double(EventManager) }
+    let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
+    let(:find_case_callback) { ->(case_id) { mock_case } }
+    let(:business_process) { described_class.new(name: "Test Business Process", find_case_callback: find_case_callback) }
+    let(:mock_event_manager) { class_double(EventManager) }
     let(:mock_steps) { {
       "user_task" => instance_double(UserTask),
       "system_process" => instance_double(SystemProcess),
@@ -11,10 +13,9 @@ module Flex
       "system_process_2" => instance_double(SystemProcess)
       }
     }
-    let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
 
     before do
-      stub_const("Flex::EventManager", mock_events_manager)
+      stub_const("Flex::EventManager", mock_event_manager)
     end
 
     describe 'executing a business process' do
@@ -45,8 +46,8 @@ module Flex
 
     describe 'when defining transitions' do
       before do
-        allow(mock_events_manager).to receive(:subscribe)
-        allow(mock_events_manager).to receive(:unsubscribe)
+        allow(mock_event_manager).to receive(:subscribe)
+        allow(mock_event_manager).to receive(:unsubscribe)
       end
 
       it 'starts listening to events defined in transitions' do
@@ -55,8 +56,8 @@ module Flex
           "step2" => { "event2" => "end" }
         })
 
-        expect(mock_events_manager).to have_received(:subscribe).with("event1", anything)
-        expect(mock_events_manager).to have_received(:subscribe).with("event2", anything)
+        expect(mock_event_manager).to have_received(:subscribe).with("event1", anything)
+        expect(mock_event_manager).to have_received(:subscribe).with("event2", anything)
       end
 
       it 'stops listening to events when transitions are redefined and then subscribe to the new events' do
@@ -69,9 +70,9 @@ module Flex
           "step4" => { "event4" => "end" }
         })
 
-        expect(mock_events_manager).to have_received(:unsubscribe).twice
-        expect(mock_events_manager).to have_received(:subscribe).with("event3", anything)
-        expect(mock_events_manager).to have_received(:subscribe).with("event4", anything)
+        expect(mock_event_manager).to have_received(:unsubscribe).twice
+        expect(mock_event_manager).to have_received(:subscribe).with("event3", anything)
+        expect(mock_event_manager).to have_received(:subscribe).with("event4", anything)
       end
     end
   end

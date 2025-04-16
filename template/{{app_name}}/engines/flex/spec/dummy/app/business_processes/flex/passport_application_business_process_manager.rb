@@ -13,7 +13,7 @@ module Flex
     def create_passport_application_business_process
       business_process = BusinessProcess.new(
         name: 'Passport Application Process',
-        type: PassportCase,
+        find_case_callback: ->(case_id) { PassportCase.find(case_id) },
         description: 'Process for applying for a passport'
       )
       business_process.define_steps(

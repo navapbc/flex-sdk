@@ -4,10 +4,10 @@ module Flex
 
     attr_accessor :name, :description, :steps, :start, :transitions
 
-    def initialize(name:, type:, description: "", steps: {}, start: "", transitions: {})
+    def initialize(name:, find_case_callback:, description: "", steps: {}, start: "", transitions: {})
       @subscriptions = {}
       @name = name
-      @type = type # recognizing this is a code smell that we will want to address in the future
+      @find_case_callback = find_case_callback
       @description = description
       define_start(start)
       define_steps(steps)
@@ -36,7 +36,7 @@ module Flex
     private
 
     def handle_event(event)
-      kase = @type.find(event[:payload][:case_id])
+      kase = @find_case_callback.call(event[:payload][:case_id])
       current_step = kase.business_process_current_step
       next_step = @transitions[current_step][event[:name]]
       kase.business_process_current_step = next_step
