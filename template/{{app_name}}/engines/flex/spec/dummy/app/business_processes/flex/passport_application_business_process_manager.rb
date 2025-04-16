@@ -20,20 +20,20 @@ module Flex
         {
           "collect_application_info" => UserTask.new(
             "Collect App Info",
-            UserTaskCreatorService
+            UserTaskCreationService
           ),
           "verify_identity" => SystemProcess.new("Verify Identity", ->(kase) {
-            IdentityVerifierService.new(kase).verify_identity # IdentityVerifierService would publish an event when verify_identity completes
+            IdentityVerificationService.new(kase).verify_identity # IdentityVerificationService would publish an event when verify_identity completes
           }),
-          "manual_adjudicator_review" => UserTask.new("Manual Adjudicator Review", AdjudicatorTaskCreatorService), # create an adjudicator task for manual review
+          "manual_adjudicator_review" => UserTask.new("Manual Adjudicator Review", AdjudicatorTaskCreationService), # create an adjudicator task for manual review
           "review_passport_photo" => SystemProcess.new("Review Passport Photo", ->(kase) {
-            PhotoVerifierService.new(kase).verify_photo # PhotoVerifierService would publish an event when verify_photo completes
+            PhotoVerificationService.new(kase).verify_photo # PhotoVerificationService would publish an event when verify_photo completes
           }),
           "notify_user_passport_approved" => SystemProcess.new("Notify Passport Approval", ->(kase) {
-            UserNotifierService.new(kase).send_notification("approval") # UserNotifierService would publish an event when send_notification completes
+            UserNotificationService.new(kase).send_notification("approval") # UserNotificationService would publish an event when send_notification completes
           }),
           "notify_user_passport_rejected" => SystemProcess.new("Notify Passport Rejection", ->(kase) {
-            UserNotifierService.new(kase).send_notification("rejection") # UserNotifierService would publish an event when send_notification completes
+            UserNotificationService.new(kase).send_notification("rejection") # UserNotificationService would publish an event when send_notification completes
           })
         }
       )
