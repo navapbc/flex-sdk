@@ -3,7 +3,7 @@ require 'rails_helper'
 module Flex
   RSpec.describe BusinessProcess do
     let(:business_process) { described_class.new(name: "Test Business Process", type: PassportCase) }
-    let(:mock_events_manager) { class_double(EventsManager) }
+    let(:mock_events_manager) { class_double(EventManager) }
     let(:mock_steps) { {
       "user_task" => instance_double(UserTask),
       "system_process" => instance_double(SystemProcess),
@@ -14,7 +14,7 @@ module Flex
     let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
 
     before do
-      stub_const("Flex::EventsManager", mock_events_manager)
+      stub_const("Flex::EventManager", mock_events_manager)
     end
 
     describe 'executing a business process' do

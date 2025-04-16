@@ -4,14 +4,14 @@ module Flex
   RSpec.describe PassportApplicationForm do
     describe "validations" do
       let(:passport_application_form) { described_class.new }
-      let(:mock_events_manager) { class_double(EventsManager) }
+      let(:mock_events_manager) { class_double(EventManager) }
 
       def generate_random_date_of_birth
         rand(100.years.ago..1.day.ago).to_date
       end
 
       before do
-        stub_const("Flex::EventsManager", mock_events_manager)
+        stub_const("Flex::EventManager", mock_events_manager)
         allow(PassportApplicationBusinessProcessManager.instance)
           .to receive(:business_process)
           .and_return(instance_double(BusinessProcess, execute: true))

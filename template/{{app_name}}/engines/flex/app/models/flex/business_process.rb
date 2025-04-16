@@ -57,7 +57,7 @@ module Flex
 
     def start_listening_for_events
       get_event_names_from_transitions.each do |event_name|
-        new_subscription = EventsManager.subscribe(event_name, ->(event) {
+        new_subscription = EventManager.subscribe(event_name, ->(event) {
           handle_event(event)
         })
         @subscriptions[event_name] = new_subscription
@@ -66,7 +66,7 @@ module Flex
 
     def stop_listening_all_events
       @subscriptions.each do |event_name, subscription|
-        EventsManager.unsubscribe(subscription)
+        EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
     end
