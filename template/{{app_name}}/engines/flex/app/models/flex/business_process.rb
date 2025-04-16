@@ -54,10 +54,7 @@ module Flex
 
     def start_listening_for_events
       get_event_names_from_transitions.each do |event_name|
-        new_subscription = EventManager.subscribe(event_name, ->(event) {
-          handle_event(event)
-        })
-        @subscriptions[event_name] = new_subscription
+        @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
     end
 
