@@ -4,9 +4,9 @@ class TestApplicationForm < Flex::ApplicationForm
   attribute :test_string, :string
 end
 
-RSpec.describe TestApplicationForm do
+RSpec.describe Flex::ApplicationForm do
   describe "validations" do
-    let(:application_form) { described_class.new }
+    let(:application_form) { TestApplicationForm.new }
     let(:mock_events_manager) { class_double(Flex::EventManager) }
 
     before do

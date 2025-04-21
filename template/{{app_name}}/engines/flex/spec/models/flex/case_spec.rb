@@ -4,8 +4,8 @@ class TestCase < Flex::Case
   # A simple test case to test the Case abstract class functionality
 end
 
-RSpec.describe TestCase, type: :model do
-  let(:test_case) { described_class.new }
+RSpec.describe Flex::Case, type: :model do
+  let(:test_case) { TestCase.new }
 
   describe 'status attribute' do
     it 'defaults to open' do
