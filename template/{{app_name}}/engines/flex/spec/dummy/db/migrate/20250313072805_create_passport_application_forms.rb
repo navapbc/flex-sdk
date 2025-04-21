@@ -1,6 +1,6 @@
 class CreateFlexPassportApplicationForms < ActiveRecord::Migration[8.0]
   def change
-    create_table :flex_passport_application_forms do |t|
+    create_table :passport_application_forms do |t|
       t.string :first_name
       t.string :last_name
       t.date :date_of_birth
