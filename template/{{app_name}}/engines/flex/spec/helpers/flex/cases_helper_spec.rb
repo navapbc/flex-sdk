@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 # Specs in this file have access to a helper object that includes
-# the CaseHelper. For example:
+# the CasesHelper. For example:
 #
-# describe CaseHelper do
+# describe CasesHelper do
 #   describe "string concat" do
 #     it "concats two strings with spaces" do
 #       expect(helper.concat_strings("this","that")).to eq("this that")
@@ -11,7 +11,7 @@ require 'rails_helper'
 #   end
 # end
 module Flex
-  RSpec.describe CaseHelper, type: :helper do
+  RSpec.describe CasesHelper, type: :helper do
     pending "add some examples to (or delete) #{__FILE__}"
   end
 end

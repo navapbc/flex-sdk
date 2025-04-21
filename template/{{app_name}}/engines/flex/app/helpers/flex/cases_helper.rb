@@ -1,4 +1,4 @@
 module Flex
-  module CaseHelper
+  module CasesHelper
   end
 end

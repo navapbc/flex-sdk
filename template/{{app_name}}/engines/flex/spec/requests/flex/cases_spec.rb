@@ -3,42 +3,42 @@ require 'rails_helper'
 RSpec.describe "Cases", type: :request do
   describe "GET /index" do
     it "returns http success" do
-      get "/case/index"
+      get "/cases/index"
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET /new" do
     it "returns http success" do
-      get "/case/new"
+      get "/cases/new"
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET /create" do
     it "returns http success" do
-      get "/case/create"
+      get "/cases/create"
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET /show" do
     it "returns http success" do
-      get "/case/show"
+      get "/cases/show"
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET /edit" do
     it "returns http success" do
-      get "/case/edit"
+      get "/cases/edit"
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET /update" do
     it "returns http success" do
-      get "/case/update"
+      get "/cases/update"
       expect(response).to have_http_status(:success)
     end
   end

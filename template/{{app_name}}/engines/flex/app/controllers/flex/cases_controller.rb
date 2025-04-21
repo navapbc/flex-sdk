@@ -1,5 +1,5 @@
 module Flex
-  class CaseController < ApplicationController
+  class CasesController < ApplicationController
     def index
     end
 

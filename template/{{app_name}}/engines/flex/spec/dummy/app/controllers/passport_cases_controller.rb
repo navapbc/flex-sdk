@@ -1,2 +1,2 @@
-class PassportCasesController < Flex::CaseController
+class PassportCasesController < Flex::CasesController
 end
