@@ -1,2 +1,81 @@
-<h1>Cases#index</h1>
-<p>Find me in app/views/flex/cases/index.html.erb</p>
+<%= content_for :title, "Your cases" %>
+
+<h1>Your tasks</h1>
+
+<nav>
+  <ul class="usa-nav__secondary-links">
+    <li><a href="#" class="usa-current">Assigned</a></li>
+    <li><a href="#">Completed</a></li>
+    <li><a href="#">On hold</a></li>
+  </ul>
+</nav>
+
+<div class="usa-form usa-form--filters margin-bottom-4">
+  <div class="grid-row grid-gap">
+    <div class="grid-col-12 tablet:grid-col-3">
+      <label for="filter_task_type">Filter by task type</label>
+      <select id="filter_task_type" name="task_type" class="usa-select">
+        <option value="">All tasks</option>
+        <% @task_types.each do |type| %>
+          <option value="<%= type %>"><%= type.humanize %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <label for="filter_due_date">Filter by due date</label>
+      <select id="filter_due_date" name="due_date" class="usa-select">
+        <option value="">All dates</option>
+        <% @due_dates.each do |label, value| %>
+          <option value="<%= value %>"><%= label %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <label for="filter_program">Filter by program</label>
+      <select id="filter_program" name="program" class="usa-select">
+        <option value="">All programs</option>
+        <% @programs.each do |program| %>
+          <option value="<%= program %>"><%= program %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+</div>
+
+<%# Bulk action links %>
+<p class="text-base margin-bottom-1">
+  <strong>Other actions</strong>:
+  <a href="#" class="usa-link">Transfer selected tasks</a> |
+  <a href="#" class="usa-link">Close selected tasks</a>
+</p>
+
+<div class="usa-table-container--scrollable">
+  <table class="usa-table usa-table--striped usa-table--borderless width-full font-mono text-no-wrap">
+    <thead>
+      <tr>
+        <th><input type="checkbox" /></th>
+        <th><%= sort_link @q, :due_date, "Task due date" %></th>
+        <th><%= sort_link @q, :task_type, "Task type" %></th>
+        <th><%= sort_link @q, :id, "Case ID" %></th>
+        <th><%= sort_link @q, :program_name, "Program" %></th>
+        <th><%= sort_link @q, :applicant_name, "Applicant’s name" %></th>
+        <th><%= sort_link @q, :created_at, "Task creation date" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @cases.each do |case_record| %>
+        <tr>
+          <td><input type="checkbox" name="selected_cases[]" value="<%= case_record.id %>" /></td>
+          <td><%= case_record.due_date&.strftime("%m/%d/%Y") || "—" %></td>
+          <td><%= case_record.task_type&.humanize || "—" %></td>
+          <td><%= case_record.id %></td>
+          <td><%= case_record.program_name %></td>
+          <td><%= case_record.applicant_name %></td>
+          <td><%= case_record.created_at.strftime("%m/%d/%Y") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= paginate @cases %>
