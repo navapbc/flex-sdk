@@ -9,6 +9,7 @@ module Flex
     before_update :prevent_changes_if_submitted, if: :was_submitted?
 
     def submit_application
+      puts "Submitting application with ID: #{id}"
       self[:status] = :submitted
       save!
       publish_event
@@ -32,7 +33,8 @@ module Flex
     end
 
     def publish_event
-      EventManager.publish("application_submitted", self.event_payload)
+      puts "Publishing event #{self.class.name}Submitted for application with ID: #{id}"
+      EventManager.publish("#{self.class.name}Submitted", self.event_payload)
     end
   end
 end
