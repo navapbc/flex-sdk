@@ -1,2 +1,51 @@
-<h1>Cases#show</h1>
-<p>Find me in app/views/flex/cases/show.html.erb</p>
+<main class="usa-section">
+  <div class="grid-container">
+
+    <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+      <ol class="usa-breadcrumb__list">
+        <li class="usa-breadcrumb__list-item">
+          <%= link_to "Cases", polymorphic_path(model_class), class: "usa-breadcrumb__link" %>
+        </li>
+        <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+          <%= @case.id %>
+        </li>
+      </ol>
+    </nav>
+    <h1 class="usa-heading-xl">Case ID: <%= @case.id %></h1>
+    <p>Status: <span class="usa-tag"><%= @case.status %></span></p>
+
+    <div class="grid-row grid-gap border-top-2px border-base-lighter padding-top-2">
+      <div class="tablet:grid-col-3 margin-bottom-4 tablet:margin-bottom-0">
+        <nav aria-label="Side navigation,">
+          <ul class="usa-sidenav">
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);" class="usa-current">Overview</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Tasks</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Application details</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Documents</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Case history</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Notes</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="tablet:grid-col-9">
+        <button class="usa-button">Approve</button>
+        <button class="usa-button usa-button--outline">Reject</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+
