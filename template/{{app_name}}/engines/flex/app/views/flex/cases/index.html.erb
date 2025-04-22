@@ -7,10 +7,10 @@
 
       <ul class="usa-nav__primary display-flex">
         <li class="usa-nav__primary-item">
-          <%= link_to "Open", polymorphic_path(model_class), class: "usa-current" %>
+          <%= link_to "Open", polymorphic_path(model_class), class: ('usa-current' if action_name == 'index') %>
         </li>
         <li class="usa-nav__primary-item">
-          <%= link_to "Closed", polymorphic_path(model_class, action: "closed") %>
+          <%= link_to "Closed", polymorphic_path(model_class, action: "closed"), class: ('usa-current' if action_name == 'closed') %>
         </li>
       </ul>
 
