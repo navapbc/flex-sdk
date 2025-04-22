@@ -1,5 +1,7 @@
 module Flex
   class CasesController < ApplicationController
+    layout "application"
+
     def index
       @cases = model_class.order(created_at: :desc)
                           .all
