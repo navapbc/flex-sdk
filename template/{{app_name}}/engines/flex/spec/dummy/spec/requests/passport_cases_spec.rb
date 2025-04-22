@@ -20,7 +20,7 @@ RSpec.describe "PassportCases", type: :request do
 
     it "returns redirects if case not found" do
       get "/passport_cases/00000000"
-      expect(response).to have_http_status(:redirect)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

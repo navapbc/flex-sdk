@@ -18,9 +18,6 @@ class PassportCasesController < ApplicationController
 
   def show
     @case = PassportCase.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    flash[:error] = "Case not found"
-    redirect_to passport_cases_path
   end
 
   def edit
