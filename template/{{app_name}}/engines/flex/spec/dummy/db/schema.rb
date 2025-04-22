@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_03_27_160205) do
-  create_table "flex_passport_application_forms", force: :cascade do |t|
+  create_table "passport_application_forms", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.date "date_of_birth"
@@ -19,10 +19,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_160205) do
     t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["case_id"], name: "index_flex_passport_application_forms_on_case_id", unique: true
+    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
-  create_table "flex_passport_cases", force: :cascade do |t|
+  create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "passport_id", limit: 36, null: false
     t.string "business_process_current_step"
@@ -30,5 +30,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_160205) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "flex_passport_application_forms", "flex_passport_cases", column: "case_id", on_delete: :cascade
+  add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end

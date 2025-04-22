@@ -38,7 +38,7 @@ module Flex
           passport_application_form.submit_application
 
           expect(mock_events_manager).to have_received(:publish)
-            .with("application_submitted", a_hash_including(case_id: passport_application_form.case_id))
+            .with("PassportApplicationFormSubmitted", a_hash_including(case_id: passport_application_form.case_id))
             .once
         end
       end
