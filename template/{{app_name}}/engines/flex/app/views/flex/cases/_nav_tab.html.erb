@@ -1,0 +1,7 @@
+<%= link_to name, path, class: class_names(
+  "text-no-underline padding-y-1 padding-x-2 font-sans-md",
+  {
+    "text-bold border-bottom-05 border-primary text-primary" => active,
+    "text-ink" => !active
+  }
+) %>
