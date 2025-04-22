@@ -19,7 +19,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_160205) do
     t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
+    t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
   create_table "passport_cases", force: :cascade do |t|

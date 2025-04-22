@@ -9,7 +9,7 @@ module Flex
     end
 
     def closed
-      @cases = model_class.where(status: 'closed')
+      @cases = model_class.where(status: "closed")
                           .order(created_at: :desc)
       render :index
     end
