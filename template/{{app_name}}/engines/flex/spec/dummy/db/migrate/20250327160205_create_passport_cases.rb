@@ -1,4 +1,4 @@
-class CreateFlexPassportCases < ActiveRecord::Migration[8.0]
+class CreatePassportCases < ActiveRecord::Migration[8.0]
   def change
     create_table :passport_cases do |t|
       t.integer :status, default: 0, null: false
