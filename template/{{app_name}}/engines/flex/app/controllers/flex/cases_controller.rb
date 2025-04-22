@@ -24,7 +24,7 @@ module Flex
       @case = model_class.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "Case not found"
-      redirect_to cases_path
+      redirect_to polymorphic_path(model_class)
     end
 
     def edit

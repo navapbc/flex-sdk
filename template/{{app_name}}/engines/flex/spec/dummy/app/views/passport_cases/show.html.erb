@@ -1,0 +1,13 @@
+<% content_for :case_summary do %>
+  <p>Passport ID: <span class="text-bold"><%= @case.passport_id %></span></p>
+  <p>Current step: <span class="text-bold"><%= @case.business_process_current_step %></span></p>
+<% end %>
+
+<% content_for :case_details do %>
+  <div class="tablet:grid-col-9">
+    <button class="usa-button">Approve</button>
+    <button class="usa-button usa-button--outline">Reject</button>
+  </div>
+<% end %>
+
+<%= render template: 'flex/cases/show' %>
