@@ -14,7 +14,7 @@ RSpec.describe Flex::BusinessProcess do
   }
 
   before do
-    stub_const("EventManager", mock_event_manager)
+    stub_const("Flex::EventManager", mock_event_manager)
   end
 
   describe 'executing a business process' do
