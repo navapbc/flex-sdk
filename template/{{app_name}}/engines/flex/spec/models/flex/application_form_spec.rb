@@ -52,7 +52,7 @@ RSpec.describe Flex::ApplicationForm do
         application_form.submit_application
 
         expect(mock_events_manager).to have_received(:publish)
-          .with("application_submitted", expected_payload).once
+          .with("TestApplicationFormSubmitted", expected_payload).once
       end
 
       it "does not trigger an event if an error is raised while saving the form" do

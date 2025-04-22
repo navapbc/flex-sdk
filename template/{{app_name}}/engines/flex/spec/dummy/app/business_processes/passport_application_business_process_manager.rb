@@ -39,7 +39,7 @@ class PassportApplicationBusinessProcessManager
     business_process.define_transitions(
       {
         "collect_application_info" => {
-          "application_submitted" => 'verify_identity',
+          "PassportApplicationFormSubmitted" => 'verify_identity',
           "application_cancelled" => 'end'
         },
         "verify_identity" => {
