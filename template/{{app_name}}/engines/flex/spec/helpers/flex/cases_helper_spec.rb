@@ -11,6 +11,4 @@ require 'rails_helper'
 #   end
 # end
 module Flex
-  RSpec.describe CasesHelper, type: :helper do
-  end
 end
