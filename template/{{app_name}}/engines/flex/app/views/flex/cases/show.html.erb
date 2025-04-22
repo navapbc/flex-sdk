@@ -13,7 +13,7 @@
     </nav>
     <h1 class="usa-heading-xl">Case ID: <%= @case.id %></h1>
     <%= yield :case_summary %>
-    <p>Status: <%= render partial: "status_tag", locals: { status: @case.status } %></p>
+    <p>Status: <%= render partial: "flex/cases/status_tag", locals: { status: @case.status } %></p>
 
     <div class="grid-row grid-gap border-top-2px border-base-lighter padding-top-2">
       <div class="tablet:grid-col-3 margin-bottom-4 tablet:margin-bottom-0">
