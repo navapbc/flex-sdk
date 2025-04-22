@@ -12,6 +12,5 @@ require 'rails_helper'
 # end
 module Flex
   RSpec.describe CasesHelper, type: :helper do
-    pending "add some examples to (or delete) #{__FILE__}"
   end
 end
