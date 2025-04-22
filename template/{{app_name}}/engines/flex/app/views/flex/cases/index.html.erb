@@ -5,14 +5,16 @@
     <div class="grid-container">
       <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Case', ' Cases') %></h1>
 
-      <ul class="usa-nav__primary display-flex">
-        <li class="usa-nav__primary-item">
-          <%= link_to "Open", polymorphic_path(model_class), class: ('usa-current' if action_name == 'index') %>
-        </li>
-        <li class="usa-nav__primary-item">
-          <%= link_to "Closed", polymorphic_path(model_class, action: "closed"), class: ('usa-current' if action_name == 'closed') %>
-        </li>
-      </ul>
+      <% tabs = [
+        { name: "Open", path: polymorphic_path(model_class), active: action_name == "index" },
+        { name: "Closed", path: polymorphic_path(model_class, action: "closed"), active: action_name == "closed" }
+      ] %>
+
+      <nav class="display-flex border-bottom-1px border-base-light">
+        <% tabs.each do |tab| %>
+          <%= render partial: "nav_tab", locals: tab %>
+        <% end %>
+      </nav>
 
       <!-- Cases -->
       <table class="usa-table usa-table--borderless usa-table--striped">
