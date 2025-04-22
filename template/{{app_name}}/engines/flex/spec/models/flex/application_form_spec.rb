@@ -10,7 +10,7 @@ RSpec.describe Flex::ApplicationForm do
     let(:mock_events_manager) { class_double(Flex::EventManager) }
 
     before do
-      stub_const("EventManager", mock_events_manager)
+      stub_const("Flex::EventManager", mock_events_manager)
       application_form.save!
     end
 
