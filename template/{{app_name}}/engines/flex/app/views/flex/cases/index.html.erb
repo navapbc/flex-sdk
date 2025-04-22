@@ -27,10 +27,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>########</td>
-            <td>MM/DD/YYYY</td>
-          </tr>
+          <% @cases.each do |kase| %>
+            <tr>
+              <td><%= kase.id %></td>
+              <td><%= kase.created_at.strftime('%m/%d/%Y') %></td>
+              <td>
+                <%= link_to "View", polymorphic_path(kase), class: "usa-button usa-button--outline" %>
+              </td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
 
