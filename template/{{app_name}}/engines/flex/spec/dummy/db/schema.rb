@@ -11,6 +11,20 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_03_27_160205) do
+  create_table :test_application_forms do |t|
+    t.integer :status, default: 0
+    t.string :test_string
+
+    t.timestamps
+  end
+
+  create_table :test_cases do |t|
+    t.integer :status, default: 0, null: false
+    t.string :business_process_current_step
+
+    t.timestamps
+  end
+
   create_table "passport_application_forms", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
