@@ -2,8 +2,7 @@ module Flex
   class CasesController < ApplicationController
     def index
       @cases = model_class.order(created_at: :desc)
-                          .page(params[:page])
-                          .per(25)
+                          .all
     end
 
     def new
