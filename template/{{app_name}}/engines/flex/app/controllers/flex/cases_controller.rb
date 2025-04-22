@@ -1,5 +1,6 @@
 module Flex
   class CasesController < ApplicationController
+    abstract_class!
     layout "application"
     helper_method :model_class
 
@@ -21,7 +22,7 @@ module Flex
     end
 
     def show
-      @case = Case.find(params[:id])
+      @case = model_class.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "Case not found"
       redirect_to cases_path
