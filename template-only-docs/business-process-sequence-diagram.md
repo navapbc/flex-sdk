@@ -1,4 +1,4 @@
-# Business Process
+# Business process sequence diagram
 
 ## Initialization
 
