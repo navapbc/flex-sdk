@@ -74,4 +74,31 @@ RSpec.describe Flex::BusinessProcess do
       expect(mock_event_manager).to have_received(:subscribe).with("event4", anything)
     end
   end
+
+  describe '#clear_process_configuration' do
+    before do
+      allow(mock_event_manager).to receive(:unsubscribe)
+      allow(mock_event_manager).to receive(:subscribe)
+      business_process.define_steps(mock_steps)
+      business_process.define_start("event1")
+      business_process.define_transitions({
+        "step1" => { "event1" => "step2" },
+        "step2" => { "event2" => "end" }
+      })
+    end
+
+    it 'clears all steps, transitions, and the start step' do
+      business_process.clear_process_configuration
+
+      expect(business_process.steps).to eq({})
+      expect(business_process.transitions).to eq({})
+      expect(business_process.start).to eq("")
+    end
+
+    it 'stops listening for events' do
+      business_process.clear_process_configuration
+
+      expect(mock_event_manager).to have_received(:unsubscribe).exactly(2).times
+    end
+  end
 end
