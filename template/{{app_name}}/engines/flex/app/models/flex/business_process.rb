@@ -2,7 +2,7 @@ module Flex
   class BusinessProcess
     include Step
 
-    attr_accessor :name, :description, :steps, :start, :transitions
+    attr_accessor :name, :description, :steps, :start, :transitions, :find_case_callback
 
     def initialize(name:, find_case_callback:, description: "", steps: {}, start: "", transitions: {})
       @subscriptions = {}
@@ -33,6 +33,15 @@ module Flex
       start_listening_for_events
     end
 
+    # @description This method will clear subscriptions and set steps, transitions, and start to their default values.
+    #     Only use this method if you are finished with the instance or plan to manually reset these values.
+    def clear_process_configuration
+      stop_listening_for_events
+      @steps = {}
+      @transitions = {}
+      @start = ""
+    end
+
     private
 
     def handle_event(event)
@@ -54,12 +63,14 @@ module Flex
 
     def start_listening_for_events
       get_event_names_from_transitions.each do |event_name|
+        Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
         @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
     end
 
     def stop_listening_for_events
       @subscriptions.each do |event_name, subscription|
+        Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
         EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
