@@ -17,7 +17,7 @@ RSpec.describe Flex::BusinessProcess do
     stub_const("Flex::EventManager", mock_event_manager)
   end
 
-  describe 'executing a business process' do
+  describe '#execute' do
     before do
       business_process.define_steps(mock_steps)
       allow(mock_steps["user_task"]).to receive(:execute)
@@ -43,7 +43,7 @@ RSpec.describe Flex::BusinessProcess do
     end
   end
 
-  describe 'when defining transitions' do
+  describe '#define_transitions' do
     before do
       allow(mock_event_manager).to receive(:subscribe)
       allow(mock_event_manager).to receive(:unsubscribe)
