@@ -33,7 +33,7 @@ module Flex
       start_listening_for_events
     end
 
-    # @description This method will clear subscriptions and set steps, transitions, and start to their default values. 
+    # @description This method will clear subscriptions and set steps, transitions, and start to their default values.
     #     Only use this method if you are finished with the instance or plan to manually reset these values.
     def clear_process_configuration
       stop_listening_for_events
