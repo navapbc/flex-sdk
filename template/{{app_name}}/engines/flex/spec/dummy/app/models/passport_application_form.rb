@@ -1,22 +1,12 @@
 class PassportApplicationForm < Flex::ApplicationForm
+  include Flex::Attributes
+
   before_create :create_passport_case, unless: -> { has_case_id? }
 
   attribute :first_name, :string
   attribute :last_name, :string
 
-  attribute :date_of_birth_year, :integer
-  attribute :date_of_birth_month, :integer
-  attribute :date_of_birth_day, :integer
-  composed_of :date_of_birth, class_name: "Date",
-      mapping: {
-        date_of_birth_year: :year,
-        date_of_birth_month: :month,
-        date_of_birth_day: :day
-      },
-      allow_nil: true,
-      converter: Proc.new { |value|
-        Date.new(value[:year], value[:month], value[:day]) if value.is_a?(Hash)
-      }
+  flex_attribute :date_of_birth, :memorable_date, allow_nil: true
 
   attribute :case_id, :integer
   private def case_id=(value)

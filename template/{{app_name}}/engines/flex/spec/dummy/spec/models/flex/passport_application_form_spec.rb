@@ -21,6 +21,18 @@ module Flex
         passport_application_form.save!
       end
 
+      describe "memorable_date attribute" do
+        it "allows setting a Date" do
+          passport_application_form.date_of_birth = Date.new(2020, 1, 1)
+          expect(passport_application_form.date_of_birth).to eq(Date.new(2020, 1, 1))
+        end
+        
+        it "allows setting a Hash with year, month, and day" do
+          passport_application_form.date_of_birth = { year: 2020, month: 1, day: 1 }
+          expect(passport_application_form.date_of_birth).to eq(Date.new(2020, 1, 1))
+        end
+      end
+
       context "when attempting to update case_id" do
         it "prevents direct status updates when setting status directly" do
           expect { passport_application_form.case_id = 22 }.to raise_error(NoMethodError)
