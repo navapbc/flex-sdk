@@ -2,7 +2,7 @@ module Flex
   class Task < ApplicationRecord
     # Otherwise the expected table name would be 'flex_tasks'
     # This should be able to be overridden in a subclass
-    self.table_name = 'tasks'
+    self.table_name = "tasks"
 
     belongs_to :assignee, optional: true, polymorphic: true
 

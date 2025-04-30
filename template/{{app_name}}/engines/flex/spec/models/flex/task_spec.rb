@@ -11,14 +11,14 @@ RSpec.describe Flex::Task, type: :model do
 
   describe '#assign' do
     let(:user) { User.create! }
-    
+
     it 'assigns the task to the given user' do
       task.assign(user)
-      
+
       expect(task.assignee).to eq(user)
     end
   end
-  
+
   describe '#unassign' do
     let(:user) { User.create! }
 
