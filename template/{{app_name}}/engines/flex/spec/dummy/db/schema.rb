@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
   create_table :test_application_forms do |t|
     t.integer :status, default: 0
     t.string :test_string
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
 
     t.timestamps
   end
+  add_index :passport_application_forms, :case_id, unique: true
 
   create_table :passport_cases do |t|
     t.integer :status, default: 0, null: false
@@ -43,6 +44,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_02_180940) do
     t.timestamps
   end
 
-  add_index :passport_application_forms, :case_id, unique: true
+  create_table :tasks do |t|
+    t.string :type, index: true
+    t.text :description
+    t.belongs_to :assignee, null: true, index: true, polymorphic: true
+    t.string :status, index: true
+
+    t.timestamps
+  end
+
+  create_table :users do |t|
+    t.string :name
+
+    t.timestamps
+  end
+
   add_foreign_key :passport_application_forms, :passport_cases, column: :case_id, primary_key: :id, on_delete: :cascade
 end
