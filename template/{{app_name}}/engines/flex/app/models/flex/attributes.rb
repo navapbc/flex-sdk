@@ -1,5 +1,4 @@
 module Flex
-
   class InvalidDate
     include ActiveModel::Model
 
@@ -12,6 +11,8 @@ module Flex
       numericality: { only_integer: true, allow_nil: true },
       comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 31, allow_nil: true }
 
+    # Convenience method to compare InvalidDate instances to Date objects or
+    # Hash objects of the form { year: 2020, month: 1, day: 1 }
     def ==(other)
       case other
       when Hash
@@ -73,7 +74,7 @@ module Flex
 
             # Assert that value is an instance of InvalidDate
             raise RuntimeError, "Expected #{name} to be an instance of InvalidDate but got #{value.class}" unless value.is_a?(InvalidDate)
-    
+
             if !value.valid?
               # If any of the individual date attributes are invalid, add errors to the model
               value.errors.each do |e|
@@ -84,7 +85,6 @@ module Flex
               errors.add(name, :invalid_date, message: "is not a valid date")
             end
           end
-
         end
     end
   end

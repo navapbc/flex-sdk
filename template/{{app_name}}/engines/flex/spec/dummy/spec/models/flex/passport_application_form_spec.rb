@@ -26,7 +26,7 @@ module Flex
           passport_application_form.date_of_birth = Date.new(2020, 1, 1)
           expect(passport_application_form.date_of_birth).to eq(Date.new(2020, 1, 1))
         end
-        
+
         it "allows setting a Hash with year, month, and day" do
           passport_application_form.date_of_birth = { year: 2020, month: 1, day: 1 }
           expect(passport_application_form.date_of_birth).to eq(Date.new(2020, 1, 1))
@@ -35,35 +35,35 @@ module Flex
         it "validates that day is greater than or equal to 1" do
           passport_application_form.date_of_birth = { year: 2020, month: 1, day: 0 }
           expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 1, day: 0 })
-          expect(passport_application_form.valid?).to be_falsey
+          expect(passport_application_form).not_to be_valid
           expect(passport_application_form.errors["date_of_birth_day"]).to include("must be greater than or equal to 1")
         end
 
         it "validates that day is less than or equal to 31" do
           passport_application_form.date_of_birth = { year: 2020, month: 1, day: 32 }
           expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 1, day: 32 })
-          expect(passport_application_form.valid?).to be_falsey
+          expect(passport_application_form).not_to be_valid
           expect(passport_application_form.errors["date_of_birth_day"]).to include("must be less than or equal to 31")
         end
 
         it "validates that month is greater than or equal to 1" do
           passport_application_form.date_of_birth = { year: 2020, month: 0, day: 1 }
           expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 0, day: 1 })
-          expect(passport_application_form.valid?).to be_falsey
+          expect(passport_application_form).not_to be_valid
           expect(passport_application_form.errors["date_of_birth_month"]).to include("must be greater than or equal to 1")
         end
 
         it "validates that month is less than or equal to 12" do
           passport_application_form.date_of_birth = { year: 2020, month: 13, day: 1 }
           expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 13, day: 1 })
-          expect(passport_application_form.valid?).to be_falsey
+          expect(passport_application_form).not_to be_valid
           expect(passport_application_form.errors["date_of_birth_month"]).to include("must be less than or equal to 12")
         end
 
         it "validates that date is a valid date" do
           passport_application_form.date_of_birth = { year: 2020, month: 2, day: 30 }
           expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 2, day: 30 })
-          expect(passport_application_form.valid?).to be_falsey
+          expect(passport_application_form).not_to be_valid
           expect(passport_application_form.errors["date_of_birth"]).to include("is not a valid date")
         end
       end
