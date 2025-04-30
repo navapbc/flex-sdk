@@ -31,6 +31,13 @@ module Flex
           passport_application_form.date_of_birth = { year: 2020, month: 1, day: 1 }
           expect(passport_application_form.date_of_birth).to eq(Date.new(2020, 1, 1))
         end
+
+        it "validates that day is within the range 1-31" do
+          passport_application_form.date_of_birth = { year: 2020, month: 1, day: 32 }
+          expect(passport_application_form.date_of_birth).to eq({ year: 2020, month: 1, day: 32 })
+          expect(passport_application_form.valid?).to be_falsey
+          # expect(passport_application_form.errors[:date_of_birth]).to include("is not a valid date")
+        end
       end
 
       context "when attempting to update case_id" do
