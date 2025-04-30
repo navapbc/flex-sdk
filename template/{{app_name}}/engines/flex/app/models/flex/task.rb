@@ -1,6 +1,6 @@
 module Flex
   class Task < ApplicationRecord
-    # Otherwise the expected table name would be 'flex_tasks'
+    # Defining this manually here, otherwise the expected table name would be 'flex_tasks'.
     # This should be able to be overridden in a subclass
     self.table_name = "tasks"
 
