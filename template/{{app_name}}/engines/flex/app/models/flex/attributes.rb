@@ -7,10 +7,10 @@ module Flex
     validates :year, numericality: { only_integer: true, allow_nil: true }
     validates :month,
       numericality: { only_integer: true, allow_nil: true },
-      inclusion: { in: 1..12, allow_nil: true }
+      comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12, allow_nil: true }
     validates :day,
       numericality: { only_integer: true, allow_nil: true },
-      inclusion: { in: 1..31, allow_nil: true }
+      comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 31, allow_nil: true }
 
     def ==(other)
       case other
@@ -74,10 +74,14 @@ module Flex
             # Assert that value is an instance of InvalidDate
             raise RuntimeError, "Expected #{name} to be an instance of InvalidDate but got #{value.class}" unless value.is_a?(InvalidDate)
     
-            unless value.valid?
-              value.errors.each do |attr, message|
-                errors.add("#{name}.#{attr}", message)
+            if !value.valid?
+              # If any of the individual date attributes are invalid, add errors to the model
+              value.errors.each do |e|
+                errors.add("#{name}_#{e.attribute}", e.type, message: e.message)
               end
+            else
+              # If the invalid date is valid, that means each attribute is valid but the overall date is still not valid
+              errors.add(name, :invalid_date, message: "is not a valid date")
             end
           end
 
