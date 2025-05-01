@@ -18,5 +18,13 @@ module Flex
     def new_button_text
       I18n.t("#{@i18n_path}.new_button")
     end
+
+    def in_progress_applications_heading
+      I18n.t("#{@i18n_path}.in_progress_applications.heading")
+    end
+
+    def status_for(application_form)
+      I18n.t("flex.application_forms.status.#{application_form.status}")
+    end
   end
 end

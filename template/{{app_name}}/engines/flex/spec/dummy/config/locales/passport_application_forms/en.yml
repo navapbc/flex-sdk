@@ -4,3 +4,6 @@ en:
       title: "Passport Applications"
       intro: "You can apply for a new passport or renew an existing passport."
       new_button: "New Application"
+      in_progress_applications:
+        heading: "Existing applications"
+      
