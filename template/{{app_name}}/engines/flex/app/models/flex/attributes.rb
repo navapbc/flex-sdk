@@ -22,7 +22,6 @@ module Flex
     # The attribute accepts a Date, a Hash with keys :year, :month, :day,
     # or a String in the format "YYYY-MM-DD".
     class DateStringType < ActiveRecord::Type::String
-
       # Accept a Date, a Hash of with keys :year, :month, :day,
       # or a String in the format "YYYY-MM-DD"
       # (the parts of the string don't have to be numeric or represent valid years/months/days
