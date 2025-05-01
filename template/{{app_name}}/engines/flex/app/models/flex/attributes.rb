@@ -1,24 +1,12 @@
 module Flex
-  class InvalidDate
-    include ActiveModel::Model
-
-    attr_accessor :year, :month, :day
-    validates :year, numericality: { only_integer: true, allow_nil: true }
-    validates :month,
-      numericality: { only_integer: true, allow_nil: true },
-      comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12, allow_nil: true }
-    validates :day,
-      numericality: { only_integer: true, allow_nil: true },
-      comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 31, allow_nil: true }
-
+  InvalidDate = Struct.new(:year, :month, :day) do
     # Convenience method to compare InvalidDate instances to Date objects or
     # Hash objects of the form { year: 2020, month: 1, day: 1 }
     def ==(other)
       case other
       when Hash
-        # Transform keys to strings so that comparison ignores whether keys are symbols or strings
-        other = other.transform_keys(&:to_s)
-        as_json.to_h.slice("year", "month", "day") == other
+        # Transform keys to symboles so that comparison ignores whether keys are symbols or strings
+        to_h == other.transform_keys(&:to_sym)
       else
         super
       end
@@ -48,6 +36,14 @@ module Flex
           attribute month_attribute, :integer, default: nil
           attribute day_attribute, :integer, default: nil
 
+          validates :"#{name}_year", numericality: { only_integer: true, allow_nil: true }
+          validates :"#{name}_month",
+            numericality: { only_integer: true, allow_nil: true },
+            comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12, allow_nil: true }
+          validates :"#{name}_day",
+            numericality: { only_integer: true, allow_nil: true },
+            comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 31, allow_nil: true }
+
           composed_of name, class_name: "Date",
             mapping: {
               year_attribute => "year",
@@ -75,15 +71,8 @@ module Flex
             # Assert that value is an instance of InvalidDate
             raise RuntimeError, "Expected #{name} to be an instance of InvalidDate but got #{value.class}" unless value.is_a?(InvalidDate)
 
-            if !value.valid?
-              # If any of the individual date attributes are invalid, add errors to the model
-              value.errors.each do |e|
-                errors.add("#{name}_#{e.attribute}", e.type, message: e.message)
-              end
-            else
-              # If the invalid date is valid, that means each attribute is valid but the overall date is still not valid
-              errors.add(name, :invalid_date, message: "is not a valid date")
-            end
+            # InvalidDate is always invalid since it only gets created when Date.new raises an error
+            errors.add(name, :invalid_date, message: "is not a valid date")
           end
         end
     end
