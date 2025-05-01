@@ -1,0 +1,17 @@
+<% content_for :title, presenter.title %>
+
+<%= link_to presenter.back_link_text, presenter.index_path %>
+
+<h1><%= presenter.title %></h1>
+
+<%
+# render 'requestable_step_indicator', requestable: presenter.application_form
+%>
+
+<p class="usa-intro">
+  <%= presenter.next_step %>
+</p>
+
+<p>
+  <%= presenter.submitted_on_text %>: <%= presenter.application_form.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+</p>

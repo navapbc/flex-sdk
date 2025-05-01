@@ -4,5 +4,6 @@ class PassportApplicationFormsController < ApplicationController
   end
 
   def show
+    @passport_application_form = PassportApplicationForm.find(params[:id])
   end
 end
