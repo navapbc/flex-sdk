@@ -180,6 +180,7 @@ GEM
     parser (3.3.7.1)
       ast (~> 2.4.1)
       racc
+    pg (1.5.9)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -339,6 +340,7 @@ PLATFORMS
 DEPENDENCIES
   flex!
   guard-rspec
+  pg (~> 1.1)
   puma
   rspec-rails (~> 7.0.0)
   rubocop-rails-omakase
