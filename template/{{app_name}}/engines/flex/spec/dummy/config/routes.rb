@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get "passport_application_forms/index"
-  get "passport_application_forms/show"
-  get "passport_cases/show"
   mount Flex::Engine => "/flex"
 
   resources :passport_cases do
@@ -9,4 +6,6 @@ Rails.application.routes.draw do
       get :closed
     end
   end
+
+  resources :passport_application_forms, only: [:index, :show]
 end
