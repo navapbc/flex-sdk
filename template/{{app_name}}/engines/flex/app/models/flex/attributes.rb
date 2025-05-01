@@ -1,18 +1,4 @@
 module Flex
-  InvalidDate = Struct.new(:year, :month, :day) do
-    # Convenience method to compare InvalidDate instances to Date objects or
-    # Hash objects of the form { year: 2020, month: 1, day: 1 }
-    def ==(other)
-      case other
-      when Hash
-        # Transform keys to symboles so that comparison ignores whether keys are symbols or strings
-        to_h == other.transform_keys(&:to_sym)
-      else
-        super
-      end
-    end
-  end
-
   module Attributes
     extend ActiveSupport::Concern
 
@@ -28,31 +14,22 @@ module Flex
       private
 
         def memorable_date_attribute(name, options)
-          year_attribute = "#{name}_year"
-          month_attribute = "#{name}_month"
-          day_attribute = "#{name}_day"
-
-          attribute year_attribute, :integer, default: nil
-          attribute month_attribute, :integer, default: nil
-          attribute day_attribute, :integer, default: nil
-
-          composed_of name, class_name: "Date",
-            mapping: {
-              year_attribute => "year",
-              month_attribute => "month",
-              day_attribute => "day"
-            },
-            allow_nil: options[:allow_nil] || false,
-            converter: Proc.new { |value|
-              begin
-                # Date.new is too permissive so we parse an ISO formatted date instead
-                Date.strptime("#{value[:year]}-#{value[:month]}-#{value[:day]}", "%Y-%m-%d")
-              rescue Date::Error
-                InvalidDate.new(**value)
-              end
-            }
+          attribute name, :string
 
           validate :"validate_#{name}"
+
+          define_method "#{name}=" do |value|
+            case value
+            when Date
+              super(value.strftime('%Y-%m-%d'))
+            when Hash
+              super("%04d-%02d-%02d" % [value[:year], value[:month], value[:day]])
+            when String
+              super(value)
+            else
+              raise ArgumentError, "Invalid value for #{name}: #{value.inspect}. Expected Date, Hash, or String."
+            end
+          end
 
           define_method "validate_#{name}" do
             value = send(name)
@@ -61,11 +38,11 @@ module Flex
             # If value is a Date, it is already valid
             return if value.is_a?(Date)
 
-            # Assert that value is an instance of InvalidDate
-            raise RuntimeError, "Expected #{name} to be an instance of InvalidDate but got #{value.class}" unless value.is_a?(InvalidDate)
-
-            # InvalidDate is always invalid since it only gets created when Date.new raises an error
-            errors.add(name, :invalid_date, message: "is not a valid date")
+            begin
+              Date.strptime(value, '%Y-%m-%d')
+            rescue Date::Error
+              errors.add(name, :invalid_date, message: "is not a valid date")
+            end
           end
         end
     end
