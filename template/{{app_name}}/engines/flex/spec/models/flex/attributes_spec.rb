@@ -26,6 +26,18 @@ RSpec.describe Flex::Attributes do
     end
 
     [
+      [{ year: "2020", month: "1", day: "1" }, "2020", "1", "1"],
+      [{ year: "badyear", month: "badmonth", day: "badday" }, "badyear", "badmonth", "badday"]
+    ].each do |input_date, expected_year, expected_month, expected_day|
+      it "allows getting year, month, and day nested attributes" do
+        object.test_date = input_date
+        expect(object.test_date.year).to eq(expected_year)
+        expect(object.test_date.month).to eq(expected_month)
+        expect(object.test_date.day).to eq(expected_day)
+      end
+    end
+
+    [
       { year: 2020, month: 1, day: -1 },
       { year: 2020, month: 1, day: 0 },
       { year: 2020, month: 1, day: 32 },

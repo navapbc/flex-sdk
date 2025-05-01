@@ -3,17 +3,27 @@ module Flex
     extend ActiveSupport::Concern
 
     class DateString < ::String
-      # def year
-      #   self[0, 4]
-      # end
 
-      # def month
-      #   self[5, 2]
-      # end
+      def year
+        parts[0]
+      end
 
-      # def day
-      #   self[8, 2]
-      # end
+      def month
+        parts[1].sub(/^0+/, "") # Remove leading zeros
+      end
+
+      def day
+        parts[2].sub(/^0+/, "") # Remove leading zeros
+      end
+
+      private
+        def parts
+          if result = match(/(\w+)-(\w+)-(\w+)/)
+            result.captures
+          else
+            raise RuntimeError, "Invalid date string format: #{self}. Expected format is '<YEAR>-<MONTH>-<DAY>'."
+          end
+        end
     end
 
     class DateStringType < ActiveRecord::Type::String
