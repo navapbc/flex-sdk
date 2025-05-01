@@ -1,66 +1,15 @@
-<%
-requestable_i18n_path = "passport_application_forms.index"
-%>
-<% content_for :title, t("#{requestable_i18n_path}.title") %>
+<% content_for :title, presenter.title %>
 
 <h1>
-  <%= t("#{requestable_i18n_path}.title") %>
+  <%= presenter.title %>
 </h1>
 
 <p class="usa-intro">
-  <%= t("#{requestable_i18n_path}.intro") %>
+  <%= presenter.intro %>
 </p>
 
-<%= link_to t("#{requestable_i18n_path}.new_button"), new_path, class: class_names("usa-button") %>
+<%= link_to presenter.new_button_text, "new", class: class_names("usa-button") %>
 
-<% if not requestables.empty? %>
-  <h2 class="margin-top-6"><%= t("#{requestable_i18n_path}.existing_requests.heading") %></h2>
+<% if not presenter.application_forms.empty? %>
 
-  <section class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
-    <table class="usa-table usa-table--borderless width-full">
-      <thead>
-        <tr>
-          <th scope="col">
-            <%= t("requestable_index.col_created_at") %>
-          </th>
-          <th scope="col">
-            <%= t("requestable_index.col_status") %>
-          </th>
-          <th scope="col">
-            <%= t("requestable_index.col_actions") %>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% requestables.each do |request| %>
-          <tr>
-            <td>
-              <%= link_to local_time(request.created_at), request %>
-            </td>
-            <td>
-              <%= t("requestable_step_indicator.#{ request.current_step[:name] }") %>
-            </td>
-            <td>
-              <% pending_rfis = request.pending_request_for_informations %>
-              <% if request.current_determination %>
-                <%= link_to t("requestable.action_view_determination_doc"), request.current_determination.generated_document %>
-              <% elsif pending_rfis.any? %>
-                <% pending_rfis.each do |rfi| %>
-                  <%= link_to t("requestable_index.action_view_rfi"), {
-                      action: "new",
-                      controller: "request_for_information_responses",
-                      task: rfi.triggered_task.to_sgid.to_s
-                    },
-                    class: "usa-button usa-button--accent-warm"
-                  %>
-                <% end %>
-              <% else %>
-                <%= t("requestable_index.action_none") %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </section>
 <% end %>

@@ -1,2 +1,1 @@
-<h1>PassportApplicationForms#index</h1>
-<p>Find me in app/views/passport_application_forms/index.html.erb</p>
+<%= render template: "flex/application_forms/index", locals: { presenter: Flex::ApplicationFormsPresenter.new(@passport_application_forms, "passport_application_forms.index") } %>
