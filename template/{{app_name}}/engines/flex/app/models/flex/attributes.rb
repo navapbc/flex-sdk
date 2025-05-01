@@ -3,23 +3,11 @@ module Flex
     extend ActiveSupport::Concern
 
     class DateString < ::String
+      attr_reader :year, :month, :day
+
       def initialize(year, month, day)
+        @year, @month, @day = year, month, day
         super("#{year}-#{month.rjust(2, "0")}-#{day.rjust(2, "0")}")
-        @year = year
-        @month = month
-        @day = day
-      end
-
-      def year
-        @year
-      end
-
-      def month
-        @month
-      end
-
-      def day
-        @day
       end
     end
 
