@@ -21,6 +21,20 @@ module Flex
         passport_application_form.save!
       end
 
+      describe "saving and loading" do
+        it "saves the form with valid attributes" do
+          expect(passport_application_form).to be_valid
+          expect(passport_application_form).to be_persisted
+        end
+
+        it "loads the form with correct attributes" do
+          loaded_form = PassportApplicationForm.find(passport_application_form.id)
+          expect(loaded_form.first_name).to eq("John")
+          expect(loaded_form.last_name).to eq("Doe")
+          expect(loaded_form.date_of_birth).to eq(passport_application_form.date_of_birth)
+        end
+      end
+
       describe "memorable_date attribute" do
         it "allows setting a Date" do
           passport_application_form.date_of_birth = Date.new(2020, 1, 1)
