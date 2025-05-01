@@ -36,14 +36,6 @@ module Flex
           attribute month_attribute, :integer, default: nil
           attribute day_attribute, :integer, default: nil
 
-          validates :"#{name}_year", numericality: { only_integer: true, allow_nil: true }
-          validates :"#{name}_month",
-            numericality: { only_integer: true, allow_nil: true },
-            comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12, allow_nil: true }
-          validates :"#{name}_day",
-            numericality: { only_integer: true, allow_nil: true },
-            comparison: { greater_than_or_equal_to: 1, less_than_or_equal_to: 31, allow_nil: true }
-
           composed_of name, class_name: "Date",
             mapping: {
               year_attribute => "year",
@@ -53,7 +45,8 @@ module Flex
             allow_nil: options[:allow_nil] || false,
             converter: Proc.new { |value|
               begin
-                Date.new(value[:year], value[:month], value[:day])
+                # Date.new is too permissive so we parse an ISO formatted date instead
+                Date.strptime("#{value[:year]}-#{value[:month]}-#{value[:day]}", "%Y-%m-%d")
               rescue Date::Error
                 InvalidDate.new(**value)
               end
