@@ -21,9 +21,9 @@ module Flex
           define_method "#{name}=" do |value|
             case value
             when Date
-              super(value.strftime('%Y-%m-%d'))
+              super(value.strftime("%Y-%m-%d"))
             when Hash
-              super("%04d-%02d-%02d" % [value[:year], value[:month], value[:day]])
+              super("%04d-%02d-%02d" % [ value[:year], value[:month], value[:day] ])
             when String
               super(value)
             else
@@ -39,7 +39,7 @@ module Flex
             return if value.is_a?(Date)
 
             begin
-              Date.strptime(value, '%Y-%m-%d')
+              Date.strptime(value, "%Y-%m-%d")
             rescue Date::Error
               errors.add(name, :invalid_date, message: "is not a valid date")
             end

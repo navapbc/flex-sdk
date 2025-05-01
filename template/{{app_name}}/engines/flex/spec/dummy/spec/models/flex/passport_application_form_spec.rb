@@ -28,7 +28,7 @@ module Flex
         end
 
         it "loads the form with correct attributes" do
-          loaded_form = PassportApplicationForm.find(passport_application_form.id)
+          loaded_form = described_class.find(passport_application_form.id)
           expect(loaded_form.first_name).to eq("John")
           expect(loaded_form.last_name).to eq("Doe")
           expect(loaded_form.date_of_birth).to eq(passport_application_form.date_of_birth)
@@ -57,7 +57,7 @@ module Flex
         ].each do |date|
           it "validates that date is a valid date" do
             passport_application_form.date_of_birth = date
-            expect(passport_application_form.date_of_birth).to eq("%04d-%02d-%02d" % [date[:year], date[:month], date[:day]])
+            expect(passport_application_form.date_of_birth).to eq("%04d-%02d-%02d" % [ date[:year], date[:month], date[:day] ])
             expect(passport_application_form).not_to be_valid
             expect(passport_application_form.errors["date_of_birth"]).to include("is not a valid date")
           end
