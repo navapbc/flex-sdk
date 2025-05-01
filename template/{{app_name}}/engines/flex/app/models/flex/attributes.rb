@@ -2,6 +2,13 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
 
+    # This class defines a string that represents a date in the format "<YEAR>-<MM>-<DD>"
+    # and is designed to also allow invalid dates such as "2020-13-32" to facilitate
+    # storing user input before validation.
+    # Validation is handled separately to ensure that the date is valid
+    #
+    # The class also has nested attributes for year, month, and day to facilitate
+    # treating the date as a structured value object which is useful for form building.
     class DateString < ::String
       attr_reader :year, :month, :day
 
@@ -11,8 +18,12 @@ module Flex
       end
     end
 
+    # A custom ActiveRecord type that allows storing a date as a string.
+    # The attribute accepts a Date, a Hash with keys :year, :month, :day,
+    # or a String in the format "YYYY-MM-DD".
     class DateStringType < ActiveRecord::Type::String
-      # Accept a Date,  a Hash of with keys :year, :month, :day,
+
+      # Accept a Date, a Hash of with keys :year, :month, :day,
       # or a String in the format "YYYY-MM-DD"
       # (the parts of the string don't have to be numeric or represent valid years/months/days
       # since the date will be validated separately)
