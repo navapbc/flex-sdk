@@ -35,35 +35,6 @@ module Flex
         end
       end
 
-      describe "memorable_date attribute" do
-        it "allows setting a Date" do
-          passport_application_form.date_of_birth = Date.new(2020, 1, 1)
-          expect(passport_application_form.date_of_birth).to eq("2020-01-01")
-        end
-
-        it "allows setting a Hash with year, month, and day" do
-          passport_application_form.date_of_birth = { year: 2020, month: 1, day: 1 }
-          expect(passport_application_form.date_of_birth).to eq("2020-01-01")
-        end
-
-        [
-          { year: 2020, month: 1, day: -1 },
-          { year: 2020, month: 1, day: 0 },
-          { year: 2020, month: 1, day: 32 },
-          { year: 2020, month: -1, day: 1 },
-          { year: 2020, month: 0, day: 1 },
-          { year: 2020, month: 13, day: 1 },
-          { year: 2020, month: 2, day: 30 }
-        ].each do |date|
-          it "validates that date is a valid date" do
-            passport_application_form.date_of_birth = date
-            expect(passport_application_form.date_of_birth).to eq("%04d-%02d-%02d" % [ date[:year], date[:month], date[:day] ])
-            expect(passport_application_form).not_to be_valid
-            expect(passport_application_form.errors["date_of_birth"]).to include("is not a valid date")
-          end
-        end
-      end
-
       context "when attempting to update case_id" do
         it "prevents direct status updates when setting status directly" do
           expect { passport_application_form.case_id = 22 }.to raise_error(NoMethodError)

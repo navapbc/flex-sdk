@@ -6,7 +6,7 @@ class PassportApplicationForm < Flex::ApplicationForm
   attribute :first_name, :string
   attribute :last_name, :string
 
-  flex_attribute :date_of_birth, :memorable_date, allow_nil: true
+  flex_attribute :date_of_birth, :memorable_date
 
   attribute :case_id, :integer
   private def case_id=(value)
