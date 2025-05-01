@@ -28,7 +28,11 @@ module Flex
         when Date
           super(value.strftime("%Y-%m-%d"))
         when Hash
-          super("%04d-%02d-%02d" % [ value[:year], value[:month], value[:day] ])
+          # Pad with zeros if necessary
+          year = value[:year].to_s.rjust(4, "0")
+          month = value[:month].to_s.rjust(2, "0")
+          day = value[:day].to_s.rjust(2, "0")
+          super("#{year}-#{month}-#{day}")
         when String
           if match = value.match(/(\w+)-(\w+)-(\w+)/)
             year, month, day = match.captures
