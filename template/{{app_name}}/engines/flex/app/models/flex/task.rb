@@ -1,24 +1,21 @@
 module Flex
   class Task < ApplicationRecord
-    # Defining this manually here, otherwise the expected table name would be 'flex_tasks'.
-    # This should be able to be overridden in a subclass
-    self.table_name = "tasks"
-
-    belongs_to :assignee, optional: true, polymorphic: true
+    
+    attribute :assignee_id, :string
+    attribute :description, :text
 
     attribute :status, :integer, default: 0
     protected attr_writer :status
     enum :status, pending: 0, completed: 1
 
-    attribute :description, :text
 
-    def assign(user)
-      self.assignee = user
+    def assign(user_id)
+      self.assignee_id = user_id
       save!
     end
 
     def unassign
-      self.assignee = nil
+      self.assignee_id = nil
       save!
     end
 
