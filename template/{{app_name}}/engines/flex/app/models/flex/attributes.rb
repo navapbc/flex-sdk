@@ -3,6 +3,9 @@ module Flex
     extend ActiveSupport::Concern
 
     class DateString < ::String
+      def initialize(year, month, day)
+        super("#{year}-#{month.rjust(2, "0")}-#{day.rjust(2, "0")}")
+      end
 
       def year
         parts[0]
@@ -34,19 +37,18 @@ module Flex
       def cast(value)
         return nil if value.nil?
 
-        string = case value
+        case value
         when Date
-          super(value.strftime("%Y-%m-%d"))
+          year = value.year.to_s
+          month = value.month.to_s
+          day = value.day.to_s
         when Hash
-          # Pad with zeros if necessary
-          year = value[:year].to_s.rjust(4, "0")
-          month = value[:month].to_s.rjust(2, "0")
-          day = value[:day].to_s.rjust(2, "0")
-          super("#{year}-#{month}-#{day}")
+          year = value[:year].to_s
+          month = value[:month].to_s
+          day = value[:day].to_s
         when String
           if match = value.match(/(\w+)-(\w+)-(\w+)/)
             year, month, day = match.captures
-            super("#{year}-#{month}-#{day}")
           else
             raise ArgumentError, "Invalid date string format: #{value.inspect}. Expected format is '<YEAR>-<MONTH>-<DAY>'."
           end
@@ -54,7 +56,7 @@ module Flex
           raise ArgumentError, "Invalid value for #{name}: #{value.inspect}. Expected Date, Hash, or String."
         end
 
-        DateString.new(string)
+        DateString.new(year, month, day)
       end
 
       def type
