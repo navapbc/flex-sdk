@@ -11,53 +11,51 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
-  create_table :test_application_forms do |t|
-    t.integer :status, default: 0
-    t.string :test_string
-
-    t.timestamps
+  create_table "passport_application_forms", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.date "date_of_birth"
+    t.integer "status", default: 0
+    t.integer "case_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
-  create_table :test_cases do |t|
-    t.integer :status, default: 0, null: false
-    t.string :business_process_current_step
-
-    t.timestamps
+  create_table "passport_cases", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "passport_id", limit: 36, null: false
+    t.string "business_process_current_step"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table :passport_application_forms, force: :cascade do |t|
-    t.string :first_name
-    t.string :last_name
-    t.date :date_of_birth
-    t.integer :status, default: 0
-    t.integer :case_id
-
-    t.timestamps
-  end
-  add_index :passport_application_forms, :case_id, unique: true
-
-  create_table :passport_cases do |t|
-    t.integer :status, default: 0, null: false
-    t.string :passport_id, null: false, limit: 36 # Is a UUID, which is always exactly 36 characters
-    t.string :business_process_current_step
-
-    t.timestamps
+  create_table "tasks", force: :cascade do |t|
+    t.string "type"
+    t.text "description"
+    t.string "assignee_type"
+    t.integer "assignee_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_type", "assignee_id"], name: "index_tasks_on_assignee"
+    t.index ["status"], name: "index_tasks_on_status"
+    t.index ["type"], name: "index_tasks_on_type"
   end
 
-  create_table :tasks do |t|
-    t.string :type, index: true
-    t.text :description
-    t.belongs_to :assignee, null: true, index: true, polymorphic: true
-    t.string :status, index: true
-
-    t.timestamps
+  create_table "test_application_forms", force: :cascade do |t|
+    t.integer "status", default: 0
+    t.string "test_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table :users do |t|
-    t.string :name
-
-    t.timestamps
+  create_table "test_cases", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "business_process_current_step"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_foreign_key :passport_application_forms, :passport_cases, column: :case_id, primary_key: :id, on_delete: :cascade
+  add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end
