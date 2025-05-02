@@ -30,7 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "tasks", force: :cascade do |t|
+  create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.string "assignee_type"
