@@ -1,1 +1,1 @@
-<%= render template: "flex/application_forms/index", locals: { presenter: Flex::ApplicationFormsPresenter.new(@passport_application_forms, "passport_application_forms.index") } %>
+<%= render template: "flex/application_forms/index", locals: Flex::ApplicationFormsPresenter.new(@passport_application_forms, controller_path).index %>
