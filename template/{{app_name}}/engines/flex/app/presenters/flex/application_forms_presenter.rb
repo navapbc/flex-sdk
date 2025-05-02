@@ -4,7 +4,7 @@ module Flex
 
     def initialize(application_forms, controller_path)
       @application_forms = application_forms
-      @controller_path = controller_path.gsub('/', '.')
+      @controller_path = controller_path.gsub("/", ".")
     end
 
     def index
