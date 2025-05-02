@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "passport_application_forms/show.html.erb", type: :view do
-
   context "when viewing an in progress passport application form" do
     let(:passport_application_form) do
       PassportApplicationForm.new(
