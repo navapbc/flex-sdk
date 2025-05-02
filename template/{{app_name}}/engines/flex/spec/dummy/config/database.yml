@@ -5,29 +5,21 @@
 #   gem "sqlite3"
 #
 default: &default
-  adapter: postgresql
-  encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-  # Support environment variables. Set defaults.
-  database: <%= ENV.fetch("DB_NAME") { nil } %>
-  username: <%= ENV.fetch("DB_USER") { nil } %>
-  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
-  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
-  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
-  schema_search_path: <%= ENV.fetch("DB_SCHEMA") { public } %>
+  timeout: 5000
 
 development:
   <<: *default
+  database: storage/development.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: app_flex_test
+  database: storage/test.sqlite3
 
 production:
   <<: *default
+  database: storage/production.sqlite3
