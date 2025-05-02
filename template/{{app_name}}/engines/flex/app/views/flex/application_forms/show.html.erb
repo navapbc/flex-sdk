@@ -5,8 +5,10 @@
 <h1><%= presenter.title %></h1>
 
 <%
-# render 'requestable_step_indicator', requestable: presenter.application_form
+p = Flex::StepIndicatorPresenter.new([:in_progress, :submitted, :decision_made], presenter.current_status)
 %>
+
+<%= render partial: "flex/shared/step_indicator", locals: { presenter: p } %>
 
 <p class="usa-intro">
   <%= presenter.next_step %>

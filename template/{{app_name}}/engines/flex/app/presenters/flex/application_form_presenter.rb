@@ -38,5 +38,9 @@ module Flex
     def created_at
       @application_form.created_at
     end
+
+    def current_status
+      @application_form.status
+    end
   end
 end

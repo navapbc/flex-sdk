@@ -1,0 +1,27 @@
+<div
+  class="usa-step-indicator usa-step-indicator--counters"
+  aria-label="progress"
+>
+  <ol class="usa-step-indicator__segments">
+    <% presenter.steps.each do |step| %>
+      <li
+        class="<%= class_names(
+          "usa-step-indicator__segment",
+          "usa-step-indicator__segment--complete": step[:complete],
+          "usa-step-indicator__segment--current": step[:current]
+        )%>"
+      >
+          <span class="usa-step-indicator__segment-label">
+            <%= t("flex.application_forms.steps.#{ step[:name] }") %>
+            <span class="usa-sr-only">
+              <% if step[:complete] %>
+                completed
+              <% else %>
+                not completed
+              <% end %>
+            </span>
+          </span>
+        </li>
+    <% end %>
+  </ol>
+</div>
