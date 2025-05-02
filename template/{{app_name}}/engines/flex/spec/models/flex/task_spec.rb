@@ -13,24 +13,21 @@ RSpec.describe Flex::Task, type: :model do
     let(:user) { User.create! }
 
     it 'assigns the task to the given user' do
-      task.assign(user)
+      assignee_id = rand(1..1000)
 
-      expect(task.assignee).to eq(user)
+      task.assign(assignee_id)
+
+      expect(task.assignee_id).to eq(assignee_id)
     end
   end
 
   describe '#unassign' do
-    let(:user) { User.create! }
-
-    before do
-      task.assignee = user
-      task.save!
-    end
+    let(:user) { User.create!(assignee_id: rand(1..1000)) }
 
     it 'removes the assignee from the task' do
       task.unassign
 
-      expect(task.assignee).to be_nil
+      expect(task.assignee_id).to be_nil
     end
   end
 
