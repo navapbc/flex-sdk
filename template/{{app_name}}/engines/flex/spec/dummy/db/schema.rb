@@ -19,7 +19,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
     t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
+    t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
   create_table "passport_cases", force: :cascade do |t|
@@ -38,9 +38,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["assignee_type", "assignee_id"], name: "index_tasks_on_assignee"
-    t.index ["status"], name: "index_tasks_on_status"
-    t.index ["type"], name: "index_tasks_on_type"
+    t.index [ "assignee_type", "assignee_id" ], name: "index_tasks_on_assignee"
+    t.index [ "status" ], name: "index_tasks_on_status"
+    t.index [ "type" ], name: "index_tasks_on_type"
   end
 
   create_table "test_application_forms", force: :cascade do |t|
