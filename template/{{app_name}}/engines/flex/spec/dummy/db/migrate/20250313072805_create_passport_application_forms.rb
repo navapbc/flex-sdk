@@ -9,6 +9,5 @@ class CreatePassportApplicationForms < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :passport_application_forms, :case_id, unique: true
   end
 end
