@@ -13,6 +13,7 @@ module Flex
     validates :case_id, presence: true
 
     scope :where_completed, -> { where(status: :completed) }
+    scope :where_not_completed, -> { where.not(status: :completed) }
     scope :where_type, ->(type) { where(type: type) }
     scope :where_due_on, ->(date) { where(due_on: date) }
     scope :where_due_on_before, ->(date) { where("due_on < ?", date) }

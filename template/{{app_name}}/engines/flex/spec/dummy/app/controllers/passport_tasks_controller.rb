@@ -30,7 +30,7 @@ class PassportTasksController < ApplicationController
   end
 
   def tasks
-    @tasks ||= Flex::Task.all
+    @tasks ||= Flex::Task
   end
 
   def filter_tasks
@@ -40,10 +40,7 @@ class PassportTasksController < ApplicationController
     if index_filter_params[:filter_type].present?
       @tasks = filter_tasks_by_type(index_filter_params[:filter_type])
     end
-    if index_filter_params[:filter_status].present?
-      @tasks = tasks.where_completed if index_filter_params[:filter_status] == "completed"
-    end
-
+    @tasks = filter_tasks_by_status
     @tasks = tasks.order_by_due_on_desc
   end
 
@@ -66,5 +63,11 @@ class PassportTasksController < ApplicationController
     tasks.select_distinct_task_types.include?(filter_by) \
       ? tasks.where_type(filter_by)
       : tasks.all
+  end
+
+  def filter_tasks_by_status
+    index_filter_params[:filter_status] == "completed" \
+      ? tasks.where_completed
+      : tasks.where_not_completed
   end
 end
