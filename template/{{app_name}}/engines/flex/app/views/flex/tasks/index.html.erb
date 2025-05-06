@@ -3,23 +3,20 @@
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
-    <!-- Filters -->
-    <div class="grid-row grid-gap-4 margin-bottom-4">
-      <div class="grid-col-12 tablet:grid-col-3">
-        <label class="usa-label" for="filter_task">Filter by task type</label>
-        <select class="usa-select" id="filter_task" name="filter_task">
-          <option value="all">All tasks</option>
-        </select>
-      </div>
-      <div class="grid-col-12 tablet:grid-col-3">
-        <label class="usa-label" for="filter_task">Filter by due date</label>
-        <select class="usa-select" id="filter_task" name="filter_task">
-          <option value="all">All dates</option>
-        </select>
-      </div>
-    </div>
-    <!-- Tasks -->
     <% if @tasks.any? %>
+      <!-- Filters -->
+      <div class="grid-row grid-gap-4 margin-bottom-4">
+        <div class="grid-col-12 tablet:grid-col-3">
+          <%= render partial: 'flex/tasks/task_type_filter' %>
+        </div>
+        <div class="grid-col-12 tablet:grid-col-3">
+          <label class="usa-label" for="filter_task">Filter by due date</label>
+          <select class="usa-select" id="filter_task" name="filter_task">
+            <option value="all">All dates</option>
+          </select>
+        </div>
+      </div>
+      <!-- Tasks -->
       <table class="usa-table usa-table--striped">
         <thead>
           <tr>
