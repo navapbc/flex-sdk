@@ -2,9 +2,9 @@ module Flex
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date
-    attribute :case_id, :string
-    readonly attribute :type, :string
-    
+    attr_readonly :case_id, :string
+    attr_readonly :type, :string
+
     attribute :assignee_id, :string
     protected attr_writer :assignee_id
 
