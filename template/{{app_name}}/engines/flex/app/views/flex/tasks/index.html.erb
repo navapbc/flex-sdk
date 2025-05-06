@@ -42,10 +42,10 @@
             <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= task.type %></td>
             <td data-sort-value="<%= task.case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
             <td
-              data-sort-value="<%= task.created_on.to_fs(:number) %>"
+              data-sort-value="<%= task.created_at.to_fs(:number) %>"
               class="flex-task-created-date"
             >
-              <%= task.created_on.strftime("%m/%d/%Y") %>
+              <%= task.created_at.strftime("%m/%d/%Y") %>
             </td>
           </tr>
         <% end %>
