@@ -40,9 +40,8 @@
         </thead>
         <tbody>
           <%
-          date_format = "%b/%d/%Y"
           @tasks.each do |task|
-        %>
+          %>
           <tr>
             <td class="flex-task-due-date" data-sort-value="<%= task.due_on.to_fs(:number) %>">
               <%= due_date.strftime("%m/%d/%Y") %>
@@ -60,13 +59,7 @@
       </tbody>
     </table>
   <% else %>
-    <div class="usa-alert usa-alert--info usa-alert--no-icon">
-      <div class="usa-alert__body">
-        <p class="usa-alert__text">
-          No tasks!
-        </p>
-      </div>
-    </div>
+    <%= render partial: 'flex/tasks/no_tasks_alert' %>
   <% end %>
 </div>
 </main>
