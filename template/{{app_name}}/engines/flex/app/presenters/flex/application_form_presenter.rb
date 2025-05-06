@@ -19,10 +19,6 @@ module Flex
       @application_form.created_at.strftime("%B %d, %Y at %I:%M %p")
     end
 
-    def object
-      @application_form
-    end
-
     def status
       I18n.t("flex.application_forms.status.#{@application_form.status}")
     end
