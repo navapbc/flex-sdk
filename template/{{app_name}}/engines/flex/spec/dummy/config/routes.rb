@@ -7,4 +7,8 @@ Rails.application.routes.draw do
       get :closed
     end
   end
+
+  resources :passport_tasks do
+    
+  end
 end
