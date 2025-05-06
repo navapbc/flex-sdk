@@ -1,4 +1,6 @@
-<%= form_with url: :passport_tasks, method: 'get' do |form| %>
+<%= form_with method: 'get' do |form| %>
+  <%= hidden_params_field :filter_type %>
+  <%= hidden_params_field :filter_status %>
   <%= form.label :filter_date, "Filter by due date", class: 'usa-label' %>
   <%= form.select :filter_date, [
         ['All dates', 'all'], 
