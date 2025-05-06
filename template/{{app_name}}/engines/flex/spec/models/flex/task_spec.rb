@@ -45,4 +45,16 @@ RSpec.describe Flex::Task, type: :model do
       expect(task.status).to eq('pending')
     end
   end
+
+  describe 'validations' do
+    it 'validates presence of case_id on create' do
+      expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+    end
+  
+    it 'validates presence of case_id on update' do
+      task.save!
+
+      expect { task.set_case(nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+    end
+  end
 end

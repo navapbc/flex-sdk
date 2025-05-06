@@ -10,6 +10,11 @@ module Flex
     
     validates :case_id, presence: true
 
+    def set_case(case_id)
+      self.case_id = case_id
+      save!
+    end
+
     def assign(user_id)
       self.assignee_id = user_id
       save!
