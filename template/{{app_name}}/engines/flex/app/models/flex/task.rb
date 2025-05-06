@@ -2,9 +2,11 @@ module Flex
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date
-    attribute :assignee_id, :string
     attribute :case_id, :string
     readonly attribute :type, :string
+    
+    attribute :assignee_id, :string
+    protected attr_writer :assignee_id
 
     attribute :status, :integer, default: 0
     protected attr_writer :status
@@ -20,11 +22,6 @@ module Flex
     scope :where_due_on_between, ->(start_date, end_date) { where(due_on: start_date..end_date) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
     scope :select_distinct_task_types, -> { distinct.pluck(:type) }
-
-    def set_case(case_id)
-      self[:case_id] = case_id
-      save!
-    end
 
     def assign(user_id)
       self[:assignee_id] = user_id

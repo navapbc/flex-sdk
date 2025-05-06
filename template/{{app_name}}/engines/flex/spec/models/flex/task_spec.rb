@@ -15,6 +15,12 @@ RSpec.describe Flex::Task, type: :model do
         expect { task.status = :completed }.to raise_error(NoMethodError)
       end
     end
+    
+    describe 'assignee_id attribute' do
+      it 'cannot be modified directly' do
+        expect { task.assignee_id = rand(1..1000).to_s }.to raise_error(NoMethodError)
+      end
+    end
   end
 
   describe '#assign' do
