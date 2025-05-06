@@ -17,7 +17,7 @@
         </div>
       </div>
       <!-- Tasks -->
-      <table class="usa-table usa-table--striped">
+      <table class="usa-table usa-table--striped usa-table--sticky-header">
         <thead>
           <tr>
             <th data-sortable scope="col" role="columnheader" aria-sort="descending">
@@ -40,10 +40,10 @@
           %>
           <tr>
             <td class="flex-task-due-date" data-sort-value="<%= task.due_on.to_fs(:number) %>">
-              <%= due_date.strftime("%m/%d/%Y") %>
+              <%= task.due_on.strftime("%m/%d/%Y") %>
             </td>
-            <td data-sort-value="<%= task_type %>" class="flex-task-type"><%= task.type %></td>
-            <td data-sort-value="<%= case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
+            <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= task.type %></td>
+            <td data-sort-value="<%= task.case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
             <td
               data-sort-value="<%= task.created_on.to_fs(:number) %>"
               class="flex-task-created-date"
