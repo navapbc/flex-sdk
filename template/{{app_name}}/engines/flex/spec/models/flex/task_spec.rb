@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
-  let(:task) { described_class.new }
+  let(:kase) { TestCase.create! }
+  let(:task) { described_class.new(case_id: kase.id) }
 
   describe 'status attribute' do
     it 'does not allow status to be modified directly' do
@@ -10,10 +11,8 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#assign' do
-    let(:user) { User.create! }
-
     it 'assigns the task to the given user' do
-      assignee_id = rand(1..1000)
+      assignee_id = rand(1..1000).to_s
 
       task.assign(assignee_id)
 
@@ -22,8 +21,6 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#unassign' do
-    let(:user) { User.create!(assignee_id: rand(1..1000)) }
-
     it 'removes the assignee from the task' do
       task.unassign
 
