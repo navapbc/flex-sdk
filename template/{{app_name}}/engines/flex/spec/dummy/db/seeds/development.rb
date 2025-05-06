@@ -6,7 +6,7 @@ end
 
 ten_days_ago = Date.current - 10.days
 20.times do |index|
-  task = PassportTask.create!(
+  task = PassportVerifyInfoTask.create!(
     description: "Task description for #{index}",
     due_on: ten_days_ago + index.days,
     case_id: PassportCase.pluck(:id).sample,

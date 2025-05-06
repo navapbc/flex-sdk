@@ -1,3 +1,3 @@
-class PassportPhotoTask < Flex::Task
+class PassportPhotoTask < PassportTask
   
 end
