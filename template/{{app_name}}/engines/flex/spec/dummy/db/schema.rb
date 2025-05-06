@@ -10,17 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_160810) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
-    t.integer "status", default: 0
+    t.string "status"
     t.string "assignee_id"
     t.string "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee_id"
-    t.index [ "case_id" ], name: "index_flex_tasks_on_case_id"
+    t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee"
+    t.index [ "case_id" ], name: "index_flex_tasks_on_case"
     t.index [ "status" ], name: "index_flex_tasks_on_status"
     t.index [ "type" ], name: "index_flex_tasks_on_type"
   end
@@ -44,8 +44,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
-
   create_table "test_application_forms", force: :cascade do |t|
     t.integer "status", default: 0
     t.string "test_string"
@@ -59,4 +57,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160812) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end
