@@ -1,5 +1,12 @@
-<% form_with method: :get |form| %>
-<%= form.label :filter_date, "Filter by due date" %>
-<%= form.select :filter_date, options_for_select([['All dates', 'all'], ['Overdue', 'overdue'], ['Today', 'today'], ['Tomorrow', 'tomorrow'], ['This week', 'this_week']], 
-    params[:filter_date]), { class: 'usa-select' }, { onchange: 'this.form.submit()' } %>
+<%= form_with url: :passport_tasks, method: 'get' do |form| %>
+  <%= form.label :filter_date, "Filter by due date", class: 'usa-label' %>
+  <%= form.select :filter_date, [
+        ['All dates', 'all'], 
+        ['Overdue', 'overdue'], 
+        ['Today', 'today'], 
+        ['Tomorrow', 'tomorrow'], 
+        ['This week', 'this_week']
+    ],
+    { include_blank: false, selected: params[:filter_date] },
+    { class: 'usa-select', onchange: 'this.form.submit()' } %>
 <% end %>
