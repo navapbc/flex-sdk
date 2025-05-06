@@ -1,7 +1,7 @@
 <label class="usa-label" for="filter_task">Filter by task type</label>
 <select class="usa-select" id="filter_task" name="filter_task">
   <option value="all">All tasks</option>
-  <% Task.distinct.pluck(:type).sort.each |type| do %>
+  <% Task.distinct_task_types do %>
     <option value="<%= type %>"><%= type.humanize %></option>
   <% end %>
 </select>
