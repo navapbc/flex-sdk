@@ -27,7 +27,7 @@ module Flex
       }
     end
 
-    private 
+    private
 
     def created_at
       @application_form.created_at.strftime("%B %d, %Y at %I:%M %p")
