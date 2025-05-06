@@ -13,7 +13,7 @@ ten_days_ago = Date.current - 10.days
     assignee_id: nil # Will change this after adding user model in the future
   )
 
-  task.mark_completed if index % 5 == 0
+  task.mark_completed if rand(0..2) == 0
 end
 
 20.times do |index|
@@ -24,5 +24,5 @@ end
     assignee_id: nil # Will change this after adding user model in the future
   )
 
-  task.mark_completed if index % 4 == 0
+  task.mark_completed if rand(0..5) == 0
 end
