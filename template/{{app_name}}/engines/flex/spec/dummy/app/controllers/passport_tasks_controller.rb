@@ -7,7 +7,7 @@ class PassportTasksController < ApplicationController
       @tasks = filter_tasks_by_type(@tasks || Flex::Task, index_filter_params[:filter_type])
     end
 
-    @tasks ||= Flex::Task.all
+    (@tasks ||= Flex::Task.all).order_by_due_on_desc
   end
 
   def new
