@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-class TestCase < Flex::Case
-  # A simple test case to test the Case abstract class functionality
-end
-
 RSpec.describe Flex::Case, type: :model do
   let(:test_case) { TestCase.new }
 
