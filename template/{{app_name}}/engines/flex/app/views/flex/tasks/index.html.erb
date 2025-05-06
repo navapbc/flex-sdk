@@ -3,12 +3,8 @@
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
-    <% tabs = [
-        { name: "Assigned", path: polymorphic_path(model_class, :filter_status => nil, :filter_date => params[:filter_date], :filter_type => params[:filter_type]), active: params[:filter_status] != 'completed' },
-        { name: "Completed", path: polymorphic_path(model_class, :filter_status => 'completed', :filter_date => params[:filter_date], :filter_type => params[:filter_type]), active: params[:filter_status] == 'completed' }
-      ] %>
     <nav class="display-flex border-bottom-1px border-base-light">
-      <% tabs.each do |tab| %>
+      <% tabs_configuration(model_class).each do |tab| %>
         <%= render partial: "flex/cases/nav_tab", locals: tab %>
       <% end %>
     </nav>
@@ -60,10 +56,10 @@
         <% end %>
       </tbody>
     </table>
+    <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
   <% else %>
     <%= render partial: 'flex/tasks/no_tasks_alert' %>
   <% end %>
 </div>
-<div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
-</main>
 </div>
+</main>
