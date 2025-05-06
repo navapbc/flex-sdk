@@ -12,11 +12,13 @@ module Flex
 
     validates :case_id, presence: true
 
-    scope :filter_by_due_on, ->(date) { where(due_on: date) }
-    scope :filter_by_due_on_range, ->(start_date, end_date) { where(due_on: start_date..end_date) }
-    scope :filter_by_due_on_before, ->(date) { where("due_on < ?", date) }
+    scope :where_completed, -> { where(status: :completed) }
+    scope :where_type, ->(type) { where(type: type) }
+    scope :where_due_on, ->(date) { where(due_on: date) }
+    scope :where_due_on_before, ->(date) { where("due_on < ?", date) }
+    scope :where_due_on_between, ->(start_date, end_date) { where(due_on: start_date..end_date) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
-    scope :distinct_task_types, -> { select(:type).distinct }
+    scope :select_distinct_task_types, -> { distinct.pluck(:type) }
 
     def set_case(case_id)
       self[:case_id] = case_id
