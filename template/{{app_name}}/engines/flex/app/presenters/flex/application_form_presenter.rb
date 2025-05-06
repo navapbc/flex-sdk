@@ -1,13 +1,14 @@
 module Flex
   class ApplicationFormPresenter
-    def initialize(application_form)
+    def initialize(view_context, application_form)
+      @view_context = view_context
       @application_form = application_form
     end
 
     def index
       {
         created_at: created_at,
-        object: object,
+        path: @view_context.polymorphic_path(@application_form),
         status: status
       }
     end

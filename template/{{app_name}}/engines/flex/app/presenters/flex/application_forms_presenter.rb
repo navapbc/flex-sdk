@@ -2,7 +2,8 @@ module Flex
   class ApplicationFormsPresenter
     attr_reader :application_forms
 
-    def initialize(application_forms, controller_path)
+    def initialize(view_context, application_forms, controller_path)
+      @view_context = view_context
       @application_forms = application_forms
       @controller_path = controller_path.gsub("/", ".")
     end
@@ -13,7 +14,7 @@ module Flex
         intro: intro,
         new_button_text: new_button_text,
         in_progress_applications_heading: in_progress_applications_heading,
-        application_forms: application_forms.map { |application_form| Flex::ApplicationFormPresenter.new(application_form).index }
+        application_forms: application_forms.map { |application_form| Flex::ApplicationFormPresenter.new(@view_context, application_form).index }
       }
     end
 
