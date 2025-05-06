@@ -1,8 +1,12 @@
 module Flex
   class Task < ApplicationRecord
-    attribute :assignee_id, :string
-    attribute :case_id, :string
     attribute :description, :text
+
+    attribute :assignee_id, :string
+    protected attr_writer :assignee_id
+
+    attribute :case_id, :string
+    protected attr_writer :case_id
     
     attribute :status, :integer, default: 0
     protected attr_writer :status
@@ -11,17 +15,17 @@ module Flex
     validates :case_id, presence: true
 
     def set_case(case_id)
-      self.case_id = case_id
+      self[:case_id] = case_id
       save!
     end
 
     def assign(user_id)
-      self.assignee_id = user_id
+      self[:assignee_id] = user_id
       save!
     end
 
     def unassign
-      self.assignee_id = nil
+      self[:assignee_id] = nil
       save!
     end
 
