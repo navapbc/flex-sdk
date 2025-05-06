@@ -10,7 +10,7 @@ RSpec.describe Flex::Task, type: :model do
         expect { task.status = :completed }.to raise_error(NoMethodError)
       end
     end
-    
+
     describe 'assignee_id attribute' do
       it 'cannot be modified directly' do
         expect { task.assignee_id = SecureRandom.uuid }.to raise_error(NoMethodError)
@@ -22,13 +22,12 @@ RSpec.describe Flex::Task, type: :model do
         expect { task.case_id = SecureRandom.uuid }.to raise_error(ActiveRecord::ReadonlyAttributeError)
       end
     end
-    
+
     describe 'type attribute' do
       it 'cannot be modified directly' do
         expect { task.type = SecureRandom.hex }.to raise_error(ActiveRecord::ReadonlyAttributeError)
       end
     end
-
   end
 
   describe '#assign' do
