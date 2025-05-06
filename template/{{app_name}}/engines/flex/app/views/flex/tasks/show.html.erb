@@ -1,0 +1,47 @@
+<main class="usa-section">
+  <div class="grid-container">
+    <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+      <ol class="usa-breadcrumb__list">
+        <li class="usa-breadcrumb__list-item">
+          <%= link_to "Tasks", polymorphic_path(model_class), class: "usa-breadcrumb__link" %>
+        </li>
+        <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+          <%= @task.id %>
+        </li>
+      </ol>
+    </nav>
+    <h1 class="usa-heading-xl">Task ID: <%= @task.id %></h1>
+    <%= yield :case_summary %>
+    <p>Status: <%= render partial: "flex/tasks/status_tag", locals: { status: @task.status } %></p>
+    <div class="grid-row grid-gap border-top-2px border-base-lighter padding-top-2">
+      <div class="tablet:grid-col-3 margin-bottom-4 tablet:margin-bottom-0">
+        <nav aria-label="Side navigation,">
+          <% # TODO In future we may want subclasses to be able to override or control which nav items appear %>
+          <ul class="usa-sidenav">
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);" class="usa-current">Overview</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Tasks</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Application details</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Documents</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Case history</a>
+            </li>
+            <li class="usa-sidenav__item">
+              <a href="javascript:void(0);">Notes</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="tablet:grid-col-9">
+        <%= yield :case_details %>
+      </div>
+    </div>
+  </div>
+</main>
