@@ -1,19 +1,19 @@
-<% content_for :title, presenter.title %>
+<% content_for :title, title %>
 
-<%= link_to presenter.back_link_text, presenter.index_path %>
+<%= link_to back_link_text, index_path %>
 
-<h1><%= presenter.title %></h1>
+<h1><%= title %></h1>
 
 <%
-p = Flex::StepIndicatorPresenter.new([:in_progress, :submitted, :decision_made], presenter.current_status)
+p = Flex::StepIndicatorPresenter.new([:in_progress, :submitted, :decision_made], current_status)
 %>
 
 <%= render partial: "flex/shared/step_indicator", locals: { presenter: p } %>
 
 <p class="usa-intro">
-  <%= presenter.next_step %>
+  <%= next_step %>
 </p>
 
 <p>
-  <%= presenter.submitted_on_text %>: <%= presenter.application_form.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+  <%= submitted_on_text %>: <%= created_at %>
 </p>
