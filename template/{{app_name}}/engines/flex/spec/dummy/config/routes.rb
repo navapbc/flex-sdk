@@ -9,6 +9,5 @@ Rails.application.routes.draw do
   end
 
   resources :passport_tasks do
-    
   end
 end
