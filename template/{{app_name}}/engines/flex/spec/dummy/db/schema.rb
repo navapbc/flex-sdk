@@ -45,5 +45,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_06_161640) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "test_application_forms", force: :cascade do |t|
+    t.integer "status", default: 0
+    t.string "test_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "test_cases", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "business_process_current_step"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end
