@@ -23,7 +23,7 @@ class PassportTasksController < ApplicationController
     controller_path.classify.constantize
   end
 
-  
+
   private
   def index_filter_params
     params.permit(:filter_date, :filter_type, :filter_status)

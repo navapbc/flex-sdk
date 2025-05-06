@@ -9,10 +9,10 @@ module PassportTasksHelper
 
   def distinct_task_type_options
     task_types = Flex::Task.select_distinct_task_types.map do |type|
-      [type.underscore.humanize, type]
+      [ type.underscore.humanize, type ]
     end
 
-    task_types.unshift(["All tasks", "all"])
+    task_types.unshift([ "All tasks", "all" ])
   end
 
   def humanize_task_type(type)
