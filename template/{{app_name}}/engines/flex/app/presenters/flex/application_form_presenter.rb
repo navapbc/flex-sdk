@@ -19,12 +19,22 @@ module Flex
         title: I18n.t("#{@i18n_path}.show.title"),
         back_link_text:  I18n.t("#{@i18n_path}.show.back"),
         index_path: @view_context.polymorphic_path(@application_form.class),
-        created_at:  @application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+        created_at:  created_at,
         current_status: @application_form.status,
         next_step: I18n.t("#{@i18n_path}.show.next_step.status.#{@application_form.status}"),
         submitted_on_text: I18n.t("#{@i18n_path}.show.submitted_on"),
-        status: I18n.t("flex.application_forms.status.#{@application_form.status}")
+        status: status
       }
+    end
+
+    private 
+
+    def created_at
+      @application_form.created_at.strftime("%B %d, %Y at %I:%M %p")
+    end
+
+    def status
+      I18n.t("flex.application_forms.status.#{@application_form.status}")
     end
   end
 end
