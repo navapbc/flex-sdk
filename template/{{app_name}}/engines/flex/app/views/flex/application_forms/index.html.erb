@@ -1,17 +1,17 @@
-<% content_for :title, presenter.title %>
+<% content_for :title, title %>
 
 <h1>
-  <%= presenter.title %>
+  <%= title %>
 </h1>
 
 <p class="usa-intro">
-  <%= presenter.intro %>
+  <%= intro %>
 </p>
 
-<%= link_to presenter.new_button_text, "new", class: class_names("usa-button") %>
+<%= link_to new_button_text, "new", class: class_names("usa-button") %>
 
-<% if not presenter.application_forms.empty? %>
-  <h2 class="margin-top-6"><%= presenter.in_progress_applications_heading %></h2>
+<% if not application_forms.empty? %>
+  <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
 
   <section class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
     <table class="usa-table usa-table--borderless width-full">
@@ -29,14 +29,14 @@
         </tr>
       </thead>
       <tbody>
-        <% presenter.application_forms.each do |application| %>
+        <% application_forms.each do |application| %>
           <tr>
             <td>
               <% # TODO show in local time %>
-              <%= link_to application.created_at.strftime("%B %d, %Y at %I:%M %p"), application %>
+              <%= link_to application[:created_at], application[:path] %>
             </td>
             <td>
-              <%= presenter.status_for application %>
+              <%= application[:status] %>
             </td>
             <td>
               TODO
