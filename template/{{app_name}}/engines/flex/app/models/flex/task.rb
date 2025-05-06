@@ -1,7 +1,7 @@
 module Flex
   class Task < ApplicationRecord
     attribute :assignee_id, :string
-    attribute :case_id, :string, null: false
+    attribute :case_id, :string
     attribute :description, :text
     
     attribute :status, :integer, default: 0
