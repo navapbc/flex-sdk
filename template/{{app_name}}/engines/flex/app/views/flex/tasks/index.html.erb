@@ -3,6 +3,15 @@
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
+    <% tabs = [
+        { name: "In Progress", path: polymorphic_path(model_class, :filter_status => nil, :filter_date => params[:filter_date], :filter_type => params[:filter_type]), active: params[:filter_status] != 'completed' },
+        { name: "Completed", path: polymorphic_path(model_class, :filter_status => 'completed', :filter_date => params[:filter_date], :filter_type => params[:filter_type]), active: params[:filter_status] == 'completed' }
+      ] %>
+    <nav class="display-flex border-bottom-1px border-base-light">
+      <% tabs.each do |tab| %>
+        <%= render partial: "flex/cases/nav_tab", locals: tab %>
+      <% end %>
+    </nav>
     <!-- Filters -->
     <div class="grid-row grid-gap-4 margin-bottom-4">
       <div class="grid-col-12 tablet:grid-col-3">
@@ -36,16 +45,16 @@
           @tasks.each do |task|
           %>
           <tr>
-            <td class="flex-task-due-date" data-sort-value="<%= task.due_on.to_fs(:number) %>">
-              <%= task.due_on.strftime("%m/%d/%Y") %>
+            <td class="flex-task-due-date" data-sort-value="<%= time_since_epoch task.due_on %>">
+              <%= mm_dd_yyyy task.due_on %>
             </td>
-            <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= task.type %></td>
+            <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= humanize_task_type task.type %></td>
             <td data-sort-value="<%= task.case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
             <td
-              data-sort-value="<%= task.created_at.to_fs(:number) %>"
+              data-sort-value="<%= time_since_epoch task.created_at %>"
               class="flex-task-created-date"
             >
-              <%= task.created_at.strftime("%m/%d/%Y") %>
+              <%= mm_dd_yyyy task.created_at %>
             </td>
           </tr>
         <% end %>
