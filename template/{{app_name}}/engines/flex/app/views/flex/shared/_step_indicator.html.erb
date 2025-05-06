@@ -1,4 +1,12 @@
 <%
+# Renders a step indicator that shows progress through a multi-step process.
+#
+# @param steps [Array<String, Symbol>] An array of step identifiers that will be displayed in order
+# @param current_step [String, Symbol] The identifier of the current active step
+#
+# Each step's display name is fetched from the i18n translations under flex.application_forms.steps
+# Steps before and including the current step are marked as complete.
+
 steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
