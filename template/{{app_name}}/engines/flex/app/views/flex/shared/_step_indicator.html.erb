@@ -1,20 +1,33 @@
+<%
+steps = steps.map(&:to_sym)
+current_step = current_step.to_sym
+current_step_index = steps.index(current_step) || -1
+step_indicators = steps.map.with_index do |step, index|
+  {
+    name: t("flex.application_forms.steps.#{ step }"),
+    complete: index <= current_step_index,
+    current: step == current_step
+  }
+end
+%>
+
 <div
   class="usa-step-indicator usa-step-indicator--counters"
   aria-label="progress"
 >
   <ol class="usa-step-indicator__segments">
-    <% presenter.steps.each do |step| %>
+    <% step_indicators.each do |step_indicator| %>
       <li
         class="<%= class_names(
           "usa-step-indicator__segment",
-          "usa-step-indicator__segment--complete": step[:complete],
-          "usa-step-indicator__segment--current": step[:current]
+          "usa-step-indicator__segment--complete": step_indicator[:complete],
+          "usa-step-indicator__segment--current": step_indicator[:current]
         )%>"
       >
           <span class="usa-step-indicator__segment-label">
-            <%= t("flex.application_forms.steps.#{ step[:name] }") %>
+            <%= step_indicator[:name] %>
             <span class="usa-sr-only">
-              <% if step[:complete] %>
+              <% if step_indicator[:complete] %>
                 completed
               <% else %>
                 not completed

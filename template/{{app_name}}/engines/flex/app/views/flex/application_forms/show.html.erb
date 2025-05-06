@@ -4,11 +4,10 @@
 
 <h1><%= title %></h1>
 
-<%
-p = Flex::StepIndicatorPresenter.new([:in_progress, :submitted, :decision_made], current_status)
-%>
-
-<%= render partial: "flex/shared/step_indicator", locals: { presenter: p } %>
+<%= render partial: "flex/shared/step_indicator", locals: {
+  steps: [:in_progress, :submitted, :decision_made],
+  current_step: current_status
+} %>
 
 <p class="usa-intro">
   <%= next_step %>
