@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "PassportApplicationForms", type: :request do
   describe "GET /index" do
     it "returns http success" do
-      get "/passport_application_forms/index"
+      get "/passport_application_forms"
       expect(response).to have_http_status(:success)
     end
   end
