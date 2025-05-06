@@ -17,12 +17,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160810) do
     t.string "status"
     t.string "assignee_id"
     t.string "case_id"
+    t.date "due_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee"
-    t.index [ "case_id" ], name: "index_flex_tasks_on_case"
-    t.index [ "status" ], name: "index_flex_tasks_on_status"
-    t.index [ "type" ], name: "index_flex_tasks_on_type"
+    t.index ["assignee_id"], name: "index_flex_tasks_on_assignee"
+    t.index ["case_id"], name: "index_flex_tasks_on_case"
+    t.index ["status"], name: "index_flex_tasks_on_status"
+    t.index ["type"], name: "index_flex_tasks_on_type"
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
@@ -33,7 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_160810) do
     t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
+    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
   create_table "passport_cases", force: :cascade do |t|
