@@ -1,6 +1,7 @@
 module Flex
   class Task < ApplicationRecord
     attribute :description, :text
+    readonly attribute :type, :string
 
     attribute :assignee_id, :string
     protected attr_writer :assignee_id
