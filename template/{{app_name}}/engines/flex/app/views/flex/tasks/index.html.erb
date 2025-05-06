@@ -3,16 +3,16 @@
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
-    <% if @tasks.any? %>
-      <!-- Filters -->
-      <div class="grid-row grid-gap-4 margin-bottom-4">
-        <div class="grid-col-12 tablet:grid-col-3">
-          <%= render partial: 'flex/tasks/task_type_filter' %>
-        </div>
-        <div class="grid-col-12 tablet:grid-col-3">
-          <%= render partial: 'flex/tasks/task_due_date_filter' %>
-        </div>
+    <!-- Filters -->
+    <div class="grid-row grid-gap-4 margin-bottom-4">
+      <div class="grid-col-12 tablet:grid-col-3">
+        <%= render partial: 'flex/tasks/task_type_filter' %>
       </div>
+      <div class="grid-col-12 tablet:grid-col-3">
+        <%= render partial: 'flex/tasks/task_due_date_filter' %>
+      </div>
+    </div>
+    <% if @tasks.any? %>
       <!-- Tasks -->
       <table class="usa-table usa-table--striped usa-table--sticky-header">
         <thead>
