@@ -38,4 +38,14 @@ RSpec.describe Flex::Task, type: :model do
       expect(task.status).to eq('completed')
     end
   end
+  
+  describe '#mark_pending' do
+    it 'marks the task as pending' do
+      task.mark_completed
+
+      task.mark_pending
+
+      expect(task.status).to eq('pending')
+    end
+  end
 end

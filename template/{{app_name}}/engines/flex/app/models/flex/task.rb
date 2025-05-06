@@ -24,5 +24,10 @@ module Flex
       self[:status] = :completed
       save!
     end
+
+    def mark_pending
+      self[:status] = :pending
+      save!
+    end
   end
 end
