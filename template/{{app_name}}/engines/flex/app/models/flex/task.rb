@@ -7,11 +7,11 @@ module Flex
 
     attribute :case_id, :string
     protected attr_writer :case_id
-    
+
     attribute :status, :integer, default: 0
     protected attr_writer :status
     enum :status, pending: 0, completed: 1
-    
+
     validates :case_id, presence: true
 
     def set_case(case_id)

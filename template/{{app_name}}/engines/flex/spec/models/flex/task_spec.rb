@@ -9,7 +9,7 @@ RSpec.describe Flex::Task, type: :model do
     task.description = 'Test task description'
   end
 
-  context 'readonly attributes' do
+  context 'when attempting to set readonly attributes' do
     describe 'status attribute' do
       it 'cannot be modified directly' do
         expect { task.status = :completed }.to raise_error(NoMethodError)
@@ -54,7 +54,7 @@ RSpec.describe Flex::Task, type: :model do
       expect(task.status).to eq('completed')
     end
   end
-  
+
   describe '#mark_pending' do
     it 'marks the task as pending' do
       task.mark_completed
@@ -69,7 +69,7 @@ RSpec.describe Flex::Task, type: :model do
     it 'validates presence of case_id on create' do
       expect { task.set_case(nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
     end
-  
+
     it 'validates presence of case_id on update' do
       task.save!
 
