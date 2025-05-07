@@ -34,13 +34,13 @@ class PassportTasksController < ApplicationController
   def filter_tasks_by_date(filter_by)
     case filter_by
     when "today"
-        tasks.where_due_on(Date.today)
+        tasks.due_today
     when "overdue"
-        tasks.where_due_on_before(Date.today)
+        tasks.overdue
     when "tomorrow"
-        tasks.where_due_on(Date.tomorrow)
+        tasks.due_tomorrow
     when "this_week"
-        tasks.where_due_on_between(Date.today.beginning_of_week, Date.today.end_of_week)
+        tasks.due_this_week
     else
         tasks.all
     end

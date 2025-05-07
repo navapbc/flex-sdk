@@ -14,12 +14,14 @@ module Flex
 
     validates :case_id, presence: true
 
+    scope :due_today, -> { where(due_on: Date.today) }
+    scope :due_tomorrow, -> { where(due_on: Date.tomorrow) }
+    scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
+    scope :overdue, -> { where("due_on < ?", Date.today) }
+
     scope :where_completed, -> { where(status: :completed) }
     scope :where_not_completed, -> { where.not(status: :completed) }
     scope :where_type, ->(type) { where(type: type) }
-    scope :where_due_on, ->(date) { where(due_on: date) }
-    scope :where_due_on_before, ->(date) { where("due_on < ?", date) }
-    scope :where_due_on_between, ->(start_date, end_date) { where(due_on: start_date..end_date) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
     scope :select_distinct_task_types, -> { distinct.pluck(:type) }
 
