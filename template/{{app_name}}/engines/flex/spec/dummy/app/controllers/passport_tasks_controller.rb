@@ -5,22 +5,6 @@ class PassportTasksController < ApplicationController
     filter_tasks
   end
 
-  def new
-  end
-
-  def create
-  end
-
-  def show
-    @case = PassportCase.find(params[:id])
-  end
-
-  def edit
-  end
-
-  def update
-  end
-
   def model_class
     controller_path.classify.constantize
   end
