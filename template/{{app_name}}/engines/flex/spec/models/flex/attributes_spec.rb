@@ -16,8 +16,11 @@ RSpec.describe Flex::Attributes do
 
   describe "memorable_date attribute" do
     it "allows setting a Date" do
-      object.test_date = Date.new(2020, 1, 1)
-      expect(object.test_date).to eq("2020-01-01")
+      object.test_date = Date.new(2020, 1, 2)
+      expect(object.test_date).to eq("2020-01-02")
+      expect(object.test_date.year).to eq("2020")
+      expect(object.test_date.month).to eq("1")
+      expect(object.test_date.day).to eq("2")
     end
 
     [
