@@ -1,0 +1,18 @@
+<% content_for :title, title %>
+
+<%= link_to back_link_text, index_path %>
+
+<h1><%= title %></h1>
+
+<%= render partial: "flex/shared/step_indicator", locals: {
+  steps: [:in_progress, :submitted, :decision_made],
+  current_step: current_status
+} %>
+
+<p class="usa-intro">
+  <%= next_step %>
+</p>
+
+<p>
+  <%= submitted_on_text %>: <%= created_at %>
+</p>

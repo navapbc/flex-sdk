@@ -1,0 +1,49 @@
+<% content_for :title, title %>
+
+<h1>
+  <%= title %>
+</h1>
+
+<p class="usa-intro">
+  <%= intro %>
+</p>
+
+<%= link_to new_button_text, "new", class: class_names("usa-button") %>
+
+<% if not application_forms.empty? %>
+  <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
+
+  <section class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
+    <table class="usa-table usa-table--borderless width-full">
+      <thead>
+        <tr>
+          <th scope="col">
+            <%= t("flex.application_forms.index.col_created_at") %>
+          </th>
+          <th scope="col">
+            <%= t("flex.application_forms.index.col_status") %>
+          </th>
+          <th scope="col">
+            <%= t("flex.application_forms.index.col_actions") %>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% application_forms.each do |application| %>
+          <tr>
+            <td>
+              <% # TODO show in local time %>
+              <%= link_to application[:created_at], application[:path] %>
+            </td>
+            <td>
+              <%= application[:status] %>
+            </td>
+            <td>
+              TODO
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>
