@@ -9,12 +9,18 @@
         - path: String
         - status: Symbol
 
-    This view is designed to work with Flex::ApplicationFormsPresenter which provides
-    all the required locals and handles the presentation logic.
-
     Example usage:
-    <%= render template: "flex/application_forms/index",
-        locals: Flex::ApplicationFormsPresenter.new(self, @application_forms).index % >
+    render template: "flex/application_forms/index", locals: {
+      title: t(".title"),
+      intro: t(".intro"),
+      new_button_text: t(".new_button"),
+      in_progress_applications_heading: t(".in_progress_applications.heading"),
+      application_forms: @application_forms.map { |form| {
+        created_at: form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+        path: application_form_path(form),
+        status: form.status
+      }}
+    }
 %>
 
 <% content_for :title, title %>
