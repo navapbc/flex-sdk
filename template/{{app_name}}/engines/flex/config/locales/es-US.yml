@@ -5,6 +5,6 @@ es-US:
         col_created_at: "Fecha de creación"
         col_status: "Estado"
         col_actions: "Acciones"
-      status:
+      statuses:
         in_progress: "En progreso"
         submitted: "Enviado"
