@@ -9,7 +9,7 @@ RSpec.describe "PassportApplicationForms", type: :request do
   end
 
   describe "GET /show" do
-    let(:passport_application_form) { PassportApplicationForm.create }
+    let(:passport_application_form) { PassportApplicationForm.create! }
 
     it "returns http success" do
       get "/passport_application_forms/#{passport_application_form.id}"
