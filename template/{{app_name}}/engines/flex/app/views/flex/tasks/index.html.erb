@@ -11,7 +11,7 @@
     <!-- Filters -->
     <div class="grid-row grid-gap-4 margin-bottom-4">
       <div class="grid-col-12 tablet:grid-col-3">
-        <%= render partial: 'flex/tasks/task_type_filter' %>
+        <%= render partial: 'flex/tasks/task_type_filter', locals: { model_class: model_class } %>
       </div>
       <div class="grid-col-12 tablet:grid-col-3">
         <%= render partial: 'flex/tasks/task_due_date_filter' %>
@@ -47,7 +47,7 @@
             <td data-sort-value="<%= task.type %>"><%= humanize_task_type task.type %></td>
             <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
             <td data-sort-value="<%= time_since_epoch task.created_at %>">
-              <%= local_en_us task.created_at %>
+              <%= local_en_us task.created_at.to_date %>
             </td>
           </tr>
         <% end %>
