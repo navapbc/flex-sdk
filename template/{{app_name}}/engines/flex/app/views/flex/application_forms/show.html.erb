@@ -8,12 +8,16 @@
     - next_step: String - Text describing the next step
     - submitted_on_text: String - Label for submission date
 
-    This view is designed to work with Flex::ApplicationFormPresenter which provides
-    all the required locals and handles the presentation logic for a single application form.
-
     Example usage:
-    <%= render template: "flex/application_forms/show",
-        locals: Flex::ApplicationFormPresenter.new(self, @application_form).show % >
+    <%= render template: "flex/application_forms/show", locals: {
+      title: t(".title"),
+      back_link_text: t(".back"),
+      index_path: application_forms_path,
+      created_at: application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+      current_status: application_form.status,
+      next_step: t(".next_step.status.#{application_form.status}"),
+      submitted_on_text: t(".submitted_on")
+    } % >
 %>
 
 <% content_for :title, title %>
