@@ -28,7 +28,6 @@ class PassportTasksController < ApplicationController
       @tasks = filter_tasks_by_type(index_filter_params[:filter_type])
     end
     @tasks = filter_tasks_by_status
-    @tasks = tasks.order_by_due_on_desc
   end
 
   def filter_tasks_by_date(filter_by)

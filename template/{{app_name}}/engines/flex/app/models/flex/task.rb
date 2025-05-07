@@ -14,15 +14,14 @@ module Flex
 
     validates :case_id, presence: true
 
+    default_scope -> { order(due_on: :desc) }
     scope :due_today, -> { where(due_on: Date.today) }
     scope :due_tomorrow, -> { where(due_on: Date.tomorrow) }
     scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
     scope :overdue, -> { where("due_on < ?", Date.today) }
-
     scope :completed, -> { where(status: :completed) }
     scope :incomplete, -> { where.not(status: :completed) }
     scope :with_type, ->(type) { where(type: type) }
-    scope :order_by_due_on_desc, -> { order(due_on: :desc) }
 
     def assign(user_id)
       self[:assignee_id] = user_id
