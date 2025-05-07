@@ -21,7 +21,7 @@ module Flex
 
     scope :where_completed, -> { where(status: :completed) }
     scope :where_not_completed, -> { where.not(status: :completed) }
-    scope :where_type, ->(type) { where(type: type) }
+    scope :with_type, ->(type) { where(type: type) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
 
     def assign(user_id)

@@ -47,9 +47,7 @@ class PassportTasksController < ApplicationController
   end
 
   def filter_tasks_by_type(filter_by)
-    tasks.select_distinct_task_types.include?(filter_by) \
-      ? tasks.where_type(filter_by)
-      : tasks.all
+    filter_by == "all" ? tasks.all : tasks.with_type(filter_by)
   end
 
   def filter_tasks_by_status
