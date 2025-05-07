@@ -19,8 +19,8 @@ module Flex
     scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
     scope :overdue, -> { where("due_on < ?", Date.today) }
 
-    scope :where_completed, -> { where(status: :completed) }
-    scope :where_not_completed, -> { where.not(status: :completed) }
+    scope :completed, -> { where(status: :completed) }
+    scope :incomplete, -> { where.not(status: :completed) }
     scope :with_type, ->(type) { where(type: type) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
 

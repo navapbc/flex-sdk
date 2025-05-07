@@ -52,7 +52,7 @@ class PassportTasksController < ApplicationController
 
   def filter_tasks_by_status
     index_filter_params[:filter_status] == "completed" \
-      ? tasks.where_completed
-      : tasks.where_not_completed
+      ? tasks.completed
+      : tasks.incomplete
   end
 end
