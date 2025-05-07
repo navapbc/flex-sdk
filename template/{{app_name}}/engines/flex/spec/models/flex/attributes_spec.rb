@@ -25,15 +25,10 @@ RSpec.describe Flex::Attributes do
       [ { year: "2020", month: "1", day: "2" }, "2020-01-02", "2020", "1", "2" ],
       [ { year: "2020", month: "01", day: "02" }, "2020-01-02", "2020", "01", "02" ],
       [ { year: "badyear", month: "badmonth", day: "badday" }, "badyear-badmonth-badday", "badyear", "badmonth", "badday" ]
-    ].each do |input, expected, expected_year, expected_month, expected_day|
-
+    ].each do |input_hash, expected, expected_year, expected_month, expected_day|
       it "allows setting a Hash with year, month, and day [#{expected}]" do
-        object.test_date = input
+        object.test_date = input_hash
         expect(object.test_date).to eq(expected)
-      end
-
-      it "allows getting year, month, and day nested attributes [#{expected}]" do
-        object.test_date = input
         expect(object.test_date.year).to eq(expected_year)
         expect(object.test_date.month).to eq(expected_month)
         expect(object.test_date.day).to eq(expected_day)
@@ -44,15 +39,10 @@ RSpec.describe Flex::Attributes do
       [ "2020-1-2", "2020-01-02", "2020", "1", "2" ],
       [ "2020-01-02", "2020-01-02", "2020", "01", "02" ],
       [ "badyear-badmonth-badday", "badyear-badmonth-badday", "badyear", "badmonth", "badday" ]
-    ].each do |input, expected, expected_year, expected_month, expected_day|
-
+    ].each do |input_string, expected, expected_year, expected_month, expected_day|
       it "allows setting string in format <YEAR>-<MONTH>-<DAY> [#{expected}]" do
-        object.test_date = input
+        object.test_date = input_string
         expect(object.test_date).to eq(expected)
-      end
-
-      it "allows getting year, month, and day nested attributes [#{expected}]" do
-        object.test_date = input
         expect(object.test_date.year).to eq(expected_year)
         expect(object.test_date.month).to eq(expected_month)
         expect(object.test_date.day).to eq(expected_day)
