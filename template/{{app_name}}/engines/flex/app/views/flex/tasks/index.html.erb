@@ -41,15 +41,12 @@
           @tasks.each do |task|
           %>
           <tr>
-            <td class="flex-task-due-date" data-sort-value="<%= time_since_epoch task.due_on %>">
+            <td data-sort-value="<%= time_since_epoch task.due_on %>">
               <%= local_en_us task.due_on %>
             </td>
-            <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= humanize_task_type task.type %></td>
-            <td data-sort-value="<%= task.case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
-            <td
-              data-sort-value="<%= time_since_epoch task.created_at %>"
-              class="flex-task-created-date"
-            >
+            <td data-sort-value="<%= task.type %>"><%= humanize_task_type task.type %></td>
+            <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
+            <td data-sort-value="<%= time_since_epoch task.created_at %>">
               <%= local_en_us task.created_at %>
             </td>
           </tr>
