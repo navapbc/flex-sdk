@@ -8,3 +8,8 @@ es-US:
       statuses:
         in_progress: "En progreso"
         submitted: "Enviado"
+      steps:
+        in_progress: "Enviado"
+        submitted: "En revisión"
+        decision_made: "Determinación realizada"
+

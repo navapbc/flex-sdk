@@ -3,6 +3,7 @@
     - title: String - Page title
     - intro: String - Introduction text
     - new_button_text: String - Text for the "New" button
+    - new_path: String - Path for the "New" button
     - in_progress_applications_heading: String - Heading for the in-progress section
     - application_forms: Array<Hash> - List of application form data with keys:
         - created_at: String
@@ -33,7 +34,7 @@
   <%= intro %>
 </p>
 
-<%= link_to new_button_text, "new", class: class_names("usa-button") %>
+<%= link_to new_button_text, new_path, class: class_names("usa-button") %>
 
 <% if not application_forms.empty? %>
   <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
