@@ -31,7 +31,3 @@ group :development do
   gem "listen"
   gem "actioncable"
 end
-
-group :test do
-  gem "simplecov", require: false
-end
