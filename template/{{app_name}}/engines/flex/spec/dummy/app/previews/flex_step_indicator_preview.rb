@@ -10,14 +10,14 @@ class FlexStepIndicatorPreview < Lookbook::Preview
     }
   end
 
-  def submitted_state
+  def submitted
     render template: "flex/shared/_step_indicator", locals: {
       steps: [:in_progress, :submitted, :decision_made],
       current_step: :submitted
     }
   end
 
-  def decision_made_state
+  def decision_made
     render template: "flex/shared/_step_indicator", locals: {
       steps: [:in_progress, :submitted, :decision_made],
       current_step: :decision_made
