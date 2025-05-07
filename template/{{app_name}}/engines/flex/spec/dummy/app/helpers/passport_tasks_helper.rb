@@ -1,3 +1,2 @@
 module PassportTasksHelper
-  
 end

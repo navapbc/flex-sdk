@@ -1,6 +1,6 @@
 class PassportTasksController < ApplicationController
   helper Flex::TasksHelper
-  
+
   def index
     filter_tasks
   end
