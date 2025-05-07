@@ -8,3 +8,7 @@ en:
       status:
         in_progress: "In Progress"
         submitted: "Submitted"
+      steps:
+        in_progress: "Submitted"
+        submitted: "In review"
+        decision_made: "Determination made"

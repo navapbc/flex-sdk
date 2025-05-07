@@ -1,2 +1,1 @@
-<h1>PassportApplicationForms#show</h1>
-<p>Find me in app/views/passport_application_forms/show.html.erb</p>
+<%= render template: "flex/application_forms/show", locals: Flex::ApplicationFormPresenter.new(self, @passport_application_form).show %>
