@@ -29,18 +29,14 @@ module Flex
       def cast(value)
         return nil if value.nil?
 
-        case value
+        year, month, day = case value
         when Date
-          year = value.year.to_s
-          month = value.month.to_s
-          day = value.day.to_s
+          [ value.year.to_s, value.month.to_s, value.day.to_s ]
         when Hash
-          year = value[:year].to_s
-          month = value[:month].to_s
-          day = value[:day].to_s
+          [ value[:year].to_s, value[:month].to_s, value[:day].to_s ]
         when String
           if match = value.match(/(\w+)-(\w+)-(\w+)/)
-            year, month, day = match.captures
+            match.captures
           else
             raise ArgumentError, "Invalid date string format: #{value.inspect}. Expected format is '<YEAR>-<MONTH>-<DAY>'."
           end
