@@ -11,20 +11,19 @@ module Flex
       {
         created_at: created_at,
         path: view_context.polymorphic_path(application_form),
-        status: status
+        status: application_form.status
       }
     end
 
     def show
       {
-        title: t("show.title"),
-        back_link_text:  t("show.back"),
+        title: t_scoped("show.title"),
+        back_link_text:  t_scoped("show.back"),
         index_path: view_context.polymorphic_path(application_form.class),
         created_at:  created_at,
         current_status: application_form.status,
-        next_step: t("show.next_step.status.#{application_form.status}"),
-        submitted_on_text: t("show.submitted_on"),
-        status: status
+        next_step: t_scoped("show.next_step.status.#{application_form.status}"),
+        submitted_on_text: t_scoped("show.submitted_on")
       }
     end
 
@@ -32,10 +31,6 @@ module Flex
 
     def created_at
       application_form.created_at.strftime("%B %d, %Y at %I:%M %p")
-    end
-
-    def status
-      I18n.t("flex.application_forms.status.#{application_form.status}")
     end
   end
 end

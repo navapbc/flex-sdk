@@ -29,14 +29,14 @@
         </tr>
       </thead>
       <tbody>
-        <% application_forms.each do |application| %>
+        <% application_forms.each do |application_form| %>
           <tr>
             <td>
               <% # TODO show in local time %>
-              <%= link_to application[:created_at], application[:path] %>
+              <%= link_to application_form[:created_at], application_form[:path] %>
             </td>
             <td>
-              <%= application[:status] %>
+              <%= t("flex.application_forms.statuses.#{application_form[:status]}") %>
             </td>
             <td>
               TODO
