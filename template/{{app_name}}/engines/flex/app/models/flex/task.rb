@@ -23,7 +23,6 @@ module Flex
     scope :where_not_completed, -> { where.not(status: :completed) }
     scope :where_type, ->(type) { where(type: type) }
     scope :order_by_due_on_desc, -> { order(due_on: :desc) }
-    scope :select_distinct_task_types, -> { distinct.pluck(:type) }
 
     def assign(user_id)
       self[:assignee_id] = user_id
