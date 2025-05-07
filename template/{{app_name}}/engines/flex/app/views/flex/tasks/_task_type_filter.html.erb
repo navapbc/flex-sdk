@@ -3,7 +3,7 @@
   <%= hidden_params_field :filter_status %>
   <%= form.label :filter_type, "Filter by due date", class: 'usa-label' %>
   <%= form.select :filter_type, 
-    distinct_task_type_options,
+    distinct_task_type_options(model_class),
     { include_blank: false, selected: params[:filter_type] },
     { class: 'usa-select', onchange: 'this.form.submit()' } %>
 <% end %>

@@ -1,8 +1,8 @@
 module Flex
   module TasksHelper
-    def distinct_task_type_options
-      task_types = Flex::Task.select_distinct_task_types.map do |type|
-        [ type.underscore.humanize, type ]
+    def distinct_task_type_options(klass)
+      task_types = klass.subclasses.map do |type|
+        [ type.name.demodulize.underscore.humanize, type.name ]
       end
 
       task_types.unshift([ "All tasks", "all" ])
