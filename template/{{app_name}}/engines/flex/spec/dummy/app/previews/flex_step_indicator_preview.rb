@@ -1,6 +1,8 @@
 class FlexStepIndicatorPreview < Lookbook::Preview
   layout "component_preview"
 
+  # @!group Statuses
+
   def in_progress
     render template: "flex/shared/_step_indicator", locals: {
       steps: [:in_progress, :submitted, :decision_made],
@@ -21,4 +23,6 @@ class FlexStepIndicatorPreview < Lookbook::Preview
       current_step: :decision_made
     }
   end
+
+  # @!endgroup
 end
