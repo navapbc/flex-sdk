@@ -1,4 +1,4 @@
-class StepIndicatorPreview < Lookbook::Preview
+class FlexStepIndicatorPreview < Lookbook::Preview
   layout "component_preview"
 
   def default
