@@ -1,4 +1,4 @@
-5.times do |index|
+50.times do |index|
   PassportCase.create!(
     passport_id: SecureRandom.uuid,
   )
@@ -9,8 +9,7 @@ ten_days_ago = Date.current - 10.days
   task = PassportVerifyInfoTask.create!(
     description: "Task description for #{index}",
     due_on: ten_days_ago + index.days,
-    case_id: PassportCase.pluck(:id).sample,
-    assignee_id: nil # Will change this after adding user model in the future
+    case_id: PassportCase.pluck(:id).sample
   )
 
   task.mark_completed if rand(0..2) == 0
@@ -20,8 +19,7 @@ end
   task = PassportPhotoTask.create!(
     description: "Task description for #{index}",
     due_on: ten_days_ago + index.days,
-    case_id: PassportCase.pluck(:id).sample,
-    assignee_id: nil # Will change this after adding user model in the future
+    case_id: PassportCase.pluck(:id).sample
   )
 
   task.mark_completed if rand(0..5) == 0
