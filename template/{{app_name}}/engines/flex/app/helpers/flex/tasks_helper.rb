@@ -2,14 +2,14 @@ module Flex
   module TasksHelper
     def distinct_task_type_options(klass)
       task_types = klass.subclasses.map do |type|
-        [ type.name.demodulize.underscore.humanize, type.name ]
+        [ humanize_task_type(type.name), type.name ]
       end
 
       task_types.unshift([ "All tasks", "all" ])
     end
 
     def humanize_task_type(type)
-      type.underscore.humanize
+      type.demodulize.underscore.humanize
     end
 
     def hidden_params_field(name)
