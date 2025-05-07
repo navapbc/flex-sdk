@@ -1,5 +1,6 @@
 class PassportTasksController < ApplicationController
   helper Flex::TasksHelper
+  helper Flex::DateHelper
 
   def index
     filter_tasks
