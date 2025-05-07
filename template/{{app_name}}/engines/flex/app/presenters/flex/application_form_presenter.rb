@@ -1,12 +1,23 @@
 module Flex
+  # Presenter for single application form views
+  # Handles presenting individual instances of a Flex::ApplicationForm or subclass
+  # of Flex::ApplicationForm
+  #
+  # @example
+  #   presenter = Flex::ApplicationFormPresenter.new(view_context, application_form)
+  #   render template: "flex/application_forms/show", locals: presenter.show
   class ApplicationFormPresenter < Flex::Presenter
     attr_reader :application_form
 
+    # @param view_context [ActionView::Base] the view context
+    # @param application_form [ApplicationForm] the application form to present
     def initialize(view_context, application_form)
       super(view_context)
       @application_form = application_form
     end
 
+    # Prepares data for index view list items
+    # @return [Hash] locals for the index list item
     def index
       {
         created_at: created_at,
@@ -15,6 +26,8 @@ module Flex
       }
     end
 
+    # Prepares data for the show view
+    # @return [Hash] locals for the show template
     def show
       {
         title: t_scoped("show.title"),
