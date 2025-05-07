@@ -14,7 +14,7 @@
 
     Example usage:
     <%= render template: "flex/application_forms/index",
-        locals: Flex::ApplicationFormsPresenter.new(self, @application_forms).index %>
+        locals: Flex::ApplicationFormsPresenter.new(self, @application_forms).index % >
 %>
 
 <% content_for :title, title %>
