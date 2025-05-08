@@ -1,1 +1,1 @@
-<%= render template: 'flex/tasks/index', locals: { model_class: PassportTask, task_type_map: { PassportPhotoTask => 'Verify Photo', PassportVerifyInfoTask => 'Verify Info' } } %>
+<%= render template: 'flex/tasks/index', locals: { model_class: PassportTask, task_type_map: Rails.configuration.passport[:task_type_map] } %>
