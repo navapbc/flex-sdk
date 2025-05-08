@@ -1,1 +1,1 @@
-<%= render template: 'flex/tasks/show', locals: { model_class: PassportTask } %>
+<%= render template: 'flex/tasks/show', locals: { model_class: PassportTask, task_type_map: Rails.configuration.passport[:task_type_map] } %>
