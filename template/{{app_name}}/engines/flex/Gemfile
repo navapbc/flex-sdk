@@ -20,6 +20,7 @@ group :development, :test do
 end
 
 group :development do
+  gem "faker"
   # Linting
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
