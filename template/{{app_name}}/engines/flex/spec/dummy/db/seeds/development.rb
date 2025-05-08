@@ -20,6 +20,7 @@ ten_days_ago = Date.current - 10.days
     case_id: PassportCase.pluck(:id).sample
   )
 
+  task.assign(User.pluck(:id).sample)
   task.mark_completed if rand(0..2) == 0
 end
 
@@ -30,5 +31,6 @@ end
     case_id: PassportCase.pluck(:id).sample
   )
 
+  task.assign(User.pluck(:id).sample)
   task.mark_completed if rand(0..5) == 0
 end
