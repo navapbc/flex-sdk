@@ -8,6 +8,7 @@ class PassportTasksController < ApplicationController
 
   def show
     @task = tasks.find(params[:id])
+    @assigned_user = User.find(@task.assignee_id) if @task.assignee_id
   end
 
   private
