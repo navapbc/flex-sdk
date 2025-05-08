@@ -60,7 +60,9 @@
           <td data-sort-value="<%= time_since_epoch task.due_on %>">
             <%= local_en_us task.due_on %>
           </td>
-          <td data-sort-value="<%= task.type %>"><%= find_task_type_human_readable_name(task_type_map, task.type) %></td>
+          <td data-sort-value="<%= task.type %>">
+            <%= link_to find_task_type_human_readable_name(task_type_map, task.type), passport_task_path(task) %>
+          </td>
           <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
           <td data-sort-value="<%= time_since_epoch task.created_at %>">
             <%= local_en_us task.created_at.to_date %>
