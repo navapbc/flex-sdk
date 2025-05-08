@@ -22,12 +22,5 @@ module Flex
     def hidden_params_field(name)
       hidden_field_tag(name, params[name]) if params[name].present?
     end
-
-    def tabs_configuration(model_class)
-      [
-          { name: "Assigned", path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
-          { name: "Completed", path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
-      ]
-    end
   end
 end

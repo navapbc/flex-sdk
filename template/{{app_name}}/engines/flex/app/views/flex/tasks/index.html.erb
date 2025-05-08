@@ -4,59 +4,64 @@
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
     <nav class="display-flex border-bottom-1px border-base-light">
-      <% tabs_configuration(model_class).each do |tab| %>
-        <%= render partial: "flex/cases/nav_tab", locals: tab %>
-      <% end %>
-    </nav>
-    <!-- Filters -->
-    <div class="grid-row grid-gap-4 margin-bottom-4">
-      <div class="grid-col-12 tablet:grid-col-3">
-        <%= render partial: 'flex/tasks/task_type_filter', locals: { task_type_map: task_type_map } %>
-      </div>
-      <div class="grid-col-12 tablet:grid-col-3">
-        <%= render partial: 'flex/tasks/task_due_date_filter' %>
-      </div>
+      <% 
+        [
+          { name: "Assigned", path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
+          { name: "Completed", path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+        ].each do |tab| 
+      %>
+      <%= render partial: "flex/cases/nav_tab", locals: tab %>
+    <% end %>
+  </nav>
+  <!-- Filters -->
+  <div class="grid-row grid-gap-4 margin-bottom-4">
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/task_type_filter', locals: { task_type_map: task_type_map } %>
     </div>
-    <% if @tasks.any? %>
-      <!-- Tasks -->
-      <table class="usa-table usa-table--striped usa-table--sticky-header">
-        <thead>
-          <tr>
-            <th data-sortable scope="col" role="columnheader" aria-sort="descending">
-              Task Due Date
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Task Type
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Case ID
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Task created date
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <%
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/task_due_date_filter' %>
+    </div>
+  </div>
+  <% if @tasks.any? %>
+    <!-- Tasks -->
+    <table class="usa-table usa-table--striped usa-table--sticky-header">
+      <thead>
+        <tr>
+          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
+            Task Due Date
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Task Type
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Case ID
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Task created date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
           @tasks.each do |task|
           %>
-          <tr>
-            <td data-sort-value="<%= time_since_epoch task.due_on %>">
-              <%= local_en_us task.due_on %>
-            </td>
-            <td data-sort-value="<%= task.type %>"><%= find_task_type_human_readable_name(task_type_map, task.type) %></td>
-            <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
-            <td data-sort-value="<%= time_since_epoch task.created_at %>">
-              <%= local_en_us task.created_at.to_date %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
-  <% else %>
-    <%= render partial: 'flex/tasks/no_tasks_alert' %>
-  <% end %>
+        <tr>
+          <td data-sort-value="<%= time_since_epoch task.due_on %>">
+            <%= local_en_us task.due_on %>
+          </td>
+          <td data-sort-value="<%= task.type %>"><%= find_task_type_human_readable_name(task_type_map, task.type) %></td>
+          <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
+          <td data-sort-value="<%= time_since_epoch task.created_at %>">
+            <%= local_en_us task.created_at.to_date %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
+<% else %>
+  <%= render partial: 'flex/tasks/no_tasks_alert' %>
+<% end %>
 </div>
 </div>
 </main>
