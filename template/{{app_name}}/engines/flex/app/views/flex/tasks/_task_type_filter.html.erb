@@ -1,7 +1,9 @@
-<label class="usa-label" for="filter_task">Filter by task type</label>
-<select class="usa-select" id="filter_task" name="filter_task">
-  <option value="all">All tasks</option>
-  <% Task.distinct.pluck(:type).sort.each |type| do %>
-    <option value="<%= type %>"><%= type.humanize %></option>
-  <% end %>
-</select>
+<%= form_with method: 'get' do |form| %>
+  <%= hidden_params_field :filter_date %>
+  <%= hidden_params_field :filter_status %>
+  <%= form.label :filter_type, "Filter by due date", class: 'usa-label' %>
+  <%= form.select :filter_type, \
+    task_type_options_for_select(task_type_map, params[:filter_type]),
+    { include_blank: false },
+    { class: 'usa-select', onchange: 'this.form.submit()' } %>
+<% end %>

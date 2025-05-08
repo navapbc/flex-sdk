@@ -1,0 +1,17 @@
+en:
+  passport_application_forms:
+    index:
+      title: "Passport Applications"
+      intro: "You can apply for a new passport or renew an existing passport."
+      new_button: "New Application"
+      in_progress_applications:
+        heading: "Existing applications"
+    show:
+      back: "Back to passport applications"
+      title: "Passport Application"
+      submitted_on: "Date submitted"
+      next_step:
+        status:
+          in_progress: "Your application is in progress."
+          submitted: "Your request has been received. We will notify you of the decision or if further action is needed on your part."
+

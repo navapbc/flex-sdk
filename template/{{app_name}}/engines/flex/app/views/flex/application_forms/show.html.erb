@@ -1,0 +1,40 @@
+<%# Show view for displaying a single application form
+    Required locals:
+    - title: String - Page title
+    - back_link_text: String - Text for the back link
+    - index_path: String - Path to return to index
+    - created_at: String - Formatted creation timestamp
+    - current_status: Symbol - Current application status
+    - next_step: String - Text describing the next step
+    - submitted_on_text: String - Label for submission date
+
+    Example usage:
+    render template: "flex/application_forms/show", locals: {
+      title: t(".title"),
+      back_link_text: t(".back"),
+      index_path: application_forms_path,
+      created_at: application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+      current_status: application_form.status,
+      next_step: t(".next_step.status.#{application_form.status}"),
+      submitted_on_text: t(".submitted_on")
+    }
+%>
+
+<% content_for :title, title %>
+
+<%= link_to back_link_text, index_path %>
+
+<h1><%= title %></h1>
+
+<%= render partial: "flex/shared/step_indicator", locals: {
+  steps: [:in_progress, :submitted, :decision_made],
+  current_step: current_status
+} %>
+
+<p class="usa-intro">
+  <%= next_step %>
+</p>
+
+<p>
+  <%= submitted_on_text %>: <%= created_at %>
+</p>

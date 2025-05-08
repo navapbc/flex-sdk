@@ -1,62 +1,78 @@
+<%# Index view for displaying a list of tasks
+    Required locals:
+    - model_class: Flex::Task or subclass - The model class for the tasks
+    - task_type_map: Hash - A mapping of task types to human-readable names
+
+    Example usage:
+    render template: "flex/application_forms/index", locals: {
+      model_class: PassportTask,
+      task_type_map: { PassportPhotoTask => 'Verify Photo', PassportVerifyInfoTask => 'Verify Info' }
+    }
+%>
 <%= content_for :title, model_class.name.titleize %>
 <!-- Main content -->
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
-    <% if @tasks.any? %>
-      <!-- Filters -->
-      <div class="grid-row grid-gap-4 margin-bottom-4">
-        <div class="grid-col-12 tablet:grid-col-3">
-          <%= render partial: 'flex/tasks/task_type_filter' %>
-        </div>
-        <div class="grid-col-12 tablet:grid-col-3">
-          <label class="usa-label" for="filter_task">Filter by due date</label>
-          <select class="usa-select" id="filter_task" name="filter_task">
-            <option value="all">All dates</option>
-          </select>
-        </div>
-      </div>
-      <!-- Tasks -->
-      <table class="usa-table usa-table--striped usa-table--sticky-header">
-        <thead>
-          <tr>
-            <th data-sortable scope="col" role="columnheader" aria-sort="descending">
-              Task Due Date
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Task Type
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Case ID
-            </th>
-            <th data-sortable scope="col" role="columnheader">
-              Task created date
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <%
+    <nav class="display-flex border-bottom-1px border-base-light">
+      <% 
+        [
+          { name: "Assigned", path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
+          { name: "Completed", path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+        ].each do |tab| 
+      %>
+      <%= render partial: "flex/cases/nav_tab", locals: tab %>
+    <% end %>
+  </nav>
+  <!-- Filters -->
+  <div class="grid-row grid-gap-4 margin-bottom-4">
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/task_type_filter', locals: { task_type_map: task_type_map } %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/task_due_date_filter' %>
+    </div>
+  </div>
+  <% if @tasks.any? %>
+    <!-- Tasks -->
+    <table class="usa-table usa-table--striped usa-table--sticky-header">
+      <thead>
+        <tr>
+          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
+            Task Due Date
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Task Type
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Case ID
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            Task created date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
           @tasks.each do |task|
           %>
-          <tr>
-            <td class="flex-task-due-date" data-sort-value="<%= task.due_on.to_fs(:number) %>">
-              <%= task.due_on.strftime("%m/%d/%Y") %>
-            </td>
-            <td data-sort-value="<%= task.type %>" class="flex-task-type"><%= task.type %></td>
-            <td data-sort-value="<%= task.case_id %>" class="flex-task-case-id"><%= task.case_id %></td>
-            <td
-              data-sort-value="<%= task.created_on.to_fs(:number) %>"
-              class="flex-task-created-date"
-            >
-              <%= task.created_on.strftime("%m/%d/%Y") %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <%= render partial: 'flex/tasks/no_tasks_alert' %>
-  <% end %>
+        <tr>
+          <td data-sort-value="<%= time_since_epoch task.due_on %>">
+            <%= local_en_us task.due_on %>
+          </td>
+          <td data-sort-value="<%= task.type %>"><%= find_task_type_human_readable_name(task_type_map, task.type) %></td>
+          <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
+          <td data-sort-value="<%= time_since_epoch task.created_at %>">
+            <%= local_en_us task.created_at.to_date %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
+<% else %>
+  <%= render partial: 'flex/tasks/no_tasks_alert' %>
+<% end %>
+</div>
 </div>
 </main>
-</div>
