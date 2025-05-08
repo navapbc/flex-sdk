@@ -4,6 +4,7 @@ RSpec.describe "passport_application_forms/index.html.erb", type: :view do
   let(:passport_application_forms) do
     [
       PassportApplicationForm.new(
+        id: 1,
         first_name: "John",
         last_name: "Doe",
         date_of_birth: Date.new(1990, 1, 1),

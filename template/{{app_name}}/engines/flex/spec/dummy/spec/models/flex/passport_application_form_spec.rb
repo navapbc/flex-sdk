@@ -21,6 +21,20 @@ module Flex
         passport_application_form.save!
       end
 
+      describe "saving and loading" do
+        it "saves the form with valid attributes" do
+          expect(passport_application_form).to be_valid
+          expect(passport_application_form).to be_persisted
+        end
+
+        it "loads the form with correct attributes" do
+          loaded_form = described_class.find(passport_application_form.id)
+          expect(loaded_form.first_name).to eq("John")
+          expect(loaded_form.last_name).to eq("Doe")
+          expect(loaded_form.date_of_birth).to eq(passport_application_form.date_of_birth)
+        end
+      end
+
       context "when attempting to update case_id" do
         it "prevents direct status updates when setting status directly" do
           expect { passport_application_form.case_id = 22 }.to raise_error(NoMethodError)

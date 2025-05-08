@@ -1,3 +1,29 @@
+<%# Index view for displaying a list of application forms
+    Required locals:
+    - title: String - Page title
+    - intro: String - Introduction text
+    - new_button_text: String - Text for the "New" button
+    - new_path: String - Path for the "New" button
+    - in_progress_applications_heading: String - Heading for the in-progress section
+    - application_forms: Array<Hash> - List of application form data with keys:
+        - created_at: String
+        - path: String
+        - status: Symbol
+
+    Example usage:
+    render template: "flex/application_forms/index", locals: {
+      title: t(".title"),
+      intro: t(".intro"),
+      new_button_text: t(".new_button"),
+      in_progress_applications_heading: t(".in_progress_applications.heading"),
+      application_forms: @application_forms.map { |form| {
+        created_at: form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+        path: application_form_path(form),
+        status: form.status
+      }}
+    }
+%>
+
 <% content_for :title, title %>
 
 <h1>
@@ -8,7 +34,7 @@
   <%= intro %>
 </p>
 
-<%= link_to new_button_text, "new", class: class_names("usa-button") %>
+<%= link_to new_button_text, new_path, class: class_names("usa-button") %>
 
 <% if not application_forms.empty? %>
   <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
@@ -29,14 +55,14 @@
         </tr>
       </thead>
       <tbody>
-        <% application_forms.each do |application| %>
+        <% application_forms.each do |application_form| %>
           <tr>
             <td>
               <% # TODO show in local time %>
-              <%= link_to application[:created_at], application[:path] %>
+              <%= link_to application_form[:created_at], application_form[:path] %>
             </td>
             <td>
-              <%= application[:status] %>
+              <%= t("flex.application_forms.statuses.#{application_form[:status]}") %>
             </td>
             <td>
               TODO

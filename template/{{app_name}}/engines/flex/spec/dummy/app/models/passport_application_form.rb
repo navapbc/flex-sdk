@@ -1,9 +1,12 @@
 class PassportApplicationForm < Flex::ApplicationForm
+  include Flex::Attributes
+
   before_create :create_passport_case, unless: -> { has_case_id? }
 
   attribute :first_name, :string
   attribute :last_name, :string
-  attribute :date_of_birth, :date
+
+  flex_attribute :date_of_birth, :memorable_date
 
   attribute :case_id, :integer
   private def case_id=(value)

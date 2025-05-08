@@ -5,7 +5,7 @@ en:
         col_created_at: "Created At"
         col_status: "Status"
         col_actions: "Actions"
-      status:
+      statuses:
         in_progress: "In Progress"
         submitted: "Submitted"
       steps:

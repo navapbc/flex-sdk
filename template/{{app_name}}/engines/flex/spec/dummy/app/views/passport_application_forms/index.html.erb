@@ -1,1 +1,12 @@
-<%= render template: "flex/application_forms/index", locals: Flex::ApplicationFormsPresenter.new(self, @passport_application_forms).index %>
+<%= render template: "flex/application_forms/index", locals: {
+  title: t(".title"),
+  intro: t(".intro"),
+  new_button_text: t(".new_button"),
+  new_path: new_passport_application_form_path,
+  in_progress_applications_heading: t(".in_progress_applications.heading"),
+  application_forms: @passport_application_forms.map { |form| {
+    created_at: form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+    path: passport_application_form_path(form),
+    status: form.status
+  }}
+} %>
