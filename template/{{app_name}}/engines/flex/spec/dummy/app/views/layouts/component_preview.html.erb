@@ -1,0 +1,24 @@
+<%# Layout for Lookbook previews of component partials %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <% # Temporary workaround in dummy app to get around SASS asset pipeline issues %>
+    <link rel="stylesheet" href="https://demo.pfml-accelerator-dev.navateam.com/assets/application-b918bc024f45f36022bb3ea3dd6cade6160147564a9d646d7f36271b0da9c25a.css">
+  </head>
+
+  <body>
+    <div class="display-flex flex-column minh-viewport">
+      <main id="main-content" class="grid-col-fill display-flex flex-column">
+        <div class="grid-col-fill <%= yield :main_col_class %>">
+          <div class="grid-container">
+            <%= content_for?(:content) ? yield(:content) : yield %>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </body>
+</html>

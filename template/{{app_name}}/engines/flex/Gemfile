@@ -17,10 +17,17 @@ group :development, :test do
   gem "guard-rspec", require: false
   gem "rspec-rails", "~> 7.0.0"
   gem "shoulda-matchers", "~> 6.0"
+
+  # Lookbook
+  gem "lookbook", ">= 2.3.9"
 end
 
 group :development do
   # Linting
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
+
+  # Hot reloading for Lookbook
+  gem "listen"
+  gem "actioncable"
 end
