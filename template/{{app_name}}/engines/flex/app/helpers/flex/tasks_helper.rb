@@ -1,15 +1,22 @@
 module Flex
   module TasksHelper
-    def distinct_task_type_options(klass)
-      task_types = klass.subclasses.map do |type|
-        [ humanize_task_type(type.name), type.name ]
-      end
+    def find_task_type_human_readable_name(task_type_map, task_type)
+      _, human_readable_name = task_type_map.find { |type, _| type.name == task_type }
 
-      task_types.unshift([ "All tasks", "all" ])
+      human_readable_name
     end
 
-    def humanize_task_type(type)
-      type.demodulize.underscore.humanize
+    def task_type_options_for_select(task_type_map = {}, selected = nil)
+      safe_join([
+        tag.option("All tasks", value: ""),
+        task_type_map.map do |task_type, human_readable_task_type|
+          tag.option(
+            human_readable_task_type,
+            value: task_type.name,
+            selected: task_type.name == selected
+          )
+        end
+      ])
     end
 
     def hidden_params_field(name)
