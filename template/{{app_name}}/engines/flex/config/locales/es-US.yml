@@ -1,0 +1,15 @@
+es-US:
+  flex:
+    application_forms:
+      index:
+        col_created_at: "Fecha de creación"
+        col_status: "Estado"
+        col_actions: "Acciones"
+      statuses:
+        in_progress: "En progreso"
+        submitted: "Enviado"
+      steps:
+        in_progress: "Enviado"
+        submitted: "En revisión"
+        decision_made: "Determinación realizada"
+

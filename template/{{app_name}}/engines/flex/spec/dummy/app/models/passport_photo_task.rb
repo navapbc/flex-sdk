@@ -1,0 +1,2 @@
+class PassportPhotoTask < PassportTask
+end
