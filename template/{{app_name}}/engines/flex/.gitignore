@@ -17,3 +17,6 @@ spec/**/tmp/*
 # Ignore local storage files created for local testing
 spec/dummy/storage/*.sqlite[0-9]*
 spec/dummy/db/*.sqlite[0-9]*
+
+# simplecov coverage report
+coverage/*
