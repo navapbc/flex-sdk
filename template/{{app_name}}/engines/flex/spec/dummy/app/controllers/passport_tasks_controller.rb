@@ -6,6 +6,10 @@ class PassportTasksController < ApplicationController
     filter_tasks
   end
 
+  def show
+    @task = tasks.find(params[:id])
+  end
+
   private
   def index_filter_params
     params.permit(:filter_date, :filter_type, :filter_status)
