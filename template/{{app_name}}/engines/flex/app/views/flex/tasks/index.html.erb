@@ -1,3 +1,14 @@
+<%# Index view for displaying a list of tasks
+    Required locals:
+    - model_class: Flex::Task or subclass - The model class for the tasks
+    - task_type_map: Hash - A mapping of task types to human-readable names
+
+    Example usage:
+    render template: "flex/application_forms/index", locals: {
+      model_class: PassportTask,
+      task_type_map: { PassportPhotoTask => 'Verify Photo', PassportVerifyInfoTask => 'Verify Info' }
+    }
+%>
 <%= content_for :title, model_class.name.titleize %>
 <!-- Main content -->
 <main class="usa-section">
