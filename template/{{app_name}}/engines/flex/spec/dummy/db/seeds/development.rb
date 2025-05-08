@@ -1,3 +1,11 @@
+users = 10.times.collect do |index|
+  User.new(
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name
+  )
+end
+User.insert_all(users)
+
 50.times do |index|
   PassportCase.create!(
     passport_id: SecureRandom.uuid,
