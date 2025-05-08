@@ -2,12 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { TestCase.create! }
-  let(:task) { described_class.new }
-
-  before do
-    task.set_case(kase.id)
-    task.description = 'Test task description'
-  end
+  let(:task) { described_class.create!(case_id: kase.id, description: 'Test task description') }
 
   context 'when attempting to set readonly attributes' do
     describe 'status attribute' do
@@ -16,15 +11,21 @@ RSpec.describe Flex::Task, type: :model do
       end
     end
 
-    describe 'case_id attribute' do
+    describe 'assignee_id attribute' do
       it 'cannot be modified directly' do
-        expect { task.case_id = rand(1..1000).to_s }.to raise_error(NoMethodError)
+        expect { task.assignee_id = SecureRandom.uuid }.to raise_error(NoMethodError)
       end
     end
 
-    describe 'assignee_id attribute' do
+    describe 'case_id attribute' do
       it 'cannot be modified directly' do
-        expect { task.assignee_id = rand(1..1000).to_s }.to raise_error(NoMethodError)
+        expect { task.case_id = SecureRandom.uuid }.to raise_error(ActiveRecord::ReadonlyAttributeError)
+      end
+    end
+
+    describe 'type attribute' do
+      it 'cannot be modified directly' do
+        expect { task.type = SecureRandom.hex }.to raise_error(ActiveRecord::ReadonlyAttributeError)
       end
     end
   end
@@ -67,13 +68,7 @@ RSpec.describe Flex::Task, type: :model do
 
   describe 'validations' do
     it 'validates presence of case_id on create' do
-      expect { task.set_case(nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
-    end
-
-    it 'validates presence of case_id on update' do
-      task.save!
-
-      expect { task.set_case(nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+      expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
     end
   end
 end

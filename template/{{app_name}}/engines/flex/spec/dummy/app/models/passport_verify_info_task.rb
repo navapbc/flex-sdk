@@ -1,0 +1,2 @@
+class PassportVerifyInfoTask < PassportTask
+end

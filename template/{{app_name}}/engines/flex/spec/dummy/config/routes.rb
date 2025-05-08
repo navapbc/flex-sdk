@@ -8,4 +8,5 @@ Rails.application.routes.draw do
   end
 
   resources :passport_application_forms, only: [ :index, :new, :show ]
+  resources :passport_tasks, only: [ :index ]
 end

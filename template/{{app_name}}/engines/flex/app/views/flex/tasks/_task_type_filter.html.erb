@@ -1,0 +1,9 @@
+<%= form_with method: 'get' do |form| %>
+  <%= hidden_params_field :filter_date %>
+  <%= hidden_params_field :filter_status %>
+  <%= form.label :filter_type, "Filter by due date", class: 'usa-label' %>
+  <%= form.select :filter_type, \
+    task_type_options_for_select(task_type_map, params[:filter_type]),
+    { include_blank: false },
+    { class: 'usa-select', onchange: 'this.form.submit()' } %>
+<% end %>
