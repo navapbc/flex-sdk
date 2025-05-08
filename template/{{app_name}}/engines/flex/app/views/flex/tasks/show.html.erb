@@ -11,37 +11,21 @@
       </ol>
     </nav>
     <h1 class="usa-heading-xl">Task ID: <%= @task.id %></h1>
-    <%= yield :case_summary %>
-    <p>Status: <%= render partial: "flex/tasks/status_tag", locals: { status: @task.status } %></p>
-    <div class="grid-row grid-gap border-top-2px border-base-lighter padding-top-2">
-      <div class="tablet:grid-col-3 margin-bottom-4 tablet:margin-bottom-0">
-        <nav aria-label="Side navigation,">
-          <% # TODO In future we may want subclasses to be able to override or control which nav items appear %>
-          <ul class="usa-sidenav">
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);" class="usa-current">Overview</a>
-            </li>
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);">Tasks</a>
-            </li>
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);">Application details</a>
-            </li>
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);">Documents</a>
-            </li>
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);">Case history</a>
-            </li>
-            <li class="usa-sidenav__item">
-              <a href="javascript:void(0);">Notes</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div class="tablet:grid-col-9">
-        <%= yield :case_details %>
+    <div className="maxw-tablet">
+      <div className="border-bottom-1px margin-bottom-3 padding-bottom-3">
+        <div class="grid-container">
+          <div class="grid-row grid-gap-2">
+            <div class="grid-col-auto">
+              <strong>Task status:</strong> <%= @task.status.humanize %>
+            </div>
+            <div class="grid-col-auto">
+              <strong>Due date:</strong> <%= local_en_us @task.due_on %>
+            </div>
+            <div class="grid-col-auto">
+              <strong>Assigned to:</strong>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
