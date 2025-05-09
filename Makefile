@@ -3,7 +3,9 @@
 	lint-ci \
 	test \
 	test-coverage \
-	test-watch
+	test-watch \
+	typecheck \
+	help
 
 setup:
 	bundle install
@@ -22,6 +24,9 @@ test-watch: ## Watch for file changes and run the test suite
 
 test-coverage: ## Open the test coverage report
 	open coverage/index.html
+
+typecheck: ## Run type checking
+	bundle exec steep check	
 
 help: ## Prints the help documentation and info about each command
 	@grep -Eh '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
