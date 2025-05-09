@@ -1,13 +1,22 @@
-/.bundle/
-/doc/
-/log/*.log
-/pkg/
-/tmp/
-/test/dummy/db/*.sqlite3
-/test/dummy/db/*.sqlite3-*
-/test/dummy/log/*.log
-/test/dummy/storage/
-/test/dummy/tmp/
+# These items were pulled from https://github.com/github/gitignore/blob/main/Rails.gitignore
+
+# Ignore all logfiles and tempfiles.
+tmp/
+spec/**/log/*
+spec/**/tmp/*
+!spec/**/log/.keep
+!spec/**/tmp/.keep
 
 # VS Code workspace
 *.code-workspace
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+# Gemfile.lock
+
+# Ignore local storage files created for local testing
+spec/dummy/storage/*.sqlite[0-9]*
+spec/dummy/db/*.sqlite[0-9]*
+
+# simplecov coverage report
+coverage/*
