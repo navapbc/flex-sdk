@@ -48,8 +48,10 @@ jobs:
           ruby-version: ${{ steps.ruby-version.outputs.RUBY_VERSION }}
 
       - name: Update flex
-        working-directory: project-repo
-        run: cd ${{ matrix.project.app }} && bundle update flex
+        working-directory: project-repo/${{ matrix.project.app }}
+        run: |
+          bundle install
+          bundle update flex
 
       - name: Commit changes
         working-directory: project-repo
