@@ -19,9 +19,6 @@ jobs:
         project:
           - repo: navapbc/pfml-starter-kit-app
             app: demo
-    defaults:
-      run:
-        working-directory: project-repo/${{ matrix.project.app }}
 
     steps:
       - name: Checkout project repo
@@ -38,7 +35,17 @@ jobs:
           git config user.email platform-admins@navapbc.com
           git config --global url."https://nava-platform-bot:${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}@github.com/navapbc/".insteadOf "https://github.com/navapbc/"
 
+      # Get Ruby version manually from the .ruby-version file since working-directory is the project repo root rather than the app directory
+      # so setup-ruby doesn't find the .ruby-version file automatically
+      - name: Get Ruby version
+        id: ruby-version
+        working-directory: project-repo
+        run: |
+          echo "RUBY_VERSION=$(cat ${{ matrix.project.app }}/.ruby-version)" >> "$GITHUB_OUTPUT"
+
       - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby-version.outputs.RUBY_VERSION }}
 
       - name: Update flex
         working-directory: project-repo
