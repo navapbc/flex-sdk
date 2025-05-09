@@ -20,3 +20,6 @@ spec/dummy/db/*.sqlite[0-9]*
 
 # simplecov coverage report
 coverage/*
+
+# typechecking
+.gem_rbs_collection
