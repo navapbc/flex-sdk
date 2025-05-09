@@ -27,6 +27,8 @@ jobs:
           repository: ${{ matrix.project.repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
 
+      - uses: ruby/setup-ruby@v1
+
       - name: Configure git
         working-directory: project-repo
         run: |
