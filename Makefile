@@ -5,7 +5,6 @@
 	test-coverage \
 	test-watch \
 	typecheck \
-	typecheck-setup \
 	help
 
 setup:
