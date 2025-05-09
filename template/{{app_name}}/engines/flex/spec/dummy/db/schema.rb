@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_184707) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_09_200617) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -20,10 +20,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_184707) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "due_on"
-    t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee_id"
-    t.index [ "case_id" ], name: "index_flex_tasks_on_case_id"
-    t.index [ "status" ], name: "index_flex_tasks_on_status"
-    t.index [ "type" ], name: "index_flex_tasks_on_type"
+    t.index ["assignee_id"], name: "index_flex_tasks_on_assignee_id"
+    t.index ["case_id"], name: "index_flex_tasks_on_case_id"
+    t.index ["status"], name: "index_flex_tasks_on_status"
+    t.index ["type"], name: "index_flex_tasks_on_type"
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
@@ -31,13 +31,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_184707) do
     t.string "last_name"
     t.date "date_of_birth"
     t.integer "status", default: 0
-    t.integer "case_id"
+    t.string "case_id", limit: 36, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
+    t.index ["case_id"], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
-  create_table "passport_cases", force: :cascade do |t|
+  create_table "passport_cases", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "passport_id", limit: 36, null: false
     t.string "business_process_current_step"

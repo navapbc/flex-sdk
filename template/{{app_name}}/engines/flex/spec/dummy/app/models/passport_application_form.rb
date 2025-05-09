@@ -8,7 +8,7 @@ class PassportApplicationForm < Flex::ApplicationForm
 
   flex_attribute :date_of_birth, :memorable_date
 
-  attribute :case_id, :integer
+  attribute :case_id, :string, limit: 36
   private def case_id=(value)
     self[:case_id] = value
   end
@@ -19,6 +19,10 @@ class PassportApplicationForm < Flex::ApplicationForm
 
   def submit_application
     has_all_necessary_fields? ? super : false
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
   protected
@@ -35,7 +39,7 @@ class PassportApplicationForm < Flex::ApplicationForm
   end
 
   def create_passport_case
-    kase = PassportCase.create
+    kase = PassportCase.create!
     self.case_id = kase.id
   end
 end

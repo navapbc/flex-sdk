@@ -1,4 +1,5 @@
-<main class="usa-section">
+<% task_type_with_name = find_task_type_human_readable_name(task_type_map, @task.type) + " - " + @application_form.full_name || "TBD" %>
+<main class="usa-section usa-prose">
   <div class="grid-container">
     <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
       <ol class="usa-breadcrumb__list">
@@ -9,11 +10,11 @@
           <%= link_to "Tasks", polymorphic_path(model_class), class: "usa-breadcrumb__link" %>
         </li>
         <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-          <span><%= find_task_type_human_readable_name(task_type_map, @task.type) %></span>
+          <span><%= task_type_with_name %></span>
         </li>
       </ol>
     </nav>
-    <h1 class="usa-heading-xl"><%= find_task_type_human_readable_name(task_type_map, @task.type) %></h1>
+    <h1 class="section-heading-h1"><%= task_type_with_name %></h1>
     <div class="border-bottom-1px margin-bottom-3 padding-bottom-3">
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
@@ -29,4 +30,5 @@
         </div>
       </div>
     </div>
+    <h2 class="section-heading-h2">Task Details</h2>
   </main>
