@@ -1,6 +1,6 @@
 # Leaving a project
 
-When Ava leaves a project, we will need to remove access to the private flex SDK repository. In order for the client project to continue functioning the client will need to have a copy of the flex SDK locally.
+When Nava leaves a project, we will need to remove access to the private flex SDK repository. In order for the client project to continue functioning the client will need to have a copy of the flex SDK locally.
 
 ## Steps
 
