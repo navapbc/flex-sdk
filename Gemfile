@@ -27,6 +27,10 @@ group :development do
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
 
+  # Type checking
+  gem "rbs"
+  gem "steep", require: false
+
   # Hot reloading for Lookbook
   gem "listen"
   gem "actioncable"
