@@ -57,7 +57,7 @@ jobs:
         working-directory: project-repo
         run: |
           git add .
-          git commit -m "Update flex to ${{ github.ref }}" || echo "No changes to commit"
+          git commit -m "Update flex to ${{ github.sha }}" || echo "No changes to commit"
 
       - name: Push changes to project repo
         working-directory: project-repo
