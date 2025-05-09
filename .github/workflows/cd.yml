@@ -19,6 +19,10 @@ jobs:
         project:
           - repo: navapbc/pfml-starter-kit-app
             app: demo
+    defaults:
+      run:
+        working-directory: project-repo/${{ matrix.project.app }}
+
     steps:
       - name: Checkout project repo
         uses: actions/checkout@v4
@@ -35,7 +39,7 @@ jobs:
           git config --global url."https://nava-platform-bot:${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}@github.com/navapbc/".insteadOf "https://github.com/navapbc/"
 
       - uses: ruby/setup-ruby@v1
-        working-directory: project-repo/${{ matrix.project.app }}
+
       - name: Update flex
         working-directory: project-repo
         run: cd ${{ matrix.project.app }} && bundle update flex
