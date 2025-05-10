@@ -147,69 +147,98 @@ module Flex
         end
 
         def date_range_attribute(name, options)
-          # Create the start and end date attributes
-          attribute "#{name}_start", :date
-          attribute "#{name}_end", :date
-
           # Add validation for the range
           validate :"validate_#{name}_range"
 
-          # Define getter method for the range
-          define_method name do
-            start_date = send("#{name}_start")
-            end_date = send("#{name}_end")
+          # Set up the composed_of relationship for ActiveRecord models
+          if self <= ActiveRecord::Base
+            composed_of name,
+              class_name: 'Range',
+              mapping: [
+                ["#{name}_start", "begin"],
+                ["#{name}_end", "end"]
+              ],
+              allow_nil: true,
+              constructor: Proc.new { |start_date, end_date| 
+                if start_date.nil? || end_date.nil?
+                  nil
+                else
+                  start_date..end_date
+                end
+              },
+              converter: Proc.new { |value| 
+                if value.nil?
+                  nil
+                elsif value.is_a?(Range) && value.begin.is_a?(Date) && value.end.is_a?(Date)
+                  value
+                elsif value.is_a?(Hash) && value[:start].present? && value[:end].present?
+                  Date.parse(value[:start].to_s)..Date.parse(value[:end].to_s)
+                else
+                  nil
+                end
+              }
+          else
+            # For non-ActiveRecord models (like in tests), provide basic attribute functionality
+            attribute "#{name}_start", :date
+            attribute "#{name}_end", :date
 
-            # Return nil if both start and end are nil
-            return nil if start_date.nil? && end_date.nil?
+            # Define getter method for the range
+            define_method name do
+              start_date = send("#{name}_start")
+              end_date = send("#{name}_end")
 
-            # If only one is nil, the validation will catch this, but we need to return something
-            return nil if start_date.nil? || end_date.nil?
+              # Return nil if both start and end are nil
+              return nil if start_date.nil? && end_date.nil?
 
-            # Return a Range with the start and end dates
-            start_date..end_date
-          end
+              # If only one is nil, the validation will catch this, but we need to return something
+              return nil if start_date.nil? || end_date.nil?
 
-          # Define setter method for the range
-          define_method "#{name}=" do |value|
-            return if value.nil?
+              # Return a Range with the start and end dates
+              start_date..end_date
+            end
 
-            case value
-            when Range
-              if value.begin.is_a?(Date) && value.end.is_a?(Date)
-                send("#{name}_start=", value.begin)
-                send("#{name}_end=", value.end)
+            # Define setter method for the range
+            define_method "#{name}=" do |value|
+              return if value.nil?
+
+              case value
+              when Range
+                if value.begin.is_a?(Date) && value.end.is_a?(Date)
+                  send("#{name}_start=", value.begin)
+                  send("#{name}_end=", value.end)
+                else
+                  begin
+                    start_date = Date.parse(value.begin.to_s)
+                    end_date = Date.parse(value.end.to_s)
+                    send("#{name}_start=", start_date)
+                    send("#{name}_end=", end_date)
+                  rescue Date::Error
+                    # Invalid date, will be caught by validation
+                    send("#{name}_start=", nil)
+                    send("#{name}_end=", nil)
+                  end
+                end
+              when Hash
+                if value[:start].present? && value[:end].present?
+                  begin
+                    start_date = value[:start].is_a?(Date) ? value[:start] : Date.parse(value[:start].to_s)
+                    end_date = value[:end].is_a?(Date) ? value[:end] : Date.parse(value[:end].to_s)
+                    send("#{name}_start=", start_date)
+                    send("#{name}_end=", end_date)
+                  rescue Date::Error
+                    # Invalid date, will be caught by validation
+                    send("#{name}_start=", nil)
+                    send("#{name}_end=", nil)
+                  end
+                elsif value[:start].nil? && value[:end].nil?
+                  send("#{name}_start=", nil)
+                  send("#{name}_end=", nil)
+                end
               else
-                begin
-                  start_date = Date.parse(value.begin.to_s)
-                  end_date = Date.parse(value.end.to_s)
-                  send("#{name}_start=", start_date)
-                  send("#{name}_end=", end_date)
-                rescue Date::Error
-                  # Invalid date, will be caught by validation
-                  send("#{name}_start=", nil)
-                  send("#{name}_end=", nil)
-                end
-              end
-            when Hash
-              if value[:start].present? && value[:end].present?
-                begin
-                  start_date = value[:start].is_a?(Date) ? value[:start] : Date.parse(value[:start].to_s)
-                  end_date = value[:end].is_a?(Date) ? value[:end] : Date.parse(value[:end].to_s)
-                  send("#{name}_start=", start_date)
-                  send("#{name}_end=", end_date)
-                rescue Date::Error
-                  # Invalid date, will be caught by validation
-                  send("#{name}_start=", nil)
-                  send("#{name}_end=", nil)
-                end
-              elsif value[:start].nil? && value[:end].nil?
+                # Invalid value, will be caught by validation
                 send("#{name}_start=", nil)
                 send("#{name}_end=", nil)
               end
-            else
-              # Invalid value, will be caught by validation
-              send("#{name}_start=", nil)
-              send("#{name}_end=", nil)
             end
           end
 
