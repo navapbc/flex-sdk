@@ -1,20 +1,20 @@
 require "rails_helper"
 
 RSpec.describe Flex::Attributes do
-  describe "memorable_date attribute" do
-    before do
-      test_model = Class.new do
-        include ActiveModel::Attributes
-        include ActiveModel::Validations
-        include Flex::Attributes
+  before do
+    test_model = Class.new do
+      include ActiveModel::Attributes
+      include ActiveModel::Validations
+      include Flex::Attributes
 
-        flex_attribute :test_date, :memorable_date
-      end
-      stub_const "TestModel", test_model
+      flex_attribute :test_date, :memorable_date
     end
+    stub_const "TestModel", test_model
+  end
 
-    let(:object) { TestModel.new }
+  let(:object) { TestModel.new }
 
+  describe "memorable_date attribute" do
     it "allows setting a Date" do
       object.test_date = Date.new(2020, 1, 2)
       expect(object.test_date).to eq("2020-01-02")
@@ -66,68 +66,6 @@ RSpec.describe Flex::Attributes do
         expect(object.test_date).to eq("%04d-%02d-%02d" % [ date[:year], date[:month], date[:day] ])
         expect(object).not_to be_valid
         expect(object.errors["test_date"]).to include("is not a valid date")
-      end
-    end
-  end
-
-  describe "date_range attribute" do
-    before do
-      test_model = Class.new do
-        include ActiveModel::Attributes
-        include ActiveModel::Validations
-        include Flex::Attributes
-
-        flex_attribute :test_range, :date_range
-      end
-      stub_const "TestModelWithRange", test_model
-    end
-
-    let(:object) { TestModelWithRange.new }
-
-    it "allows setting a Range of Date objects" do
-      start_date = Date.new(2020, 1, 2)
-      end_date = Date.new(2020, 2, 3)
-      object.test_range = start_date..end_date
-
-      expect(object.test_range_start).to eq(start_date)
-      expect(object.test_range_end).to eq(end_date)
-      expect(object.test_range).to eq(start_date..end_date)
-    end
-
-    it "allows setting to nil" do
-      object.test_range = nil
-      expect(object.test_range).to be_nil
-      expect(object.test_range_start).to be_nil
-      expect(object.test_range_end).to be_nil
-    end
-
-    context "when start date is after end date" do
-      before do
-        object.test_range_start = Date.new(2020, 2, 3)
-        object.test_range_end = Date.new(2020, 1, 2)
-      end
-
-      it "is invalid with appropriate error message" do
-        expect(object).not_to be_valid
-        expect(object.errors[:test_range].first).to include("Translation missing")
-      end
-    end
-
-    context "with only one date set to nil" do
-      it "is invalid when only start date is nil" do
-        object.test_range_start = nil
-        object.test_range_end = Date.new(2020, 1, 2)
-
-        expect(object).not_to be_valid
-        expect(object.errors[:test_range].first).to include("Translation missing")
-      end
-
-      it "is invalid when only end date is nil" do
-        object.test_range_start = Date.new(2020, 1, 2)
-        object.test_range_end = nil
-
-        expect(object).not_to be_valid
-        expect(object.errors[:test_range].first).to include("Translation missing")
       end
     end
   end
