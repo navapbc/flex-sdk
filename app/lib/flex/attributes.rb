@@ -52,10 +52,71 @@ module Flex
       end
     end
 
+    # A custom ActiveRecord type that allows storing a date range.
+    # This type handles the conversion between various input formats and a Ruby Range object.
+    class DateRangeType < ActiveRecord::Type::Value
+      def cast(value)
+        return nil if value.nil?
+        
+        case value
+        when Range
+          if value.begin.is_a?(Date) && value.end.is_a?(Date)
+            value
+          else
+            begin
+              Date.parse(value.begin.to_s)..Date.parse(value.end.to_s)
+            rescue Date::Error
+              raise ArgumentError, "Invalid date range: #{value.inspect}. Expected Range with valid Date objects."
+            end
+          end
+        when Hash
+          if value[:start].present? && value[:end].present?
+            begin
+              start_date = cast_date_value(value[:start])
+              end_date = cast_date_value(value[:end])
+              start_date..end_date
+            rescue Date::Error
+              raise ArgumentError, "Invalid date range: #{value.inspect}. Expected Hash with valid :start and :end dates."
+            end
+          elsif value[:start].nil? && value[:end].nil?
+            nil
+          else
+            raise ArgumentError, "Invalid date range: #{value.inspect}. Both start and end must be present or both must be nil."
+          end
+        else
+          raise ArgumentError, "Invalid value for date range: #{value.inspect}. Expected Range or Hash with :start and :end keys."
+        end
+      end
+      
+      def type
+        :date_range
+      end
+      
+      private
+      
+      def cast_date_value(value)
+        case value
+        when Date
+          value
+        when Hash
+          year = value[:year].to_s
+          month = value[:month].to_s
+          day = value[:day].to_s
+          Date.parse("#{year}-#{month}-#{day}")
+        when String
+          Date.parse(value)
+        else
+          raise ArgumentError, "Invalid date value: #{value.inspect}. Expected Date, Hash, or String."
+        end
+      end
+    end
+
     class_methods do
       def flex_attribute(name, type, options = {})
         if type == :memorable_date
           memorable_date_attribute name, options
+        elsif type == :date_range
+          date_range_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
@@ -81,6 +142,120 @@ module Flex
               Date.strptime(value, "%Y-%m-%d")
             rescue Date::Error
               errors.add(name, :invalid_date, message: "is not a valid date")
+            end
+          end
+        end
+        
+        def date_range_attribute(name, options)
+          # Create the start and end date attributes
+          attribute "#{name}_start", DateStringType.new
+          attribute "#{name}_end", DateStringType.new
+          
+          # Add validation for the dates
+          validate :"validate_#{name}_start"
+          validate :"validate_#{name}_end"
+          validate :"validate_#{name}_range"
+          
+          if options[:presence]
+            validates "#{name}_start", "#{name}_end", presence: true
+          end
+          
+          # Define getter method for the range
+          define_method name do
+            start_value = send("#{name}_start")
+            end_value = send("#{name}_end")
+            
+            # Return nil if both start and end are nil
+            return nil if start_value.nil? && end_value.nil?
+            
+            # If only one is nil, the validation will catch this, but we need to return something
+            return nil if start_value.nil? || end_value.nil?
+            
+            begin
+              start_date = Date.strptime(start_value, "%Y-%m-%d")
+              end_date = Date.strptime(end_value, "%Y-%m-%d")
+              start_date..end_date
+            rescue Date::Error
+              # Return nil if dates are invalid
+              nil
+            end
+          end
+          
+          # Define setter method for the range
+          define_method "#{name}=" do |value|
+            return if value.nil?
+            
+            range_value = DateRangeType.new.cast(value)
+            
+            if range_value.nil?
+              # If the range is nil, set both start and end to nil
+              send("#{name}_start=", nil)
+              send("#{name}_end=", nil)
+            else
+              # Set the start and end dates
+              start_date = range_value.begin
+              end_date = range_value.end
+              
+              send("#{name}_start=", {
+                year: start_date.year.to_s,
+                month: start_date.month.to_s,
+                day: start_date.day.to_s
+              })
+              
+              send("#{name}_end=", {
+                year: end_date.year.to_s,
+                month: end_date.month.to_s,
+                day: end_date.day.to_s
+              })
+            end
+          end
+          
+          # Create validation methods for start and end dates
+          define_method "validate_#{name}_start" do
+            value = send("#{name}_start")
+            return if value.nil?
+            
+            begin
+              Date.strptime(value, "%Y-%m-%d")
+            rescue Date::Error
+              errors.add("#{name}_start", :invalid_date)
+            end
+          end
+          
+          define_method "validate_#{name}_end" do
+            value = send("#{name}_end")
+            return if value.nil?
+            
+            begin
+              Date.strptime(value, "%Y-%m-%d")
+            rescue Date::Error
+              errors.add("#{name}_end", :invalid_date)
+            end
+          end
+          
+          # Create validation method for the range
+          define_method "validate_#{name}_range" do
+            start_value = send("#{name}_start")
+            end_value = send("#{name}_end")
+            
+            # Allow both nil (entire range is nil) but not one nil and one present
+            if (start_value.nil? && !end_value.nil?) || (!start_value.nil? && end_value.nil?)
+              errors.add(name, :invalid_date_range_nil)
+              return
+            end
+            
+            # Skip validation if both are nil
+            return if start_value.nil? && end_value.nil?
+            
+            begin
+              start_date = Date.strptime(start_value, "%Y-%m-%d")
+              end_date = Date.strptime(end_value, "%Y-%m-%d")
+              
+              if start_date > end_date
+                errors.add(name, :invalid_date_range)
+              end
+            rescue Date::Error
+              # This will be caught by the individual date validations
             end
           end
         end
