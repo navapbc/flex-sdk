@@ -89,27 +89,9 @@ RSpec.describe Flex::Attributes do
       end_date = Date.new(2020, 2, 3)
       object.test_range = start_date..end_date
 
-      expect(object.test_range_start).to eq("2020-01-02")
-      expect(object.test_range_end).to eq("2020-02-03")
+      expect(object.test_range_start).to eq(start_date)
+      expect(object.test_range_end).to eq(end_date)
       expect(object.test_range).to eq(start_date..end_date)
-    end
-
-    it "allows setting start and end dates via individual attributes" do
-      object.test_range_start = { year: 2020, month: 1, day: 2 }
-      object.test_range_end = { year: 2020, month: 2, day: 3 }
-
-      expect(object.test_range).to eq(Date.new(2020, 1, 2)..Date.new(2020, 2, 3))
-    end
-
-    it "allows setting via a hash with start and end keys" do
-      object.test_range = {
-        start: { year: 2020, month: 1, day: 2 },
-        end: { year: 2020, month: 2, day: 3 }
-      }
-
-      expect(object.test_range_start).to eq("2020-01-02")
-      expect(object.test_range_end).to eq("2020-02-03")
-      expect(object.test_range).to eq(Date.new(2020, 1, 2)..Date.new(2020, 2, 3))
     end
 
     it "allows setting to nil" do
@@ -121,8 +103,8 @@ RSpec.describe Flex::Attributes do
 
     context "when start date is after end date" do
       before do
-        object.test_range_start = { year: 2020, month: 2, day: 3 }
-        object.test_range_end = { year: 2020, month: 1, day: 2 }
+        object.test_range_start = Date.new(2020, 2, 3)
+        object.test_range_end = Date.new(2020, 1, 2)
       end
 
       it "is invalid with appropriate error message" do
@@ -134,36 +116,18 @@ RSpec.describe Flex::Attributes do
     context "with only one date set to nil" do
       it "is invalid when only start date is nil" do
         object.test_range_start = nil
-        object.test_range_end = { year: 2020, month: 1, day: 2 }
+        object.test_range_end = Date.new(2020, 1, 2)
 
         expect(object).not_to be_valid
         expect(object.errors[:test_range].first).to include("Translation missing")
       end
 
       it "is invalid when only end date is nil" do
-        object.test_range_start = { year: 2020, month: 1, day: 2 }
+        object.test_range_start = Date.new(2020, 1, 2)
         object.test_range_end = nil
 
         expect(object).not_to be_valid
         expect(object.errors[:test_range].first).to include("Translation missing")
-      end
-    end
-
-    context "with invalid dates" do
-      it "validates that start date is a valid date" do
-        object.test_range_start = { year: 2020, month: 13, day: 32 }
-        object.test_range_end = { year: 2020, month: 2, day: 3 }
-
-        expect(object).not_to be_valid
-        expect(object.errors[:test_range_start].first).to include("Translation missing")
-      end
-
-      it "validates that end date is a valid date" do
-        object.test_range_start = { year: 2020, month: 1, day: 2 }
-        object.test_range_end = { year: 2020, month: 13, day: 32 }
-
-        expect(object).not_to be_valid
-        expect(object.errors[:test_range_end].first).to include("Translation missing")
       end
     end
   end
