@@ -95,57 +95,26 @@ module Flex
           # Add validation for the range
           validate :"validate_#{name}"
 
-          # Set up the composed_of relationship if we're in an ActiveRecord model
-          if respond_to?(:composed_of)
-            composed_of name,
-              class_name: "Range",
-              mapping: [
-                [ "#{name}_start", "begin" ],
-                [ "#{name}_end", "end" ]
-              ],
-              allow_nil: true,
-              converter: Proc.new { |value|
-                case value
-                when Hash
-                  if value[:start].present? && value[:end].present?
-                    Date.parse(value[:start].to_s)..Date.parse(value[:end].to_s)
-                  else
-                    nil
-                  end
-                else
-                  value
-                end
-              }
-          else
-            # For non-ActiveRecord models, define getter and setter methods
-            define_method(name) do
-              start_date = send("#{name}_start")
-              end_date = send("#{name}_end")
-
-              return nil if start_date.nil? && end_date.nil?
-              start_date..end_date
-            end
-            define_method("#{name}=") do |value|
+          # Set up the composed_of relationship
+          composed_of name,
+            class_name: "Range",
+            mapping: [
+              [ "#{name}_start", "begin" ],
+              [ "#{name}_end", "end" ]
+            ],
+            allow_nil: true,
+            converter: Proc.new { |value|
               case value
-              when Range
-                send("#{name}_start=", value&.begin)
-                send("#{name}_end=", value&.end)
               when Hash
                 if value[:start].present? && value[:end].present?
-                  send("#{name}_start=", Date.parse(value[:start].to_s))
-                  send("#{name}_end=", Date.parse(value[:end].to_s))
+                  Date.parse(value[:start].to_s)..Date.parse(value[:end].to_s)
                 else
-                  send("#{name}_start=", nil)
-                  send("#{name}_end=", nil)
+                  nil
                 end
-              when nil
-                send("#{name}_start=", nil)
-                send("#{name}_end=", nil)
               else
-                raise ArgumentError, "Invalid value for #{name}: #{value.inspect}. Expected Range, Hash, or nil."
+                value
               end
-            end
-          end
+            }
 
           # Create validation method for the range
           define_method "validate_#{name}" do
