@@ -27,7 +27,7 @@ RSpec.describe TestRecord, type: :model do
       record.period_end = Date.new(2020, 1, 2)
 
       expect(record).not_to be_valid
-      expect(record.errors[:period].first).to include("Translation missing")
+      expect(record.errors[:period].first).to eq("Start date must be less than or equal to end date")
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe TestRecord, type: :model do
       record.period_end = Date.new(2020, 1, 2)
 
       expect(record).not_to be_valid
-      expect(record.errors[:period].first).to include("Translation missing")
+      expect(record.errors[:period].first).to eq("Both start and end dates must be present or both must be nil")
     end
 
     it "is invalid when only end date is nil" do
@@ -47,7 +47,7 @@ RSpec.describe TestRecord, type: :model do
       record.period_end = nil
 
       expect(record).not_to be_valid
-      expect(record.errors[:period].first).to include("Translation missing")
+      expect(record.errors[:period].first).to eq("Both start and end dates must be present or both must be nil")
     end
   end
 end
