@@ -73,9 +73,8 @@ RSpec.describe Flex::Attributes do
 
   describe "date_range attribute" do
     before do
-      test_model = Class.new do
-        include ActiveModel::Attributes
-        include ActiveModel::Validations
+      test_model = Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
         include Flex::Attributes
 
         flex_attribute :test_range, :date_range
