@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe TestRecord, type: :model do
   it "allows setting a Range of Date objects" do
-    record = TestRecord.new
+    record = described_class.new
     start_date = Date.new(2020, 1, 2)
     end_date = Date.new(2020, 2, 3)
     record.period = start_date..end_date
@@ -13,7 +13,7 @@ RSpec.describe TestRecord, type: :model do
   end
 
   it "allows setting to nil" do
-    record = TestRecord.new
+    record = described_class.new
     record.period = nil
     expect(record.period).to be_nil
     expect(record.period_start).to be_nil
@@ -22,7 +22,7 @@ RSpec.describe TestRecord, type: :model do
 
   context "when start date is after end date" do
     it "is invalid with appropriate error message" do
-      record = TestRecord.new
+      record = described_class.new
       record.period_start = Date.new(2020, 2, 3)
       record.period_end = Date.new(2020, 1, 2)
 
@@ -33,7 +33,7 @@ RSpec.describe TestRecord, type: :model do
 
   context "with only one date set to nil" do
     it "is invalid when only start date is nil" do
-      record = TestRecord.new
+      record = described_class.new
       record.period_start = nil
       record.period_end = Date.new(2020, 1, 2)
 
@@ -42,7 +42,7 @@ RSpec.describe TestRecord, type: :model do
     end
 
     it "is invalid when only end date is nil" do
-      record = TestRecord.new
+      record = described_class.new
       record.period_start = Date.new(2020, 1, 2)
       record.period_end = nil
 
