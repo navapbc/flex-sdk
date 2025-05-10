@@ -150,7 +150,7 @@ module Flex
           # Create the start and end date attributes
           attribute "#{name}_start", :date
           attribute "#{name}_end", :date
-          
+
           # Add validation for the range
           validate :"validate_#{name}"
 
