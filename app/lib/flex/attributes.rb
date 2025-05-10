@@ -121,11 +121,10 @@ module Flex
             define_method(name) do
               start_date = send("#{name}_start")
               end_date = send("#{name}_end")
-              
+
               return nil if start_date.nil? && end_date.nil?
               start_date..end_date
             end
-            
             define_method("#{name}=") do |value|
               case value
               when Range
