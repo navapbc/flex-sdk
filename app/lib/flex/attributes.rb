@@ -153,20 +153,20 @@ module Flex
           # Set up the composed_of relationship for ActiveRecord models
           if self <= ActiveRecord::Base
             composed_of name,
-              class_name: 'Range',
+              class_name: "Range",
               mapping: [
-                ["#{name}_start", "begin"],
-                ["#{name}_end", "end"]
+                [ "#{name}_start", "begin" ],
+                [ "#{name}_end", "end" ]
               ],
               allow_nil: true,
-              constructor: Proc.new { |start_date, end_date| 
+              constructor: Proc.new { |start_date, end_date|
                 if start_date.nil? || end_date.nil?
                   nil
                 else
                   start_date..end_date
                 end
               },
-              converter: Proc.new { |value| 
+              converter: Proc.new { |value|
                 if value.nil?
                   nil
                 elsif value.is_a?(Range) && value.begin.is_a?(Date) && value.end.is_a?(Date)
