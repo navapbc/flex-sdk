@@ -14,6 +14,8 @@ RSpec.describe Flex::Attributes do
     end
 
     let(:object) { TestModel.new }
+
+
     it "allows setting a Date" do
       object.test_date = Date.new(2020, 1, 2)
       expect(object.test_date).to eq("2020-01-02")
@@ -85,7 +87,6 @@ RSpec.describe Flex::Attributes do
 
     it "allows setting a Range of Date objects" do
       object.test_range = Date.new(2020, 1, 2)..Date.new(2020, 2, 3)
-      
       expect(object.test_range_start).to eq(Date.new(2020, 1, 2))
       expect(object.test_range_end).to eq(Date.new(2020, 2, 3))
       expect(object.test_range).to eq(Date.new(2020, 1, 2)..Date.new(2020, 2, 3))
