@@ -52,65 +52,6 @@ module Flex
       end
     end
 
-    # A custom ActiveRecord type that allows storing a date range.
-    # This type handles the conversion between various input formats and a Ruby Range object.
-    class DateRangeType < ActiveRecord::Type::Value
-      def cast(value)
-        return nil if value.nil?
-
-        case value
-        when Range
-          if value.begin.is_a?(Date) && value.end.is_a?(Date)
-            value
-          else
-            begin
-              Date.parse(value.begin.to_s)..Date.parse(value.end.to_s)
-            rescue Date::Error
-              raise ArgumentError, "Invalid date range: #{value.inspect}. Expected Range with valid Date objects."
-            end
-          end
-        when Hash
-          if value[:start].present? && value[:end].present?
-            begin
-              start_date = cast_date_value(value[:start])
-              end_date = cast_date_value(value[:end])
-              start_date..end_date
-            rescue Date::Error
-              raise ArgumentError, "Invalid date range: #{value.inspect}. Expected Hash with valid :start and :end dates."
-            end
-          elsif value[:start].nil? && value[:end].nil?
-            nil
-          else
-            raise ArgumentError, "Invalid date range: #{value.inspect}. Both start and end must be present or both must be nil."
-          end
-        else
-          raise ArgumentError, "Invalid value for date range: #{value.inspect}. Expected Range or Hash with :start and :end keys."
-        end
-      end
-
-      def type
-        :date_range
-      end
-
-      private
-
-      def cast_date_value(value)
-        case value
-        when Date
-          value
-        when Hash
-          year = value[:year].to_s
-          month = value[:month].to_s
-          day = value[:day].to_s
-          Date.parse("#{year}-#{month}-#{day}")
-        when String
-          Date.parse(value)
-        else
-          raise ArgumentError, "Invalid date value: #{value.inspect}. Expected Date, Hash, or String."
-        end
-      end
-    end
-
     class_methods do
       def flex_attribute(name, type, options = {})
         if type == :memorable_date
