@@ -12,7 +12,7 @@ module Flex
       # since the date will be validated separately)
       def cast(value)
         return super(value) unless value.is_a?(Hash)
-        
+
         begin
           # Use strptime since Date.new is too lenient, allowing things like negative months and years
           value = Date.strptime("#{value[:year]}-#{value[:month]}-#{value[:day]}", "%Y-%m-%d")

@@ -16,7 +16,7 @@ RSpec.describe Flex::Attributes do
       [ { year: 2020, month: 1, day: 2 }, Date.new(2020, 1, 2), 2020, 1, 2 ],
       [ { year: "2020", month: "1", day: "2" }, Date.new(2020, 1, 2), 2020, 1, 2 ],
       [ { year: "2020", month: "01", day: "02" }, Date.new(2020, 1, 2), 2020, 1, 2 ],
-      [ { year: "badyear", month: "badmonth", day: "badday" }, nil, nil, nil, nil ],
+      [ { year: "badyear", month: "badmonth", day: "badday" }, nil, nil, nil, nil ]
     ].each do |input_hash, expected, expected_year, expected_month, expected_day|
       it "allows setting a Hash with year, month, and day [#{input_hash}]" do
         object.date_of_birth = input_hash
@@ -31,7 +31,7 @@ RSpec.describe Flex::Attributes do
     [
       [ "2020-1-2", Date.new(2020, 1, 2), 2020, 1, 2 ],
       [ "2020-01-02", Date.new(2020, 1, 2), 2020, 1, 2 ],
-      [ "badyear-badmonth-badday", nil, nil, nil, nil ],
+      [ "badyear-badmonth-badday", nil, nil, nil, nil ]
     ].each do |input_string, expected, expected_year, expected_month, expected_day|
       it "allows setting string in format <YEAR>-<MONTH>-<DAY> [#{expected}]" do
         object.date_of_birth = input_string
