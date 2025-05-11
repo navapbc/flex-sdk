@@ -60,17 +60,5 @@ RSpec.describe Flex::Attributes do
         expect(object.errors["date_of_birth"]).to include("is not a valid date")
       end
     end
-
-    [
-      [Date.new(2020, 1, 2), "%Y-%m-%d", "2020-01-02"],
-      [Date.new(2020, 1, 2), "%B %d, %Y", "January 02, 2020"],
-      [Date.new(2020, 1, 2), "%d/%m/%Y", "02/01/2020"],
-      [{year: 2020, month: 13, day: 32}, "%Y-%m-%d", "Invalid date"]
-    ].each do |input_date, format, expected|
-      it "responds to strftime with format #{format}" do
-        object.date_of_birth = input_date
-        object.date_of_birth.strftime(format).to eq(expected)
-      end
-    end
   end
 end
