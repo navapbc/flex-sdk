@@ -1,56 +1,45 @@
 require "rails_helper"
 
 RSpec.describe Flex::Attributes do
-  before do
-    test_model = Class.new do
-      include ActiveModel::Attributes
-      include ActiveModel::Validations
-      include Flex::Attributes
-
-      flex_attribute :test_date, :memorable_date
-    end
-    stub_const "TestModel", test_model
-  end
-
-  let(:object) { TestModel.new }
+  let(:object) { TestRecord.new }
 
   describe "memorable_date attribute" do
     it "allows setting a Date" do
-      object.test_date = Date.new(2020, 1, 2)
-      expect(object.test_date).to eq(Date.new(2020, 1, 2))
-      expect(object.test_date.year).to eq(2020)
-      expect(object.test_date.month).to eq(1)
-      expect(object.test_date.day).to eq(2)
+      object.date_of_birth = Date.new(2020, 1, 2)
+      expect(object.date_of_birth).to eq(Date.new(2020, 1, 2))
+      expect(object.date_of_birth.year).to eq(2020)
+      expect(object.date_of_birth.month).to eq(1)
+      expect(object.date_of_birth.day).to eq(2)
     end
 
     [
-      [ { year: 2020, month: 1, day: 2 }, Date.new(2020, 1, 2), "2020", "1", "2" ],
-      [ { year: "2020", month: "1", day: "2" }, Date.new(2020, 1, 2), "2020", "1", "2" ],
-      [ { year: "2020", month: "01", day: "02" }, Date.new(2020, 1, 2), "2020", "01", "02" ],
+      [ { year: 2020, month: 1, day: 2 }, Date.new(2020, 1, 2), 2020, 1, 2 ],
+      [ { year: "2020", month: "1", day: "2" }, Date.new(2020, 1, 2), 2020, 1, 2 ],
+      [ { year: "2020", month: "01", day: "02" }, Date.new(2020, 1, 2), 2020, 1, 2 ],
       [ { year: "badyear", month: "badmonth", day: "badday" }, nil, nil, nil, nil ],
     ].each do |input_hash, expected, expected_year, expected_month, expected_day|
       it "allows setting a Hash with year, month, and day [#{input_hash}]" do
-        object.test_date = input_hash
-        expect(object.test_date).to eq(expected)
-        expect(object.test_date_before_type_cast).to eq(input_hash)
-        expect(object.test_date&.year).to eq(expected_year)
-        expect(object.test_date&.month).to eq(expected_month)
-        expect(object.test_date&.day).to eq(expected_day)
+        object.date_of_birth = input_hash
+        expect(object.date_of_birth).to eq(expected)
+        expect(object.date_of_birth_before_type_cast).to eq(input_hash)
+        expect(object.date_of_birth&.year).to eq(expected_year)
+        expect(object.date_of_birth&.month).to eq(expected_month)
+        expect(object.date_of_birth&.day).to eq(expected_day)
       end
     end
 
     [
-      [ "2020-1-2", Date.new(2020, 1, 2), "2020", "1", "2" ],
-      [ "2020-01-02", Date.new(2020, 1, 2), "2020", "01", "02" ],
+      [ "2020-1-2", Date.new(2020, 1, 2), 2020, 1, 2 ],
+      [ "2020-01-02", Date.new(2020, 1, 2), 2020, 1, 2 ],
       [ "badyear-badmonth-badday", nil, nil, nil, nil ],
     ].each do |input_string, expected, expected_year, expected_month, expected_day|
       it "allows setting string in format <YEAR>-<MONTH>-<DAY> [#{expected}]" do
-        object.test_date = input_string
-        expect(object.test_date).to eq(expected)
-        expect(object.test_date_before_type_cast).to eq(input_string)
-        expect(object.test_date.year).to eq(expected_year)
-        expect(object.test_date.month).to eq(expected_month)
-        expect(object.test_date.day).to eq(expected_day)
+        object.date_of_birth = input_string
+        expect(object.date_of_birth).to eq(expected)
+        expect(object.date_of_birth_before_type_cast).to eq(input_string)
+        expect(object.date_of_birth&.year).to eq(expected_year)
+        expect(object.date_of_birth&.month).to eq(expected_month)
+        expect(object.date_of_birth&.day).to eq(expected_day)
       end
     end
 
@@ -62,12 +51,13 @@ RSpec.describe Flex::Attributes do
       { year: 2020, month: 0, day: 1 },
       { year: 2020, month: 13, day: 1 },
       { year: 2020, month: 2, day: 30 }
-    ].each do |date|
-      it "validates that date is a valid date" do
-        object.test_date = date
-        expect(object.test_date).to eq("%04d-%02d-%02d" % [ date[:year], date[:month], date[:day] ])
+    ].each do |input_hash|
+      it "validates that date is a valid date #{input_hash}" do
+        object.date_of_birth = input_hash
+        expect(object.date_of_birth).to be_nil
+        expect(object.date_of_birth_before_type_cast).to eq(input_hash)
         expect(object).not_to be_valid
-        expect(object.errors["test_date"]).to include("is not a valid date")
+        expect(object.errors["date_of_birth"]).to include("is not a valid date")
       end
     end
 
@@ -78,8 +68,8 @@ RSpec.describe Flex::Attributes do
       [{year: 2020, month: 13, day: 32}, "%Y-%m-%d", "Invalid date"]
     ].each do |input_date, format, expected|
       it "responds to strftime with format #{format}" do
-        object.test_date = input_date
-        bject.test_date.strftime(format).to eq(expected)
+        object.date_of_birth = input_date
+        object.date_of_birth.strftime(format).to eq(expected)
       end
     end
   end
