@@ -5,7 +5,7 @@ module Flex
     # A custom ActiveRecord type that allows storing a date as a string.
     # The attribute accepts a Date, a Hash with keys :year, :month, :day,
     # or a String in the format "YYYY-MM-DD".
-    class DateFromHash < ActiveRecord::Type::Date
+    class DateType < ActiveRecord::Type::Date
       # Accept a Date, a Hash of with keys :year, :month, :day,
       # or a String in the format "YYYY-MM-DD"
       # (the parts of the string don't have to be numeric or represent valid years/months/days
@@ -22,14 +22,14 @@ module Flex
       end
 
       def type
-        :date_from_hash
+        :flex_date
       end
     end
 
     class_methods do
       def flex_attribute(name, type, options = {})
-        if type == :memorable_date
-          memorable_date_attribute name, options
+        if type == :date
+          date_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
@@ -37,8 +37,8 @@ module Flex
 
       private
 
-        def memorable_date_attribute(name, options)
-          attribute name, DateFromHash.new
+        def date_attribute(name, options)
+          attribute name, DateType.new
 
           validate :"validate_#{name}"
 
