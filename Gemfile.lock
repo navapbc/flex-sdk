@@ -372,8 +372,8 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  faker
   actioncable
+  faker
   flex!
   guard-rspec
   listen
