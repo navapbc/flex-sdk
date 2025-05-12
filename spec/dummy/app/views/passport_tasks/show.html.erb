@@ -1,9 +1,6 @@
 <%= render template: 'flex/tasks/show', locals: {
-    model_class: PassportTask, 
+    model_class: PassportTask,
     task_type_map: Rails.configuration.passport[:task_type_map],
-    task_details_partial: "passport_tasks/details/passport_verify_info_task",
-    task_details_partial_locals: {
-        title: "This is a test title"
-    }
+    :task_details_partial => render(partial: "passport_tasks/details/passport_verify_info_task", locals: { task: @task })
 }
 %>
