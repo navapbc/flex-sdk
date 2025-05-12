@@ -18,3 +18,6 @@ en:
       date_picker_format: "Format: mm/dd/yyyy"
       optional: "Optional"
       tax_id_format: "For example, 123456789"
+  errors:
+    messages:
+      invalid_date: "Invalid date"
