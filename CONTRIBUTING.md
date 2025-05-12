@@ -4,19 +4,13 @@
 
 Prerequisites:
 
-- Ruby version matching [`.ruby-version`](/template/{{app_name}}/engines/flex/.ruby-version)
+- Ruby version matching [`.ruby-version`](/.ruby-version)
 - [Node LTS](https://nodejs.org/en)
 - (Optional but recommended): A Ruby version manager like [rbenv](https://github.com/rbenv/rbenv), [mise](https://mise.jdx.dev/getting-started.html), or [frum](https://github.com/TaKO8Ki/frum) (see [Comparison of ruby version managers](https://github.com/rbenv/rbenv/wiki/Comparison-of-version-managers))
 
 ## Setup
 
-Perform all development in the `flex` engine folder:
-
-```bash
-cd template/{{app_name}}/engines/flex/
-```
-
-Then run setup
+Run setup
 
 ```bash
 make setup
