@@ -49,7 +49,12 @@ module Flex
             value = send(name)
             raw_value = read_attribute_before_type_cast(name)
 
-            if raw_value.present? && value.nil?
+            # If model.<attribute> is nil, but model.<attribute>_before_type_cast is not nil,
+            # that means the application failed to cast the value to the appropriate type in
+            # order to complete the attribute assignment. This means the original value
+            # is invalid.
+            did_type_cast_fail = value.nil? && raw_value.present?
+            if did_type_cast_fail
               errors.add(name, :invalid_date)
             end
           end
