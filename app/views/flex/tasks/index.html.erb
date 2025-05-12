@@ -27,10 +27,10 @@
   <!-- Filters -->
   <div class="grid-row grid-gap-4 margin-bottom-4">
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/_type_filter', locals: { task_type_map: task_type_map } %>
+      <%= render partial: 'flex/tasks/type_filter', locals: { task_type_map: task_type_map } %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/_due_date_filter' %>
+      <%= render partial: 'flex/tasks/due_date_filter' %>
     </div>
   </div>
   <% if @tasks.any? %>
