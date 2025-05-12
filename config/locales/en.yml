@@ -12,3 +12,6 @@ en:
         in_progress: "Submitted"
         submitted: "In review"
         decision_made: "Determination made"
+  errors:
+    messages:
+      invalid_memorable_date: "is not a valid date"

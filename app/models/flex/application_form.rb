@@ -2,6 +2,8 @@ module Flex
   class ApplicationForm < ApplicationRecord
     self.abstract_class = true
 
+    include Flex::Attributes
+
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
