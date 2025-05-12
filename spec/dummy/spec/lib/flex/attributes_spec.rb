@@ -4,20 +4,6 @@ RSpec.describe Flex::Attributes do
   let(:object) { TestRecord.new }
 
   describe "memorable_date attribute" do
-    before do
-      test_model = Class.new do
-        include ActiveModel::Attributes
-        include ActiveModel::Validations
-        include Flex::Attributes
-
-        flex_attribute :test_date, :memorable_date
-      end
-      stub_const "TestModel", test_model
-    end
-
-    let(:object) { TestModel.new }
-
-
     it "allows setting a Date" do
       object.date_of_birth = Date.new(2020, 1, 2)
       expect(object.date_of_birth).to eq(Date.new(2020, 1, 2))
