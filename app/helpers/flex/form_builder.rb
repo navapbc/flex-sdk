@@ -219,7 +219,7 @@ module Flex
     def field_error(attribute)
       return unless has_error?(attribute)
 
-      @template.content_tag(:span, object.errors[attribute].to_sentence, class: "usa-error-message")
+      @template.content_tag(:span, object.errors.full_messages_for(attribute).first, class: "usa-error-message")
     end
 
     def fieldset(legend, options = {}, &block)

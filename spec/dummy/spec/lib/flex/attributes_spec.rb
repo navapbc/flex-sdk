@@ -57,7 +57,7 @@ RSpec.describe Flex::Attributes do
         expect(object.date_of_birth).to be_nil
         expect(object.date_of_birth_before_type_cast).to eq(input_hash)
         expect(object).not_to be_valid
-        expect(object.errors["date_of_birth"]).to include("Invalid date")
+        expect(object.errors.full_messages_for("date_of_birth")).to eq([ "Date of birth is an invalid date" ])
       end
     end
   end

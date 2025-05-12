@@ -333,7 +333,7 @@ RSpec.describe Flex::FormBuilder do
       end
 
       it 'displays the error message' do
-        expect(result).to have_element(:span, text: 'Invalid date')
+        expect(result).to have_element(:span, text: 'Date of birth is an invalid date')
       end
     end
   end
