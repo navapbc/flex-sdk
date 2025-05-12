@@ -1,1 +1,6 @@
-<h1><%= task.id %></h1>
+<%= form_with action: :edit, method: :post do |form| %>
+  <%= form.label :name, "Full name:", :class => "usa-label" %>
+  <%= form.text_field :name, :value => @application_form.full_name, readonly: true, class: "usa-input" %>
+  <%= form.label :dob, "Date of birth:", :class => "usa-label" %>
+  <%= form.date_field :dob, :value => @application_form.date_of_birth, readonly: true, class: "usa-input" %>
+<% end %>
