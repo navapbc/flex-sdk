@@ -2,14 +2,13 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
 
-    # A custom ActiveRecord type that allows storing a date as a string.
-    # The attribute accepts a Date, a Hash with keys :year, :month, :day,
-    # or a String in the format "YYYY-MM-DD".
-    class DateFromHash < ActiveRecord::Type::Date
-      # Accept a Date, a Hash of with keys :year, :month, :day,
-      # or a String in the format "YYYY-MM-DD"
-      # (the parts of the string don't have to be numeric or represent valid years/months/days
-      # since the date will be validated separately)
+    # A custom ActiveRecord type that allows storing a date. It behaviors the same
+    # as the default Date type, but it allows setting the attribute using a hash
+    # with keys :year, :month, and :day. This is meant to be used in conjunction
+    # with the memorable_date method in the Flex form builder
+    class MemorableDate < ActiveRecord::Type::Date
+
+      # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
       def cast(value)
         return super(value) unless value.is_a?(Hash)
 
@@ -38,7 +37,7 @@ module Flex
       private
 
         def memorable_date_attribute(name, options)
-          attribute name, DateFromHash.new
+          attribute name, MemorableDate.new
 
           validate :"validate_#{name}"
 
