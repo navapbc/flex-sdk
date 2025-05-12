@@ -16,6 +16,7 @@ es-US:
       boolean_true: "Sí"
       boolean_false: "No"
       date_picker_format: "Formato: mm/dd/aaaa"
+      memorable_date_hint: "Por ejemplo: Enero 19 2000"
       optional: "Opcional"
       select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
