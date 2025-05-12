@@ -15,7 +15,7 @@ es-US:
     form_builder:
       boolean_true: "Sí"
       boolean_false: "No"
-      date_picker_format: "Formato: dd/mm/aaaa"
+      date_picker_format: "Formato: mm/dd/aaaa"
       optional: "Opcional"
       select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
