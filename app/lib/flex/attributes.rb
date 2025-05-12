@@ -50,7 +50,7 @@ module Flex
             raw_value = read_attribute_before_type_cast(name)
 
             if raw_value.present? && value.nil?
-              errors.add(name, :invalid_memorable_date)
+              errors.add(name, :invalid_date)
             end
           end
         end

@@ -5,6 +5,7 @@ RSpec.describe Flex::FormBuilder do
     test_form_class = Class.new do
       include ActiveModel::Model
       include ActiveModel::Attributes
+      include Flex::Attributes
 
       attribute :first_name, :string
       attribute :start_date, :date  # for date_picker
@@ -271,6 +272,68 @@ RSpec.describe Flex::FormBuilder do
       it 'outputs radio buttons with custom labels' do
         expect(result).to have_element(:label, text: "Yes, I've taken leave before")
         expect(result).to have_element(:label, text: "No, I haven't taken leave before")
+      end
+    end
+  end
+
+  describe '#memorable_date' do
+    let(:result) { builder.memorable_date(:date_of_birth) }
+    let(:object) { TestRecord.new }
+
+    it 'includes a month select with all months' do
+      expect(result).to have_element(:select, name: 'object[date_of_birth][month]')
+      Date::MONTHNAMES.compact.each do |month_name|
+        expect(result).to have_element(:option, text: month_name)
+      end
+    end
+
+    it 'includes day and year number inputs' do
+      expect(result).to have_element(:input, name: 'object[date_of_birth][day]')
+      expect(result).to have_element(:input, name: 'object[date_of_birth][year]')
+    end
+
+    context 'with an existing date value' do
+      let(:object) { TestRecord.new(date_of_birth: Date.new(2024, 3, 15)) }
+
+      it 'pre-fills the month, day, and year fields' do
+        expect(result).to have_element(:select) do |select|
+          expect(select).to have_element(:option, text: 'March', selected: true)
+        end
+        expect(result).to have_element(:input, name: 'object[date_of_birth][day]', value: '15')
+        expect(result).to have_element(:input, name: 'object[date_of_birth][year]', value: '2024')
+      end
+    end
+
+    context 'with raw values' do
+      before do
+        allow(object).to receive(:date_of_birth_before_type_cast).and_return({ month: '3', day: '44', year: '2024' })
+      end
+
+      it 'pre-fills the month, day, and year fields from raw values' do
+        expect(result).to have_element(:select) do |select|
+          expect(select).to have_element(:option, value: '3', selected: true)
+        end
+        expect(result).to have_element(:input, name: 'object[date_of_birth][day]', value: '44')
+        expect(result).to have_element(:input, name: 'object[date_of_birth][year]', value: '2024')
+      end
+    end
+
+    context 'with custom legend and hint' do
+      let(:result) { builder.memorable_date(:date_of_birth, legend: 'Custom Date', hint: 'Custom hint text') }
+
+      it 'displays the custom legend and hint' do
+        expect(result).to have_element(:legend, text: 'Custom Date', class: 'usa-legend')
+        expect(result).to have_element(:span, text: 'Custom hint text', class: 'usa-hint')
+      end
+    end
+
+    context 'with errors' do
+      before do
+        object.errors.add(:date_of_birth, :invalid_date)
+      end
+
+      it 'displays the error message' do
+        expect(result).to have_element(:span, text: 'Invalid date')
       end
     end
   end
