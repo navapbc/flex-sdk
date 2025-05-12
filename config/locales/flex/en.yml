@@ -18,25 +18,7 @@ en:
       date_picker_format: "Format: mm/dd/yyyy"
       optional: "Optional"
       tax_id_format: "For example, 123456789"
-  auth:
-    errors:
-      messages:
-        code_mismatch: "The code you entered is incorrect"
-        code_expired: "The code you entered has expired"
-        invalid_credentials: "Invalid email or password"
-        invalid_software_token: "Invalid code. Please try again."
-        invalid_password_format: "Password must be at least 12 characters long"
-        username_exists: "An account with the given email already exists"
-        user_not_confirmed: "You must confirm your email address first"
-  date:
-    formats:
-      default: "%m/%d/%Y"
-      short: "%b %d"
-      long: "%B %d, %Y"
   errors:
-    attributes:
-      spam_trap:
-        present: "This field should be left empty. It is intended to prevent bots from submitting spam using this form."
     messages:
       # Override error messages: https://guides.rubyonrails.org/i18n.html#error-message-interpolation
       # blank: "'%{attribute}' can't be blank"
@@ -67,11 +49,3 @@ en:
       aspect_ratio_is_not: "must have an aspect ratio of %{aspect_ratio}"
       aspect_ratio_unknown: "has an unknown aspect ratio"
       image_not_processable: "is not a valid image"
-  helpers:
-    submit:
-      create: "Submit"
-      update: "Update"
-  time:
-    formats:
-      default: "%B %d, %Y"
-      long: "%B %d, %Y %-I:%M %p"
