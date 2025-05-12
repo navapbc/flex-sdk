@@ -12,6 +12,12 @@ en:
         in_progress: "Submitted"
         submitted: "In review"
         decision_made: "Determination made"
+    form_builder:
+      boolean_true: "Yes"
+      boolean_false: "No"
+      date_picker_format: "Format: mm/dd/yyyy"
+      optional: "Optional"
+      tax_id_format: "For example, 123456789"
   auth:
     errors:
       messages:
@@ -69,9 +75,3 @@ en:
     formats:
       default: "%B %d, %Y"
       long: "%B %d, %Y %-I:%M %p"
-  us_form_with:
-    boolean_true: "Yes"
-    boolean_false: "No"
-    date_picker_format: "Format: mm/dd/yyyy"
-    optional: "Optional"
-    tax_id_format: "For example, 123456789"

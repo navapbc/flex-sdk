@@ -122,7 +122,7 @@ module Flex
       options[:width] = "md"
 
       append_to_option(options, :class, " usa-masked")
-      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("us_form_with.tax_id_format")))
+      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("flex.form_builder.tax_id_format")))
 
       text_field(attribute, options)
     end
@@ -130,7 +130,7 @@ module Flex
     def date_picker(attribute, options = {})
       raw_value = object.send(attribute) if object
 
-      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("us_form_with.date_picker_format")))
+      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("flex.form_builder.date_picker_format")))
 
       group_options = options[:group_options] || {}
       append_to_option(group_options, :class, " usa-date-picker")
@@ -145,7 +145,7 @@ module Flex
 
     def memorable_date(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
-      hint_text = options.delete(:hint) || I18n.t("us_form_with.memorable_date_hint")
+      hint_text = options.delete(:hint) || I18n.t("flex.form_builder.memorable_date_hint")
       hint_id = "#{attribute}_hint"
 
       object_value = object&.send(attribute)
@@ -267,8 +267,8 @@ module Flex
       no_options = options[:no_options] || {}
       value = if object then object.send(attribute) else nil end
 
-      yes_options = { label: I18n.t("us_form_with.boolean_true") }.merge(yes_options)
-      no_options = { label: I18n.t("us_form_with.boolean_false") }.merge(no_options)
+      yes_options = { label: I18n.t("flex.form_builder.boolean_true") }.merge(yes_options)
+      no_options = { label: I18n.t("flex.form_builder.boolean_false") }.merge(no_options)
 
       @template.capture do
         # Hidden field included for same reason as radio button collections (https://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-collection_radio_buttons)
@@ -332,7 +332,7 @@ module Flex
       end
 
       if options[:optional]
-        text += @template.content_tag(:span, " (#{I18n.t('us_form_with.optional').downcase})", class: "usa-hint")
+        text += @template.content_tag(:span, " (#{I18n.t('flex.form_builder.optional').downcase})", class: "usa-hint")
       end
 
       if hint_option
