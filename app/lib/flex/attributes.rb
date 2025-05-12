@@ -2,53 +2,25 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
 
-    # This class defines a string that represents a date in the format "<YEAR>-<MM>-<DD>"
-    # and is designed to also allow invalid dates such as "2020-13-32" to facilitate
-    # storing user input before validation.
-    # Validation is handled separately to ensure that the date is valid
-    #
-    # The class also has nested attributes for year, month, and day to facilitate
-    # treating the date as a structured value object which is useful for form building.
-    class DateString < ::String
-      attr_reader :year, :month, :day
-
-      def initialize(year, month, day)
-        @year, @month, @day = year, month, day
-        super("#{year}-#{month.rjust(2, "0")}-#{day.rjust(2, "0")}")
-      end
-    end
-
-    # A custom ActiveRecord type that allows storing a date as a string.
-    # The attribute accepts a Date, a Hash with keys :year, :month, :day,
-    # or a String in the format "YYYY-MM-DD".
-    class DateStringType < ActiveRecord::Type::String
-      # Accept a Date, a Hash of with keys :year, :month, :day,
-      # or a String in the format "YYYY-MM-DD"
-      # (the parts of the string don't have to be numeric or represent valid years/months/days
-      # since the date will be validated separately)
+    # A custom ActiveRecord type that allows storing a date. It behaviors the same
+    # as the default Date type, but it allows setting the attribute using a hash
+    # with keys :year, :month, and :day. This is meant to be used in conjunction
+    # with the memorable_date method in the Flex form builder
+    class MemorableDate < ActiveRecord::Type::Date
+      # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
       def cast(value)
-        return nil if value.nil?
+        return super(value) unless value.is_a?(Hash)
 
-        year, month, day = case value
-        when Date
-          [ value.year.to_s, value.month.to_s, value.day.to_s ]
-        when Hash
-          [ value[:year].to_s, value[:month].to_s, value[:day].to_s ]
-        when String
-          if match = value.match(/(\w+)-(\w+)-(\w+)/)
-            match.captures
-          else
-            raise ArgumentError, "Invalid date string format: #{value.inspect}. Expected format is '<YEAR>-<MONTH>-<DAY>'."
-          end
-        else
-          raise ArgumentError, "Invalid value for #{name}: #{value.inspect}. Expected Date, Hash, or String."
+        begin
+          # Use strptime since Date.new is too lenient, allowing things like negative months and years
+          value = Date.strptime("#{value[:year]}-#{value[:month]}-#{value[:day]}", "%Y-%m-%d")
+        rescue ArgumentError
+          nil
         end
-
-        DateString.new(year, month, day)
       end
 
       def type
-        :date_string
+        :date_from_hash
       end
     end
 
@@ -66,7 +38,7 @@ module Flex
       private
 
         def memorable_date_attribute(name, options)
-          attribute name, DateStringType.new
+          attribute name, MemorableDate.new
 
           validate :"validate_#{name}"
 
@@ -77,12 +49,15 @@ module Flex
           # Create a validation method that checks if the value is a valid date
           define_method "validate_#{name}" do
             value = send(name)
-            return if value.nil?
+            raw_value = read_attribute_before_type_cast(name)
 
-            begin
-              Date.strptime(value, "%Y-%m-%d")
-            rescue Date::Error
-              errors.add(name, :invalid_date, message: "is not a valid date")
+            # If model.<attribute> is nil, but model.<attribute>_before_type_cast is not nil,
+            # that means the application failed to cast the value to the appropriate type in
+            # order to complete the attribute assignment. This means the original value
+            # is invalid.
+            did_type_cast_fail = value.nil? && raw_value.present?
+            if did_type_cast_fail
+              errors.add(name, :invalid_date)
             end
           end
         end
