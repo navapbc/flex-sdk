@@ -12,4 +12,13 @@ es-US:
         in_progress: "Enviado"
         submitted: "En revisión"
         decision_made: "Determinación realizada"
-
+    form_builder:
+      boolean_true: "Sí"
+      boolean_false: "No"
+      date_picker_format: "Formato: mm/dd/aaaa"
+      optional: "Opcional"
+      select_month: "- Seleccionar -"
+      tax_id_format: "Por ejemplo, 123456789"
+  errors:
+    messages:
+      invalid_date: "Fecha inválida"

@@ -55,7 +55,7 @@ module Flex
             # is invalid.
             did_type_cast_fail = value.nil? && raw_value.present?
             if did_type_cast_fail
-              errors.add(name, :invalid_memorable_date)
+              errors.add(name, :invalid_date)
             end
           end
         end
