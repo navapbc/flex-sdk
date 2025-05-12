@@ -17,4 +17,8 @@ es-US:
       boolean_false: "No"
       date_picker_format: "Formato: dd/mm/aaaa"
       optional: "Opcional"
+      select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
+  errors:
+    messages:
+      invalid_date: "Fecha inválida"

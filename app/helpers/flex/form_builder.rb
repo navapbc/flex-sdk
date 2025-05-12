@@ -157,7 +157,7 @@ module Flex
       month_options = (1..12).map do |m|
         [ Date::MONTHNAMES[m], m ]
       end
-      month_options.unshift([ "- Select -", "" ])
+      month_options.unshift([ I18n.t("flex.form_builder.select_month"), "" ])
 
       fieldset(legend_text) do
         @template.content_tag(:span, hint_text, class: "usa-hint", id: hint_id) +
