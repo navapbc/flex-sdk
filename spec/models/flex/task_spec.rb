@@ -31,8 +31,10 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#assign' do
+    let(:user) { User.create!(first_name: 'John', last_name: 'Doe') }
+
     it 'assigns the task to the given user' do
-      assignee_id = rand(1..1000).to_s
+      assignee_id = user.id
 
       task.assign(assignee_id)
 

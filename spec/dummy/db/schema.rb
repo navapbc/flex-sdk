@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_13_175624) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "test_cases", force: :cascade do |t|
+  create_table "test_cases", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", id: :string, force: :cascade do |t|
+  create_table "users", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.datetime "created_at", null: false

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_readonly :id, :string, default: -> { SecureRandom.uuid }
+  readonly attribute :id, :string, default: -> { SecureRandom.uuid }
   attribute :first_name, :string
   attribute :last_name, :string
 
