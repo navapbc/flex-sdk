@@ -96,13 +96,24 @@ RSpec.describe Flex::Attributes do
       expect(object.test_range_end).to be_nil
     end
 
-    # context "when start date is invalid" do
-    #   it "is invalid when start date is not a valid date" do
-    #     object.test_range_start = "bad_date"
-    #     object.test_range_end = Date.new(2020, 2, 3)
-    #     expect(object).not_to be_valid
+    context "when start date is invalid" do
+      it "is invalid" do
+        object.test_range = { start: "bad_date", end: "02/03/2025" }
+        expect(object).not_to be_valid
+        expect(object.test_range).to be_nil
+        expect(object.errors[:test_range].first).to eq("Start date must be less than or equal to end date")
+      end
+    end
 
-
+    context "when end date is invalid" do
+      it "is invalid" do
+        object.test_range = { start: "01/02/2020", end: "bad_date" }
+        expect(object).not_to be_valid
+        expect(object.test_range).to be_nil
+        expect(object.errors[:test_range].first).to eq("Start date must be less than or equal to end date")
+      end
+    end
+    
     context "when start date is after end date" do
       before do
         object.test_range = Date.new(2020, 2, 3)..Date.new(2020, 1, 2)
