@@ -117,7 +117,7 @@ RSpec.describe Flex::Attributes do
         expect(object.errors[:test_range].first).to eq("Start date is invalid")
       end
     end
-    
+
     context "when start date is after end date" do
       before do
         object.test_range = Date.new(2020, 2, 3)..Date.new(2020, 1, 2)

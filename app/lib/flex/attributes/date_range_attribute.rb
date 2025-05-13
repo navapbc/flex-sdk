@@ -21,20 +21,20 @@ module Flex
             allow_nil: true,
             converter: Proc.new { |value|
               next nil unless value.is_a?(Hash)
-              
+
               start_date_s, end_date_s = value[:start].to_s, value[:end].to_s
               next nil unless start_date_s.present? && end_date_s.present?
-              
+
               # Try local date format first
-              start_date, end_date = DateRangeAttribute.try_parse_local_date(start_date_s), 
+              start_date, end_date = DateRangeAttribute.try_parse_local_date(start_date_s),
                                    DateRangeAttribute.try_parse_local_date(end_date_s)
               next start_date..end_date if start_date && end_date
-              
+
               # Try ISO format next
-              start_date, end_date = DateRangeAttribute.try_parse_iso_date(start_date_s), 
+              start_date, end_date = DateRangeAttribute.try_parse_iso_date(start_date_s),
                                    DateRangeAttribute.try_parse_iso_date(end_date_s)
               next start_date..end_date if start_date && end_date
-              
+
               # If both formats fail, return original strings
               start_date_s..end_date_s
             }
