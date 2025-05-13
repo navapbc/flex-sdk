@@ -77,9 +77,16 @@ RSpec.describe Flex::Attributes do
 
     it "allows setting a Range of Date objects" do
       object.test_range = Date.new(2020, 1, 2)..Date.new(2020, 2, 3)
+      expect(object.test_range).to eq(Date.new(2020, 1, 2)..Date.new(2020, 2, 3))
       expect(object.test_range_start).to eq(Date.new(2020, 1, 2))
       expect(object.test_range_end).to eq(Date.new(2020, 2, 3))
+    end
+
+    it "allows setting a hash with start and end strings formatted as mm/dd/yyyy" do
+      object.test_range = { start: "01/02/2020", end: "02/03/2020" }
       expect(object.test_range).to eq(Date.new(2020, 1, 2)..Date.new(2020, 2, 3))
+      expect(object.test_range_start).to eq(Date.new(2020, 1, 2))
+      expect(object.test_range_end).to eq(Date.new(2020, 2, 3))
     end
 
     it "allows setting to nil" do
@@ -91,12 +98,12 @@ RSpec.describe Flex::Attributes do
 
     context "when start date is after end date" do
       before do
-        object.test_range_start = Date.new(2020, 2, 3)
-        object.test_range_end = Date.new(2020, 1, 2)
+        object.test_range = Date.new(2020, 2, 3)..Date.new(2020, 1, 2)
       end
 
       it "is invalid with appropriate error message" do
         expect(object).not_to be_valid
+        expect(object.test_range).to eq(Date.new(2020, 2, 3)..Date.new(2020, 1, 2))
         expect(object.errors[:test_range].first).to eq("Start date must be less than or equal to end date")
       end
     end
