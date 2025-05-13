@@ -6,7 +6,7 @@ This template requires the use of the [Rails template](https://github.com/navapb
 
 ## Instructions
 
-1. Since Flex SDK is a private gem, you need to create a personal access token (PAT) with read access to the contents of the navapbc/flex-sdk repository.
+1. Since Flex SDK is a private gem, for use by non-Nava developers you'll need to create a personal access token (PAT) with read access to the contents of the `navapbc/flex-sdk` repository. Log into the `nava-platform-readonly` bot account and generate a fine-grained PAT for the project with read-only access to the `navapbc/flex-sdk` repository.
 2. Add the following to your `Gemfile` using the PAT you created in step 1:
 
     ```ruby
