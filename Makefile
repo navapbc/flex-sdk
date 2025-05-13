@@ -6,6 +6,7 @@
 	test-watch
 
 setup:
+	npm install --prefix spec/dummy
 	bundle install
 
 lint: ## Run the linter with auto-fixing

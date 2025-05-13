@@ -22,6 +22,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
 
       - name: Install dependencies
-        run: bundle install
+        run: bundle install && npm install --prefix spec/dummy
 
       - run: make ${{ matrix.make_command }}
