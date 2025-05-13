@@ -12,6 +12,16 @@ class PassportTasksController < ApplicationController
     @application_form = PassportApplicationForm.find_by(case_id: @task.case_id)
   end
 
+  def update
+    @task = tasks.find(params[:id])
+    if params["task-action"].present?
+      @task.mark_completed
+      flash["task-message"] = "Task marked as completed"
+    end
+
+    redirect_to passport_task_path(@task)
+  end
+
   private
   def index_filter_params
     params.permit(:filter_date, :filter_type, :filter_status)

@@ -1,4 +1,4 @@
-<%= form_with action: :edit, method: :post do |form| %>
+<%= form_with action: :update, method: :put do |form| %>
   <fieldset class="usa-fieldset">
     <legend class="usa-legend">
       <h3>Verify Information</h2>
@@ -13,12 +13,12 @@
       <%= form.date_field :dob, :value => @application_form.date_of_birth, readonly: true, class: "usa-input", "aria-readonly": true %>
     </p>
     <br />
-    <ul class=" usa-list--unstyled usa-button-group" role="group">
+    <ul class="usa-list--unstyled usa-button-group" role="group">
       <li class="usa-button-group__item">
-        <%= form.button "Approve", value: "approve", class: "usa-button" %>
+        <%= form.button "Approve", value: "approve", class: "usa-button", name: "task-action" %>
       </li>
       <li class="usa-button-group__item">
-        <%= form.button "Deny", value: "deny", class: "usa-button usa-button--secondary" %>
+        <%= form.button "Deny", value: "deny", class: "usa-button usa-button--secondary", name: "task-action" %>
       </li>
     </ul>
   </fieldset>

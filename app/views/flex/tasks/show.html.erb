@@ -15,7 +15,7 @@
       </ol>
     </nav>
     <h1 class="section-heading-h1"><%= task_type_with_name %></h1>
-    <div class="border-bottom-1px margin-bottom-3 padding-bottom-3">
+    <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
           <div class="grid-col-auto">
@@ -30,7 +30,16 @@
         </div>
       </div>
     </div>
-    <section class="usa-section">
+    <section class="usa-section padding-top-2">
+      <% if flash["task-message"] %>
+        <div class="usa-alert usa-alert--info usa-alert--no-icon">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text">
+              <%= flash["task-message"] %>
+            </p>
+          </div>
+        </div>
+      <% end %>
       <h2 class="section-heading-h2">Task Details</h2>
       <%= render html: task_details_partial %>
     </section>
