@@ -23,12 +23,16 @@ module Flex
               case value
               when Hash
                 if value[:start].present? && value[:end].present?
-                  Date.parse(value[:start].to_s)..Date.parse(value[:end].to_s)
+                  start_date_s = value[:start].to_s
+                  end_date_s = value[:end].to_s
+                  start_date = DateRangeAttribute.try_parse_local_date(start_date_s) || DateRangeAttribute.try_parse_iso_date(start_date_s)
+                  end_date = DateRangeAttribute.try_parse_local_date(end_date_s) || DateRangeAttribute.try_parse_iso_date(end_date_s)
+                  start_date..end_date
                 else
                   nil
                 end
               else
-                value
+                nil
               end
             }
 
@@ -50,6 +54,24 @@ module Flex
             if start_date > end_date
               errors.add(name, :invalid_date_range)
             end
+          end
+        end
+      end
+
+      class << self
+        def try_parse_local_date(date_string)
+          begin
+            Date.strptime(date_string, "%m/%d/%Y")
+          rescue ArgumentError
+            nil
+          end
+        end
+
+        def try_parse_iso_date(date_string)
+          begin
+            Date.strptime(date_string, "%Y-%m-%d")
+          rescue ArgumentError
+            nil
           end
         end
       end
