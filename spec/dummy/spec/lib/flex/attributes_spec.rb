@@ -100,9 +100,9 @@ RSpec.describe Flex::Attributes do
       it "is invalid" do
         object.test_range = { start: "bad_date", end: "02/03/2025" }
         expect(object).not_to be_valid
-        expect(object.test_range).to eq(nil..Date.new(2025, 2, 3))
+        expect(object.test_range).to eq("bad_date".."02/03/2025")
         expect(object.test_range_start).to be_nil
-        expect(object.test_range_end).to eq(Date.new(2025, 2, 3))
+        expect(object.test_range_end).to eq("02/03/2025")
         expect(object.errors[:test_range].first).to eq("Start date is invalid")
       end
     end
@@ -111,8 +111,8 @@ RSpec.describe Flex::Attributes do
       it "is invalid" do
         object.test_range = { start: "01/02/2020", end: "bad_date" }
         expect(object).not_to be_valid
-        expect(object.test_range).to eq(Date.new(2020, 1, 2)..nil)
-        expect(object.test_range_start).to eq(Date.new(2020, 1, 2))
+        expect(object.test_range).to eq("01/02/2020".."bad_date")
+        expect(object.test_range_start).to eq("01/02/2020")
         expect(object.test_range_end).to be_nil
         expect(object.errors[:test_range].first).to eq("Start date is invalid")
       end
