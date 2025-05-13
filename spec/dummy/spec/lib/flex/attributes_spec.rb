@@ -103,7 +103,7 @@ RSpec.describe Flex::Attributes do
         expect(object.test_range).to eq(nil..Date.new(2025, 2, 3))
         expect(object.test_range_start).to be_nil
         expect(object.test_range_end).to eq(Date.new(2025, 2, 3))
-        expect(object.errors[:test_range].first).to eq("Start date must be less than or equal to end date")
+        expect(object.errors[:test_range].first).to eq("Start date is invalid")
       end
     end
 
@@ -114,7 +114,7 @@ RSpec.describe Flex::Attributes do
         expect(object.test_range).to eq(Date.new(2020, 1, 2)..nil)
         expect(object.test_range_start).to eq(Date.new(2020, 1, 2))
         expect(object.test_range_end).to be_nil
-        expect(object.errors[:test_range].first).to eq("Start date must be less than or equal to end date")
+        expect(object.errors[:test_range].first).to eq("Start date is invalid")
       end
     end
     
