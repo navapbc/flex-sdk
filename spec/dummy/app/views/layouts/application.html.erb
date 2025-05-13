@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application" %>
-
-    <% # Temporary workaround in dummy app to get around SASS asset pipeline issues %>
-    <link rel="stylesheet" href="https://demo.pfml-accelerator-dev.navateam.com/assets/application-b918bc024f45f36022bb3ea3dd6cade6160147564a9d646d7f36271b0da9c25a.css">
+    <%= javascript_include_tag '@uswds/uswds/dist/js/uswds-init.min.js' %>
   </head>
-
   <body>
     <%= yield %>
+    <%= javascript_include_tag '@uswds/uswds/dist/js/uswds.min.js' %>
   </body>
 </html>
