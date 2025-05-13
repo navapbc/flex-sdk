@@ -1,5 +1,5 @@
 <% task_type_with_name = find_task_type_human_readable_name(task_type_map, @task.type) + " - " + @application_form.full_name || "TBD" %>
-<main class="usa-section usa-prose">
+<main class="usa-section">
   <div class="grid-container">
     <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
       <ol class="usa-breadcrumb__list">
@@ -30,6 +30,8 @@
         </div>
       </div>
     </div>
-    <h2 class="section-heading-h2">Task Details</h2>
-    <%= render html: task_details_partial %>
+    <section class="usa-section">
+      <h2 class="section-heading-h2">Task Details</h2>
+      <%= render html: task_details_partial %>
+    </section>
   </main>
