@@ -2,5 +2,5 @@ es-US:
   tasks:
     types:
       passport_task: "Tarea de Pasaporte"
-      passport_verify_info_task: "Tarea de Verificación de Información de Pasaporte"
-      passport_photo_task: "Tarea de Foto de Pasaporte"
+      passport_verify_info_task: "Verificar Información del Pasaporte"
+      passport_photo_task: "Revisar Foto del Pasaporte"
