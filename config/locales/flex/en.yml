@@ -42,7 +42,7 @@ en:
           due_on: "Due on"
           assigned_to: "Assigned to"
       partials:
-        type_filter:
+        due_date_filter:
           label: "Filter by due date"
           options:
             all: "All tasks"
@@ -50,6 +50,8 @@ en:
             today: "Today"
             tomorrow: "Tomorrow"
             this_week: "This week"
+        type_filter:
+          label: "Filter by task type"
         no_tasks_alert:
           message: "No tasks available!"
   errors:

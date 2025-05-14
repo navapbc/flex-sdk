@@ -4,6 +4,7 @@ class PassportTasksController < ApplicationController
 
   def index
     filter_tasks
+    @distinct_task_types = @tasks.distinct.pluck(:type)
   end
 
   def show

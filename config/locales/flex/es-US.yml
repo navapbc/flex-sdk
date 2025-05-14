@@ -42,7 +42,7 @@ es-US:
           due_on: "Fecha de vencimiento"
           assigned_to: "Asignado a"
       partials:
-        type_filter:
+        due_date_filter:
           label: "Filtrar por fecha de vencimiento"
           options:
             all: "Todas las tareas"
@@ -50,6 +50,8 @@ es-US:
             today: "Hoy"
             tomorrow: "Mañana"
             this_week: "Esta semana"
+        type_filter:
+          label: "Filtrar por tipo de tarea"
         no_tasks_alert:
           message: "¡No hay tareas disponibles!"
   errors:
