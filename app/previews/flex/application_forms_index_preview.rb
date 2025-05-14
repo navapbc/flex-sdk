@@ -5,6 +5,7 @@ module Flex
         title: "My Applications",
         intro: "Start a new application or continue an existing one.",
         new_button_text: "Start New Application",
+        new_path: "new",
         in_progress_applications_heading: "Your Applications",
         application_forms: []
       }
@@ -15,6 +16,7 @@ module Flex
         title: "My Applications",
         intro: "Start a new application or continue an existing one.",
         new_button_text: "Start New Application",
+        new_path: "new",
         in_progress_applications_heading: "Your Applications",
         application_forms: [
           {
