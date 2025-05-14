@@ -52,6 +52,8 @@ es-US:
             this_week: "Esta semana"
         type_filter:
           label: "Filtrar por tipo de tarea"
+          options:
+            all: "Todas las tareas"
         no_tasks_alert:
           message: "¡No hay tareas disponibles!"
   errors:

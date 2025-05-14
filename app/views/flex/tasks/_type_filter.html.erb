@@ -1,9 +1,11 @@
 <%= form_with method: 'get' do |form| %>
-  <%= hidden_params_field :filter_date %>
-  <%= hidden_params_field :filter_status %>
+  <%= hidden_field_tag(:filter_date, params[:filter_date]) if params[:filter_date].present? %>
+  <%= hidden_field_tag(:filter_status, params[:filter_status]) if params[:filter_status].present? %>
   <%= form.label :filter_type, t("flex.tasks.partials.type_filter.label"), class: 'usa-label' %>
   <%= form.select :filter_type, \
-    @distinct_task_types.map { |type| [t("tasks.types.#{type.underscore}"), type] },
+    [[t("flex.tasks.partials.type_filter.options.all"), ""]].append(
+      *@distinct_task_types.map { |type| [t("tasks.types.#{type.underscore}"), type] }
+    ),
     { include_blank: false, selected: params[:filter_type] },
     { class: 'usa-select', onchange: 'this.form.submit()' } %>
 <% end %>

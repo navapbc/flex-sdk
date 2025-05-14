@@ -52,6 +52,8 @@ en:
             this_week: "This week"
         type_filter:
           label: "Filter by task type"
+          options:
+            all: "All tasks"
         no_tasks_alert:
           message: "No tasks available!"
   errors:
