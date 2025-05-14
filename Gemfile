@@ -17,13 +17,13 @@ group :development, :test do
   gem "guard-rspec", require: false
   gem "rspec-rails", "~> 7.0.0"
   gem "shoulda-matchers", "~> 6.0"
+  gem "faker"
 
   # Lookbook
   gem "lookbook", ">= 2.3.9"
 end
 
 group :development do
-  gem "faker"
   # Linting
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
