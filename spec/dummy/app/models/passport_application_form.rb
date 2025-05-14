@@ -21,6 +21,10 @@ class PassportApplicationForm < Flex::ApplicationForm
     has_all_necessary_fields? ? super : false
   end
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
   protected
 
   def event_payload
@@ -35,7 +39,7 @@ class PassportApplicationForm < Flex::ApplicationForm
   end
 
   def create_passport_case
-    kase = PassportCase.create
+    kase = PassportCase.create!
     self.case_id = kase.id
   end
 end

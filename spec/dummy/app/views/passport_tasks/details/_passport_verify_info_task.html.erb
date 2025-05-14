@@ -1,0 +1,25 @@
+<%= form_with action: :update, method: :put do |form| %>
+  <fieldset class="usa-fieldset">
+    <legend class="usa-legend">
+      <h3>Verify Information</h2>
+    </legend>
+    <p class="usa-prose">
+      This is an example of a task to verify information about a passport application provided by the applicant.
+    </p>
+    <p>
+      <%= form.label :name, "Full name:", class: "usa-label" %>
+      <%= form.text_field :name, :value => @application_form.full_name, readonly: true, class: "usa-input", "aria-readonly": true %>
+      <%= form.label :dob, "Date of birth:", class: "usa-label" %>
+      <%= form.date_field :dob, :value => @application_form.date_of_birth, readonly: true, class: "usa-input", "aria-readonly": true %>
+    </p>
+    <br />
+    <ul class="usa-list--unstyled usa-button-group" role="group">
+      <li class="usa-button-group__item">
+        <%= form.button "Approve", value: "approve", class: "usa-button", name: "task-action" %>
+      </li>
+      <li class="usa-button-group__item">
+        <%= form.button "Deny", value: "deny", class: "usa-button usa-button--secondary", name: "task-action" %>
+      </li>
+    </ul>
+  </fieldset>
+<% end %>

@@ -2,7 +2,7 @@ class CreatePassportCases < ActiveRecord::Migration[8.0]
   def change
     create_table :passport_cases do |t|
       t.integer :status, default: 0, null: false
-      t.string :passport_id, null: false, limit: 36 # Is a UUID, which is always exactly 36 characters
+      t.string :passport_id, null: false
       t.string :business_process_current_step
 
       t.timestamps

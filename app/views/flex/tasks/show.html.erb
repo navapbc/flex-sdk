@@ -1,0 +1,46 @@
+<% task_type_with_name = t("tasks.types.#{@task.type.underscore}") + " - " + @application_form.full_name || "TBD" %>
+<main class="usa-section">
+  <div class="grid-container">
+    <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+      <ol class="usa-breadcrumb__list">
+        <li class="usa-breadcrumb__list-item">
+          <%= link_to t("flex.tasks.breadcrumbs.home"), "/", class: "usa-breadcrumb__link" %>
+        </li>
+        <li class="usa-breadcrumb__list-item">
+          <%= link_to t("flex.tasks.breadcrumbs.tasks"), polymorphic_path(model_class), class: "usa-breadcrumb__link" %>
+        </li>
+        <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+          <span><%= task_type_with_name %></span>
+        </li>
+      </ol>
+    </nav>
+    <h1 class="section-heading-h1"><%= task_type_with_name %></h1>
+    <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
+      <div class="grid-container">
+        <div class="grid-row grid-gap-2">
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{@task.status}") %>
+          </div>
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us @task.due_on %>
+          </div>
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= @assigned_user&.full_name || "N/A" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="usa-section padding-top-2">
+      <% if flash["task-message"] %>
+        <div class="usa-alert usa-alert--info usa-alert--no-icon">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text">
+              <%= flash["task-message"] %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+      <h2 class="section-heading-h2"><%= t("flex.tasks.show.headers.task_details") %></h2>
+      <%= render html: task_details_partial %>
+    </section>
+  </main>

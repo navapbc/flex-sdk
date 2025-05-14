@@ -7,3 +7,11 @@ RSpec/ExampleLength:
   Enabled: false
 RSpec/MultipleExpectations:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - "spec/dummy/node_modules/**/*"
+    - "spec/dummy/public/**/*"
+    - "spec/dummy/tmp/**/*"
+    - "spec/dummy/log/**/*"
+    - "spec/dummy/storage/**/*"

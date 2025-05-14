@@ -1,5 +1,5 @@
 class PassportCase < Flex::Case
-  readonly attribute :passport_id, :string, default: SecureRandom.uuid # always defaults to a new UUID
+  readonly attribute :passport_id, :string, default: -> { SecureRandom.uuid } # always defaults to a new UUID
 
   attribute :business_process_current_step, :string, default: "collect_application_info"
 
