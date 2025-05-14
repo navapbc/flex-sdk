@@ -1,9 +1,25 @@
 class PassportTasksController < ApplicationController
-  helper Flex::TasksHelper
   helper Flex::DateHelper
 
   def index
     filter_tasks
+    @distinct_task_types = PassportTask.distinct.pluck(:type)
+  end
+
+  def show
+    @task = tasks.find(params[:id])
+    @assigned_user = User.find(@task.assignee_id) if @task.assignee_id
+    @application_form = PassportApplicationForm.find_by(case_id: @task.case_id)
+  end
+
+  def update
+    @task = tasks.find(params[:id])
+    if params["task-action"].present?
+      @task.mark_completed
+      flash["task-message"] = I18n.t("tasks.messages.task_marked_completed")
+    end
+
+    redirect_to passport_task_path(@task)
   end
 
   private

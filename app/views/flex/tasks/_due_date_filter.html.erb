@@ -1,0 +1,14 @@
+<%= form_with method: 'get' do |form| %>
+  <%= hidden_field_tag(:filter_date, params[:filter_date]) if params[:filter_date].present? %>
+  <%= hidden_field_tag(:filter_status, params[:filter_status]) if params[:filter_status].present? %>
+  <%= form.label :filter_date, t("flex.tasks.partials.due_date_filter.label"), class: 'usa-label' %>
+  <%= form.select :filter_date, [
+      [t("flex.tasks.partials.due_date_filter.options.all"), ""],
+      [t("flex.tasks.partials.due_date_filter.options.overdue"), "overdue"],
+      [t("flex.tasks.partials.due_date_filter.options.today"), "today"],
+      [t("flex.tasks.partials.due_date_filter.options.tomorrow"), "tomorrow"],
+      [t("flex.tasks.partials.due_date_filter.options.this_week"), "this_week"],
+    ],
+    { include_blank: false, selected: params[:filter_date] },
+    { class: 'usa-select', onchange: 'this.form.submit()' } %>
+<% end %>

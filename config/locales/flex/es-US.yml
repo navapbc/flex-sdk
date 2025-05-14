@@ -20,6 +20,48 @@ es-US:
       optional: "Opcional"
       select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
+    tasks:
+      breadcrumbs:
+        home: "Inicio"
+        tasks: "Tareas"
+      index:
+        title: "Tareas"
+        tabs:
+          assigned: "Asignadas"
+          completed: "Completadas"
+        columns:
+          col_due_date: "Fecha de vencimiento de la tarea"
+          col_type: "Tipo de tarea"
+          col_case_id: "ID del caso"
+          col_created_date: "Fecha de creación de la tarea"
+      show:
+        headers:
+          task_details: "Detalles de la tarea"
+        details:
+          status: "Estado de la tarea"
+          due_on: "Fecha de vencimiento"
+          assigned_to: "Asignado a"
+      partials:
+        due_date_filter:
+          label: "Filtrar por fecha de vencimiento"
+          options:
+            all: "Todas las tareas"
+            overdue: "Atrasadas"
+            today: "Hoy"
+            tomorrow: "Mañana"
+            this_week: "Esta semana"
+        type_filter:
+          label: "Filtrar por tipo de tarea"
+          options:
+            all: "Todas las tareas"
+        no_tasks_alert:
+          message: "¡No hay tareas disponibles!"
   errors:
     messages:
       invalid_date: "Fecha inválida"
+  tasks:
+    statuses:
+      pending: "Pendiente"
+      completed: "Completado"
+  messages:
+    task_marked_completed: "Tarea marcada como completada"

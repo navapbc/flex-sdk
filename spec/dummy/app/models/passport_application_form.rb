@@ -19,6 +19,10 @@ class PassportApplicationForm < Flex::ApplicationForm
     has_all_necessary_fields? ? super : false
   end
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
   protected
 
   def event_payload

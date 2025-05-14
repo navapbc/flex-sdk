@@ -20,6 +20,48 @@ en:
       optional: "Optional"
       select_month: "- Select -"
       tax_id_format: "For example, 123456789"
+    tasks:
+      breadcrumbs:
+        home: "Home"
+        tasks: "Tasks"
+      index:
+        title: "Tasks"
+        tabs:
+          assigned: "Assigned"
+          completed: "Completed"
+        columns:
+          col_due_date: "Task due date"
+          col_type: "Task type"
+          col_case_id: "Case ID"
+          col_created_date: "Task created date"
+      show:
+        headers:
+          task_details: "Task Details"
+        details:
+          status: "Task status"
+          due_on: "Due on"
+          assigned_to: "Assigned to"
+      partials:
+        due_date_filter:
+          label: "Filter by due date"
+          options:
+            all: "All tasks"
+            overdue: "Overdue"
+            today: "Today"
+            tomorrow: "Tomorrow"
+            this_week: "This week"
+        type_filter:
+          label: "Filter by task type"
+          options:
+            all: "All tasks"
+        no_tasks_alert:
+          message: "No tasks available!"
   errors:
     messages:
       invalid_date: "is an invalid date"
+  tasks:
+    statuses:
+      pending: "Pending"
+      completed: "Completed"
+    messages:
+      task_marked_completed: "Task marked as completed"
