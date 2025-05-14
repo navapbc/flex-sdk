@@ -59,6 +59,7 @@ RSpec.describe Flex::Task, type: :model do
   describe '#mark_completed' do
     it 'marks the task as completed' do
       task.mark_completed
+      task.reload # reload the task from the db to ensure it was properly marked completed
 
       expect(task.status).to eq('completed')
     end
@@ -69,6 +70,7 @@ RSpec.describe Flex::Task, type: :model do
       task.mark_completed
 
       task.mark_pending
+      task.reload # reload the task from the db to ensure it was properly marked pending
 
       expect(task.status).to eq('pending')
     end
