@@ -33,6 +33,7 @@ RSpec.describe Flex::BusinessProcess do
       "system_process_2"
     ].each do |starting_step|
       it "only executes the starting step (#{starting_step}) in the business process and not any additional steps" do
+        allow(mock_case).to receive(:save!)
         business_process.define_start(starting_step)
 
         business_process.execute(mock_case)
