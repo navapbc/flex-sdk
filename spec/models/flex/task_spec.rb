@@ -13,13 +13,13 @@ RSpec.describe Flex::Task, type: :model do
 
     describe 'assignee_id attribute' do
       it 'cannot be modified directly' do
-        expect { task.assignee_id = SecureRandom.uuid }.to raise_error(NoMethodError)
+        expect { task.assignee_id = rand(1..100) }.to raise_error(NoMethodError)
       end
     end
 
     describe 'case_id attribute' do
       it 'cannot be modified directly' do
-        expect { task.case_id = SecureRandom.uuid }.to raise_error(ActiveRecord::ReadonlyAttributeError)
+        expect { task.case_id = rand(1..1000) }.to raise_error(ActiveRecord::ReadonlyAttributeError)
       end
     end
 
