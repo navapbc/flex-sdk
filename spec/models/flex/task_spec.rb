@@ -37,6 +37,7 @@ RSpec.describe Flex::Task, type: :model do
       assignee_id = user.id
 
       task.assign(assignee_id)
+      task.reload # reload the task from the db to ensure it was properly assigned
 
       expect(task.assignee_id).to eq(assignee_id)
     end
