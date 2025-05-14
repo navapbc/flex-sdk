@@ -50,6 +50,8 @@ en:
             today: "Today"
             tomorrow: "Tomorrow"
             this_week: "This week"
+        no_tasks_alert:
+          message: "No tasks available!"
   errors:
     messages:
       invalid_date: "is an invalid date"
