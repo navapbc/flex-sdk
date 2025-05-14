@@ -7,8 +7,8 @@ module Flex
           cases_path: "/cases",
           closed_cases_path: "/cases/closed",
           cases: [
-            { id: 1, created_at: "3/14/2025" },
-            { id: 2, created_at: "3/15/2025" },
+            { id: 1, created_at: "3/14/2025", path: "/cases/1" },
+            { id: 2, created_at: "3/15/2025", path: "/cases/2" },
           ],
           title: "Cases",
         }
@@ -30,8 +30,8 @@ module Flex
           cases_path: "/cases",
           closed_cases_path: "/cases/closed",
           cases: [
-            { id: 1, created_at: "3/14/2025" },
-            { id: 2, created_at: "3/15/2025" },
+            { id: 1, created_at: "3/14/2025", path: "/cases/1" },
+            { id: 2, created_at: "3/15/2025", path: "/cases/2" },
           ],
           title: "Cases",
         }

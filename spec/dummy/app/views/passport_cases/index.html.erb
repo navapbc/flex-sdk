@@ -1,7 +1,8 @@
 <%= render template: 'flex/cases/index', locals: {
   cases: @cases.map { |kase| {
     id: kase.id,
-    created_at: kase.created_at.strftime("%m/%d/%Y")
+    created_at: kase.created_at.strftime("%m/%d/%Y"),
+    path: polymorphic_path(kase),
   } },
   cases_path: "/cases",
   closed_cases_path: "/cases/closed",
