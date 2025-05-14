@@ -1,0 +1,6 @@
+en:
+  tasks:
+    types:
+      passport_task: "Passport Task"
+      passport_verify_info_task: "Passport Verify Info Task"
+      passport_photo_task: "Passport Photo Task"

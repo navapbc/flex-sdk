@@ -20,6 +20,21 @@ es-US:
       optional: "Opcional"
       select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
+    tasks:
+      breadcrumbs:
+        home: "Inicio"
+        tasks: "Tareas"
+      show:
+        headers:
+          task_details: "Detalles de la tarea"
+        details:
+          status: "Estado de la tarea"
+          due_on: "Fecha de vencimiento"
+          assigned_to: "Asignado a"
   errors:
     messages:
       invalid_date: "Fecha inválida"
+  tasks:
+    statuses:
+      pending: "Pendiente"
+      completed: "Completado"
