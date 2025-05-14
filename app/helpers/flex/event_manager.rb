@@ -1,23 +1,25 @@
 module Flex
   class EventManager
-    def self.subscribe(event_key, callback)
-      subscription = ActiveSupport::Notifications.subscribe(event_key) do |name, _started, _finished, _unique_id, payload|
-        callback.call({
-          name: name,
-          payload: payload
-        })
+    class << self
+      def subscribe(event_key, callback)
+        subscription = ActiveSupport::Notifications.subscribe(event_key) do |name, _started, _finished, _unique_id, payload|
+          callback.call({
+            name: name,
+            payload: payload
+          })
+        end
+
+        subscription
       end
 
-      subscription
-    end
+      def unsubscribe(subscription)
+        ActiveSupport::Notifications.unsubscribe(subscription)
+      end
 
-    def self.unsubscribe(subscription)
-      ActiveSupport::Notifications.unsubscribe(subscription)
-    end
-
-    def self.publish(event_key, payload = {})
-      puts "Event Manager: Publishing event '#{event_key}' with payload: #{payload.inspect}"
-      ActiveSupport::Notifications.instrument(event_key, payload)
+      def publish(event_key, payload = {})
+        puts "Event Manager: Publishing event '#{event_key}' with payload: #{payload.inspect}"
+        ActiveSupport::Notifications.instrument(event_key, payload)
+      end
     end
 
     private
