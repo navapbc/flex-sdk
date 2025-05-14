@@ -41,6 +41,15 @@ en:
           status: "Task status"
           due_on: "Due on"
           assigned_to: "Assigned to"
+      partials:
+        type_filter:
+          label: "Filter by due date"
+          options:
+            all: "All tasks"
+            overdue: "Overdue"
+            today: "Today"
+            tomorrow: "Tomorrow"
+            this_week: "This week"
   errors:
     messages:
       invalid_date: "is an invalid date"

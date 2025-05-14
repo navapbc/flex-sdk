@@ -41,6 +41,15 @@ es-US:
           status: "Estado de la tarea"
           due_on: "Fecha de vencimiento"
           assigned_to: "Asignado a"
+      partials:
+        type_filter:
+          label: "Filtrar por fecha de vencimiento"
+          options:
+            all: "Todas las tareas"
+            overdue: "Atrasadas"
+            today: "Hoy"
+            tomorrow: "Mañana"
+            this_week: "Esta semana"
   errors:
     messages:
       invalid_date: "Fecha inválida"

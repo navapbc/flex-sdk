@@ -1,9 +1,15 @@
 <%= form_with method: 'get' do |form| %>
   <%= hidden_params_field :filter_date %>
   <%= hidden_params_field :filter_status %>
-  <%= form.label :filter_type, "Filter by due date", class: 'usa-label' %>
+  <%= form.label :filter_type, t("flex.tasks.partials.type_filter.label"), class: 'usa-label' %>
   <%= form.select :filter_type, \
-    task_type_options_for_select(task_type_map, params[:filter_type]),
-    { include_blank: false },
+    [
+      [t("flex.tasks.partials.type_filter.options.all"), ""],
+      [t("flex.tasks.partials.type_filter.options.overdue"), "overdue"],
+      [t("flex.tasks.partials.type_filter.options.today"), "today"],
+      [t("flex.tasks.partials.type_filter.options.tomorrow"), "tomorrow"],
+      [t("flex.tasks.partials.type_filter.options.this_week"), "this_week"],
+    ],
+    { include_blank: false, selected: params[:filter_type] },
     { class: 'usa-select', onchange: 'this.form.submit()' } %>
 <% end %>
