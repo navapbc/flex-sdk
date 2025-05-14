@@ -10,6 +10,8 @@ module Flex
 
     protected attr_accessor :business_process
 
+    after_create :execute_business_process
+
     def close
       self[:status] = :closed
       save
@@ -18,6 +20,12 @@ module Flex
     def reopen
       self[:status] = :open
       save
+    end
+
+    protected
+
+    def execute_business_process
+      business_process.execute(self)
     end
   end
 end

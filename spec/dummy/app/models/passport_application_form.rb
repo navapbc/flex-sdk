@@ -1,8 +1,6 @@
 class PassportApplicationForm < Flex::ApplicationForm
   include Flex::Attributes
 
-  before_create :create_passport_case, unless: -> { has_case_id? }
-
   attribute :first_name, :string
   attribute :last_name, :string
 
@@ -32,10 +30,5 @@ class PassportApplicationForm < Flex::ApplicationForm
 
   def has_case_id?
     !case_id.nil?
-  end
-
-  def create_passport_case
-    kase = PassportCase.create
-    self.case_id = kase.id
   end
 end
