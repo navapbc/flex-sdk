@@ -2,8 +2,6 @@ module Flex
   class Case < ApplicationRecord
     self.abstract_class = true
 
-    readonly attribute :id, :string, default: -> { SecureRandom.uuid } # always defaults to a new UUID
-
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
     enum :status, open: 0, closed: 1

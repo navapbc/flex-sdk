@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_13_175624) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.integer "status", default: 0
-    t.string "assignee_id"
-    t.string "case_id"
+    t.integer "assignee_id"
+    t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "due_on"
@@ -31,15 +31,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_175624) do
     t.string "last_name"
     t.date "date_of_birth"
     t.integer "status", default: 0
-    t.string "case_id", limit: 36, null: false
+    t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
-  create_table "passport_cases", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
+  create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
-    t.string "passport_id", limit: 36, null: false
+    t.string "passport_id", null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_175624) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "test_cases", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
+  create_table "test_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
@@ -65,13 +65,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_175624) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", id: { type: :string, limit: 36, default: -> { "uuid_generate_v4()" } }, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :restrict
+  add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
   add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end
