@@ -8,6 +8,7 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
+    before_create :create_case, unless: ->(application_form) { application_form.case_id? }
     before_update :prevent_changes_if_submitted, if: :was_submitted?
 
     def submit_application
@@ -21,6 +22,17 @@ module Flex
 
     def event_payload
       { id: id }
+    end
+
+    protected
+
+    def create_case
+      kase = case_class.create!
+      self[:case_id] = kase.id
+    end
+
+    def case_class
+      self.class.name.sub("ApplicationForm", "Case").constantize
     end
 
     private
