@@ -16,7 +16,7 @@ class PassportTasksController < ApplicationController
     @task = tasks.find(params[:id])
     if params["task-action"].present?
       @task.mark_completed
-      flash["task-message"] = "Task marked as completed"
+      flash["task-message"] = I18n.t("tasks.messages.task_marked_completed")
     end
 
     redirect_to passport_task_path(@task)

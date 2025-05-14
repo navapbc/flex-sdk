@@ -63,3 +63,5 @@ en:
     statuses:
       pending: "Pending"
       completed: "Completed"
+    messages:
+      task_marked_completed: "Task marked as completed"
