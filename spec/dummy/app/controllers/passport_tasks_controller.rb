@@ -1,10 +1,9 @@
 class PassportTasksController < ApplicationController
-  helper Flex::TasksHelper
   helper Flex::DateHelper
 
   def index
     filter_tasks
-    @distinct_task_types = @tasks.distinct.pluck(:type)
+    @distinct_task_types = PassportTask.distinct.pluck(:type)
   end
 
   def show
