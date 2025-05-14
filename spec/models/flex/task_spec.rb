@@ -44,8 +44,13 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#unassign' do
+    let(:user) { User.create!(first_name: 'John', last_name: 'Doe') }
+
     it 'removes the assignee from the task' do
+      task.assign(user.id)
+
       task.unassign
+      task.reload # reload the task from the db to ensure it was properly unassigned
 
       expect(task.assignee_id).to be_nil
     end
