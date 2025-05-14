@@ -1,0 +1,15 @@
+<% content_for :case_summary do %>
+  <p><em>Customizable case summary</em></p>
+<% end %>
+
+<% content_for :case_details do %>
+  <em>Customizable case details</em>
+<% end %>
+
+<%= render template: 'flex/cases/show', locals: {
+  cases_path: "/cases",
+  kase: {
+    id: 1,
+    status: status,
+  },
+} %>
