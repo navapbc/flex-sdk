@@ -1,24 +1,22 @@
 <%# Index view for displaying a list of tasks
     Required locals:
     - model_class: Flex::Task or subclass - The model class for the tasks
-    - task_type_map: Hash - A mapping of task types to human-readable names
 
     Example usage:
     render template: "flex/application_forms/index", locals: {
-      model_class: PassportTask,
-      task_type_map: { PassportPhotoTask => 'Verify Photo', PassportVerifyInfoTask => 'Verify Info' }
+      model_class: PassportTask
     }
 %>
 <%= content_for :title, model_class.name.titleize %>
 <!-- Main content -->
 <main class="usa-section">
   <div class="grid-container">
-    <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Task', ' Tasks') %></h1>
+    <h1 class="usa-heading-xl"><%= t("flex.tasks.index.title") %></h1>
     <nav class="display-flex border-bottom-1px border-base-light">
       <% 
         [
-          { name: "Assigned", path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
-          { name: "Completed", path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+          { name: t("flex.tasks.index.tabs.assigned"), path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
+          { name: t("flex.tasks.index.tabs.completed"), path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
         ].each do |tab| 
       %>
       <%= render partial: "flex/cases/nav_tab", locals: tab %>
@@ -39,16 +37,16 @@
       <thead>
         <tr>
           <th data-sortable scope="col" role="columnheader" aria-sort="descending">
-            Task Due Date
+            <%= t("flex.tasks.index.columns.col_due_date") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            Task Type
+            <%= t("flex.tasks.index.columns.col_type") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            Case ID
+            <%= t("flex.tasks.index.columns.col_case_id") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            Task created date
+            <%= t("flex.tasks.index.columns.col_created_date") %>
           </th>
         </tr>
       </thead>
@@ -61,7 +59,7 @@
             <%= local_en_us task.due_on %>
           </td>
           <td data-sort-value="<%= task.type %>">
-            <%= link_to find_task_type_human_readable_name(task_type_map, task.type), passport_task_path(task) %>
+            <%= link_to t("tasks.types.#{task.type.underscore}"), passport_task_path(task) %>
           </td>
           <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
           <td data-sort-value="<%= time_since_epoch task.created_at %>">

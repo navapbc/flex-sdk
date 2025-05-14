@@ -24,6 +24,16 @@ en:
       breadcrumbs:
         home: "Home"
         tasks: "Tasks"
+      index:
+        title: "Tasks"
+        tabs:
+          assigned: "Assigned"
+          completed: "Completed"
+        columns:
+          col_due_date: "Task due date"
+          col_type: "Task type"
+          col_case_id: "Case ID"
+          col_created_date: "Task created date"
       show:
         headers:
           task_details: "Task Details"

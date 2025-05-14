@@ -24,6 +24,16 @@ es-US:
       breadcrumbs:
         home: "Inicio"
         tasks: "Tareas"
+      index:
+        title: "Tareas"
+        tabs:
+          assigned: "Asignadas"
+          completed: "Completadas"
+        columns:
+          col_due_date: "Fecha de vencimiento de la tarea"
+          col_type: "Tipo de tarea"
+          col_case_id: "ID del caso"
+          col_created_date: "Fecha de creación de la tarea"
       show:
         headers:
           task_details: "Detalles de la tarea"
