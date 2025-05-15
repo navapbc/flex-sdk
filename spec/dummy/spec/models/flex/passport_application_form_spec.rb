@@ -43,21 +43,8 @@ module Flex
 
       context "when submitting a form" do
         it "triggers PassportApplicationFormSubmitted event" do
-          event_triggered = false
-          event_payload = nil
-          callback = ->(event) {
-            event_triggered = true
-            event_payload = event[:payload]
-          }
           expected_payload = { id: passport_application_form.id }
-          subscription = Flex::EventManager.subscribe("PassportApplicationFormSubmitted", callback)
-  
-          passport_application_form.submit_application
-  
-          expect(event_triggered).to be true
-          expect(event_payload).to include(expected_payload)
-        ensure
-          Flex::EventManager.unsubscribe(subscription) if subscription
+          expect { passport_application_form.submit_application }.to publish_event_with_payload("PassportApplicationFormSubmitted", expected_payload)
         end
       end
     end
