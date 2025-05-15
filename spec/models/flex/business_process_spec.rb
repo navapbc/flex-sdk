@@ -1,105 +1,95 @@
 require 'rails_helper'
 
 RSpec.describe Flex::BusinessProcess do
-  let(:mock_case) { instance_double(PassportCase, business_process_current_step: 'step1') }
-  let(:find_case_callback) { ->(case_id) { mock_case } }
-  let(:business_process) { described_class.new(name: "Test Business Process", find_case_callback: find_case_callback) }
-  let(:mock_event_manager) { class_double(Flex::EventManager) }
-  let(:mock_steps) { {
-    "user_task" => instance_double(Flex::UserTask),
-    "system_process" => instance_double(Flex::SystemProcess),
-    "user_task_2" => instance_double(Flex::UserTask),
-    "system_process_2" => instance_double(Flex::SystemProcess)
-    }
-  }
+  let(:kase) { TestCase.new }
+  let(:case_class) { TestCase }
+  let(:business_process) { TestBusinessProcess }
 
   before do
-    stub_const("Flex::EventManager", mock_event_manager)
+    business_process.start_listening_for_events
+  end
+
+  after do
+    # Clean up any subscriptions to avoid side effects in other tests
+    business_process.stop_listening_for_events
   end
 
   describe '#execute' do
-    before do
-      business_process.define_steps(mock_steps)
-      allow(mock_steps["user_task"]).to receive(:execute)
-      allow(mock_steps["system_process"]).to receive(:execute)
-      allow(mock_steps["user_task_2"]).to receive(:execute)
-      allow(mock_steps["system_process_2"]).to receive(:execute)
+    it 'sets the initial step and executes it' do
+      expect(kase.business_process_current_step).to be_blank
+      business_process.execute(kase)
+      expect(kase.business_process_current_step).to eq('user_task')
     end
 
-    [
-      "user_task",
-      "system_process",
-      "user_task_2",
-      "system_process_2"
-    ].each do |starting_step|
-      it "only executes the starting step (#{starting_step}) in the business process and not any additional steps" do
-        allow(mock_case).to receive(:save!)
-        business_process.define_start(starting_step)
+    it 'maintains current step if already set' do
+      kase.business_process_current_step = 'user_task_2'
+      business_process.execute(kase)
+      expect(kase.business_process_current_step).to eq('user_task_2')
+    end
+  end
 
-        business_process.execute(mock_case)
+  describe '#handle_event' do
+    before do
+      business_process.start_listening_for_events
+      kase.save!
+    end
 
-        expect(mock_steps[starting_step]).to have_received(:execute).with(mock_case)
-        expect(mock_steps.except(starting_step).values).to all(have_received(:execute).exactly(0).times)
+    after do
+      business_process.stop_listening_for_events
+    end
+
+    it 'executes the complete process chain' do
+      kase.business_process_current_step = 'user_task'
+
+      Flex::EventManager.publish('event1', { case_id: kase.id })
+      # system_process automatically publishes event2
+      kase.reload
+      expect(kase.business_process_current_step).to eq('user_task_2')
+
+      Flex::EventManager.publish('event3', { case_id: kase.id })
+      # system_process_2 automatically publishes event4
+      kase.reload
+      expect(kase.business_process_current_step).to eq('end')
+      expect(kase).to be_closed
+    end
+
+    it 'maintains current step when no transition is defined for the event' do
+      kase.business_process_current_step = 'user_task'
+
+      [
+        'event2', 'event3', 'event4'
+      ].each do |event|
+        Flex::EventManager.publish(event, { case_id: kase.id })
+        kase.reload
+        expect(kase.business_process_current_step).to eq('user_task')
       end
     end
   end
 
-  describe '#define_transitions' do
+  describe '#stop_listening_for_events' do
     before do
-      allow(mock_event_manager).to receive(:subscribe)
-      allow(mock_event_manager).to receive(:unsubscribe)
+      business_process.start_listening_for_events
+      kase.save!
     end
 
-    it 'starts listening to events defined in transitions' do
-      business_process.define_transitions({
-        "step1" => { "event1" => "step2" },
-        "step2" => { "event2" => "end" }
-      })
+    it 'unsubscribes from all events' do
+      business_process.stop_listening_for_events
 
-      expect(mock_event_manager).to have_received(:subscribe).with("event1", anything)
-      expect(mock_event_manager).to have_received(:subscribe).with("event2", anything)
-    end
+      # Try publishing various events
+      kase.business_process_current_step = 'user_task'
+      kase.save!
 
-    it 'stops listening to events when transitions are redefined and then subscribe to the new events' do
-      business_process.define_transitions({
-        "step1" => { "event1" => "step2" },
-        "step2" => { "event2" => "end" }
-      })
-      business_process.define_transitions({
-        "step3" => { "event3" => "step4" },
-        "step4" => { "event4" => "end" }
-      })
+      Flex::EventManager.publish('event1', { case_id: kase.id })
+      kase.reload
+      expect(kase.business_process_current_step).to eq('user_task') # Should not change
 
-      expect(mock_event_manager).to have_received(:unsubscribe).twice
-      expect(mock_event_manager).to have_received(:subscribe).with("event3", anything)
-      expect(mock_event_manager).to have_received(:subscribe).with("event4", anything)
-    end
-  end
+      Flex::EventManager.publish('event2', { case_id: kase.id })
+      kase.reload
+      expect(kase.business_process_current_step).to eq('user_task') # Should not change
 
-  describe '#clear_process_configuration' do
-    before do
-      allow(mock_event_manager).to receive(:unsubscribe)
-      allow(mock_event_manager).to receive(:subscribe)
-      business_process.define_steps(mock_steps)
-      business_process.define_start("event1")
-      business_process.define_transitions({
-        "step1" => { "event1" => "step2" },
-        "step2" => { "event2" => "end" }
-      })
-    end
-
-    it 'clears all steps, transitions, and the start step' do
-      business_process.clear_process_configuration
-
-      expect(business_process.steps).to eq({})
-      expect(business_process.transitions).to eq({})
-      expect(business_process.start).to eq("")
-    end
-
-    it 'stops listening for events' do
-      business_process.clear_process_configuration
-
-      expect(mock_event_manager).to have_received(:unsubscribe).exactly(2).times
+      Flex::EventManager.publish('event3', { case_id: kase.id })
+      kase.reload
+      expect(kase.business_process_current_step).to eq('user_task') # Should not change
     end
   end
 end

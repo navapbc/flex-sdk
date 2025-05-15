@@ -1,4 +1,5 @@
 require "rails_helper"
+require "support/matchers/publish_event_with_payload"
 
 RSpec.describe Flex::ApplicationForm do
   describe "validations" do
@@ -38,21 +39,8 @@ RSpec.describe Flex::ApplicationForm do
       end
 
       it "triggers a FormSubmitted event" do
-        event_triggered = false
-        event_payload = nil
-        callback = ->(event) {
-          event_triggered = true
-          event_payload = event[:payload]
-        }
         expected_payload = { id: application_form.id }
-        subscription = Flex::EventManager.subscribe("TestApplicationFormSubmitted", callback)
-
-        application_form.submit_application
-
-        expect(event_triggered).to be true
-        expect(event_payload).to include(expected_payload)
-      ensure
-        Flex::EventManager.unsubscribe(subscription) if subscription
+        expect { application_form.submit_application }.to publish_event_with_payload("TestApplicationFormSubmitted", expected_payload)
       end
     end
 

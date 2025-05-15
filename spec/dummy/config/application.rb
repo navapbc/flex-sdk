@@ -25,9 +25,5 @@ module Dummy
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-
-    config.after_initialize do
-      PassportApplicationBusinessProcessManager.instance.business_process # Call the singleton once to ensure it's initialized at app startup
-    end
   end
 end

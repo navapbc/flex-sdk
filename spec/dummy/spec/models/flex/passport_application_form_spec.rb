@@ -1,20 +1,16 @@
 require "rails_helper"
+require "support/matchers/publish_event_with_payload"
 
 module Flex
   RSpec.describe PassportApplicationForm do
     describe "validations" do
       let(:passport_application_form) { described_class.new }
-      let(:mock_events_manager) { class_double(EventManager) }
 
       def generate_random_date_of_birth
         rand(100.years.ago..1.day.ago).to_date
       end
 
       before do
-        stub_const("Flex::EventManager", mock_events_manager)
-        allow(PassportApplicationBusinessProcessManager.instance)
-          .to receive(:business_process)
-          .and_return(instance_double(BusinessProcess, execute: true))
         passport_application_form.first_name = "John"
         passport_application_form.last_name = "Doe"
         passport_application_form.date_of_birth = generate_random_date_of_birth
@@ -46,14 +42,9 @@ module Flex
       end
 
       context "when submitting a form" do
-        it "triggers the event when submitting application" do
-          allow(mock_events_manager).to receive(:publish)
-
-          passport_application_form.submit_application
-
-          expect(mock_events_manager).to have_received(:publish)
-            .with("PassportApplicationFormSubmitted", a_hash_including(case_id: passport_application_form.case_id))
-            .once
+        it "triggers PassportApplicationFormSubmitted event" do
+          expected_payload = { id: passport_application_form.id }
+          expect { passport_application_form.submit_application }.to publish_event_with_payload("PassportApplicationFormSubmitted", expected_payload)
         end
       end
     end

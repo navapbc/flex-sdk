@@ -11,6 +11,7 @@ module Flex
     end
 
     def execute(kase)
+      Rails.logger.debug "Executing system process #{name}"
       @callback.call(kase)
     end
   end
