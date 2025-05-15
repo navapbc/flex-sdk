@@ -24,7 +24,7 @@ RSpec::Matchers.define :publish_event_with_payload do |event_name, expected_payl
   failure_message do
     if !@event_triggered
       "expected event '#{event_name}' to be published, but it was not triggered"
-    elsif !payload_matches_expected?
+    else
       "expected event payload to include #{expected_payload.inspect}, but got #{@actual_payload.inspect}"
     end
   end
