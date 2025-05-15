@@ -79,5 +79,20 @@ module Flex
       end
       @subscriptions.clear
     end
+
+    class << self
+      def define(name)
+        business_process = new(name)
+        yield business_process
+        @@business_processes[name] = business_process
+      end
+
+      def start_listening_for_events
+      end
+    end
+
+    private
+
+    @@business_processes = {}
   end
 end
