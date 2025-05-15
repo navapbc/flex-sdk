@@ -1,13 +1,13 @@
 module Flex
   class BusinessProcessBuilder
-    attr_reader :name, :steps, :start, :transitions, :find_case_callback
+    attr_reader :name, :steps, :start, :transitions, :case_class
 
-    def initialize(name, find_case_callback:)
+    def initialize(name, case_class)
       @name = name
+      @case_class = case_class
       @start = nil
       @steps = {}
       @transitions = {}
-      @find_case_callback = find_case_callback
     end
 
     def start(step_name)
@@ -26,7 +26,7 @@ module Flex
     def build
       BusinessProcess.new(
         name: @name,
-        find_case_callback: @find_case_callback,
+        case_class: @case_class,
         description: "",
         steps: @steps,
         start: @start,

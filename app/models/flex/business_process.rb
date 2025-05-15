@@ -2,18 +2,16 @@ module Flex
   class BusinessProcess
     include Step
 
-    attr_accessor :name, :description, :steps, :start, :transitions, :find_case_callback
+    attr_accessor :name, :description, :steps, :start, :transitions, :case_class
 
-    def initialize(name:, find_case_callback:, description: "", steps: {}, start: "", transitions: {})
+    def initialize(name:, case_class:, description: "", steps: {}, start: "", transitions: {})
       @subscriptions = {}
       @name = name
-      @find_case_callback = find_case_callback
+      @case_class = case_class
       @description = description
-      define_start(start)
-      define_steps(steps)
-      define_transitions(transitions)
-
-      @@business_processes[@name] = self
+      @start = start
+      @steps = steps
+      @transitions = transitions
     end
 
     def execute(kase)
@@ -24,33 +22,10 @@ module Flex
       kase.save!
     end
 
-    def define_start(step_name)
-      @start = step_name
-    end
-
-    def define_steps(steps)
-      @steps = steps
-    end
-
-    def define_transitions(transitions)
-      stop_listening_for_events
-      @transitions = transitions
-      start_listening_for_events
-    end
-
-    # @description This method will clear subscriptions and set steps, transitions, and start to their default values.
-    #     Only use this method if you are finished with the instance or plan to manually reset these values.
-    def clear_process_configuration
-      stop_listening_for_events
-      @steps = {}
-      @transitions = {}
-      @start = ""
-    end
-
     private
 
     def handle_event(event)
-      kase = @find_case_callback.call(event[:payload][:case_id])
+      kase = @case_class.find(event[:payload][:case_id])
       current_step = kase.business_process_current_step
       next_step = @transitions[current_step][event[:name]]
       kase.business_process_current_step = next_step
@@ -68,27 +43,32 @@ module Flex
 
     def start_listening_for_events
       get_event_names_from_transitions.each do |event_name|
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
+        puts "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
         @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
     end
 
     def stop_listening_for_events
       @subscriptions.each do |event_name, subscription|
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
+        puts "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
         EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
     end
 
     class << self
-      def define(name)
-        business_process = new(name)
-        yield business_process
-        business_process
+      def define(name, case_class)
+        business_process_builder = BusinessProcessBuilder.new(name, case_class)
+        yield business_process_builder
+        @@business_processes[name] = business_process_builder.build
+      end
+
+      def get_by_name(name)
+        @@business_processes[name] || raise(ArgumentError, "No business process registered with name: #{name}")
       end
 
       def start_listening_for_events
+        puts "Flex::BusinessProcess starting to listen for events"
         @@business_processes.values.each(&:start_listening_for_events)
       end
     end
