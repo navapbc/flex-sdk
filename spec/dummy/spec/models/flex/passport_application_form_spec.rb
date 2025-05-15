@@ -1,20 +1,16 @@
 require "rails_helper"
+require_relative "../../../app/business_processes/passport_process"
 
 module Flex
   RSpec.describe PassportApplicationForm do
     describe "validations" do
       let(:passport_application_form) { described_class.new }
-      let(:mock_events_manager) { class_double(EventManager) }
 
       def generate_random_date_of_birth
         rand(100.years.ago..1.day.ago).to_date
       end
 
       before do
-        stub_const("Flex::EventManager", mock_events_manager)
-        allow(PassportApplicationBusinessProcessManager.instance)
-          .to receive(:business_process)
-          .and_return(instance_double(BusinessProcess, execute: true))
         passport_application_form.first_name = "John"
         passport_application_form.last_name = "Doe"
         passport_application_form.date_of_birth = generate_random_date_of_birth
@@ -46,14 +42,22 @@ module Flex
       end
 
       context "when submitting a form" do
-        it "triggers the event when submitting application" do
-          allow(mock_events_manager).to receive(:publish)
-
+        it "triggers PassportApplicationFormSubmitted event" do
+          event_triggered = false
+          event_payload = nil
+          callback = ->(event) {
+            event_triggered = true
+            event_payload = event[:payload]
+          }
+          expected_payload = { id: passport_application_form.id }
+          subscription = Flex::EventManager.subscribe("PassportApplicationFormSubmitted", callback)
+  
           passport_application_form.submit_application
-
-          expect(mock_events_manager).to have_received(:publish)
-            .with("PassportApplicationFormSubmitted", a_hash_including(case_id: passport_application_form.case_id))
-            .once
+  
+          expect(event_triggered).to be true
+          expect(event_payload).to include(expected_payload)
+        ensure
+          Flex::EventManager.unsubscribe(subscription) if subscription
         end
       end
     end
