@@ -22,6 +22,22 @@ module Flex
       kase.save!
     end
 
+    def start_listening_for_events
+      puts "Flex::BusinessProcess #{name} starting to listen for events"
+      get_event_names_from_transitions.each do |event_name|
+        puts "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
+        @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
+      end
+    end
+
+    def stop_listening_for_events
+      @subscriptions.each do |event_name, subscription|
+        puts "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
+        EventManager.unsubscribe(subscription)
+      end
+      @subscriptions.clear
+    end
+
     private
 
     def handle_event(event)
@@ -41,35 +57,16 @@ module Flex
       @transitions.values.flat_map(&:keys).uniq
     end
 
-    def start_listening_for_events
-      get_event_names_from_transitions.each do |event_name|
-        puts "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
-        @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
-      end
-    end
-
-    def stop_listening_for_events
-      @subscriptions.each do |event_name, subscription|
-        puts "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
-        EventManager.unsubscribe(subscription)
-      end
-      @subscriptions.clear
-    end
-
     class << self
       def define(name, case_class)
         business_process_builder = BusinessProcessBuilder.new(name, case_class)
         yield business_process_builder
         @@business_processes[name] = business_process_builder.build
+        @@business_processes[name].start_listening_for_events
       end
 
       def get_by_name(name)
         @@business_processes[name] || raise(ArgumentError, "No business process registered with name: #{name}")
-      end
-
-      def start_listening_for_events
-        puts "Flex::BusinessProcess starting to listen for events"
-        @@business_processes.values.each(&:start_listening_for_events)
       end
     end
 

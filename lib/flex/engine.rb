@@ -18,11 +18,5 @@ module Flex
         require_dependency file
       end
     end
-
-    initializer "flex.start_business_processes" do |app|
-      config.to_prepare do
-        Flex::BusinessProcess.start_listening_for_events
-      end
-    end
   end
 end

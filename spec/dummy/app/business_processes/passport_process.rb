@@ -25,6 +25,9 @@ PassportApplicationBusinessProcess = Flex::BusinessProcess.define(:passport, Pas
     Flex::SystemProcess.new("Notify Passport Rejection", ->(kase) {
       UserNotificationService.new(kase).send_notification("rejection")
     }))
+
+  # Define start step
+  bp.start('collect_application_info')
   
   # Define transitions
   bp.transition('collect_application_info', 'PassportApplicationFormSubmitted', 'verify_identity')
@@ -37,7 +40,4 @@ PassportApplicationBusinessProcess = Flex::BusinessProcess.define(:passport, Pas
   bp.transition('review_passport_photo', 'passport_photo_rejected', 'review_passport_photo')
   bp.transition('notify_user_passport_approved', 'notification_completed', 'end')
   bp.transition('notify_user_passport_rejected', 'notification_completed', 'end')
-  
-  # Define start step
-  bp.start('collect_application_info')
 end
