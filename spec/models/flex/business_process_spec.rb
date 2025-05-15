@@ -40,12 +40,12 @@ RSpec.describe Flex::BusinessProcess do
 
     it 'executes the complete process chain' do
       kase.business_process_current_step = 'user_task'
-      
+
       Flex::EventManager.publish('event1', { case_id: kase.id })
       # system_process automatically publishes event2
       kase.reload
       expect(kase.business_process_current_step).to eq('user_task_2')
-      
+
       Flex::EventManager.publish('event3', { case_id: kase.id })
       # system_process_2 automatically publishes event4
       kase.reload
@@ -74,19 +74,19 @@ RSpec.describe Flex::BusinessProcess do
 
     it 'unsubscribes from all events' do
       business_process.stop_listening_for_events
-      
+
       # Try publishing various events
       kase.business_process_current_step = 'user_task'
       kase.save!
-      
+
       Flex::EventManager.publish('event1', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq('user_task') # Should not change
-      
+
       Flex::EventManager.publish('event2', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq('user_task') # Should not change
-      
+
       Flex::EventManager.publish('event3', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq('user_task') # Should not change

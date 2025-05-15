@@ -38,7 +38,7 @@ module Flex
     end
 
     def stop_listening_for_events
-      Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"      
+      Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"
 
       @subscriptions.each do |event_name, subscription|
         Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
@@ -57,7 +57,7 @@ module Flex
       next_step = @transitions&.dig(current_step, event[:name])
       Rails.logger.debug "Current step: #{current_step}, Next step: #{next_step}"
       return unless next_step # Skip processing if no valid transition exists
-      
+
       kase.business_process_current_step = next_step
       kase.save!
       if next_step == "end"
