@@ -1,4 +1,5 @@
 require "rails_helper"
+require "support/matchers/publish_event_with_payload"
 
 RSpec.describe Flex::ApplicationForm do
   describe "validations" do
