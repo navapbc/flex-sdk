@@ -1,5 +1,4 @@
 require 'rails_helper'
-require_relative "../../dummy/app/business_processes/passport_process"
 
 module Flex
   RSpec.describe PassportApplicationForm, type: :model do

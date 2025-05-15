@@ -1,5 +1,4 @@
 require "rails_helper"
-require_relative "../../dummy/app/business_processes/test_process"
 
 RSpec.describe Flex::ApplicationForm do
   describe "validations" do
