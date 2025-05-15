@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Flex::BusinessProcess do
-  let(:kase) { TestCase.new }
+  let(:application_form) { TestApplicationForm.create!() }
+  let(:kase) { TestCase.find_by(application_form_id: application_form.id) }
   let(:case_class) { TestCase }
   let(:business_process) { TestBusinessProcess }
 
@@ -12,20 +13,6 @@ RSpec.describe Flex::BusinessProcess do
   after do
     # Clean up any subscriptions to avoid side effects in other tests
     business_process.stop_listening_for_events
-  end
-
-  describe '#execute' do
-    it 'sets the initial step and executes it' do
-      expect(kase.business_process_current_step).to be_blank
-      business_process.execute(kase)
-      expect(kase.business_process_current_step).to eq('user_task')
-    end
-
-    it 'maintains current step if already set' do
-      kase.business_process_current_step = 'user_task_2'
-      business_process.execute(kase)
-      expect(kase.business_process_current_step).to eq('user_task_2')
-    end
   end
 
   describe '#handle_event' do

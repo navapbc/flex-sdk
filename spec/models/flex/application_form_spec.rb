@@ -39,7 +39,7 @@ RSpec.describe Flex::ApplicationForm do
       end
 
       it "triggers a FormSubmitted event" do
-        expected_payload = { id: application_form.id }
+        expected_payload = { application_form_id: application_form.id }
         expect { application_form.submit_application }.to publish_event_with_payload("TestApplicationFormSubmitted", expected_payload)
       end
     end

@@ -47,9 +47,6 @@ module Flex
   #   @return [BusinessProcess] The configured business process
   #
   # Instance Methods:
-  # @method execute(kase)
-  #   Starts or resumes execution of the process for a case
-  #   @param [ApplicationRecord] kase The case to execute the process on
   #
   # @method start_listening_for_events
   #   Starts listening for events that can trigger transitions

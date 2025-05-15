@@ -10,7 +10,7 @@ RSpec.describe "PassportCases", type: :request do
 
   describe "GET /show" do
     let(:application_form) { PassportApplicationForm.create! }
-    let(:kase) { described_class.find_by(application_form_id: application_form.id) }
+    let(:kase) { PassportCase.find_by(application_form_id: application_form.id) }
 
     it "returns http success" do
       get "/passport_cases/#{kase.id}"
