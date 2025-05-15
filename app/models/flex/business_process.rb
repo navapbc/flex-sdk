@@ -126,7 +126,7 @@ module Flex
       if event[:name] == start_event_name
         kase = create_case_from_event(event)
       else
-        kase = @case_class.find(event[:payload][:case_id])
+        kase = get_case_from_event(event)
       end
 
       transition_case(kase, event[:name])
@@ -146,6 +146,17 @@ module Flex
       raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
       kase = @case_class.create!(application_form_id: event[:payload][:application_form_id])
       kase
+    end
+
+    def get_case_from_event(event)
+      Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
+      if event[:payload].key?(:application_form_id)
+        Rails.logger.debug "Getting case from event payload with application_form_id"
+        @case_class.find_by(application_form_id: event[:payload][:application_form_id])
+      else
+        Rails.logger.debug "Getting case from event payload with case_id"
+        @case_class.find(event[:payload][:case_id])
+      end
     end
 
     class << self
