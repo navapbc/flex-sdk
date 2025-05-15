@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Flex::BusinessProcess do
   let(:application_form) { TestApplicationForm.create!() }
   let(:kase) { TestCase.find_by(application_form_id: application_form.id) }
-  let(:case_class) { TestCase }
   let(:business_process) { TestBusinessProcess }
 
   before do
@@ -16,15 +15,6 @@ RSpec.describe Flex::BusinessProcess do
   end
 
   describe '#handle_event' do
-    before do
-      business_process.start_listening_for_events
-      kase.save!
-    end
-
-    after do
-      business_process.stop_listening_for_events
-    end
-
     it 'executes the complete process chain' do
       kase.business_process_current_step = 'user_task'
 
