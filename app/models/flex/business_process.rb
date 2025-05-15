@@ -12,7 +12,8 @@ module Flex
       define_start(start)
       define_steps(steps)
       define_transitions(transitions)
-      start_listening_for_events
+
+      @@business_processes[@name] = self
     end
 
     def execute(kase)
@@ -84,10 +85,11 @@ module Flex
       def define(name)
         business_process = new(name)
         yield business_process
-        @@business_processes[name] = business_process
+        business_process
       end
 
       def start_listening_for_events
+        @@business_processes.values.each(&:start_listening_for_events)
       end
     end
 
