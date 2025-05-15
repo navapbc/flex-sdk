@@ -6,11 +6,6 @@ class PassportApplicationForm < Flex::ApplicationForm
 
   flex_attribute :date_of_birth, :memorable_date
 
-  attribute :case_id, :integer
-  private def case_id=(value)
-    self[:case_id] = value
-  end
-
   def has_all_necessary_fields?
     !first_name.nil? && !last_name.nil? && !date_of_birth.nil?
   end

@@ -9,15 +9,15 @@ module Flex
   #     # Define steps - can be UserTask or SystemProcess
   #     bp.step('collect_info',
   #       Flex::UserTask.new("Collect Information", TaskCreationService))
-  #     
+  #
   #     bp.step('process_data',
   #       Flex::SystemProcess.new("Process Data", ->(kase) {
   #         DataProcessor.new(kase).process
   #       }))
-  #     
+  #
   #     # Set the starting step
   #     bp.start('collect_info')
-  #     
+  #
   #     # Define transitions between steps based on events
   #     bp.transition('collect_info', 'form_submitted', 'process_data')
   #     bp.transition('process_data', 'processing_complete', 'end')

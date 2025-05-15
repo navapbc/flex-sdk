@@ -4,8 +4,6 @@ module Flex
 
     include Flex::Attributes
 
-    attribute :case_id, :string
-
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
