@@ -76,18 +76,9 @@ module Flex
         business_process_builder = BusinessProcessBuilder.new(name, case_class)
         yield business_process_builder
         business_process = business_process_builder.build
-        @@business_processes[name] = business_process
         business_process.start_listening_for_events
         business_process
       end
-
-      def get_by_name(name)
-        @@business_processes[name] || raise(ArgumentError, "No business process registered with name: #{name}")
-      end
     end
-
-    private
-
-    @@business_processes = {}
   end
 end
