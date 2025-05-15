@@ -1,4 +1,63 @@
 module Flex
+  # BusinessProcess is a class that allows you to define and execute business workflows with steps and event-driven transitions.
+  #
+  # Business process definitions should be placed in app/business_processes/ with the naming convention
+  # *_business_process.rb (e.g. passport_business_process.rb, approval_business_process.rb)
+  #
+  # @example Defining a basic business process in app/business_processes/my_business_process.rb
+  #   MyBusinessProcess = Flex::BusinessProcess.define(:my_process, MyCase) do |bp|
+  #     # Define steps - can be UserTask or SystemProcess
+  #     bp.step('collect_info',
+  #       Flex::UserTask.new("Collect Information", TaskCreationService))
+  #     
+  #     bp.step('process_data',
+  #       Flex::SystemProcess.new("Process Data", ->(kase) {
+  #         DataProcessor.new(kase).process
+  #       }))
+  #     
+  #     # Set the starting step
+  #     bp.start('collect_info')
+  #     
+  #     # Define transitions between steps based on events
+  #     bp.transition('collect_info', 'form_submitted', 'process_data')
+  #     bp.transition('process_data', 'processing_complete', 'end')
+  #   end
+  #
+  # Steps can be either:
+  # - UserTask: Tasks that require human interaction
+  # - SystemProcess: Automated tasks that run without user intervention
+  #
+  # The process automatically listens for events and transitions between steps
+  # based on the defined transitions. When a step transitions to 'end',
+  # the case is automatically closed.
+  #
+  # @see Flex::UserTask
+  # @see Flex::SystemProcess
+  #
+  # Key Methods:
+  # - execute(kase): Starts or resumes execution of the process for a case
+  # - start_listening_for_events: Starts listening for events that trigger transitions
+  # - stop_listening_for_events: Stops listening for events (useful for cleanup)
+  #
+  # Class Methods:
+  # @method define(name, case_class)
+  #   Creates a new BusinessProcess definition
+  #   @param [Symbol] name The name of the business process
+  #   @param [Class] case_class The case class this process operates on
+  #   @yield [BusinessProcessBuilder] builder DSL for defining the process
+  #   @return [BusinessProcess] The configured business process
+  #
+  # Instance Methods:
+  # @method execute(kase)
+  #   Starts or resumes execution of the process for a case
+  #   @param [ApplicationRecord] kase The case to execute the process on
+  #
+  # @method start_listening_for_events
+  #   Starts listening for events that can trigger transitions
+  #
+  # @method stop_listening_for_events
+  #   Stops listening for events, useful for cleanup in tests
+  #
   class BusinessProcess
     include Step
 
