@@ -2,7 +2,8 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe PassportCase, type: :model do
-    let(:test_case) { described_class.new }
+    let(:test_application_form) { PassportApplicationForm.create! }
+    let(:test_case) { described_class.new(application_form_id: test_application_form.id) }
 
     describe 'after create' do
       it 'initializes the business process' do
