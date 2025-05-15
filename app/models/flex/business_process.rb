@@ -68,7 +68,6 @@ module Flex
       @transitions = transitions
       @transitions["start"] = { start_event_name => start_step_name }
       @listening = false
-      puts @transitions.inspect
     end
 
     def start_listening_for_events

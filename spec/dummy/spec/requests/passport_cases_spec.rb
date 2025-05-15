@@ -9,11 +9,10 @@ RSpec.describe "PassportCases", type: :request do
   end
 
   describe "GET /show" do
-    let(:application_form) { PassportApplicationForm.create! }
-    let(:kase) { PassportCase.find_by(application_form_id: application_form.id) }
+    let!(:passport_case) { PassportCase.create }
 
     it "returns http success" do
-      get "/passport_cases/#{kase.id}"
+      get "/passport_cases/#{passport_case.id}"
       expect(response).to have_http_status(:success)
     end
 
