@@ -23,16 +23,16 @@ module Flex
     end
 
     def start_listening_for_events
-      puts "Flex::BusinessProcess #{name} starting to listen for events"
+      Rails.logger.debug "Flex::BusinessProcess #{name} starting to listen for events"
       get_event_names_from_transitions.each do |event_name|
-        puts "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
+        Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
         @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
     end
 
     def stop_listening_for_events
       @subscriptions.each do |event_name, subscription|
-        puts "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
+        Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
         EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
