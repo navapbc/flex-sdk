@@ -17,7 +17,7 @@ module Flex
       end
 
       def publish(event_key, payload = {})
-        puts "Event Manager: Publishing event '#{event_key}' with payload: #{payload.inspect}"
+        Rails.logger.debug "Event Manager: Publishing event '#{event_key}' with payload: #{payload.inspect}"
         ActiveSupport::Notifications.instrument(event_key, payload)
       end
     end

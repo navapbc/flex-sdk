@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 module Flex
-  RSpec.describe PassportApplicationForm, type: :model do
-    let(:test_form) { described_class.new }
+  RSpec.describe PassportBusinessProcess, type: :model do
+    let(:test_form) { PassportApplicationForm.new }
 
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
       test_form.save!
 
       # check case created and open with correct current step
-      kase = PassportCase.find(test_form.case_id)
+      kase = PassportCase.find_by_application_form_id(test_form.id)
       expect(kase).not_to be_nil
       expect(kase.status).to eq ("open")
       expect(kase.business_process_current_step).to eq ("collect_application_info")

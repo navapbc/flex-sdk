@@ -17,17 +17,4 @@ class PassportApplicationForm < Flex::ApplicationForm
   def full_name
     "#{first_name} #{last_name}"
   end
-
-  protected
-
-  def event_payload
-    parent_payload = super
-    parent_payload.merge({ case_id: case_id })
-  end
-
-  private
-
-  def has_case_id?
-    !case_id.nil?
-  end
 end

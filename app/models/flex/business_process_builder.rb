@@ -11,7 +11,7 @@ module Flex
     end
 
     def start(step_name)
-      @start = step_name
+      @start_step_name = step_name
     end
 
     def step(name, step)
@@ -29,7 +29,7 @@ module Flex
         case_class: @case_class,
         description: "",
         steps: @steps,
-        start: @start,
+        start_step_name: @start_step_name,
         transitions: @transitions
       )
     end

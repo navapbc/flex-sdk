@@ -35,7 +35,6 @@ module Flex
   # @see Flex::SystemProcess
   #
   # Key Methods:
-  # - execute(kase): Starts or resumes execution of the process for a case
   # - start_listening_for_events: Starts listening for events that trigger transitions
   # - stop_listening_for_events: Stops listening for events (useful for cleanup)
   #
@@ -61,25 +60,18 @@ module Flex
   class BusinessProcess
     include Step
 
-    attr_accessor :name, :description, :steps, :start, :transitions, :case_class
+    attr_accessor :name, :description, :steps, :transitions, :case_class
 
-    def initialize(name:, case_class:, description: "", steps: {}, start: "", transitions: {})
+    def initialize(name:, case_class:, description: "", steps: {}, start_step_name: "", transitions: {})
       @subscriptions = {}
       @name = name
       @case_class = case_class
       @description = description
-      @start = start
       @steps = steps
       @transitions = transitions
+      @transitions["start"] = { start_event_name => start_step_name }
       @listening = false
-    end
-
-    def execute(kase)
-      if kase.business_process_current_step.blank?
-        kase.business_process_current_step = @start
-      end
-      steps[start].execute(kase)
-      kase.save!
+      puts @transitions.inspect
     end
 
     def start_listening_for_events
@@ -109,25 +101,51 @@ module Flex
 
     private
 
-    def handle_event(event)
-      Rails.logger.debug "Handling event: #{event[:name]} for case ID: #{event[:payload][:case_id]}"
-      kase = @case_class.find(event[:payload][:case_id])
+    def transition_case(kase, event_name)
       current_step = kase.business_process_current_step
-      next_step = @transitions&.dig(current_step, event[:name])
-      Rails.logger.debug "Current step: #{current_step}, Next step: #{next_step}"
+      next_step = @transitions&.dig(current_step, event_name)
+      Rails.logger.debug "Transitioning from #{current_step} to #{next_step} on event: #{event_name}"
       return unless next_step # Skip processing if no valid transition exists
 
       kase.business_process_current_step = next_step
       kase.save!
-      if next_step == "end"
+    end
+
+    def execute_current_step(kase)
+      step_name = kase.business_process_current_step
+      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
+      if step_name == "end"
         kase.close
       else
-        @steps[next_step].execute(kase)
+        @steps[step_name].execute(kase)
       end
+    end
+
+    def handle_event(event)
+      Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
+      if event[:name] == start_event_name
+        kase = create_case_from_event(event)
+      else
+        kase = @case_class.find(event[:payload][:case_id])
+      end
+
+      transition_case(kase, event[:name])
+      execute_current_step(kase)
     end
 
     def get_event_names_from_transitions
       @transitions.values.flat_map(&:keys).uniq
+    end
+
+    def start_event_name
+      @case_class.name.sub("Case", "ApplicationFormCreated")
+    end
+
+    def create_case_from_event(event)
+      Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
+      raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
+      kase = @case_class.create!(application_form_id: event[:payload][:application_form_id])
+      kase
     end
 
     class << self
