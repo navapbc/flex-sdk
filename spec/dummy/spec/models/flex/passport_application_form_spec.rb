@@ -43,7 +43,7 @@ module Flex
 
       context "when submitting a form" do
         it "triggers PassportApplicationFormSubmitted event" do
-          expected_payload = { id: passport_application_form.id }
+          expected_payload = { application_form_id: passport_application_form.id }
           expect { passport_application_form.submit_application }.to publish_event_with_payload("PassportApplicationFormSubmitted", expected_payload)
         end
       end
