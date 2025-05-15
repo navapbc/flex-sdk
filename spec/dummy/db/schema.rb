@@ -41,7 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_211911) do
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "application_form_id", null: false
+    t.string "application_form_id"
     t.index [ "application_form_id" ], name: "index_passport_cases_on_application_form_id"
   end
 
@@ -57,7 +57,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_211911) do
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "application_form_id", null: false
+    t.string "application_form_id"
     t.index [ "application_form_id" ], name: "index_test_cases_on_application_form_id"
   end
 
@@ -75,6 +75,4 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_211911) do
   end
 
   add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
-  add_foreign_key "passport_cases", "passport_application_forms", column: "application_form_id"
-  add_foreign_key "test_cases", "test_application_forms", column: "application_form_id"
 end
