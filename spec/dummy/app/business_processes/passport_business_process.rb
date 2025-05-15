@@ -1,4 +1,4 @@
-PassportApplicationBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) do |bp|
+PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) do |bp|
   # Define steps
   bp.step('collect_application_info', 
     Flex::UserTask.new("Collect App Info", UserTaskCreationService))
