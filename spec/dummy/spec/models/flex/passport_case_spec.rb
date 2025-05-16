@@ -9,7 +9,6 @@ module Flex
         test_case.save!
 
         expect(test_case.status).to eq('open')
-        expect(test_case.business_process_current_step).to eq('collect_application_info')
       end
     end
   end

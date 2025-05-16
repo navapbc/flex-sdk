@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_15_211911) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -31,10 +31,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
     t.string "last_name"
     t.date "date_of_birth"
     t.integer "status", default: 0
-    t.integer "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "case_id" ], name: "index_passport_application_forms_on_case_id", unique: true
   end
 
   create_table "passport_cases", force: :cascade do |t|
@@ -43,6 +41,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "application_form_id"
+    t.index [ "application_form_id" ], name: "index_passport_cases_on_application_form_id"
   end
 
   create_table "test_application_forms", force: :cascade do |t|
@@ -57,6 +57,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "application_form_id"
+    t.index [ "application_form_id" ], name: "index_test_cases_on_application_form_id"
   end
 
   create_table "test_records", force: :cascade do |t|
@@ -73,5 +75,4 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_150345) do
   end
 
   add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
-  add_foreign_key "passport_application_forms", "passport_cases", column: "case_id", on_delete: :cascade
 end
