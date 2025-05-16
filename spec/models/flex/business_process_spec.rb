@@ -30,15 +30,21 @@ RSpec.describe Flex::BusinessProcess do
       expect(kase).to be_closed
     end
 
-    it 'maintains current step when no transition is defined for the event' do
-      kase.business_process_current_step = 'user_task'
+    [
+      'event2', 'event3', 'event4'
+    ].each do |event|
+      it 'maintains current step when no transition is defined for the event' do
+        kase.business_process_current_step = 'user_task'
 
-      [
-        'event2', 'event3', 'event4'
-      ].each do |event|
         Flex::EventManager.publish(event, { case_id: kase.id })
         kase.reload
         expect(kase.business_process_current_step).to eq('user_task')
+      end
+
+      it 'does not re-execute the current step' do
+        expect(UserTaskCreationService).not_to receive(:create_task)
+        kase.business_process_current_step = 'user_task'
+        Flex::EventManager.publish(event, { case_id: kase.id })
       end
     end
   end
