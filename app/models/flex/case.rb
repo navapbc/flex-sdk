@@ -8,7 +8,7 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, open: 0, closed: 1
 
-    attribute :business_process_current_step, :string, default: "start"
+    attribute :business_process_current_step, :string
 
     protected attr_accessor :business_process
 

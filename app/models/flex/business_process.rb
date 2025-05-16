@@ -66,8 +66,8 @@ module Flex
       @case_class = case_class
       @description = description
       @steps = steps
+      @start_step_name = start_step_name
       @transitions = transitions
-      @transitions["start"] = { start_event_name => start_step_name }
       @listening = false
     end
 
@@ -77,7 +77,7 @@ module Flex
         return
       end
 
-      get_event_names_from_transitions.each do |event_name|
+      get_event_names.each do |event_name|
         Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
         @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
@@ -101,7 +101,6 @@ module Flex
     def get_next_step(kase, event_name)
       current_step = kase.business_process_current_step
       next_step = @transitions&.dig(current_step, event_name)
-      Rails.logger.debug "Transitioning from #{current_step} to #{next_step} on event: #{event_name}"
       next_step
     end
 
@@ -117,23 +116,27 @@ module Flex
 
     def handle_event(event)
       Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
-      if event[:name] == start_event_name
+      if start_event?(event[:name])
         kase = create_case_from_event(event)
       else
         kase = get_case_from_event(event)
+        next_step = get_next_step(kase, event[:name])
+        return unless next_step
+  
+        Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
+        kase.business_process_current_step = next_step
+        kase.save!
       end
 
-      next_step = get_next_step(kase, event[:name])
-      return unless next_step
-
-      Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
-      kase.business_process_current_step = next_step
-      kase.save!
       execute_current_step(kase)
     end
 
-    def get_event_names_from_transitions
-      @transitions.values.flat_map(&:keys).uniq
+    def start_event?(event_name)
+      event_name == start_event_name
+    end
+
+    def get_event_names
+      @transitions.values.flat_map(&:keys).uniq | [start_event_name]
     end
 
     def start_event_name
@@ -143,7 +146,10 @@ module Flex
     def create_case_from_event(event)
       Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
       raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
-      kase = @case_class.create!(application_form_id: event[:payload][:application_form_id])
+      kase = @case_class.create!(
+        application_form_id: event[:payload][:application_form_id],
+        business_process_current_step: @start_step_name
+      )
       kase
     end
 
