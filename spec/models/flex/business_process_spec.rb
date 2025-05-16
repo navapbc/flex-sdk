@@ -15,9 +15,12 @@ RSpec.describe Flex::BusinessProcess do
   end
 
   describe '#handle_event' do
-    it 'executes the complete process chain' do
+    before do
       kase.business_process_current_step = 'user_task'
+      kase.save!
+    end
 
+    it 'executes the complete process chain' do
       Flex::EventManager.publish('event1', { case_id: kase.id })
       # system_process automatically publishes event2
       kase.reload
@@ -30,21 +33,20 @@ RSpec.describe Flex::BusinessProcess do
       expect(kase).to be_closed
     end
 
-    [
-      'event2', 'event3', 'event4'
-    ].each do |event|
-      it 'maintains current step when no transition is defined for the event' do
-        kase.business_process_current_step = 'user_task'
-
-        Flex::EventManager.publish(event, { case_id: kase.id })
-        kase.reload
+    context 'when no transition is defined for the event' do
+      it 'maintains current step' do
+        ['event2', 'event3', 'event4'].each do |event|
+          Flex::EventManager.publish(event, { case_id: kase.id })
+        end
         expect(kase.business_process_current_step).to eq('user_task')
       end
 
       it 'does not re-execute the current step' do
         expect(UserTaskCreationService).not_to receive(:create_task)
-        kase.business_process_current_step = 'user_task'
-        Flex::EventManager.publish(event, { case_id: kase.id })
+        
+        ['event2', 'event3', 'event4'].each do |event|
+          Flex::EventManager.publish(event, { case_id: kase.id })
+        end
       end
     end
   end

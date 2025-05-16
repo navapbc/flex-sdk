@@ -98,14 +98,11 @@ module Flex
 
     private
 
-    def transition_case(kase, event_name)
+    def get_next_step(kase, event_name)
       current_step = kase.business_process_current_step
       next_step = @transitions&.dig(current_step, event_name)
       Rails.logger.debug "Transitioning from #{current_step} to #{next_step} on event: #{event_name}"
-      return unless next_step # Skip processing if no valid transition exists
-
-      kase.business_process_current_step = next_step
-      kase.save!
+      next_step
     end
 
     def execute_current_step(kase)
@@ -126,7 +123,12 @@ module Flex
         kase = get_case_from_event(event)
       end
 
-      transition_case(kase, event[:name])
+      next_step = get_next_step(kase, event[:name])
+      return unless next_step
+
+      Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
+      kase.business_process_current_step = next_step
+      kase.save!
       execute_current_step(kase)
     end
 
