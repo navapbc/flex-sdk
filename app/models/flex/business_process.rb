@@ -24,12 +24,14 @@ module Flex
   #   end
   #
   # Steps can be either:
-  # - UserTask: Tasks that require human interaction
-  # - SystemProcess: Automated tasks that run without user intervention
+  # - UserTask: Tasks that require human interaction, created through a TaskCreationService
+  # - SystemProcess: Automated tasks that run without user intervention, defined with a callable
   #
   # The process automatically listens for events and transitions between steps
-  # based on the defined transitions. When a step transitions to 'end',
-  # the case is automatically closed.
+  # based on the defined transitions. Events can be triggered by either user actions
+  # or system processes. When a step transitions to 'end', the case is automatically closed.
+  #
+  # Event payloads must contain either case_id or application_form_id to identify the case.
   #
   # @see Flex::UserTask
   # @see Flex::SystemProcess
@@ -40,19 +42,18 @@ module Flex
   #
   # Class Methods:
   # @method define(name, case_class)
-  #   Creates a new BusinessProcess definition
+  #   Creates a new BusinessProcess definition. Also automatically starts listening for events.
   #   @param [Symbol] name The name of the business process
   #   @param [Class] case_class The case class this process operates on
-  #   @yield [BusinessProcessBuilder] builder DSL for defining the process
-  #   @return [BusinessProcess] The configured business process
+  #   @yield [BusinessProcessBuilder] builder DSL for defining the process steps and transitions
+  #   @return [BusinessProcess] The configured and activated business process
   #
   # Instance Methods:
-  #
   # @method start_listening_for_events
-  #   Starts listening for events that can trigger transitions
+  #   Starts listening for events that can trigger transitions. Called automatically by define.
   #
   # @method stop_listening_for_events
-  #   Stops listening for events, useful for cleanup in tests
+  #   Stops listening for events and cleans up subscriptions. Useful for cleanup in tests.
   #
   class BusinessProcess
     include Step
