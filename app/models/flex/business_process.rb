@@ -98,6 +98,47 @@ module Flex
 
     private
 
+    def create_case_from_event(event)
+      Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
+      raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
+      kase = @case_class.create!(
+        application_form_id: event[:payload][:application_form_id],
+        business_process_current_step: @start_step_name
+      )
+      kase
+    end
+
+    def execute_current_step(kase)
+      step_name = kase.business_process_current_step
+      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
+      if step_name == "end"
+        kase.close
+      else
+        @steps[step_name].execute(kase)
+      end
+    end
+
+    def get_case_from_event(event)
+      Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
+      if event[:payload].key?(:application_form_id)
+        Rails.logger.debug "Getting case from event payload with application_form_id"
+        @case_class.find_by(application_form_id: event[:payload][:application_form_id])
+      else
+        Rails.logger.debug "Getting case from event payload with case_id"
+        @case_class.find(event[:payload][:case_id])
+      end
+    end
+
+    def get_event_names
+      @transitions.values.flat_map(&:keys).uniq | [ start_event_name ]
+    end
+
+    def get_next_step(kase, event_name)
+      current_step = kase.business_process_current_step
+      next_step = @transitions&.dig(current_step, event_name)
+      next_step
+    end
+
     def handle_event(event)
       Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
       if start_event?(event[:name])
@@ -119,49 +160,8 @@ module Flex
       event_name == start_event_name
     end
 
-    def get_next_step(kase, event_name)
-      current_step = kase.business_process_current_step
-      next_step = @transitions&.dig(current_step, event_name)
-      next_step
-    end
-
-    def execute_current_step(kase)
-      step_name = kase.business_process_current_step
-      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
-      if step_name == "end"
-        kase.close
-      else
-        @steps[step_name].execute(kase)
-      end
-    end
-
-    def get_event_names
-      @transitions.values.flat_map(&:keys).uniq | [ start_event_name ]
-    end
-
     def start_event_name
       @case_class.name.sub("Case", "ApplicationFormCreated")
-    end
-
-    def create_case_from_event(event)
-      Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
-      raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
-      kase = @case_class.create!(
-        application_form_id: event[:payload][:application_form_id],
-        business_process_current_step: @start_step_name
-      )
-      kase
-    end
-
-    def get_case_from_event(event)
-      Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
-      if event[:payload].key?(:application_form_id)
-        Rails.logger.debug "Getting case from event payload with application_form_id"
-        @case_class.find_by(application_form_id: event[:payload][:application_form_id])
-      else
-        Rails.logger.debug "Getting case from event payload with case_id"
-        @case_class.find(event[:payload][:case_id])
-      end
     end
 
     class << self
