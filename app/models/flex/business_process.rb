@@ -98,22 +98,6 @@ module Flex
 
     private
 
-    def get_next_step(kase, event_name)
-      current_step = kase.business_process_current_step
-      next_step = @transitions&.dig(current_step, event_name)
-      next_step
-    end
-
-    def execute_current_step(kase)
-      step_name = kase.business_process_current_step
-      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
-      if step_name == "end"
-        kase.close
-      else
-        @steps[step_name].execute(kase)
-      end
-    end
-
     def handle_event(event)
       Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
       if start_event?(event[:name])
@@ -133,6 +117,22 @@ module Flex
 
     def start_event?(event_name)
       event_name == start_event_name
+    end
+
+    def get_next_step(kase, event_name)
+      current_step = kase.business_process_current_step
+      next_step = @transitions&.dig(current_step, event_name)
+      next_step
+    end
+
+    def execute_current_step(kase)
+      step_name = kase.business_process_current_step
+      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
+      if step_name == "end"
+        kase.close
+      else
+        @steps[step_name].execute(kase)
+      end
     end
 
     def get_event_names
