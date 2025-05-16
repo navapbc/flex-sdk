@@ -42,11 +42,11 @@ RSpec.describe Flex::BusinessProcess do
       end
 
       it 'does not re-execute the current step' do
-        expect(UserTaskCreationService).not_to receive(:create_task)
-
+        allow(UserTaskCreationService).to receive(:create_task)
         [ 'event2', 'event3', 'event4' ].each do |event|
           Flex::EventManager.publish(event, { case_id: kase.id })
         end
+        expect(UserTaskCreationService).not_to have_received(:create_task)
       end
     end
   end

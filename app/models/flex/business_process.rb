@@ -122,7 +122,7 @@ module Flex
         kase = get_case_from_event(event)
         next_step = get_next_step(kase, event[:name])
         return unless next_step
-  
+
         Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
         kase.business_process_current_step = next_step
         kase.save!
@@ -136,7 +136,7 @@ module Flex
     end
 
     def get_event_names
-      @transitions.values.flat_map(&:keys).uniq | [start_event_name]
+      @transitions.values.flat_map(&:keys).uniq | [ start_event_name ]
     end
 
     def start_event_name
