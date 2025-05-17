@@ -1,6 +1,7 @@
 module Flex
   module Attributes
     extend ActiveSupport::Concern
+    include Flex::Attributes::AddressAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
 
@@ -11,6 +12,8 @@ module Flex
           memorable_date_attribute name, options
         when :name
           name_attribute name, options
+        when :address
+          address_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end

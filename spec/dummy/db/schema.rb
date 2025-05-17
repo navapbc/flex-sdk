@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_16_000000) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_17_053839) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -68,6 +68,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_000000) do
     t.string "name_first"
     t.string "name_middle"
     t.string "name_last"
+    t.string "address_street_line_1"
+    t.string "address_street_line_2"
+    t.string "address_city"
+    t.string "address_state"
+    t.string "address_zip_code"
   end
 
   create_table "users", force: :cascade do |t|

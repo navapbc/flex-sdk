@@ -91,4 +91,52 @@ RSpec.describe Flex::Attributes do
       expect(object.name_last).to eq("O'REILLY")
     end
   end
+
+  describe "address attribute" do
+    it "allows setting address as a value object" do
+      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      object.address = address
+
+      expect(object.address).to eq(Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108"))
+      expect(object.address_street_line_1).to eq("123 Main St")
+      expect(object.address_street_line_2).to eq("Apt 4B")
+      expect(object.address_city).to eq("Boston")
+      expect(object.address_state).to eq("MA")
+      expect(object.address_zip_code).to eq("02108")
+    end
+
+    it "allows setting address as a hash" do
+      object.address = {
+        street_line_1: "456 Oak Ave",
+        street_line_2: "Unit 7C",
+        city: "San Francisco",
+        state: "CA",
+        zip_code: "94107"
+      }
+
+      expect(object.address).to eq(Flex::Address.new("456 Oak Ave", "Unit 7C", "San Francisco", "CA", "94107"))
+      expect(object.address_street_line_1).to eq("456 Oak Ave")
+      expect(object.address_street_line_2).to eq("Unit 7C")
+      expect(object.address_city).to eq("San Francisco")
+      expect(object.address_state).to eq("CA")
+      expect(object.address_zip_code).to eq("94107")
+    end
+
+    it "preserves values exactly as entered without normalization" do
+      object.address = {
+        street_line_1: "789 BROADWAY",
+        street_line_2: "",
+        city: "new york",
+        state: "NY",
+        zip_code: "10003"
+      }
+
+      expect(object.address).to eq(Flex::Address.new("789 BROADWAY", "", "new york", "NY", "10003"))
+      expect(object.address_street_line_1).to eq("789 BROADWAY")
+      expect(object.address_street_line_2).to eq("")
+      expect(object.address_city).to eq("new york")
+      expect(object.address_state).to eq("NY")
+      expect(object.address_zip_code).to eq("10003")
+    end
+  end
 end
