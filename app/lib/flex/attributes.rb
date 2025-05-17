@@ -1,9 +1,9 @@
 module Flex
   module Attributes
     extend ActiveSupport::Concern
+    include Flex::Attributes::AddressAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
-    include Flex::Attributes::AddressAttribute
 
     class_methods do
       def flex_attribute(name, type, options = {})
