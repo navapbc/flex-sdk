@@ -3,6 +3,7 @@ module Flex
     extend ActiveSupport::Concern
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
+    include Flex::Attributes::AddressAttribute
 
     class_methods do
       def flex_attribute(name, type, options = {})
@@ -11,6 +12,8 @@ module Flex
           memorable_date_attribute name, options
         when :name
           name_attribute name, options
+        when :address
+          address_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
