@@ -1,5 +1,7 @@
 module Flex
   class EventManager
+    @@subscriptions = []
+
     class << self
       def subscribe(event_key, callback)
         subscription = ActiveSupport::Notifications.subscribe(event_key) do |name, _started, _finished, _unique_id, payload|
@@ -9,11 +11,19 @@ module Flex
           })
         end
 
+        @@subscriptions << subscription
         subscription
       end
 
       def unsubscribe(subscription)
         ActiveSupport::Notifications.unsubscribe(subscription)
+      end
+
+      def unsubscribe_all
+        @@subscriptions.each do |subscription|
+          ActiveSupport::Notifications.unsubscribe(subscription)
+        end
+        @@subscriptions.clear
       end
 
       def publish(event_key, payload = {})
