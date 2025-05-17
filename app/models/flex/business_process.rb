@@ -90,7 +90,7 @@ module Flex
 
       @subscriptions.each do |event_name, subscription|
         Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
-        EventManager.unsubscribe(subscription)
+        Flex::EventManager.unsubscribe(subscription)
       end
       @subscriptions.clear
       @listening = false

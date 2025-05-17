@@ -48,12 +48,12 @@ module Flex
 
     def publish_created
       Rails.logger.debug "Publishing event #{self.class.name}Created for application with ID: #{id}"
-      EventManager.publish("#{self.class.name}Created", self.event_payload)
+      Flex::EventManager.publish("#{self.class.name}Created", self.event_payload)
     end
 
     def publish_submitted
       Rails.logger.debug "Publishing event #{self.class.name}Submitted for application with ID: #{id}"
-      EventManager.publish("#{self.class.name}Submitted", self.event_payload)
+      Flex::EventManager.publish("#{self.class.name}Submitted", self.event_payload)
     end
   end
 end

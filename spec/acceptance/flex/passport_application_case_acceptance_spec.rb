@@ -24,17 +24,17 @@ module Flex
       expect(kase.business_process_current_step).to eq ("verify_identity")
 
       # verify identity (simulate action that an adjudicator takes)
-      EventManager.publish("identity_verified", { case_id: kase.id })
+      Flex::EventManager.publish("identity_verified", { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq ("review_passport_photo")
 
       # approve passport photo
-      EventManager.publish("passport_photo_approved", { case_id: kase.id })
+      Flex::EventManager.publish("passport_photo_approved", { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq ("notify_user_passport_approved")
 
       # notify user
-      EventManager.publish("notification_completed", { case_id: kase.id })
+      Flex::EventManager.publish("notification_completed", { case_id: kase.id })
       kase.reload
       expect(kase.business_process_current_step).to eq ("end")
 
