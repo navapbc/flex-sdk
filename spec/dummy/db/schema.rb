@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_17_053839) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_18_000000) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.integer "status", default: 0
-    t.integer "assignee_id"
-    t.integer "case_id"
+    t.string "assignee_id"
+    t.string "case_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "due_on"
@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_17_053839) do
 
   create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
-    t.string "passport_id", null: false
+    t.string "passport_id", limit: 36, null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -73,6 +73,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_17_053839) do
     t.string "address_city"
     t.string "address_state"
     t.string "address_zip_code"
+    t.string "tax_id"
   end
 
   create_table "users", force: :cascade do |t|

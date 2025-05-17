@@ -13,21 +13,21 @@ module Flex
         # Override cast to ensure proper Tax ID format
         def cast(value)
           return nil if value.nil?
-          
+
           # If it's already a properly formatted Tax ID, return it
           return value if value.is_a?(String) && value.match?(TAX_ID_FORMAT)
-          
+
           # If it's a string but not properly formatted, try to format it
           if value.is_a?(String)
             # Remove any non-digit characters
-            digits = value.gsub(/\D/, '')
-            
+            digits = value.gsub(/\D/, "")
+
             # If we have exactly 9 digits, format as Tax ID
             if digits.length == 9
               return "#{digits[0..2]}-#{digits[3..4]}-#{digits[5..8]}"
             end
           end
-          
+
           # Return the original value if we couldn't format it
           value
         end
@@ -50,10 +50,10 @@ module Flex
           # Create a validation method that checks if the value is a valid Tax ID
           define_method "validate_#{name}" do
             value = send(name)
-            
+
             # Skip validation if the value is nil and not required
             return if value.nil? && !options[:presence]
-            
+
             # Validate Tax ID format if value is present
             if value.present? && !value.match?(TaxId::TAX_ID_FORMAT)
               errors.add(name, :invalid_tax_id, message: "is not a valid Tax ID format (XXX-XX-XXXX)")
