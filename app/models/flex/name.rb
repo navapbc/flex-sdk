@@ -11,7 +11,6 @@ module Flex
     end
 
     def <=>(other)
-      return nil unless other.is_a?(Name)
       [ first, middle, last ] <=> [ other.first, other.middle, other.last ]
     end
 
