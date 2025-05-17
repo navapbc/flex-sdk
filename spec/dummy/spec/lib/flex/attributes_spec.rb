@@ -106,7 +106,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "allows setting address as a hash" do
-      object.address = { 
+      object.address = {
         street_line_1: "456 Oak Ave",
         street_line_2: "Unit 7C",
         city: "San Francisco",
@@ -123,7 +123,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "preserves values exactly as entered without normalization" do
-      object.address = { 
+      object.address = {
         street_line_1: "789 BROADWAY",
         street_line_2: "",
         city: "new york",
