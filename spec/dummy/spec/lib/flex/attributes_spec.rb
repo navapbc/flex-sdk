@@ -67,6 +67,7 @@ RSpec.describe Flex::Attributes do
       name = Flex::Name.new("Jane", "Marie", "Doe")
       object.name = name
 
+      expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
       expect(object.name_first).to eq("Jane")
       expect(object.name_middle).to eq("Marie")
       expect(object.name_last).to eq("Doe")
@@ -75,6 +76,7 @@ RSpec.describe Flex::Attributes do
     it "allows setting name as a hash" do
       object.name = { first: "Alice", middle: "Beth", last: "Johnson" }
 
+      expect(object.name).to eq(Flex::Name.new("Alice", "Beth", "Johnson"))
       expect(object.name_first).to eq("Alice")
       expect(object.name_middle).to eq("Beth")
       expect(object.name_last).to eq("Johnson")
@@ -83,6 +85,7 @@ RSpec.describe Flex::Attributes do
     it "preserves values exactly as entered without normalization" do
       object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
 
+      expect(object.name).to eq(Flex::Name.new("jean-luc", "von", "O'REILLY"))
       expect(object.name_first).to eq("jean-luc")
       expect(object.name_middle).to eq("von")
       expect(object.name_last).to eq("O'REILLY")
