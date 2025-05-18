@@ -139,4 +139,41 @@ RSpec.describe Flex::Attributes do
       expect(object.address_zip_code).to eq("10003")
     end
   end
+
+  describe "tax_id attribute" do
+    it "allows setting a tax_id as a TaxId object" do
+      tax_id = Flex::TaxId.new("123456789")
+      object.tax_id = tax_id
+      
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.to_s).to eq("123-45-6789")
+    end
+
+    it "allows setting a tax_id as a string" do
+      object.tax_id = "123456789"
+      
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.to_s).to eq("123-45-6789")
+    end
+
+    [
+      [ "123456789", "123-45-6789" ],
+      [ "123-45-6789", "123-45-6789" ],
+      [ "123 45 6789", "123-45-6789" ]
+    ].each do |input_string, expected|
+      it "formats tax_id correctly [#{input_string}]" do
+        object.tax_id = input_string
+        expect(object.tax_id.to_s).to eq(expected)
+      end
+    end
+
+    it "preserves invalid values for validation" do
+      object.tax_id = "12345"
+      
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.to_s).to eq("12345") # Raw value since not 9 digits
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax id is not a valid Tax ID format (XXX-XX-XXXX)" ])
+    end
+  end
 end
