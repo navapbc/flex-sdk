@@ -144,14 +144,14 @@ RSpec.describe Flex::Attributes do
     it "allows setting a tax_id as a TaxId object" do
       tax_id = Flex::TaxId.new("123456789")
       object.tax_id = tax_id
-      
+
       expect(object.tax_id).to be_a(Flex::TaxId)
       expect(object.tax_id.to_s).to eq("123-45-6789")
     end
 
     it "allows setting a tax_id as a string" do
       object.tax_id = "123456789"
-      
+
       expect(object.tax_id).to be_a(Flex::TaxId)
       expect(object.tax_id.to_s).to eq("123-45-6789")
     end
@@ -169,7 +169,7 @@ RSpec.describe Flex::Attributes do
 
     it "preserves invalid values for validation" do
       object.tax_id = "12345"
-      
+
       expect(object.tax_id).to be_a(Flex::TaxId)
       expect(object.tax_id.to_s).to eq("12345") # Raw value since not 9 digits
       expect(object).not_to be_valid
