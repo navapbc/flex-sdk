@@ -40,7 +40,7 @@ module Flex
             return if value.nil? && !options[:presence]
 
             # Validate Tax ID format if value is present
-            if value.present? && !value.to_s.match?(Flex::TaxId::TAX_ID_FORMAT)
+            if value.present? && !value.formatted.match?(Flex::TaxId::TAX_ID_FORMAT)
               errors.add(name, :invalid_tax_id, message: "id is not a valid Tax ID format (XXX-XX-XXXX)")
             end
           end
