@@ -31,10 +31,6 @@ module Flex
 
           validate :"validate_#{name}"
 
-          if options[:presence]
-            validates name, presence: true
-          end
-
           # Create a validation method that checks if the value is a valid date
           define_method "validate_#{name}" do
             value = send(name)
