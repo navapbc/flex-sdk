@@ -11,8 +11,8 @@ module Flex
       super(@raw_value)
     end
 
-    # Override to_s to return the formatted Tax ID with dashes
-    def to_s
+    # Returns the Tax ID with dashes in XXX-XX-XXXX format
+    def formatted
       if @raw_value.length == 9
         "#{@raw_value[0..2]}-#{@raw_value[3..4]}-#{@raw_value[5..8]}"
       else
@@ -21,7 +21,8 @@ module Flex
     end
 
     def <=>(other)
-      to_s <=> other.to_s
+      other_tax_id = other.is_a?(TaxId) ? other : TaxId.new(other.to_s)
+      self <=> other_tax_id
     end
   end
 end
