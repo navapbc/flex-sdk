@@ -8,7 +8,7 @@ module Flex
     # @example Using the name attribute
     #   class Person < ApplicationRecord
     #     include Flex::Attributes
-    #     
+    #
     #     flex_attribute :name, :name
     #   end
     #

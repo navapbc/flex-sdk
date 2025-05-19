@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_000000) do
 
   create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
-    t.string "passport_id", null: false
+    t.string "passport_id", limit: 36, null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

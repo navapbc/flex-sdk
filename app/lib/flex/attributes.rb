@@ -8,7 +8,7 @@ module Flex
   # @example Including Attributes in a model
   #   class MyModel < ApplicationRecord
   #     include Flex::Attributes
-  #     
+  #
   #     flex_attribute :birth_date, :memorable_date
   #     flex_attribute :applicant_name, :name
   #   end

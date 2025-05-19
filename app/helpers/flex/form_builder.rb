@@ -1,6 +1,6 @@
 module Flex
   # FormBuilder is a custom form builder that provides USWDS-styled form components.
-  # Beyond adding USWDS classes, this also supports setting the label, hint, and error 
+  # Beyond adding USWDS classes, this also supports setting the label, hint, and error
   # messages by just using the field helpers (i.e text_field, check_box), and adds
   # additional helpers like fieldset and hint.
   #
