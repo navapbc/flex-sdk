@@ -2,9 +2,6 @@ module Flex
   class TaxId < String
     include Comparable
 
-    # Regular expression for validating Tax ID format
-    TAX_ID_FORMAT = /\A\d{3}-\d{2}-\d{4}\z/
-
     def initialize(value)
       # Store only the digits, stripping any non-numeric characters
       @raw_value = value.to_s.gsub(/\D/, "")
