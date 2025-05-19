@@ -25,7 +25,7 @@ module Flex
       class_methods do
         def tax_id_attribute(name, options = {})
           attribute name, TaxIdType.new
-          validates name, format: { with: Flex::TaxId::TAX_ID_FORMAT, message: :invalid_tax_id }
+          validates name, format: { with: Flex::TaxId::TAX_ID_FORMAT_NO_DASHES, message: :invalid_tax_id }, allow_nil: true
         end
       end
     end

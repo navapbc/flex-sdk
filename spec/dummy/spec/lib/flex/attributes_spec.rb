@@ -218,4 +218,90 @@ RSpec.describe Flex::Attributes do
       end
     end
   end
+
+  describe "persisting and loading from database" do
+    let(:record) { TestRecord.new }
+
+    it "persists and loads name object correctly" do
+      name = Flex::Name.new("John", "Middle", "Doe")
+      record.name = name
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.name).to be_a(Flex::Name)
+      expect(loaded_record.name).to eq(name)
+      expect(loaded_record.name_first).to eq("John")
+      expect(loaded_record.name_middle).to eq("Middle")
+      expect(loaded_record.name_last).to eq("Doe")
+    end
+
+    it "persists and loads address object correctly" do
+      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      record.address = address
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.address).to be_a(Flex::Address)
+      expect(loaded_record.address).to eq(address)
+      expect(loaded_record.address_street_line_1).to eq("123 Main St")
+      expect(loaded_record.address_street_line_2).to eq("Apt 4B")
+      expect(loaded_record.address_city).to eq("Boston")
+      expect(loaded_record.address_state).to eq("MA")
+      expect(loaded_record.address_zip_code).to eq("02108")
+    end
+
+    it "persists and loads tax_id object correctly" do
+      tax_id = Flex::TaxId.new("123-45-6789")
+      record.tax_id = tax_id
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.tax_id).to be_a(Flex::TaxId)
+      expect(loaded_record.tax_id).to eq(tax_id)
+      expect(loaded_record.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    it "persists and loads memorable date correctly" do
+      date = Date.new(2020, 1, 2)
+      record.date_of_birth = date
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.date_of_birth).to eq(date)
+      expect(loaded_record.date_of_birth.year).to eq(2020)
+      expect(loaded_record.date_of_birth.month).to eq(1)
+      expect(loaded_record.date_of_birth.day).to eq(2)
+    end
+
+    it "preserves all attributes when saving and loading multiple value objects" do
+      record.name = Flex::Name.new("Jane", "Marie", "Smith")
+      record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")  
+      record.tax_id = Flex::TaxId.new("987-65-4321")
+      record.date_of_birth = Date.new(1990, 3, 15)
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      
+      # Verify name
+      expect(loaded_record.name).to eq(Flex::Name.new("Jane", "Marie", "Smith"))
+      expect(loaded_record.name_first).to eq("Jane")
+      expect(loaded_record.name_middle).to eq("Marie")
+      expect(loaded_record.name_last).to eq("Smith")
+      
+      # Verify address
+      expect(loaded_record.address).to eq(Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601"))
+      expect(loaded_record.address_street_line_1).to eq("456 Oak St")
+      expect(loaded_record.address_street_line_2).to eq("Unit 7")
+      expect(loaded_record.address_city).to eq("Chicago")
+      expect(loaded_record.address_state).to eq("IL")
+      expect(loaded_record.address_zip_code).to eq("60601")
+      
+      # Verify tax_id
+      expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
+      expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
+      
+      # Verify date_of_birth  
+      expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
+    end
+  end
 end
