@@ -25,25 +25,7 @@ module Flex
       class_methods do
         def tax_id_attribute(name, options = {})
           attribute name, TaxIdType.new
-
-          validate :"validate_#{name}"
-
-          if options[:presence]
-            validates name, presence: true
-          end
-
-          # Create a validation method that checks if the value is a valid Tax ID
-          define_method "validate_#{name}" do
-            value = send(name)
-
-            # Skip validation if the value is nil and not required
-            return if value.nil? && !options[:presence]
-
-            # Validate Tax ID format if value is present
-            if value.present? && !value.formatted.match?(Flex::TaxId::TAX_ID_FORMAT)
-              errors.add(name, :invalid_tax_id, message: "id is not a valid Tax ID format (XXX-XX-XXXX)")
-            end
-          end
+          validates name, format: { with: Flex::TaxId::TAX_ID_FORMAT, message: :invalid_tax_id }
         end
       end
     end

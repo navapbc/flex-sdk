@@ -59,6 +59,7 @@ es-US:
   errors:
     messages:
       invalid_date: "Fecha inválida"
+      invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
   tasks:
     statuses:
       pending: "Pendiente"

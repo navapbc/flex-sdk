@@ -1,4 +1,10 @@
 en:
+  attributes:
+    tax_id: "Tax ID"    
+  errors:
+    messages:
+      invalid_date: "is an invalid date"
+      invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
   flex:
     application_forms:
       index:
@@ -56,9 +62,6 @@ en:
             all: "All tasks"
         no_tasks_alert:
           message: "No tasks available!"
-  errors:
-    messages:
-      invalid_date: "is an invalid date"
   tasks:
     statuses:
       pending: "Pending"

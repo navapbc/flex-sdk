@@ -173,7 +173,7 @@ RSpec.describe Flex::Attributes do
       expect(object.tax_id).to be_a(Flex::TaxId)
       expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax id is not a valid Tax ID format (XXX-XX-XXXX)" ])
+      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
     end
 
     describe "TaxId.<=>" do
