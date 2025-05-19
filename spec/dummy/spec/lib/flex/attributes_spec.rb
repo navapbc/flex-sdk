@@ -204,14 +204,14 @@ RSpec.describe Flex::Attributes do
       it "handles comparison with different formats" do
         tax_id1 = Flex::TaxId.new("123-45-6789")
         tax_id2 = Flex::TaxId.new("123456789")
-        
+
         expect(tax_id1 <=> tax_id2).to eq(0)
       end
 
       it "handles comparison with string values" do
         tax_id = Flex::TaxId.new("123-45-6789")
         string_value = "123456789"
-        
+
         expect(tax_id <=> string_value).to eq(0)
         expect(tax_id <=> "987654321").to eq(-1)
         expect(tax_id <=> "000456789").to eq(1)
