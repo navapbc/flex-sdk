@@ -4,6 +4,7 @@ module Flex
     include Flex::Attributes::AddressAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
+    include Flex::Attributes::TaxIdAttribute
 
     class_methods do
       def flex_attribute(name, type, options = {})
@@ -14,6 +15,8 @@ module Flex
           name_attribute name, options
         when :address
           address_attribute name, options
+        when :tax_id
+          tax_id_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end

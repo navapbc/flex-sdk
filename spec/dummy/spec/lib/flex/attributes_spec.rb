@@ -139,4 +139,169 @@ RSpec.describe Flex::Attributes do
       expect(object.address_zip_code).to eq("10003")
     end
   end
+
+  describe "tax_id attribute" do
+    it "allows setting a tax_id as a TaxId object" do
+      tax_id = Flex::TaxId.new("123456789")
+      object.tax_id = tax_id
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    it "allows setting a tax_id as a string" do
+      object.tax_id = "123456789"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    [
+      [ "123456789", "123-45-6789" ],
+      [ "123-45-6789", "123-45-6789" ],
+      [ "123 45 6789", "123-45-6789" ]
+    ].each do |input_string, expected|
+      it "formats tax_id correctly [#{input_string}]" do
+        object.tax_id = input_string
+        expect(object.tax_id.formatted).to eq(expected)
+      end
+    end
+
+    it "preserves invalid values for validation" do
+      object.tax_id = "12345"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
+    end
+
+    describe "TaxId.<=>" do
+      it "allows sorting tax ids" do
+        tax_ids = [
+          Flex::TaxId.new("987654321"),
+          Flex::TaxId.new("123456789"),
+          Flex::TaxId.new("456789123")
+        ]
+
+        sorted_tax_ids = tax_ids.sort
+        expect(sorted_tax_ids.map(&:formatted)).to eq([
+          "123-45-6789",
+          "456-78-9123",
+          "987-65-4321"
+        ])
+      end
+
+      it "compares tax ids numerically" do
+        lower = Flex::TaxId.new("123456789")
+        higher = Flex::TaxId.new("987654321")
+
+        expect(lower <=> higher).to eq(-1)
+        expect(higher <=> lower).to eq(1)
+        expect(lower <=> lower).to eq(0)
+      end
+
+      it "handles comparison with different formats" do
+        tax_id1 = Flex::TaxId.new("123-45-6789")
+        tax_id2 = Flex::TaxId.new("123456789")
+
+        expect(tax_id1 <=> tax_id2).to eq(0)
+      end
+
+      it "handles comparison with string values" do
+        tax_id = Flex::TaxId.new("123-45-6789")
+        string_value = "123456789"
+
+        expect(tax_id <=> string_value).to eq(0)
+        expect(tax_id <=> "987654321").to eq(-1)
+        expect(tax_id <=> "000456789").to eq(1)
+      end
+    end
+  end
+
+  describe "persisting and loading from database" do
+    let(:record) { TestRecord.new }
+
+    it "persists and loads name object correctly" do
+      name = Flex::Name.new("John", "Middle", "Doe")
+      record.name = name
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.name).to be_a(Flex::Name)
+      expect(loaded_record.name).to eq(name)
+      expect(loaded_record.name_first).to eq("John")
+      expect(loaded_record.name_middle).to eq("Middle")
+      expect(loaded_record.name_last).to eq("Doe")
+    end
+
+    it "persists and loads address object correctly" do
+      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      record.address = address
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.address).to be_a(Flex::Address)
+      expect(loaded_record.address).to eq(address)
+      expect(loaded_record.address_street_line_1).to eq("123 Main St")
+      expect(loaded_record.address_street_line_2).to eq("Apt 4B")
+      expect(loaded_record.address_city).to eq("Boston")
+      expect(loaded_record.address_state).to eq("MA")
+      expect(loaded_record.address_zip_code).to eq("02108")
+    end
+
+    it "persists and loads tax_id object correctly" do
+      tax_id = Flex::TaxId.new("123-45-6789")
+      record.tax_id = tax_id
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.tax_id).to be_a(Flex::TaxId)
+      expect(loaded_record.tax_id).to eq(tax_id)
+      expect(loaded_record.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    it "persists and loads memorable date correctly" do
+      date = Date.new(2020, 1, 2)
+      record.date_of_birth = date
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.date_of_birth).to eq(date)
+      expect(loaded_record.date_of_birth.year).to eq(2020)
+      expect(loaded_record.date_of_birth.month).to eq(1)
+      expect(loaded_record.date_of_birth.day).to eq(2)
+    end
+
+    it "preserves all attributes when saving and loading multiple value objects" do
+      record.name = Flex::Name.new("Jane", "Marie", "Smith")
+      record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
+      record.tax_id = Flex::TaxId.new("987-65-4321")
+      record.date_of_birth = Date.new(1990, 3, 15)
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+
+      # Verify name
+      expect(loaded_record.name).to eq(Flex::Name.new("Jane", "Marie", "Smith"))
+      expect(loaded_record.name_first).to eq("Jane")
+      expect(loaded_record.name_middle).to eq("Marie")
+      expect(loaded_record.name_last).to eq("Smith")
+
+      # Verify address
+      expect(loaded_record.address).to eq(Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601"))
+      expect(loaded_record.address_street_line_1).to eq("456 Oak St")
+      expect(loaded_record.address_street_line_2).to eq("Unit 7")
+      expect(loaded_record.address_city).to eq("Chicago")
+      expect(loaded_record.address_state).to eq("IL")
+      expect(loaded_record.address_zip_code).to eq("60601")
+
+      # Verify tax_id
+      expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
+      expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
+
+      # Verify date_of_birth
+      expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
+    end
+  end
 end
