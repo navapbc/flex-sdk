@@ -1,4 +1,19 @@
 module Flex
+  # Case represents an instance of a business process workflow.
+  # It tracks the current step in the process and the overall status.
+  #
+  # Case models should inherit from this class and add their specific fields.
+  #
+  # @example Creating a case model
+  #   class MyCase < Flex::Case
+  #     # Add custom attributes or associations
+  #   end
+  #
+  # Key features:
+  # - Tracks the current step in a business process
+  # - Manages case status (open/closed)
+  # - Associates with an application form
+  #
   class Case < ApplicationRecord
     self.abstract_class = true
 
@@ -12,11 +27,17 @@ module Flex
 
     protected attr_accessor :business_process
 
+    # Closes the case, changing its status to 'closed'.
+    #
+    # @return [Boolean] True if the save was successful
     def close
       self[:status] = :closed
       save
     end
 
+    # Reopens a closed case, changing its status to 'open'.
+    #
+    # @return [Boolean] True if the save was successful
     def reopen
       self[:status] = :open
       save
