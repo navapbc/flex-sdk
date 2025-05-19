@@ -44,7 +44,7 @@ module Flex
       end
 
       # Unsubscribes from all events that have been registered.
-      # Useful for cleaning up in test environments.
+      # Used when Zeitwerk is unloading EventManager during class reloading.
       #
       # @return [void]
       def unsubscribe_all

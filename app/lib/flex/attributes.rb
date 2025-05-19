@@ -4,6 +4,7 @@ module Flex
   # memorable dates, names, addresses, and tax IDs.
   #
   # This module should be included in models that need these custom attribute types.
+  # See app/lib/flex/attributes/ folder for the list of all available flex attributes.
   #
   # @example Including Attributes in a model
   #   class MyModel < ApplicationRecord

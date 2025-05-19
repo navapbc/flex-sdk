@@ -20,7 +20,6 @@ module Flex
     # Initializes a new FormBuilder instance and sets up the form with USWDS classes.
     #
     # @param args [Array] Arguments passed to the parent FormBuilder constructor
-    # @return [void]
     def initialize(*args)
       super
       self.options[:html] ||= {}
@@ -171,6 +170,7 @@ module Flex
     # @option options [String] :legend Custom legend text
     # @option options [String] :hint Custom hint text
     # @return [String] The rendered HTML for the memorable date input
+    # @see https://designsystem.digital.gov/components/memorable-date/
     def memorable_date(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
       hint_text = options.delete(:hint) || I18n.t("flex.form_builder.memorable_date_hint")
