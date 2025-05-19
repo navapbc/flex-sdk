@@ -1,12 +1,25 @@
 module Flex
-  # Custom form builder. Beyond adding USWDS classes, this also
-  # supports setting the label, hint, and error messages by just
-  # using the field helpers (i.e text_field, check_box), and adds
+  # FormBuilder is a custom form builder that provides USWDS-styled form components.
+  # Beyond adding USWDS classes, this also supports setting the label, hint, and error
+  # messages by just using the field helpers (i.e text_field, check_box), and adds
   # additional helpers like fieldset and hint.
-  # https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html
+  #
+  # @see https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html
+  # @see https://designsystem.digital.gov/components/form-controls/
+  #
+  # @example Basic usage
+  #   <%= flex_form_with(model: @user) do |f| %>
+  #     <%= f.text_field :name, label: "Full Name", hint: "Enter your legal name" %>
+  #     <%= f.email_field :email, label: "Email Address" %>
+  #     <%= f.submit "Save" %>
+  #   <% end %>
+  #
   class FormBuilder < ActionView::Helpers::FormBuilder
     standard_helpers = %i[email_field file_field password_field text_area text_field]
 
+    # Initializes a new FormBuilder instance and sets up the form with USWDS classes.
+    #
+    # @param args [Array] Arguments passed to the parent FormBuilder constructor
     def initialize(*args)
       super
       self.options[:html] ||= {}
@@ -55,6 +68,13 @@ module Flex
       end
     end
 
+    # Renders a checkbox field with USWDS styling.
+    #
+    # @param [Symbol] attribute The attribute name
+    # @param [Hash] options Options for the checkbox
+    # @param args [Array] Additional arguments for the standard checkbox helper
+    # @option options [String] :label Custom label text
+    # @return [String] The rendered HTML for the checkbox
     def check_box(attribute, options = {}, *args)
       append_to_option(options, :class, " #{us_class_for_field_type(:check_box)}")
 
@@ -143,6 +163,14 @@ module Flex
       text_field(attribute, options.merge(value: value, group_options: group_options))
     end
 
+    # Renders a memorable date input with month, day, and year fields.
+    #
+    # @param [Symbol] attribute The attribute name
+    # @param [Hash] options Options for the memorable date
+    # @option options [String] :legend Custom legend text
+    # @option options [String] :hint Custom hint text
+    # @return [String] The rendered HTML for the memorable date input
+    # @see https://designsystem.digital.gov/components/memorable-date/
     def memorable_date(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
       hint_text = options.delete(:hint) || I18n.t("flex.form_builder.memorable_date_hint")

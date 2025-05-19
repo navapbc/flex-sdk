@@ -1,4 +1,21 @@
 module Flex
+  # ApplicationForm is the base class for all form models in the Flex SDK.
+  # It provides functionality for tracking form status (in_progress/submitted)
+  # and prevents modification of submitted forms.
+  #
+  # Form models should inherit from this class and add their specific fields.
+  #
+  # @example Creating a form model
+  #   class MyApplicationForm < Flex::ApplicationForm
+  #     attribute :name, :string
+  #     attribute :email, :string
+  #   end
+  #
+  # Key features:
+  # - Tracks form status (in_progress/submitted)
+  # - Prevents modification of submitted forms
+  # - Publishes events when created and submitted
+  #
   class ApplicationForm < ApplicationRecord
     self.abstract_class = true
 
@@ -11,6 +28,13 @@ module Flex
     after_create :publish_created
     before_update :prevent_changes_if_submitted, if: :was_submitted?
 
+    # Submits the application form, changing its status to 'submitted'
+    # and publishing a submission event.
+    #
+    # This method should be called when a user submits the form.
+    # After submission, the form can no longer be modified.
+    #
+    # @return [Boolean] True if the submission was successful
     def submit_application
       puts "Submitting application with ID: #{id}"
       self[:status] = :submitted
@@ -20,17 +44,26 @@ module Flex
 
     protected
 
+    # Returns the event payload for publishing events related to this form.
+    #
+    # @return [Hash] Payload with application_form_id
     def event_payload
       { application_form_id: id }
     end
 
     protected
 
+    # Creates a case associated with this application form.
+    #
+    # @return [Flex::Case] The created case
     def create_case
       kase = case_class.create!
       self[:case_id] = kase.id
     end
 
+    # Determines the case class corresponding to this application form class.
+    #
+    # @return [Class] The case class (ApplicationForm -> Case)
     def case_class
       self.class.name.sub("ApplicationForm", "Case").constantize
     end
