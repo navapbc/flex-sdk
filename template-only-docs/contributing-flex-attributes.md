@@ -26,13 +26,20 @@ module Flex
           
           # Set up validations if needed
           
-          # Set up composed_of for ActiveRecord models
+          # Set up composed_of for ActiveRecord models if needed
         end
       end
     end
   end
 end
 ```
+
+### When to Use composed_of vs ActiveModel::Type::Value
+
+When implementing a new attribute type, choose between using `composed_of` or creating a custom `ActiveModel::Type::Value` based on how the attribute maps to the database:
+
+- Use `composed_of` when the value object represents data stored across multiple database columns. For example, an address attribute might map to street, city, state, and zip columns.
+- Use a custom `ActiveModel::Type::Value` when the attribute data is stored in a single database column.
 
 ### Value Object Structure
 
@@ -87,5 +94,27 @@ Create comprehensive tests for your new attribute type:
 2. Test edge cases and error conditions
 3. Test validation error messages
 4. Test integration with ActiveRecord models
+5. For attributes using `composed_of`, test that setting the main attribute properly sets all the mapped database columns. For example, if you have an `address` attribute that is composed of `street`, `city`, `state`, and `zip` columns, verify that setting the `address` also sets all these individual columns correctly.
+
+Example for testing a composed attribute:
+
+```ruby
+describe "Address attribute" do
+  it "sets mapped columns when setting the address" do
+    address = Flex::Address.new(
+      street: "123 Main St",
+      city: "Springfield",
+      state: "IL",
+      zip: "62701"
+    )
+    model.address = address
+    expect(model.address).to eq(address)
+    expect(model.address_street).to eq("123 Main St")
+    expect(model.address_city).to eq("Springfield")
+    expect(model.address_state).to eq("IL")
+    expect(model.address_zip).to eq("62701")
+  end
+end
+```
 
 See the existing attribute tests in the codebase for examples.
