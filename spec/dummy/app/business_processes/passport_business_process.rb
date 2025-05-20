@@ -1,7 +1,7 @@
 PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) do |bp|
   # Define steps
   bp.step('collect_application_info',
-    Flex::UserTask.new("Collect App Info", UserTaskCreationService))
+    Flex::StaffTask.new("Collect App Info", StaffTaskCreationService))
 
   bp.step('verify_identity',
     Flex::SystemProcess.new("Verify Identity", ->(kase) {
@@ -9,7 +9,7 @@ PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) 
     }))
 
   bp.step('manual_adjudicator_review',
-    Flex::UserTask.new("Manual Adjudicator Review", AdjudicatorTaskCreationService))
+    Flex::StaffTask.new("Manual Adjudicator Review", AdjudicatorTaskCreationService))
 
   bp.step('review_passport_photo',
     Flex::SystemProcess.new("Review Passport Photo", ->(kase) {

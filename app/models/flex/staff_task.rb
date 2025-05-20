@@ -1,5 +1,5 @@
 module Flex
-  class UserTask
+  class StaffTask
     include Step
 
     attr_accessor :name, :task_management_service

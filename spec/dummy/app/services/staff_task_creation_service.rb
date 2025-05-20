@@ -1,4 +1,4 @@
-class UserTaskCreationService
+class StaffTaskCreationService
   include Flex::TaskHandlerService
 
   def self.create_task(kase:)

@@ -6,9 +6,9 @@ module Flex
   #
   # @example Defining a basic business process in app/business_processes/my_business_process.rb
   #   MyBusinessProcess = Flex::BusinessProcess.define(:my_process, MyCase) do |bp|
-  #     # Define steps - can be UserTask or SystemProcess
+  #     # Define steps - can be StaffTask or SystemProcess
   #     bp.step('collect_info',
-  #       Flex::UserTask.new("Collect Information", TaskCreationService))
+  #       Flex::StaffTask.new("Collect Information", TaskCreationService))
   #
   #     bp.step('process_data',
   #       Flex::SystemProcess.new("Process Data", ->(kase) {
@@ -24,7 +24,7 @@ module Flex
   #   end
   #
   # Steps can be either:
-  # - UserTask: Tasks that require human interaction, created through a TaskCreationService
+  # - StaffTask: Tasks that require human interaction, created through a TaskCreationService
   # - SystemProcess: Automated tasks that run without user intervention, defined with a callable
   #
   # The process automatically listens for events and transitions between steps
@@ -33,7 +33,7 @@ module Flex
   #
   # Event payloads must contain either case_id or application_form_id to identify the case.
   #
-  # @see Flex::UserTask
+  # @see Flex::StaffTask
   # @see Flex::SystemProcess
   #
   # Key Methods:
