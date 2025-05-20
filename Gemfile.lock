@@ -324,6 +324,9 @@ GEM
     rubocop-rspec (3.5.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
+    rubocop-yard (0.10.0)
+      rubocop (~> 1.21)
+      yard
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     shellany (0.0.1)
@@ -395,6 +398,7 @@ DEPENDENCIES
   rspec-rails (~> 7.0.0)
   rubocop-rails-omakase
   rubocop-rspec
+  rubocop-yard
   shoulda-matchers (~> 6.0)
   simplecov
   sprockets-rails

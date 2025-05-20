@@ -27,6 +27,7 @@ group :development do
   # Linting
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
+  gem "rubocop-yard", require: false
 
   # Hot reloading for Lookbook
   gem "listen"

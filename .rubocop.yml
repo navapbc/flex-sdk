@@ -3,6 +3,9 @@ plugins:
 inherit_gem:
   rubocop-rails-omakase: rubocop.yml
 
+require:
+  - rubocop-yard
+
 RSpec/ExampleLength:
   Enabled: false
 RSpec/MultipleExpectations:
@@ -15,3 +18,25 @@ AllCops:
     - "spec/dummy/tmp/**/*"
     - "spec/dummy/log/**/*"
     - "spec/dummy/storage/**/*"
+
+# YARD documentation configuration
+YARD:
+  Enabled: true
+  
+YARD/CollectionStyle:
+  Enabled: true
+  
+YARD/CollectionType:
+  Enabled: true
+  
+YARD/MeaninglessTag:
+  Enabled: true
+  
+YARD/MismatchName:
+  Enabled: true
+  
+YARD/TagTypePosition:
+  Enabled: true
+  
+YARD/TagTypeSyntax:
+  Enabled: true
