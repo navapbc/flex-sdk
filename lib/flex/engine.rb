@@ -1,4 +1,10 @@
 module Flex
+  # Engine is the Rails engine for the Flex SDK.
+  # It provides configuration for integrating Flex components into a Rails application.
+  #
+  # The engine handles namespace isolation, helper loading, preview path configuration,
+  # and event manager cleanup during code reloading.
+  #
   class Engine < ::Rails::Engine
     isolate_namespace Flex
 

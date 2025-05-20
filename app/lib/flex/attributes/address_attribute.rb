@@ -1,5 +1,20 @@
 module Flex
   module Attributes
+    # AddressAttribute provides a DSL for defining address attributes in form models.
+    # It creates the necessary database fields and sets up a composed_of relationship
+    # with the Flex::Address value object.
+    #
+    # @example Adding an address attribute to a form model
+    #   class MyForm < Flex::ApplicationForm
+    #     include Flex::Attributes::AddressAttribute
+    #     address_attribute :mailing_address
+    #   end
+    #
+    # Key features:
+    # - Creates individual fields for address components
+    # - Sets up composed_of mapping to Flex::Address
+    # - Handles conversion between form data and Address objects
+    #
     module AddressAttribute
       extend ActiveSupport::Concern
 
