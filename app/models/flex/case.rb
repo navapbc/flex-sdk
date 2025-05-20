@@ -25,8 +25,6 @@ module Flex
 
     attribute :business_process_current_step, :string
 
-    protected attr_accessor :business_process
-
     # Closes the case, changing its status to 'closed'.
     #
     # @return [Boolean] True if the save was successful
