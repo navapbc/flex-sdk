@@ -1,7 +1,7 @@
 TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
   # Define steps
   bp.step('user_task',
-    Flex::UserTask.new("user_task", UserTaskCreationService))
+    Flex::StaffTask.new("user_task", StaffTaskCreationService))
 
   bp.step('system_process',
     Flex::SystemProcess.new("system_process", ->(kase) {
@@ -9,7 +9,7 @@ TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
     }))
 
   bp.step('user_task_2',
-    Flex::UserTask.new("user_task_2", UserTaskCreationService))
+    Flex::StaffTask.new("user_task_2", StaffTaskCreationService))
 
   bp.step('system_process_2',
     Flex::SystemProcess.new("system_process_2", ->(kase) {
