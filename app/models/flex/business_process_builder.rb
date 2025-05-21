@@ -10,8 +10,21 @@ module Flex
       @transitions = {}
     end
 
-    def start(step_name)
+    def start(step_name, on: nil, &handler)
       @start_step_name = step_name
+      @start_events ||= {}
+      if on.present?
+        @start_events[on] = handler
+      else
+        start_on_application_form_created(step_name)
+      end
+    end
+
+    def start_on_application_form_created(step_name)
+      event_name = @case_class.name.sub("Case", "ApplicationFormCreated")
+      start(step_name, on: event_name) do |event|
+        @case_class.new(application_form_id: event[:payload][:application_form_id])
+      end
     end
 
     def step(name, step)
@@ -30,7 +43,8 @@ module Flex
         description: "",
         steps: @steps,
         start_step_name: @start_step_name,
-        transitions: @transitions
+        transitions: @transitions,
+        start_events: @start_events
       )
     end
   end

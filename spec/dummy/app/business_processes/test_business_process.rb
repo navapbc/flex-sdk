@@ -17,7 +17,7 @@ TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
     }))
 
   # Define start step
-  bp.start('staff_task')
+  bp.start_on_application_form_created('staff_task')
 
   # Define transitions
   bp.transition('staff_task', 'event1', 'system_process')
