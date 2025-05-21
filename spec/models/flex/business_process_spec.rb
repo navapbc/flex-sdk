@@ -77,4 +77,34 @@ RSpec.describe Flex::BusinessProcess do
       expect(kase.business_process_current_step).to eq('staff_task') # Should not change
     end
   end
+
+  describe 'configurable start events' do
+    let(:custom_event_name) { 'CustomStartEvent' }
+    let(:custom_business_process) do
+      described_class.define(:custom_test, TestCase) do |bp|
+        bp.step('custom_step', Flex::StaffTask.new("Custom Step", StaffTaskCreationService))
+        bp.start('custom_step', on: custom_event_name) do |event|
+          TestCase.new(application_form_id: event[:payload][:custom_value])
+        end
+      end
+    end
+
+    before do
+      custom_business_process.start_listening_for_events
+    end
+
+    after do
+      custom_business_process.stop_listening_for_events
+    end
+
+    it 'creates case from custom start event' do
+      expect {
+        Flex::EventManager.publish(custom_event_name, { custom_value: 'test_value' })
+      }.to change(TestCase, :count).by(1)
+
+      new_case = TestCase.last
+      expect(new_case.business_process_current_step).to eq('custom_step')
+      expect(new_case.application_form_id).to eq('test_value')
+    end
+  end
 end

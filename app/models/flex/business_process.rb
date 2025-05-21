@@ -60,7 +60,7 @@ module Flex
 
     attr_accessor :name, :description, :steps, :transitions, :case_class
 
-    def initialize(name:, case_class:, description: "", steps: {}, start_step_name: "", transitions: {})
+    def initialize(name:, case_class:, description: "", steps: {}, start_step_name: "", transitions: {}, start_events: {})
       @subscriptions = {}
       @name = name
       @case_class = case_class
@@ -68,6 +68,7 @@ module Flex
       @steps = steps
       @start_step_name = start_step_name
       @transitions = transitions
+      @start_events = start_events
       @listening = false
     end
 
@@ -100,11 +101,12 @@ module Flex
 
     def create_case_from_event(event)
       Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
-      raise "Cannot create case from event #{event[:name]}. Event must be an ApplicationFormCreated event" unless event[:name].end_with?("ApplicationFormCreated")
-      kase = @case_class.create!(
-        application_form_id: event[:payload][:application_form_id],
-        business_process_current_step: @start_step_name
-      )
+      handler = @start_events[event[:name]]
+      return unless handler
+
+      kase = handler.call(event)
+      kase.business_process_current_step = @start_step_name
+      kase.save!
       kase
     end
 
@@ -130,7 +132,7 @@ module Flex
     end
 
     def get_event_names
-      @transitions.values.flat_map(&:keys).uniq | [ start_event_name ]
+      @transitions.values.flat_map(&:keys).uniq | @start_events.keys
     end
 
     def get_next_step(kase, event_name)
@@ -157,11 +159,7 @@ module Flex
     end
 
     def start_event?(event_name)
-      event_name == start_event_name
-    end
-
-    def start_event_name
-      @case_class.name.sub("Case", "ApplicationFormCreated")
+      @start_events.key?(event_name)
     end
 
     class << self
