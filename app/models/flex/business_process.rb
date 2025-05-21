@@ -102,7 +102,7 @@ module Flex
     def create_case_from_event(event)
       Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
       handler = @start_events[event[:name]]
-      return unless handler
+      raise RuntimeError, "No handler defined for start event '#{event[:name]}'" unless handler
 
       kase = handler.call(event)
       kase.business_process_current_step = @start_step_name
