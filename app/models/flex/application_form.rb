@@ -25,6 +25,8 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
+    attribute :user_id, :string
+
     after_create :publish_created
     before_update :prevent_changes_if_submitted, if: :was_submitted?
 
