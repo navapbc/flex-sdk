@@ -1,8 +1,9 @@
 module Flex
   module Attributes
     # AddressAttribute provides a DSL for defining address attributes in form models.
-    # It creates the necessary database fields and sets up a composed_of relationship
-    # with the Flex::Address value object.
+    # It sets up a composed_of relationship with the Flex::Address value object
+    # to map street_line_1, street_line_2, city, state, and zip_code fields
+    # to a single address value object attribute.
     #
     # @example Adding an address attribute to a form model
     #   class MyForm < Flex::ApplicationForm
