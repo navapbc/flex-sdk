@@ -4,8 +4,8 @@ module Flex
   # need to complete.
   #
   # @example Defining a third party task in a business process
-  #   bp.step('verify_external_documents',
-  #     Flex::ThirdPartyTask.new("Verify External Documents"))
+  #   bp.step('review_employee_leave_application',
+  #     Flex::ThirdPartyTask.new("Review Employee Leave Application"))
   #
   # Key features:
   # - Simple logging of task execution
