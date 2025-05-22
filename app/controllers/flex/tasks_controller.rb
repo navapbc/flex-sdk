@@ -10,10 +10,6 @@ module Flex
       Flex::User
     end
 
-    def application_form_class
-      Flex::ApplicationForm
-    end
-
     def index
       @tasks = filter_tasks
       @distinct_task_types = task_class.distinct.pluck(:type)
@@ -22,7 +18,6 @@ module Flex
     def show
       @task = task_class.find(params[:id])
       @assigned_user = user_class.find(@task.assignee_id) if @task.assignee_id
-      @application_form = application_form_class.find_by(case_id: @task.case_id)
     end
 
     def update
