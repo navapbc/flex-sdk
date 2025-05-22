@@ -10,20 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_18_000000) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_22_162348) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.integer "status", default: 0
-    t.string "assignee_id"
-    t.string "case_id"
+    t.integer "assignee_id"
+    t.integer "case_id"
+    t.date "due_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "due_on"
     t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee_id"
     t.index [ "case_id" ], name: "index_flex_tasks_on_case_id"
     t.index [ "status" ], name: "index_flex_tasks_on_status"
     t.index [ "type" ], name: "index_flex_tasks_on_type"
+  end
+
+  create_table "flex_users", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
@@ -37,7 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_000000) do
 
   create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
-    t.string "passport_id", limit: 36, null: false
+    t.string "passport_id", null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -76,12 +83,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_000000) do
     t.string "tax_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
+  add_foreign_key "flex_tasks", "flex_users", column: "assignee_id", on_delete: :nullify
 end
