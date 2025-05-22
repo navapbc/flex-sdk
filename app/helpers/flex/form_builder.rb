@@ -1,5 +1,3 @@
-require "ostruct"
-
 module Flex
   # FormBuilder is a custom form builder that provides USWDS-styled form components.
   # Beyond adding USWDS classes, this also supports setting the label, hint, and error
