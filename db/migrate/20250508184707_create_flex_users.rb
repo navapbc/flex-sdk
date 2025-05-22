@@ -1,4 +1,4 @@
-class AddUsers < ActiveRecord::Migration[8.0]
+class CreateFlexUsers < ActiveRecord::Migration[8.0]
   def change
     create_table :flex_users do |t|
       t.string :first_name
