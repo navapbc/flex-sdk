@@ -33,7 +33,7 @@
     <div class="usa-navbar desktop:width-mobile-lg">
       <div class="usa-logo desktop:margin-top-2">
         <em class="usa-logo__text">
-          <%= t 'flex.layouts.staff.header.title' %>
+          <%= link_to t('flex.layouts.staff.header.title'), main_app.staff_path, class: 'usa-logo__link' %>
         </em>
       </div>
       <button class="usa-menu-btn" type="button">Menu</button>
