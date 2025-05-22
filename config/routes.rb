@@ -1,3 +1,3 @@
 Flex::Engine.routes.draw do
-  resources :tasks
+  resources :tasks, only: [ :index, :show, :update ]
 end
