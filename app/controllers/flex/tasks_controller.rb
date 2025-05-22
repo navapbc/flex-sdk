@@ -66,7 +66,7 @@ module Flex
     def filter_tasks_by_type(tasks, filter_by)
       return tasks unless filter_by.present? && filter_by != "all"
 
-      task_class.with_type(filter_by)
+      tasks.with_type(filter_by)
     end
 
     def filter_tasks_by_status(tasks)
