@@ -272,7 +272,8 @@ module Flex
                 label: I18n.t("flex.form_builder.name.first_label"),
                 hint: first_hint_text,
                 class: "usa-input usa-input--xl",
-                "aria-describedby": first_hint_id
+                "aria-describedby": first_hint_id,
+                autocomplete: "given-name"
               )
             end +
 
@@ -283,6 +284,7 @@ module Flex
                 label: I18n.t("flex.form_builder.name.middle_label"),
                 class: "usa-input usa-input--xl",
                 optional: true,
+                autocomplete: "additional-name"
               )
             end +
 
@@ -292,7 +294,8 @@ module Flex
                 "last",
                 label: I18n.t("flex.form_builder.name.last_label"),
                 hint: last_hint_text,
-                class: "usa-input usa-input--xl"
+                class: "usa-input usa-input--xl",
+                autocomplete: "family-name"
               )
             end
           end

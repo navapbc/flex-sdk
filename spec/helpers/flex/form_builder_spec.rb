@@ -369,6 +369,12 @@ RSpec.describe Flex::FormBuilder do
       expect(result).to have_element(:label, text: /Last or family name/)
     end
 
+    it 'adds appropriate autocomplete attributes to name fields' do
+      expect(result).to have_element(:input, name: 'object[name][first]', autocomplete: 'given-name')
+      expect(result).to have_element(:input, name: 'object[name][middle]', autocomplete: 'additional-name')
+      expect(result).to have_element(:input, name: 'object[name][last]', autocomplete: 'family-name')
+    end
+
     context 'with an existing name value' do
       let(:object) { TestRecord.new(name: Flex::Name.new("John", "A", "Doe")) }
 
