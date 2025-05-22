@@ -1,0 +1,10 @@
+<%
+kase = PassportCase.find(@task.case_id)
+application_form = PassportApplicationForm.find(kase.application_form_id)
+%>
+<%= render template: 'flex/tasks/default/show', locals: {
+    task_class: PassportTask,
+    applicant_full_name: application_form.full_name,
+    :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
+}
+%>

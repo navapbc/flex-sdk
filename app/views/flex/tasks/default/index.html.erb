@@ -16,10 +16,10 @@
   <!-- Filters -->
   <div class="grid-row grid-gap-4 margin-bottom-4">
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/type_filter' %>
+      <%= render partial: 'flex/tasks/default/partials/type_filter' %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/due_date_filter' %>
+      <%= render partial: 'flex/tasks/default/partials/due_date_filter' %>
     </div>
   </div>
   <% if @tasks.any? %>
@@ -62,7 +62,7 @@
   </table>
   <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
 <% else %>
-  <%= render partial: 'flex/tasks/no_tasks_alert' %>
+  <%= render partial: 'flex/tasks/default/partials/no_tasks_alert' %>
 <% end %>
 </div>
 </div>
