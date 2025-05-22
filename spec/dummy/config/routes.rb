@@ -11,4 +11,5 @@ Rails.application.routes.draw do
 
   resources :passport_application_forms, only: [ :index, :new, :show ]
   resources :passport_tasks, only: [ :index, :show, :update ]
+  resources :test_records, only: [ :index, :create, :edit, :update ]
 end
