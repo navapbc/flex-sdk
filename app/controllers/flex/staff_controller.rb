@@ -15,5 +15,18 @@ module Flex
       case_classes = Flex::Case.descendants
       @cases_links = case_classes.map { |klass| cases_link_or_nil(klass) }.compact
     end
+
+    private
+
+    def cases_link_or_nil(klass)
+      {
+        name: klass.name.underscore.pluralize.titleize,
+        path: main_app.polymorphic_path(klass)
+      }
+    rescue NoMethodError
+      nil
+    rescue ActionController::UrlGenerationError
+      nil
+    end
   end
 end
