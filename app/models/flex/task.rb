@@ -1,4 +1,22 @@
 module Flex
+  # Task is the base class for all tasks in the Flex SDK.
+  # It provides common functionality for task management including
+  # assignment, status tracking, and due date handling.
+  #
+  # Tasks are used within business processes to represent work items
+  # that need to be completed, either by staff or automated systems.
+  #
+  # @example Creating a task subclass
+  #   class MyTask < Flex::Task
+  #     # Add custom attributes or behavior
+  #   end
+  #
+  # Key features:
+  # - Task assignment to users
+  # - Status tracking (pending/completed)
+  # - Due date management
+  # - Filtering capabilities through scopes
+  #
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date

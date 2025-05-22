@@ -27,7 +27,15 @@ RSpec.describe Flex::BusinessProcess do
       expect(kase.business_process_current_step).to eq('staff_task_2')
 
       Flex::EventManager.publish('event3', { case_id: kase.id })
-      # system_process_2 automatically publishes event4
+      kase.reload
+      expect(kase.business_process_current_step).to eq('applicant_task')
+
+      Flex::EventManager.publish('event4', { case_id: kase.id })
+      kase.reload
+      expect(kase.business_process_current_step).to eq('third_party_task')
+
+      Flex::EventManager.publish('event5', { case_id: kase.id })
+      # system_process_2 automatically publishes event6
       kase.reload
       expect(kase.business_process_current_step).to eq('end')
       expect(kase).to be_closed

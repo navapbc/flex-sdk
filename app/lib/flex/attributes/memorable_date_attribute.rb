@@ -1,5 +1,23 @@
 module Flex
   module Attributes
+    # MemorableDateAttribute provides a DSL for defining date attributes in form models
+    # that can be entered as separate year, month, and day fields.
+    #
+    # This module includes a custom ActiveRecord type that allows setting date attributes
+    # using a hash with keys :year, :month, and :day, which integrates with the
+    # memorable_date form builder method.
+    #
+    # @example Adding a memorable date attribute to a form model
+    #   class MyForm < Flex::ApplicationForm
+    #     include Flex::Attributes::MemorableDateAttribute
+    #     memorable_date_attribute :birth_date, required: true
+    #   end
+    #
+    # Key features:
+    # - Custom ActiveRecord type for date handling
+    # - Automatic validation of date values
+    # - Integration with form builder for date input fields
+    #
     module MemorableDateAttribute
       extend ActiveSupport::Concern
 

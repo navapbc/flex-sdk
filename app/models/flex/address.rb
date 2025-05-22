@@ -1,4 +1,17 @@
 module Flex
+  # Address is a value object representing a physical address with street lines,
+  # city, state, and zip code components.
+  #
+  # This class is used with AddressAttribute to provide structured address handling
+  # in form models.
+  #
+  # @example Creating an address
+  #   address = Flex::Address.new("123 Main St", "Apt 4B", "Anytown", "CA", "12345")
+  #
+  # Key features:
+  # - Stores address components (street lines, city, state, zip)
+  # - Provides comparison between address objects
+  #
   class Address
     include Comparable
 
