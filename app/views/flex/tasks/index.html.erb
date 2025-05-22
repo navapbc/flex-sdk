@@ -7,7 +7,7 @@
       <% 
         [
           { name: t("flex.tasks.index.tabs.assigned"), path: url_for(request.path + "?" + request.query_parameters.merge(filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]).to_query), active: params[:filter_status] != "completed" },
-          { name: t("flex.tasks.index.tabs.completed"), path: url_for(request.path + "?" + request.query_parameters.merge(filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]).to_query), active: params[:filter_status] == "completed" }
+          { name: t("flex.tasks.index.tabs.completed"), path: url_for(request.path + "?" + request.query_parameters.merge(filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]).to_query), active: params[:filter_status] == "completed" }
         ].each do |tab| 
       %>
       <%= render partial: "flex/cases/nav_tab", locals: tab %>
