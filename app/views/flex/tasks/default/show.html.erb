@@ -1,4 +1,4 @@
-<% task_type_with_name = t("tasks.types.#{@task.type.underscore}") + " - " + applicant_full_name %>
+<% task_type_with_name = t("tasks.types.#{task.type.underscore}") + " - " + applicant_full_name %>
 <main class="usa-section">
   <div class="grid-container">
     <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
@@ -19,10 +19,10 @@
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{@task.status}") %>
+            <strong><%= t("flex.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
           </div>
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us @task.due_on %>
+            <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
           </div>
           <div class="grid-col-auto">
             <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_full_name %>
