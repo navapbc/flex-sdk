@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module Flex
   # FormBuilder is a custom form builder that provides USWDS-styled form components.
   # Beyond adding USWDS classes, this also supports setting the label, hint, and error
@@ -239,6 +241,87 @@ module Flex
                 }
               )
             end
+          end
+        end
+      end
+    end
+    
+    # Renders a name input with first, middle, and last name fields.
+    #
+    # @param [Symbol] attribute The attribute name
+    # @param [Hash] options Options for the name input
+    # @option options [String] :legend Custom legend text
+    # @option options [String] :first_hint Custom hint text for first name
+    # @option options [String] :last_hint Custom hint text for last name
+    # @return [String] The rendered HTML for the name input
+    def name(attribute, options = {})
+      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.name.legend")
+      first_hint_text = options.delete(:first_hint) || I18n.t("flex.form_builder.name.first_hint")
+      last_hint_text = options.delete(:last_hint) || I18n.t("flex.form_builder.name.last_hint")
+      first_hint_id = "#{attribute}_first_hint"
+      last_hint_id = "#{attribute}_last_hint"
+
+      fieldset(legend_text) do
+        field_error(attribute).to_s +
+        @template.content_tag(:div) do
+          # First name field
+          @template.content_tag(:div, class: "usa-form-group") do
+            first_label = @template.label_tag("object[#{attribute}][first]", I18n.t("flex.form_builder.name.first_label"), class: "usa-label")
+            first_hint = @template.content_tag(:div, first_hint_text, id: first_hint_id, class: "usa-hint")
+            
+            # Get first name value
+            first_value = nil
+            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:first)
+              first_value = object.send(attribute).first
+            end
+            
+            first_input = @template.text_field_tag(
+              "object[#{attribute}][first]",
+              first_value,
+              class: "usa-input usa-input--xl",
+              "aria-describedby": first_hint_id
+            )
+            first_label + first_hint + first_input
+          end +
+
+          # Middle name field (optional)
+          @template.content_tag(:div, class: "usa-form-group") do
+            middle_label_text = I18n.t("flex.form_builder.name.middle_label")
+            middle_label = @template.label_tag("object[#{attribute}][middle]", middle_label_text, class: "usa-label")
+            optional_span = @template.content_tag(:span, " (#{I18n.t('flex.form_builder.optional').downcase})", class: "usa-hint")
+            
+            # Get middle name value
+            middle_value = nil
+            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:middle)
+              middle_value = object.send(attribute).middle
+            end
+            
+            middle_input = @template.text_field_tag(
+              "object[#{attribute}][middle]",
+              middle_value,
+              class: "usa-input usa-input--xl"
+            )
+            middle_label + optional_span + middle_input
+          end +
+
+          # Last name field
+          @template.content_tag(:div, class: "usa-form-group") do
+            last_label = @template.label_tag("object[#{attribute}][last]", I18n.t("flex.form_builder.name.last_label"), class: "usa-label")
+            last_hint = @template.content_tag(:div, last_hint_text, id: last_hint_id, class: "usa-hint")
+            
+            # Get last name value
+            last_value = nil
+            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:last)
+              last_value = object.send(attribute).last
+            end
+            
+            last_input = @template.text_field_tag(
+              "object[#{attribute}][last]",
+              last_value,
+              class: "usa-input usa-input--xl",
+              "aria-describedby": last_hint_id
+            )
+            last_label + last_hint + last_input
           end
         end
       end
