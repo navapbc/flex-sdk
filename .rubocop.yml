@@ -40,3 +40,9 @@ YARD/TagTypePosition:
   
 YARD/TagTypeSyntax:
   Enabled: true
+
+Style/Documentation:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"

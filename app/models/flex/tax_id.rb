@@ -1,4 +1,19 @@
 module Flex
+  # TaxId is a value object representing a tax identification number (e.g., SSN).
+  # It inherits from String but adds formatting capabilities and validation.
+  #
+  # This class is used with TaxIdAttribute to provide structured tax ID handling
+  # in form models.
+  #
+  # @example Creating a tax ID
+  #   tax_id = Flex::TaxId.new("123456789")
+  #   puts tax_id.formatted  # => "123-45-6789"
+  #
+  # Key features:
+  # - Stores the raw digits of the tax ID
+  # - Formats the tax ID with dashes (XXX-XX-XXXX)
+  # - Provides comparison between tax ID objects
+  #
   class TaxId < String
     include Comparable
 

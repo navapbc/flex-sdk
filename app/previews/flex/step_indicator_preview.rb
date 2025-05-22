@@ -1,4 +1,15 @@
 module Flex
+  # StepIndicatorPreview provides preview examples for the step indicator component.
+  # It demonstrates different states of the step indicator including in-progress,
+  # submitted, and decision-made states.
+  #
+  # This class is used with Lookbook to generate UI component previews
+  # for the step indicator component used in multi-step forms.
+  #
+  # @example Viewing the submitted state preview
+  #   # In Lookbook UI
+  #   # Navigate to Flex > StepIndicatorPreview > submitted
+  #
   class StepIndicatorPreview < Lookbook::Preview
     layout "component_preview"
 

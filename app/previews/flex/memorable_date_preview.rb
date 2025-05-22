@@ -1,4 +1,15 @@
 module Flex
+  # MemorableDatePreview provides preview examples for the memorable date component.
+  # It demonstrates different states of the date input fields including empty,
+  # filled, and invalid states.
+  #
+  # This class is used with Lookbook to generate UI component previews
+  # for the memorable date form component.
+  #
+  # @example Viewing the filled state preview
+  #   # In Lookbook UI
+  #   # Navigate to Flex > MemorableDatePreview > filled
+  #
   class MemorableDatePreview < Lookbook::Preview
     layout "component_preview"
 

@@ -1,5 +1,15 @@
 module Flex
   module ApplicationForms
+    # IndexPreview provides preview examples for the application forms index view.
+    # It demonstrates different states of the application forms list page.
+    #
+    # This class is used with Lookbook to generate UI component previews
+    # for the application forms index page.
+    #
+    # @example Viewing the empty state preview
+    #   # In Lookbook UI
+    #   # Navigate to ApplicationForms > IndexPreview > empty
+    #
     class IndexPreview < Lookbook::Preview
       def empty
         render template: "flex/application_forms/index", locals: {

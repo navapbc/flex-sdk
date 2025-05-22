@@ -1,5 +1,15 @@
 module Flex
   module ApplicationForms
+    # ShowPreview provides preview examples for the application form show view.
+    # It demonstrates different states of the application form detail page.
+    #
+    # This class is used with Lookbook to generate UI component previews
+    # for the application form detail page.
+    #
+    # @example Viewing the in-progress state preview
+    #   # In Lookbook UI
+    #   # Navigate to ApplicationForms > ShowPreview > in_progress
+    #
     class ShowPreview < Lookbook::Preview
       def in_progress
         render template: "flex/application_forms/show", locals: {
