@@ -1,6 +1,6 @@
 PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) do |bp|
   # Define steps
-  bp.staff_task('collect_application_info', StaffTaskCreationService)
+  bp.applicant_task('submit_application')
 
   bp.system_process('verify_identity', ->(kase) {
     IdentityVerificationService.new(kase).verify_identity
@@ -21,11 +21,11 @@ PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) 
   })
 
   # Define start step
-  bp.start_on_application_form_created('collect_application_info')
+  bp.start_on_application_form_created('submit_application')
 
   # Define transitions
-  bp.transition('collect_application_info', 'PassportApplicationFormSubmitted', 'verify_identity')
-  bp.transition('collect_application_info', 'application_cancelled', 'end')
+  bp.transition('submit_application', 'PassportApplicationFormSubmitted', 'verify_identity')
+  bp.transition('submit_application', 'application_cancelled', 'end')
   bp.transition('verify_identity', 'identity_verified', 'review_passport_photo')
   bp.transition('verify_identity', 'identity_warning', 'manual_adjudicator_review')
   bp.transition('manual_adjudicator_review', 'identity_verified', 'review_passport_photo')
