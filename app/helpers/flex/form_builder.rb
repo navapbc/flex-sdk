@@ -1,4 +1,4 @@
-require 'ostruct'
+require "ostruct"
 
 module Flex
   # FormBuilder is a custom form builder that provides USWDS-styled form components.
@@ -245,7 +245,7 @@ module Flex
         end
       end
     end
-    
+
     # Renders a name input with first, middle, and last name fields.
     #
     # @param [Symbol] attribute The attribute name
@@ -274,7 +274,7 @@ module Flex
                 "aria-describedby": first_hint_id
               )
             end +
-  
+
             # Middle name field (optional)
             @template.content_tag(:div, class: "usa-form-group") do
               name_fields.text_field(
@@ -284,7 +284,7 @@ module Flex
                 optional: true,
               )
             end +
-  
+
             # Last name field
             @template.content_tag(:div, class: "usa-form-group") do
               name_fields.text_field(

@@ -380,9 +380,9 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with custom legend and hints' do
-      let(:result) { builder.name(:name, 
-        legend: 'Custom Name Legend', 
-        first_hint: 'Custom first name hint', 
+      let(:result) { builder.name(:name,
+        legend: 'Custom Name Legend',
+        first_hint: 'Custom first name hint',
         last_hint: 'Custom last name hint'
       ) }
 
