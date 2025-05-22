@@ -6,10 +6,6 @@ module Flex
       Flex::Task
     end
 
-    def user_class
-      Flex::User
-    end
-
     def index
       @tasks = filter_tasks
       @distinct_task_types = task_class.distinct.pluck(:type)
@@ -17,7 +13,6 @@ module Flex
 
     def show
       @task = task_class.find(params[:id])
-      @assigned_user = user_class.find(@task.assignee_id) if @task.assignee_id
     end
 
     def update
