@@ -337,4 +337,60 @@ RSpec.describe Flex::FormBuilder do
       end
     end
   end
+
+  describe '#name' do
+    let(:result) { builder.name(:name) }
+    let(:object) { TestRecord.new }
+
+    it 'includes first, middle, and last name fields' do
+      expect(result).to have_element(:input, name: 'object[name][first]')
+      expect(result).to have_element(:input, name: 'object[name][middle]')
+      expect(result).to have_element(:input, name: 'object[name][last]')
+    end
+
+    it 'applies the usa-input--xl class to all input fields' do
+      expect(result).to have_element(:input, name: 'object[name][first]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name][middle]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name][last]', class: /usa-input--xl/)
+    end
+
+    it 'marks the middle name as optional' do
+      expect(result).to have_element(:label, text: /Middle name.*optional/i)
+    end
+
+    it 'includes hints for first and last name' do
+      expect(result).to have_element(:div, text: /For example, Jose, Darren, or Mai/, class: 'usa-hint')
+      expect(result).to have_element(:div, text: /For example, Martinez Gonzalez, Gu, or Smith/, class: 'usa-hint')
+    end
+
+    it 'uses I18n for labels' do
+      expect(result).to have_element(:label, text: /First or given name/)
+      expect(result).to have_element(:label, text: /Middle name/)
+      expect(result).to have_element(:label, text: /Last or family name/)
+    end
+
+    context 'with an existing name value' do
+      let(:object) { TestRecord.new(name: Flex::Name.new("John", "A", "Doe")) }
+
+      it 'pre-fills the name fields' do
+        expect(result).to have_element(:input, name: 'object[name][first]', value: 'John')
+        expect(result).to have_element(:input, name: 'object[name][middle]', value: 'A')
+        expect(result).to have_element(:input, name: 'object[name][last]', value: 'Doe')
+      end
+    end
+
+    context 'with custom legend and hints' do
+      let(:result) { builder.name(:name, 
+        legend: 'Custom Name Legend', 
+        first_hint: 'Custom first name hint', 
+        last_hint: 'Custom last name hint'
+      ) }
+
+      it 'displays the custom legend and hints' do
+        expect(result).to have_element(:legend, text: 'Custom Name Legend', class: 'usa-legend')
+        expect(result).to have_element(:div, text: 'Custom first name hint', class: 'usa-hint')
+        expect(result).to have_element(:div, text: 'Custom last name hint', class: 'usa-hint')
+      end
+    end
+  end
 end

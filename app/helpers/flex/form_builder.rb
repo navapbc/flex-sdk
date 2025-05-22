@@ -263,7 +263,8 @@ module Flex
 
       fieldset(legend_text) do
         @template.content_tag(:div) do
-          fields_for attribute, object.send(attribute) do |name_fields|
+          # TODO we shouldn't have to pass object and builder again but the way we are testing it forces that
+          fields_for attribute, object.send(attribute), builder: self.class do |name_fields|
             # First name field
             @template.content_tag(:div, class: "usa-form-group") do
               name_fields.text_field(
