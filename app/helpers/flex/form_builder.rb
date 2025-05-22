@@ -261,6 +261,9 @@ module Flex
 
       fieldset(legend_text) do
         @template.content_tag(:div) do
+          # We need to pass builder: self.class only for testing purposes, but it shouldn't harm
+          # anything in production. This is because in the test context fields_for
+          # cannot infer the custom form builder class from the view context.
           fields_for attribute, object.send(attribute), builder: self.class do |name_fields|
             # First name field
             @template.content_tag(:div, class: "usa-form-group") do
