@@ -31,7 +31,7 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#assign' do
-    let(:user) { User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name) }
+    let(:user) { Flex::User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name) }
 
     it 'assigns the task to the given user' do
       assignee_id = user.id
@@ -44,7 +44,7 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe '#unassign' do
-    let(:user) { User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name) }
+    let(:user) { Flex::User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name) }
 
     it 'removes the assignee from the task' do
       task.assign(user.id)
