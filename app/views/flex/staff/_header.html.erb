@@ -1,0 +1,62 @@
+<div class="usa-overlay"></div>
+<div class="bg-accent-cool-lighter display-none desktop:display-block padding-y-1">
+  <div>
+    <div data-testid="gridContainer" class="grid-container font-sans-2xs maxw-desktop-lg line-height-body-3">
+      <div class="grid-row" data-testid="grid">
+        <div class="grid-col-12 desktop:grid-col-fill" data-testid="grid"></div>
+        
+        <div class="grid-col-12 desktop:grid-col-auto desktop:padding-right-2 desktop:margin-y-0 margin-y-1" data-testid="grid">
+          <span class="line-height-body-3">
+            <span class="text-bold">Department:</span>
+            IE&amp;E
+          </span>
+        </div>
+        
+        <div class="grid-col-12 desktop:grid-col-auto desktop:padding-right-2 desktop:margin-y-0 margin-y-1" data-testid="grid">
+          <span class="line-height-body-3">
+            <span class="text-bold">Role:</span>
+            Eligibility Specialist
+          </span>
+        </div>
+        
+        <div class="grid-col-12 desktop:grid-col-auto desktop:padding-x-2 desktop:border-left-1px desktop:margin-y-0 margin-y-1" data-testid="grid">
+          <a class="text-primary-dark padding-0 display-inline-block bg-transparent border-bottom-1px desktop:border-bottom-0" href="/">
+            Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<header class="usa-header usa-header--basic">
+  <div class="usa-nav-container maxw-desktop-lg">
+    <div class="usa-navbar desktop:width-mobile-lg">
+      <div class="usa-logo desktop:margin-top-2">
+        <em class="usa-logo__text">
+          <%= t 'flex.layouts.staff.header.title' %>
+        </em>
+      </div>
+      <button class="usa-menu-btn" type="button">Menu</button>
+    </div>
+
+    
+    <nav aria-label="Primary navigation" class="usa-nav">
+      <div class="usa-nav__inner">
+        <button type="button" class="usa-nav__close">
+          <img src="<%= asset_path('@uswds/uswds/dist/img/usa-icons/close.svg') %>" alt="<%= t 'header.close' %>" />
+        </button>
+      </div>
+      <ul class="usa-nav__primary usa-accordion">
+        <% cases_links.each do |link| %>
+          <li class="usa-nav__primary-item">
+            <%= link_to link[:name], link[:path], class: 'usa-current' %>
+          </li>
+        <% end %>
+        
+        <li class="usa-nav__primary-item">
+          <%= link_to "Tasks", '/staff/tasks', class: 'usa-current' %>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
