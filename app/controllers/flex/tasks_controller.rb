@@ -15,7 +15,7 @@ module Flex
     end
 
     def index
-      filter_tasks
+      @tasks = filter_tasks
       @distinct_task_types = task_class.distinct.pluck(:type)
     end
 
@@ -41,38 +41,38 @@ module Flex
     end
 
     def filter_tasks
-      if index_filter_params[:filter_date].present?
-        @tasks = filter_tasks_by_date(index_filter_params[:filter_date])
-      end
-      if index_filter_params[:filter_type].present?
-        @tasks = filter_tasks_by_type(index_filter_params[:filter_type])
-      end
-      @tasks = filter_tasks_by_status
+      tasks = filter_tasks_by_date(task_class.all, index_filter_params[:filter_date])
+      tasks = filter_tasks_by_type(tasks, index_filter_params[:filter_type])
+      tasks = filter_tasks_by_status(tasks)
+
+      tasks
     end
 
-    def filter_tasks_by_date(filter_by)
+    def filter_tasks_by_date(tasks, filter_by)
       case filter_by
       when "today"
-          tasks.due_today
+        tasks.due_today
       when "overdue"
-          tasks.overdue
+        tasks.overdue
       when "tomorrow"
-          tasks.due_tomorrow
+        tasks.due_tomorrow
       when "this_week"
-          tasks.due_this_week
+        tasks.due_this_week
       else
-          tasks.all
+        tasks
       end
     end
 
-    def filter_tasks_by_type(filter_by)
-      filter_by == "all" ? task_class.all : task_class.with_type(filter_by)
+    def filter_tasks_by_type(tasks, filter_by)
+      return tasks unless filter_by.present? && filter_by != "all"
+
+      task_class.with_type(filter_by)
     end
 
-    def filter_tasks_by_status
+    def filter_tasks_by_status(tasks)
       index_filter_params[:filter_status] == "completed" \
-        ? task_class.completed
-        : task_class.incomplete
+        ? tasks.completed
+        : tasks.incomplete
     end
   end
 end
