@@ -22,7 +22,7 @@
       <%= render partial: 'flex/tasks/default/partials/due_date_filter' %>
     </div>
   </div>
-  <% if @tasks.any? %>
+  <% if tasks.any? %>
     <!-- Tasks -->
     <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
       <thead>
@@ -43,7 +43,7 @@
       </thead>
       <tbody>
         <%
-          @tasks.each do |task|
+          tasks.each do |task|
           %>
         <tr>
           <td data-sort-value="<%= time_since_epoch task.due_on %>">
