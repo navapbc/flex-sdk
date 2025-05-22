@@ -1,16 +1,4 @@
-<%# Index view for displaying a list of tasks
-    Required locals:
-    - model_class: Flex::Task or subclass - The model class for the tasks
-
-    Example usage:
-    render template: "flex/application_forms/index", locals: {
-      model_class: PassportTask
-    }
-%>
-<%
-# model_class = locals[:model_class] || 
-%>
-<%= content_for :title, model_class.name.titleize %>
+<%# Index view for displaying a list of tasks %>
 <!-- Main content -->
 <main class="usa-section">
   <div class="grid-container">
@@ -18,8 +6,8 @@
     <nav class="display-flex border-bottom-1px border-base-light">
       <% 
         [
-          { name: t("flex.tasks.index.tabs.assigned"), path: flex_tasks_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
-          { name: t("flex.tasks.index.tabs.completed"), path: flex_tasks_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+          { name: t("flex.tasks.index.tabs.assigned"), path: url_for(request.path + "?" + request.query_parameters.merge(filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]).to_query), active: params[:filter_status] != "completed" },
+          { name: t("flex.tasks.index.tabs.completed"), path: url_for(request.path + "?" + request.query_parameters.merge(filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]).to_query), active: params[:filter_status] == "completed" }
         ].each do |tab| 
       %>
       <%= render partial: "flex/cases/nav_tab", locals: tab %>
@@ -62,7 +50,7 @@
             <%= local_en_us task.due_on %>
           </td>
           <td data-sort-value="<%= task.type %>">
-            <%= link_to t("tasks.types.#{task.type.underscore}"), passport_task_path(task) %>
+            <%= link_to t("tasks.types.#{task.type.underscore}"), task_path(task) %>
           </td>
           <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
           <td data-sort-value="<%= time_since_epoch task.created_at %>">
