@@ -1,4 +1,6 @@
 module Flex
+  # Controller for managing Flex::Task records. Handles listing, filtering, showing, and updating tasks.
+  # This controller helps a parent application manage tasks by not forcing the parent application to implement the same functionality.
   class TasksController < ApplicationController
     helper DateHelper
 
