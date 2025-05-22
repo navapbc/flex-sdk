@@ -27,7 +27,7 @@ PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) 
     }))
 
   # Define start step
-  bp.start('collect_application_info')
+  bp.start_on_application_form_created('collect_application_info')
 
   # Define transitions
   bp.transition('collect_application_info', 'PassportApplicationFormSubmitted', 'verify_identity')
