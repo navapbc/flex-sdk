@@ -1,3 +1,20 @@
+<%# Show view for displaying a task
+    Required locals:
+    - applicant_full_name: String - The name of the person related to this task
+    - assigned_user_full_name: String - The name of the user assigned to this task
+    - task: Flex::Task - The task object
+
+    Optional locals:
+    - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
+    
+    Example usage:
+      <%= render template: 'flex/tasks/default/show', locals: {
+        task: @task,
+        applicant_full_name: application_form.full_name || "TBD",
+        assigned_user_full_name: assigned_user&.full_name || "Not Assigned",
+        :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
+      } %>
+%>
 <% task_type_with_name = t("tasks.types.#{task.type.underscore}") + " - " + applicant_full_name %>
 <main class="usa-section">
   <div class="grid-container">

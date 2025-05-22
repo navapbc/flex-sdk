@@ -8,5 +8,4 @@ assigned_user = Flex::User.find(@task.assignee_id) if @task.assignee_id
     applicant_full_name: application_form.full_name || "TBD",
     assigned_user_full_name: assigned_user&.full_name || "Not Assigned",
     :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
-}
-%>
+} %>
