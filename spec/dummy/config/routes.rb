@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount Flex::Engine => "/flex"
+  mount Flex::Engine => "/"
 
   mount Lookbook::Engine, at: "/lookbook"
 
