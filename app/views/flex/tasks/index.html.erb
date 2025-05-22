@@ -7,6 +7,9 @@
       model_class: PassportTask
     }
 %>
+<%
+# model_class = locals[:model_class] || 
+%>
 <%= content_for :title, model_class.name.titleize %>
 <!-- Main content -->
 <main class="usa-section">
@@ -15,8 +18,8 @@
     <nav class="display-flex border-bottom-1px border-base-light">
       <% 
         [
-          { name: t("flex.tasks.index.tabs.assigned"), path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
-          { name: t("flex.tasks.index.tabs.completed"), path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+          { name: t("flex.tasks.index.tabs.assigned"), path: flex_tasks_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
+          { name: t("flex.tasks.index.tabs.completed"), path: flex_tasks_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
         ].each do |tab| 
       %>
       <%= render partial: "flex/cases/nav_tab", locals: tab %>
