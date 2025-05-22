@@ -1,4 +1,4 @@
-class PassportCasesController < ApplicationController
+class PassportCasesController < Flex::StaffController
   def index
     @cases = PassportCase.order(created_at: :desc)
                          .all
