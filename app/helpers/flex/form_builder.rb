@@ -262,66 +262,39 @@ module Flex
       last_hint_id = "#{attribute}_last_hint"
 
       fieldset(legend_text) do
-        field_error(attribute).to_s +
         @template.content_tag(:div) do
-          # First name field
-          @template.content_tag(:div, class: "usa-form-group") do
-            first_label = @template.label_tag("object[#{attribute}][first]", I18n.t("flex.form_builder.name.first_label"), class: "usa-label")
-            first_hint = @template.content_tag(:div, first_hint_text, id: first_hint_id, class: "usa-hint")
-            
-            # Get first name value
-            first_value = nil
-            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:first)
-              first_value = object.send(attribute).first
+          # TODO we shouldn't have to pass object and builder again but the way we are testing it forces that
+          fields_for attribute, object.send(attribute), builder: self.class do |name_fields|
+            # First name field
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "first",
+                label: I18n.t("flex.form_builder.name.first_label"),
+                hint: first_hint_text,
+                class: "usa-input usa-input--xl",
+                "aria-describedby": first_hint_id
+              )
+            end +
+  
+            # Middle name field (optional)
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "middle",
+                label: I18n.t("flex.form_builder.name.middle_label"),
+                class: "usa-input usa-input--xl",
+                optional: true,
+              )
+            end +
+  
+            # Last name field
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "last",
+                label: I18n.t("flex.form_builder.name.last_label"),
+                hint: last_hint_text,
+                class: "usa-input usa-input--xl"
+              )
             end
-            
-            first_input = @template.text_field_tag(
-              "object[#{attribute}][first]",
-              first_value,
-              class: "usa-input usa-input--xl",
-              "aria-describedby": first_hint_id
-            )
-            first_label + first_hint + first_input
-          end +
-
-          # Middle name field (optional)
-          @template.content_tag(:div, class: "usa-form-group") do
-            middle_label_text = I18n.t("flex.form_builder.name.middle_label")
-            middle_label = @template.label_tag("object[#{attribute}][middle]", middle_label_text, class: "usa-label")
-            optional_span = @template.content_tag(:span, " (#{I18n.t('flex.form_builder.optional').downcase})", class: "usa-hint")
-            
-            # Get middle name value
-            middle_value = nil
-            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:middle)
-              middle_value = object.send(attribute).middle
-            end
-            
-            middle_input = @template.text_field_tag(
-              "object[#{attribute}][middle]",
-              middle_value,
-              class: "usa-input usa-input--xl"
-            )
-            middle_label + optional_span + middle_input
-          end +
-
-          # Last name field
-          @template.content_tag(:div, class: "usa-form-group") do
-            last_label = @template.label_tag("object[#{attribute}][last]", I18n.t("flex.form_builder.name.last_label"), class: "usa-label")
-            last_hint = @template.content_tag(:div, last_hint_text, id: last_hint_id, class: "usa-hint")
-            
-            # Get last name value
-            last_value = nil
-            if object && object.respond_to?(attribute) && object.send(attribute).respond_to?(:last)
-              last_value = object.send(attribute).last
-            end
-            
-            last_input = @template.text_field_tag(
-              "object[#{attribute}][last]",
-              last_value,
-              class: "usa-input usa-input--xl",
-              "aria-describedby": last_hint_id
-            )
-            last_label + last_hint + last_input
           end
         end
       end

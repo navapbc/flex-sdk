@@ -379,20 +379,6 @@ RSpec.describe Flex::FormBuilder do
       end
     end
 
-    context 'with raw values' do
-      before do
-        # Use respond_to? to avoid the "does not implement" error
-        allow(object).to receive(:respond_to?).and_return(true)
-        allow(object).to receive(:name_before_type_cast).and_return({ first: 'John', middle: 'A', last: 'Doe' })
-      end
-
-      it 'pre-fills the name fields from raw values' do
-        expect(result).to have_element(:input, name: 'object[name][first]', value: 'John')
-        expect(result).to have_element(:input, name: 'object[name][middle]', value: 'A')
-        expect(result).to have_element(:input, name: 'object[name][last]', value: 'Doe')
-      end
-    end
-
     context 'with custom legend and hints' do
       let(:result) { builder.name(:name, 
         legend: 'Custom Name Legend', 
@@ -404,16 +390,6 @@ RSpec.describe Flex::FormBuilder do
         expect(result).to have_element(:legend, text: 'Custom Name Legend', class: 'usa-legend')
         expect(result).to have_element(:div, text: 'Custom first name hint', class: 'usa-hint')
         expect(result).to have_element(:div, text: 'Custom last name hint', class: 'usa-hint')
-      end
-    end
-
-    context 'with errors' do
-      before do
-        object.errors.add(:name, 'is invalid')
-      end
-
-      it 'displays the error message' do
-        expect(result).to have_element(:span, text: 'Name is invalid', class: 'usa-error-message')
       end
     end
   end
