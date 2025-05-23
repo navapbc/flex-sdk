@@ -9,6 +9,6 @@ module Flex
       def create_task(kase)
         raise NoMethodError, "#{self.class} must implement create_task method"
       end
-    end      
+    end
   end
 end

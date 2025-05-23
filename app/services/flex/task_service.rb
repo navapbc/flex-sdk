@@ -1,11 +1,31 @@
 module Flex
+  # Service layer module that provides a unified interface for task management.
+  # This module implements the Service Locator pattern to provide a configurable
+  # task service implementation. By default, it uses the Database adapter, but
+  # can be configured to use other task service implementations.
+  #
+  # @example
+  #   task_service = Flex::TaskService.get
+  #   task_service.create_task(kase)
+  #
   module TaskService
     mattr_accessor :service
 
+    # Sets the task service implementation to be used.
+    #
+    # @param service [Object] The task service implementation to use.
+    #   Must implement the required task service interface.
+    # @return [Object] The service that was set
     def self.set(service)
       self.service = service
     end
 
+    # Gets the current task service implementation.
+    # If no service has been set, initializes and returns the default Database adapter.
+    #
+    # @return [Object] The current task service implementation
+    # @note Currently defaults to {Flex::TaskService::Database} if no service is set.
+    #   Future versions may determine the service based on environment configuration.
     def self.get
       if self.service.nil?
         # Other ideas for adapters: asana, jira, salesforce, trello
