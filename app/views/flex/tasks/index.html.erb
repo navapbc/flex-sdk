@@ -1,22 +1,25 @@
 <%# Index view for displaying a list of tasks
-    Required locals:
-    - model_class: Flex::Task or subclass - The model class for the tasks
-
-    Example usage:
-    render template: "flex/application_forms/index", locals: {
-      model_class: PassportTask
-    }
-%>
-<%= content_for :title, model_class.name.titleize %>
+  Required locals:
+  - tasks: Flex::Task[] - Array of tasks to display
+ %>
 <!-- Main content -->
 <main class="usa-section">
   <div class="grid-container">
     <h1 class="usa-heading-xl"><%= t("flex.tasks.index.title") %></h1>
     <nav class="display-flex border-bottom-1px border-base-light">
       <% 
+        filter_params = params.permit(:filter_date, :filter_type, :filter_status)
         [
-          { name: t("flex.tasks.index.tabs.assigned"), path: polymorphic_path(model_class, filter_status: nil, filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] != "completed" },
-          { name: t("flex.tasks.index.tabs.completed"), path: polymorphic_path(model_class, filter_status: "completed", filter_date: params[:filter_date], filter_type: params[:filter_type]), active: params[:filter_status] == "completed" }
+          { 
+            name: t("flex.tasks.index.tabs.assigned"), 
+            path: url_for(filter_params.merge(filter_status: nil)), 
+            active: params[:filter_status] != "completed" 
+          },
+          { 
+            name: t("flex.tasks.index.tabs.completed"), 
+            path: url_for(filter_params.merge(filter_status: "completed")), 
+            active: params[:filter_status] == "completed" 
+          }
         ].each do |tab| 
       %>
       <%= render partial: "flex/cases/nav_tab", locals: tab %>
@@ -25,13 +28,13 @@
   <!-- Filters -->
   <div class="grid-row grid-gap-4 margin-bottom-4">
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/type_filter' %>
+      <%= render partial: 'flex/tasks/type_filter', locals: { task_types: task_types } %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <%= render partial: 'flex/tasks/due_date_filter' %>
     </div>
   </div>
-  <% if @tasks.any? %>
+  <% if tasks.any? %>
     <!-- Tasks -->
     <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
       <thead>
@@ -52,14 +55,14 @@
       </thead>
       <tbody>
         <%
-          @tasks.each do |task|
+          tasks.each do |task|
           %>
         <tr>
           <td data-sort-value="<%= time_since_epoch task.due_on %>">
             <%= local_en_us task.due_on %>
           </td>
           <td data-sort-value="<%= task.type %>">
-            <%= link_to t("tasks.types.#{task.type.underscore}"), passport_task_path(task) %>
+            <%= link_to t("tasks.types.#{task.type.underscore}"), task_path(task) %>
           </td>
           <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
           <td data-sort-value="<%= time_since_epoch task.created_at %>">

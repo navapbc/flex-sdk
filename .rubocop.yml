@@ -22,22 +22,22 @@ AllCops:
 # YARD documentation configuration
 YARD:
   Enabled: true
-  
+
 YARD/CollectionStyle:
   Enabled: true
-  
+
 YARD/CollectionType:
   Enabled: true
-  
+
 YARD/MeaninglessTag:
   Enabled: true
-  
+
 YARD/MismatchName:
   Enabled: true
-  
+
 YARD/TagTypePosition:
   Enabled: true
-  
+
 YARD/TagTypeSyntax:
   Enabled: true
 
@@ -46,3 +46,4 @@ Style/Documentation:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
+    - "db/migrate/**/*"
