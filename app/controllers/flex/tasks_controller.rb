@@ -4,6 +4,8 @@ module Flex
   class TasksController < ::ApplicationController
     helper DateHelper
 
+    before_action :set_task, only: %i[ show update ]
+
     def task_class
       Flex::Task
     end
@@ -14,11 +16,9 @@ module Flex
     end
 
     def show
-      @task = task_class.find(params[:id])
     end
 
     def update
-      @task = task_class.find(params[:id])
       if params["task-action"].present?
         @task.mark_completed
         flash["task-message"] = I18n.t("tasks.messages.task_marked_completed")
@@ -28,6 +28,10 @@ module Flex
     end
 
     private
+    def set_task
+      @task = task_class.find(params[:id]) if params[:id].present?
+    end
+
     def index_filter_params
       params.permit(:filter_date, :filter_type, :filter_status)
     end
