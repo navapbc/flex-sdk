@@ -1,5 +1,5 @@
 users = 10.times.collect do |index|
-  Flex::User.create!(
+  User.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name
   )
