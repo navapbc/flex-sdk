@@ -51,8 +51,8 @@ module Flex
     end
 
     # Add convenience method for staff tasks
-    def staff_task(name, task_management_service)
-      step(name, Flex::StaffTask.new(name, task_management_service))
+    def staff_task(name)
+      step(name, Flex::StaffTask.new(name, StaffTaskCreationService))
     end
 
     # Add convenience method for system processes

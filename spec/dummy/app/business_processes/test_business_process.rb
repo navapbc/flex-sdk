@@ -1,12 +1,12 @@
 TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
   # Define steps
-  bp.staff_task('staff_task', StaffTaskCreationService)
+  bp.staff_task('staff_task')
 
   bp.system_process('system_process', ->(kase) {
     Flex::EventManager.publish("event2", { case_id: kase.id })
   })
 
-  bp.staff_task('staff_task_2', StaffTaskCreationService)
+  bp.staff_task('staff_task_2')
 
   bp.applicant_task('applicant_task')
 
