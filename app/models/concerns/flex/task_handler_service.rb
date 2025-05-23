@@ -9,7 +9,7 @@ module Flex
     extend ActiveSupport::Concern
 
     def create_task(kase)
-      raise NoMethodError, "#{self.class} must implement execute method"
+      raise NoMethodError, "#{self.class} must implement create_task method"
     end
   end
 end
