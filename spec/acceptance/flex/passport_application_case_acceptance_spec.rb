@@ -12,7 +12,7 @@ module Flex
       kase = PassportCase.find_by_application_form_id(test_form.id)
       expect(kase).not_to be_nil
       expect(kase.status).to eq ("open")
-      expect(kase.business_process_current_step).to eq ("collect_application_info")
+      expect(kase.business_process_current_step).to eq ("submit_application")
 
       # submit application
       test_form.first_name = "John"
