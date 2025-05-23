@@ -50,22 +50,18 @@ module Flex
       steps[name] = step
     end
 
-    # Add convenience method for staff tasks
     def staff_task(name)
       step(name, Flex::StaffTask.new(name, StaffTaskCreationService))
     end
 
-    # Add convenience method for system processes
     def system_process(name, callable)
       step(name, Flex::SystemProcess.new(name, callable))
     end
 
-    # Add convenience method for applicant tasks
     def applicant_task(name)
       step(name, Flex::ApplicantTask.new(name))
     end
 
-    # Add convenience method for third-party tasks
     def third_party_task(name)
       step(name, Flex::ThirdPartyTask.new(name))
     end
