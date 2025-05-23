@@ -9,6 +9,9 @@ module Flex
     attr_reader :cases_links
     helper_method :cases_links
 
+    def index
+    end
+
     protected
 
     def set_header_cases_links
