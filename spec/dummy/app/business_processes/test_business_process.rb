@@ -1,26 +1,15 @@
 TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
   # Define steps
-  bp.step('staff_task',
-    Flex::StaffTask.new("staff_task", StaffTaskCreationService))
-
-  bp.step('system_process',
-    Flex::SystemProcess.new("system_process", ->(kase) {
-      Flex::EventManager.publish("event2", { case_id: kase.id })
-    }))
-
-  bp.step('staff_task_2',
-    Flex::StaffTask.new("staff_task_2", StaffTaskCreationService))
-
-  bp.step('applicant_task',
-    Flex::ApplicantTask.new("Submit Required Documents"))
-
-  bp.step('third_party_task',
-    Flex::ThirdPartyTask.new("Review Employee Leave Application"))
-
-  bp.step('system_process_2',
-    Flex::SystemProcess.new("system_process_2", ->(kase) {
-      Flex::EventManager.publish("event6", { case_id: kase.id })
-    }))
+  bp.staff_task('staff_task')
+  bp.system_process('system_process', ->(kase) {
+    Flex::EventManager.publish("event2", { case_id: kase.id })
+  })
+  bp.staff_task('staff_task_2')
+  bp.applicant_task('applicant_task')
+  bp.third_party_task('third_party_task')
+  bp.system_process('system_process_2', ->(kase) {
+    Flex::EventManager.publish("event6", { case_id: kase.id })
+  })
 
   # Define start step
   bp.start_on_application_form_created('staff_task')

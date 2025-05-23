@@ -6,14 +6,18 @@ users = 10.times.collect do |index|
 end
 
 50.times do |index|
-  PassportApplicationForm.create!(
+  application_form = PassportApplicationForm.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
     date_of_birth: Faker::Date.birthday(min_age: 0, max_age: 130),
   )
-end
-passport_cases = PassportCase.all
 
+  PassportCase.create!(
+    application_form_id: application_form.id,
+  )
+end
+
+passport_cases = PassportCase.all
 ten_days_ago = Date.current - 10.days
 20.times do |index|
   task = PassportVerifyInfoTask.create!(

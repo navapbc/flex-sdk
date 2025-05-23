@@ -26,6 +26,13 @@ en:
       optional: "Optional"
       select_month: "- Select -"
       tax_id_format: "For example, 123456789"
+      name:
+        legend: "Name"
+        first_label: "First or given name"
+        first_hint: "For example, Jose, Darren, or Mai"
+        middle_label: "Middle name"
+        last_label: "Last or family name"
+        last_hint: "For example, Martinez Gonzalez, Gu, or Smith"
     tasks:
       breadcrumbs:
         home: "Home"

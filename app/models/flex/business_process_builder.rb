@@ -50,6 +50,23 @@ module Flex
       steps[name] = step
     end
 
+    def staff_task(name)
+      # TODO(TSS-71) this could be something like TaskService.instance
+      step(name, Flex::StaffTask.new(name, DatabaseTaskService.instance))
+    end
+
+    def system_process(name, callable)
+      step(name, Flex::SystemProcess.new(name, callable))
+    end
+
+    def applicant_task(name)
+      step(name, Flex::ApplicantTask.new(name))
+    end
+
+    def third_party_task(name)
+      step(name, Flex::ThirdPartyTask.new(name))
+    end
+
     def transition(from, event_name, to)
       transitions[from] ||= {}
       transitions[from][event_name] = to

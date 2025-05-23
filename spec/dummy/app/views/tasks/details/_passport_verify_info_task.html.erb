@@ -8,9 +8,9 @@
     </p>
     <p>
       <%= form.label :name, "Full name:", class: "usa-label" %>
-      <%= form.text_field :name, :value => @application_form.full_name, readonly: true, class: "usa-input", "aria-readonly": true %>
+      <%= form.text_field :name, :value => application_form.full_name, readonly: true, class: "usa-input", "aria-readonly": true %>
       <%= form.label :dob, "Date of birth:", class: "usa-label" %>
-      <%= form.date_field :dob, :value => @application_form.date_of_birth, readonly: true, class: "usa-input", "aria-readonly": true %>
+      <%= form.date_field :dob, :value => application_form.date_of_birth, readonly: true, class: "usa-input", "aria-readonly": true %>
     </p>
     <br />
     <ul class="usa-list--unstyled usa-button-group" role="group">

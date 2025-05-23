@@ -1,5 +1,0 @@
-<%= render template: 'flex/tasks/show', locals: {
-    model_class: PassportTask,
-    :task_details_partial => render(partial: "passport_tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: @application_form })
-}
-%>

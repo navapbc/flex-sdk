@@ -25,7 +25,7 @@ module Flex
     end
 
     def execute(kase)
-      @task_management_service.create_task(kase: kase)
+      @task_management_service.create_task(kase)
     end
   end
 end

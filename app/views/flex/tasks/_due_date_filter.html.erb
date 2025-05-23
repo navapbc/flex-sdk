@@ -1,5 +1,5 @@
 <%= form_with method: 'get' do |form| %>
-  <%= hidden_field_tag(:filter_date, params[:filter_date]) if params[:filter_date].present? %>
+  <%= hidden_field_tag(:filter_type, params[:filter_type]) if params[:filter_type].present? %>
   <%= hidden_field_tag(:filter_status, params[:filter_status]) if params[:filter_status].present? %>
   <%= form.label :filter_date, t("flex.tasks.partials.due_date_filter.label"), class: 'usa-label' %>
   <%= form.select :filter_date, [
