@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Flex::TaskService do
   let(:test_case) { TestCase.create! }
 
-  describe '.get' do
+  describe '#get' do
     before do
       described_class.set(nil)
     end
