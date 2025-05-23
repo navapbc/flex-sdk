@@ -1,17 +1,12 @@
 TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
   # Define steps
   bp.staff_task('staff_task')
-
   bp.system_process('system_process', ->(kase) {
     Flex::EventManager.publish("event2", { case_id: kase.id })
   })
-
   bp.staff_task('staff_task_2')
-
   bp.applicant_task('applicant_task')
-
   bp.third_party_task('third_party_task')
-
   bp.system_process('system_process_2', ->(kase) {
     Flex::EventManager.publish("event6", { case_id: kase.id })
   })
