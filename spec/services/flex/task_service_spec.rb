@@ -20,7 +20,7 @@ RSpec.describe Flex::TaskService do
     end
   end
 
-  describe '.set' do
+  describe '#set' do
     let(:salesforce_service) do
       Class.new(Flex::TaskService::Base) do
         def create_task(kase)
