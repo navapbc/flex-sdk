@@ -28,6 +28,7 @@ module Flex
     end
 
     private
+
     def set_task
       @task = task_class.find(params[:id]) if params[:id].present?
     end
