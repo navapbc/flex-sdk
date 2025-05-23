@@ -69,6 +69,10 @@ en:
             all: "All tasks"
         no_tasks_alert:
           message: "No tasks available!"
+    layouts:
+      staff:
+        header:
+          title: "Case Management System"
   tasks:
     statuses:
       pending: "Pending"
