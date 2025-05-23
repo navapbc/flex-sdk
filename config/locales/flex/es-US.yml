@@ -20,6 +20,13 @@ es-US:
       optional: "Opcional"
       select_month: "- Seleccionar -"
       tax_id_format: "Por ejemplo, 123456789"
+      name:
+        legend: "Nombre"
+        first_label: "Nombre de pila"
+        first_hint: "Por ejemplo, Jose, Darren, o Mai"
+        middle_label: "Segundo nombre"
+        last_label: "Apellido"
+        last_hint: "Por ejemplo, Martinez Gonzalez, Gu, o Smith"
     tasks:
       breadcrumbs:
         home: "Inicio"
