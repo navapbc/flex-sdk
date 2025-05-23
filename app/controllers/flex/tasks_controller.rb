@@ -7,7 +7,7 @@ module Flex
     before_action :set_task, only: %i[ show update ]
 
     def task_class
-      Flex::Task
+      controller_path.classify.constantize
     end
 
     def index
