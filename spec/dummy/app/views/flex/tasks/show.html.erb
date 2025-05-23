@@ -1,11 +1,5 @@
-<%
-kase = PassportCase.find(@task.case_id)
-application_form = PassportApplicationForm.find(kase.application_form_id)
-assigned_user = Flex::User.find(@task.assignee_id) if @task.assignee_id
-%>
 <%= render template: 'flex/tasks/default/show', locals: {
     task: @task,
-    applicant_full_name: application_form.full_name || "TBD",
-    assigned_user_full_name: assigned_user&.full_name || "Not Assigned",
-    :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
+    assigned_user_full_name: "TBD",
+    :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task })
 } %>
