@@ -7,11 +7,10 @@
     - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
     
     Example usage:
-      <%= render template: 'flex/tasks/default/show', locals: {
+      render template: 'flex/tasks/default/show', locals: {
         task: @task,
-        assigned_user_display_text: assigned_user&.full_name || "Not Assigned",
-        :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
-      } %>
+        assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
+      }
 %>
 <% task_type_with_name = t("tasks.types.#{task.type.underscore}") %>
 <main class="usa-section">
