@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount Flex::Engine => "/"
+  mount Flex::Engine => "/flex"
 
   mount Lookbook::Engine, at: "/lookbook"
 
@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   end
 
   resources :passport_application_forms, only: [ :index, :new, :show ]
+  resources :tasks, only: [ :index, :show, :update ]
 end
