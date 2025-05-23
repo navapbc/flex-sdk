@@ -51,7 +51,8 @@ module Flex
     end
 
     def staff_task(name)
-      step(name, Flex::StaffTask.new(name, StaffTaskCreationService))
+      # TODO(TSS-71) this could be something like TaskService.instance
+      step(name, Flex::StaffTask.new(name, DatabaseTaskService.instance))
     end
 
     def system_process(name, callable)
