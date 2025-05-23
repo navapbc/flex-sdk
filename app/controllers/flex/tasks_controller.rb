@@ -39,7 +39,7 @@ module Flex
     def filter_tasks
       tasks = filter_tasks_by_date(task_class.all, index_filter_params[:filter_date])
       tasks = filter_tasks_by_type(tasks, index_filter_params[:filter_type])
-      tasks = filter_tasks_by_status(tasks)
+      tasks = filter_tasks_by_status(tasks, index_filter_params[:filter_status])
 
       tasks
     end
@@ -65,8 +65,8 @@ module Flex
       tasks.with_type(filter_by)
     end
 
-    def filter_tasks_by_status(tasks)
-      index_filter_params[:filter_status] == "completed" \
+    def filter_tasks_by_status(tasks, status)
+      status == "completed" \
         ? tasks.completed
         : tasks.incomplete
     end
