@@ -12,7 +12,6 @@
         assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
       }
 %>
-<% task_type_with_name = t("tasks.types.#{task.type.underscore}") %>
 <main class="usa-section">
   <div class="grid-container">
     <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
@@ -24,11 +23,11 @@
           <%= link_to t("flex.tasks.breadcrumbs.tasks"), tasks_path, class: "usa-breadcrumb__link" %>
         </li>
         <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-          <span><%= task_type_with_name %></span>
+          <span><%= t("tasks.types.#{task.type.underscore}") %></span>
         </li>
       </ol>
     </nav>
-    <h1 class="section-heading-h1"><%= task_type_with_name %></h1>
+    <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
     <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
