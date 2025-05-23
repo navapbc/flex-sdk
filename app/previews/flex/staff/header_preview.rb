@@ -15,7 +15,7 @@ module Flex
 
       def default
         # Mock the request object in order to simulate the current path
-        request = Request.new("/passport_cases")
+        request = Request.new("/passport_cases/closed")
 
         # render template: "flex/previews/empty", locals: {
         render template: "flex/staff/_header", locals: {
