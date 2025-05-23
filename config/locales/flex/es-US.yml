@@ -60,6 +60,10 @@ es-US:
     messages:
       invalid_date: "Fecha inválida"
       invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
+  layouts:
+    staff:
+      header:
+        title: "Sistema de Gestión de Casos"
   tasks:
     statuses:
       pending: "Pendiente"
