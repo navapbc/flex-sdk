@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Flex::TaskService::Database do
-  let(:test_case) { TestCase.create! }
   subject(:service) { described_class.new }
+
+  let(:test_case) { TestCase.create! }
+
 
   describe '#create_task' do
     it 'creates a task associated with the given case' do
