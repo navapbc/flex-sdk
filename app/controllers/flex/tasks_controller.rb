@@ -11,8 +11,8 @@ module Flex
     end
 
     def index
+      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
-      @task_types = task_class.distinct.pluck(:type)
     end
 
     def show
