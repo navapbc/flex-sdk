@@ -23,9 +23,7 @@ module Flex
         name: klass.name.underscore.pluralize.titleize,
         path: main_app.polymorphic_path(klass)
       }
-    rescue NoMethodError
-      nil
-    rescue ActionController::UrlGenerationError
+    rescue NoMethodError, ActionController::UrlGenerationError
       nil
     end
   end
