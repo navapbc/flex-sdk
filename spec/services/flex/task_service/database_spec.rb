@@ -12,7 +12,7 @@ RSpec.describe Flex::TaskService::Database do
 
       expect(task).to be_a(Flex::Task)
       expect(task).to be_persisted
-      expect(task.case_id).to eq(test_case.id.to_s)
+      expect(task.case_id).to eq(test_case.id)
     end
 
     it 'creates task with default pending status' do
