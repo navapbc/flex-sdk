@@ -19,7 +19,7 @@
   <!-- Filters -->
   <div class="grid-row grid-gap-4 margin-bottom-4">
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/partials/type_filter' %>
+      <%= render partial: 'flex/tasks/partials/type_filter', locals: { distinct_task_types: distinct_task_types } %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <%= render partial: 'flex/tasks/partials/due_date_filter' %>
