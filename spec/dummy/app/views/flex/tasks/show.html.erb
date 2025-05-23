@@ -1,5 +1,5 @@
 <%= render template: 'flex/tasks/default/show', locals: {
     task: @task,
-    assigned_user_full_name: "TBD",
+    assigned_user_display_text: "TBD",
     :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task })
 } %>

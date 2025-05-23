@@ -1,7 +1,6 @@
 <%# Show view for displaying a task
     Required locals:
-    - applicant_full_name: String - The name of the person related to this task
-    - assigned_user_full_name: String - The name of the user assigned to this task
+    - assigned_user_display_text: String - The name of the user assigned to this task
     - task: Flex::Task - The task object
 
     Optional locals:
@@ -10,12 +9,11 @@
     Example usage:
       <%= render template: 'flex/tasks/default/show', locals: {
         task: @task,
-        applicant_full_name: application_form.full_name || "TBD",
-        assigned_user_full_name: assigned_user&.full_name || "Not Assigned",
+        assigned_user_display_text: assigned_user&.full_name || "Not Assigned",
         :task_details_partial => render(partial: "flex/tasks/details/#{@task.class.name.underscore}", locals: { task: @task, application_form: application_form })
       } %>
 %>
-<% task_type_with_name = t("tasks.types.#{task.type.underscore}") + " - " + applicant_full_name %>
+<% task_type_with_name = t("tasks.types.#{task.type.underscore}") %>
 <main class="usa-section">
   <div class="grid-container">
     <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
@@ -42,7 +40,7 @@
             <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
           </div>
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_full_name %>
+            <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
           </div>
         </div>
       </div>
