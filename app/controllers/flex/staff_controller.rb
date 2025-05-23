@@ -14,8 +14,11 @@ module Flex
 
     protected
 
+    def case_classes
+      []
+    end
+
     def set_header_cases_links
-      case_classes = Flex::Case.descendants
       @cases_links = case_classes.map { |klass| cases_link_or_nil(klass) }.compact
     end
 
