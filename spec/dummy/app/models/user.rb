@@ -1,3 +1,6 @@
+# User represents an individual who interacts with the dummy app.
+#
+# This model stores basic user information such as first and last name but may be extended to hold more.
 class User < ApplicationRecord
   attribute :first_name, :string
   attribute :last_name, :string

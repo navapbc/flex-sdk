@@ -4,7 +4,7 @@
   <%= form.label :filter_type, t("flex.tasks.partials.type_filter.label"), class: 'usa-label' %>
   <%= form.select :filter_type, \
     [[t("flex.tasks.partials.type_filter.options.all"), ""]].append(
-      *@distinct_task_types.map { |type| [t("tasks.types.#{type.underscore}"), type] }
+      *task_types.map { |type| [t("tasks.types.#{type.underscore}"), type] }
     ),
     { include_blank: false, selected: params[:filter_type] },
     { class: 'usa-select', onchange: 'this.form.submit()' } %>
