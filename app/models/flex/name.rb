@@ -15,6 +15,7 @@ module Flex
   # - Formats full name with appropriate spacing
   #
   class Name
+    include ActiveModel::Model
     include Comparable
 
     attr_reader :first, :middle, :last
@@ -31,6 +32,10 @@ module Flex
 
     def full_name
       [ first, middle, last ].compact.join(" ")
+    end
+
+    def persisted?
+      false
     end
   end
 end

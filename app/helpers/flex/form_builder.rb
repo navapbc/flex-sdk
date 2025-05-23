@@ -244,6 +244,65 @@ module Flex
       end
     end
 
+    # Renders a name input with first, middle, and last name fields.
+    #
+    # @param [Symbol] attribute The attribute name
+    # @param [Hash] options Options for the name input
+    # @option options [String] :legend Custom legend text
+    # @option options [String] :first_hint Custom hint text for first name
+    # @option options [String] :last_hint Custom hint text for last name
+    # @return [String] The rendered HTML for the name input
+    def name(attribute, options = {})
+      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.name.legend")
+      first_hint_text = options.delete(:first_hint) || I18n.t("flex.form_builder.name.first_hint")
+      last_hint_text = options.delete(:last_hint) || I18n.t("flex.form_builder.name.last_hint")
+      first_hint_id = "#{attribute}_first_hint"
+      last_hint_id = "#{attribute}_last_hint"
+
+      fieldset(legend_text) do
+        @template.content_tag(:div) do
+          # We need to pass builder: self.class only for testing purposes, but it shouldn't harm
+          # anything in production. This is because in the test context fields_for
+          # cannot infer the custom form builder class from the view context.
+          fields_for attribute, object.send(attribute), builder: self.class do |name_fields|
+            # First name field
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "first",
+                label: I18n.t("flex.form_builder.name.first_label"),
+                hint: first_hint_text,
+                class: "usa-input usa-input--xl",
+                "aria-describedby": first_hint_id,
+                autocomplete: "given-name"
+              )
+            end +
+
+            # Middle name field (optional)
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "middle",
+                label: I18n.t("flex.form_builder.name.middle_label"),
+                class: "usa-input usa-input--xl",
+                optional: true,
+                autocomplete: "additional-name"
+              )
+            end +
+
+            # Last name field
+            @template.content_tag(:div, class: "usa-form-group") do
+              name_fields.text_field(
+                "last",
+                label: I18n.t("flex.form_builder.name.last_label"),
+                hint: last_hint_text,
+                class: "usa-input usa-input--xl",
+                autocomplete: "family-name"
+              )
+            end
+          end
+        end
+      end
+    end
+
     def field_error(attribute)
       return unless has_error?(attribute)
 
