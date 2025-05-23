@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_22_162348) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_23_152845) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -24,13 +24,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_162348) do
     t.index [ "case_id" ], name: "index_flex_tasks_on_case_id"
     t.index [ "status" ], name: "index_flex_tasks_on_status"
     t.index [ "type" ], name: "index_flex_tasks_on_type"
-  end
-
-  create_table "flex_users", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
@@ -83,5 +76,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_162348) do
     t.string "tax_id"
   end
 
-  add_foreign_key "flex_tasks", "flex_users", column: "assignee_id", on_delete: :nullify
+  create_table "users", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
 end
