@@ -12,7 +12,7 @@ module Flex
 
     def index
       @tasks = filter_tasks
-      @distinct_task_types = task_class.distinct.pluck(:type)
+      @task_types = task_class.distinct.pluck(:type)
     end
 
     def show
