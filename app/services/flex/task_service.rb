@@ -17,6 +17,7 @@ module Flex
     #   Must implement the required task service interface.
     # @return [Object] The service that was set
     def self.set(service)
+      raise ArgumentError, "Service must be a subclass of TaskService::Base" unless service.nil? || service.is_a?(Flex::TaskService::Base)
       self.service = service
     end
 
@@ -32,7 +33,7 @@ module Flex
         # In the future, we can determine the task service based on the environment
         # e.g. something like task_service_name = ENV["TASK_SERVICE"] || "Flex::TaskService::Database"
         # self.service = task_service_name.constantize.new
-        self.service = Flex::TaskService::Database.new
+        self.set(Flex::TaskService::Database.new)
       end
 
       self.service
