@@ -5,6 +5,7 @@ module Flex
     helper DateHelper
 
     before_action :set_task, only: %i[ show update ]
+    before_action :add_task_details_view_path, only: %i[ show ]
 
     def task_class
       controller_path.classify.constantize
@@ -31,6 +32,10 @@ module Flex
 
     def set_task
       @task = task_class.find(params[:id]) if params[:id].present?
+    end
+
+    def add_task_details_view_path
+      prepend_view_path "app/views/#{controller_path}"
     end
 
     def index_filter_params
