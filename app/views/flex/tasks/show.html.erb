@@ -57,7 +57,7 @@
       <% if content_for?(:task_details_partial) %>
         <%= yield(:task_details_partial) %>
       <% else %>
-        <%= render partial: "tasks/details/#{task.type.underscore}", locals: local_assigns.to_h %>
+        <%= render partial: "details/#{task.type.underscore}", locals: local_assigns.to_h %>
       <% end %>
     </section>
   </main>
