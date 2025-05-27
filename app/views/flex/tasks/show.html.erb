@@ -20,7 +20,7 @@
           <%= link_to t("flex.tasks.breadcrumbs.home"), "/", class: "usa-breadcrumb__link" %>
         </li>
         <li class="usa-breadcrumb__list-item">
-          <%= link_to t("flex.tasks.breadcrumbs.tasks"), tasks_path, class: "usa-breadcrumb__link" %>
+          <%= link_to t("flex.tasks.breadcrumbs.tasks"), url_for(only_path: true, action: :index), class: "usa-breadcrumb__link" %>
         </li>
         <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
           <span><%= t("tasks.types.#{task.type.underscore}") %></span>
