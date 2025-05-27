@@ -1,7 +1,7 @@
 module Flex
   # Base controller for all staff-related functionality.
   # Sets the layout to the flex/staff layout
-  class StaffController < Flex::ApplicationController
+  class StaffController < ApplicationController
     layout "flex/staff"
 
     before_action :set_header_cases_links
