@@ -4,8 +4,8 @@ class AddSubmittedAtToTestApplicationForms < ActiveRecord::Migration[8.0]
 
     # Backfill data for existing submitted forms
     execute <<-SQL
-      UPDATE test_application_forms 
-      SET submitted_at = updated_at 
+      UPDATE test_application_forms
+      SET submitted_at = updated_at
       WHERE status = 1
     SQL
   end
