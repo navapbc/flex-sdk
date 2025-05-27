@@ -62,7 +62,7 @@
             <%= local_en_us task.due_on %>
           </td>
           <td data-sort-value="<%= task.type %>">
-            <%= link_to t("tasks.types.#{task.type.underscore}"), task_path(task) %>
+            <%= link_to t("tasks.types.#{task.type.underscore}"), url_for(only_path: true, action: :show, id: task.id.to_s) %>
           </td>
           <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
           <td data-sort-value="<%= time_since_epoch task.created_at %>">
