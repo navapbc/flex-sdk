@@ -12,6 +12,12 @@ setup:
 start:
 	cd spec/dummy && bundle exec rails server
 
+db-reset: ## Reset the database
+	cd spec/dummy && bundle exec rails db:drop db:create db:migrate
+
+db-migrate: ## Run the database migrations
+	cd spec/dummy && bundle exec rails db:migrate
+
 lint: ## Run the linter with auto-fixing
 	bundle exec rubocop -a
 
