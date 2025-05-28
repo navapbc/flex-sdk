@@ -9,25 +9,12 @@ module Flex
         end.to_h
       end
 
-      def get_fact(name)
-        return @facts[name]&.value if @facts.key?(name)
-        evaluate(name)&.value
-      end
-
       def evaluate(fact_name)
         return @facts[fact_name] if @facts.key?(fact_name)
         
         result = compute_fact(fact_name)
         @facts[fact_name] = result
         result
-      end
-
-      protected
-
-      def create_fact(name, value, reason_names: [])
-        @facts[name] = DerivedFact.new(name, value, reasons: [
-          reason_names.map { | reason_name | @facts[reason_name] }
-        ])
       end
 
       private
@@ -38,7 +25,7 @@ module Flex
         end
         func = method(fact_name)
         func_inputs = func.parameters.map { |type, name| name }
-        args = func_inputs.map { |name| get_fact(name) }
+        args = func_inputs.map { |name| evaluate(name)&.value }
         result = func.call(*args)
         DerivedFact.new(fact_name, result, reasons: func_inputs.map { |name| @facts[name] })
       end
