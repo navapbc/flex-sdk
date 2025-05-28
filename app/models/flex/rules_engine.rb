@@ -1,18 +1,12 @@
 module Flex
   class RulesEngine
-    class DerivedFact
+    class Fact
       attr_reader :name, :value, :reasons
 
       def initialize(name, value, reasons: [])
         @name = name
         @value = value
         @reasons = reasons
-      end
-    end
-
-    class Input < DerivedFact
-      def initialize(name, value)
-        super(name, value, reasons: [])
       end
     end
 
@@ -37,15 +31,21 @@ module Flex
 
     private
 
+    class Input < Fact
+      def initialize(name, value)
+        super(name, value, reasons: [])
+      end
+    end
+
     def compute_fact(fact_name)
       if !@rules.respond_to?(fact_name)
-        return DerivedFact.new(fact_name, nil, reasons: [])
+        return Fact.new(fact_name, nil, reasons: [])
       end
       func = @rules.method(fact_name)
       func_inputs = func.parameters.map { |type, name| name }
       args = func_inputs.map { |name| evaluate(name)&.value }
       result = func.call(*args)
-      DerivedFact.new(fact_name, result, reasons: func_inputs.map { |name| @facts[name] })
+      Fact.new(fact_name, result, reasons: func_inputs.map { |name| @facts[name] })
     end
   end
 end

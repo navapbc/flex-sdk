@@ -33,7 +33,7 @@ module Flex
 
       it 'returns input facts directly' do
         result = rules_engine.evaluate(:date_of_birth)
-        expect(result).to be_a(RulesEngine::Input)
+        expect(result).to be_a(RulesEngine::Fact)
         expect(result.value).to eq(date_of_birth)
         expect(result.reasons).to eq([])
       end
