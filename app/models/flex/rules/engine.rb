@@ -10,7 +10,8 @@ module Flex
       end
 
       def get_fact(name)
-        @facts[name]&.value if @facts.key?(name)
+        return @facts[name]&.value if @facts.key?(name)
+        evaluate(name)&.value
       end
 
       def evaluate(fact_name)
@@ -23,14 +24,23 @@ module Flex
 
       protected
 
-      def create_fact(name, value, reasons: [])
-        @facts[name] = DerivedFact.new(name, value, reasons: reasons)
+      def create_fact(name, value, reason_names: [])
+        @facts[name] = DerivedFact.new(name, value, reasons: [
+          reason_names.map { | reason_name | @facts[reason_name] }
+        ])
       end
 
       private
 
       def compute_fact(fact_name)
-        send(fact_name)
+        if !respond_to?(fact_name)
+          return DerivedFact.new(fact_name, nil, reasons: [])
+        end
+        func = method(fact_name)
+        func_inputs = func.parameters.map { |type, name| name }
+        args = func_inputs.map { |name| get_fact(name) }
+        result = func.call(*args)
+        DerivedFact.new(fact_name, result, reasons: func_inputs.map { |name| @facts[name] })
       end
     end
   end

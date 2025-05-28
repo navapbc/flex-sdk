@@ -1,50 +1,31 @@
 module Flex
   module Rules
     class MedicaidRules < Engine
-      def medicaid_eligibility
-        state = evaluate(:state_of_residence)
-        age_over_65 = evaluate(:age_over_65)
-        income = evaluate(:magi)
-        
-        eligible = age_over_65.value && income.value < 50000
-        
-        DerivedFact.new(:medicaid_eligibility, eligible, reasons: [state, age_over_65, income])
+      def medicaid_eligibility(state_of_residence, age_over_65, magi)
+        age_over_65 && magi < 50000
       end
 
-      def age
+      def age(date_of_birth)
         date_of_birth = get_fact(:date_of_birth)
         
-        if date_of_birth.nil?
-          value = nil
-        else
-          today = Date.today
-          value = today.year - date_of_birth.year
-          value -= 1 if today < date_of_birth + value.years
-        end
+        return nil if date_of_birth.nil?
 
-        DerivedFact.new(:age, value, reasons: [Input.new(:date_of_birth, date_of_birth)])
+        today = Date.today
+        value = today.year - date_of_birth.year
+        value -= 1 if today < date_of_birth + value.years
+        value
       end
 
-      def age_over_65
-        age = evaluate(:age)
-        DerivedFact.new(:age_over_65, age.value >= 65, reasons: [age])
+      def age_over_65(age)
+        age >= 65
       end
 
-      def state_of_residence
-        address = get_fact(:residential_address)
-        DerivedFact.new(:state_of_residence, address&.state, reasons: [Input.new(:residential_address, address)])
+      def state_of_residence(residential_address)
+        residential_address&.state
       end
 
-      def magi
-        # Simplified MAGI calculation - would be more complex in reality
-        income = get_fact(:annual_income) || 0
-        deductions = get_fact(:deductions) || 0
-        magi = income - deductions
-        
-        DerivedFact.new(:modified_adjusted_gross_income, magi, reasons: [
-          Input.new(:annual_income, income),
-          Input.new(:deductions, deductions)
-        ])
+      def magi(annual_income, deductions)
+        annual_income - deductions
       end
     end
   end
