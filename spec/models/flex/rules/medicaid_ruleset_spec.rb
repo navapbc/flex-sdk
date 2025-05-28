@@ -25,6 +25,8 @@ module Flex
         [
           [ "calculates age correctly", Date.new(1954, 1, 1), evaluated_on, 71 ], # 71 years old in 2025
           [ "calculates age on birthday", Date.new(1954, 1, 1), Date.new(2004, 1, 1), 50 ],
+          [ "calculates age for age on leap year birthday", Date.new(2000, 2, 29), Date.new(2004, 2, 29), 4 ],
+          [ "calculates age for age on leap year birthday", Date.new(2000, 2, 29), Date.new(2005, 3, 1), 5 ],
           [ "handles leap years", Date.new(2000, 5, 29), Date.new(2025, 5, 28), 24 ],
           [ "returns nil when date of birth is nil", nil, evaluated_on, nil ],
           [ "handles birth dates near today", Date.new(Date.today.year - 65, Date.today.month, Date.today.day + 1), evaluated_on, 64 ],
