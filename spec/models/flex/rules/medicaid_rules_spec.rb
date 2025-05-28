@@ -3,100 +3,67 @@ require 'rails_helper'
 module Flex
   module Rules
     RSpec.describe MedicaidRules do
-      let(:date_of_birth) { Date.new(1954, 1, 1) }  # 71 years old in 2025
-      let(:address) { Address.new("123 A St", "", "Anchorage", "AK", "12345") }
-      let(:facts) do
-        {
-          date_of_birth: date_of_birth,
-          residential_address: address,
-          annual_income: 40000,
-          deductions: 5000
-        }
+      evaluated_on = Date.new(2025, 5, 28) # Freeze time for testing
+      let(:rules) { described_class.new }
+
+      describe '#medicaid_eligibility' do
+        [
+          ["when applicant is over 65 with qualifying income", "AK", true, 35000, true],
+          ["when applicant is over 65 but income is too high", "AK", true, 55000, false],
+          ["when applicant is under 65", "AK", false, 35000, false],
+          ["when state of residence is missing", nil, true, 35000, true]
+        ].each do |context_description, state, over_65, income, expected|
+          context context_description do
+            it 'determines correct medicaid eligibility' do
+              expect(rules.medicaid_eligibility(state, over_65, income)).to be expected
+            end
+          end
+        end
       end
-      let(:engine) { described_class.new(facts) }
 
-      describe 'medicaid eligibility rules' do
-        context 'when applicant is over 65 with qualifying income' do
-          it 'determines eligible for medicaid' do
-            result = engine.evaluate(:medicaid_eligibility)
-            expect(result.value).to be true
-            expect(result.reasons).to contain_exactly(
-              have_attributes(name: :state_of_residence, value: "AK"),
-              have_attributes(name: :age_over_65, value: true),
-              have_attributes(name: :modified_adjusted_gross_income, value: 35000)
-            )
+      describe '#age' do
+        [
+          ["calculates age correctly", Date.new(1954, 1, 1), evaluated_on, 71], # 71 years old in 2025
+          ["returns nil when date of birth is nil", nil, evaluated_on, nil],
+          ["handles birth dates near today", Date.new(Date.today.year - 65, Date.today.month, Date.today.day + 1), evaluated_on, 64],
+          ["returns nil when date of birth is after today", Date.today + 1.day, evaluated_on, nil],
+          ["returns nil when evaluated_on is nil", Date.new(1954, 1, 1), nil, nil]
+        ].each do |description, birth_date, evaluated_on, expected|
+          it description do
+            expect(rules.age(birth_date, evaluated_on)).to expected.nil? ? be_nil : eq(expected)
           end
         end
+      end
 
-        context 'when applicant is over 65 but income is too high' do
-          let(:facts) do
-            {
-              date_of_birth: date_of_birth,
-              residential_address: address,
-              annual_income: 60000,
-              deductions: 5000
-            }
-          end
-
-          it 'determines not eligible for medicaid' do
-            result = engine.evaluate(:medicaid_eligibility)
-            expect(result.value).to be false
-            expect(result.reasons).to contain_exactly(
-              have_attributes(name: :state_of_residence, value: "AK"),
-              have_attributes(name: :age_over_65, value: true),
-              have_attributes(name: :modified_adjusted_gross_income, value: 55000)
-            )
+      describe '#age_over_65' do
+        [
+          ["returns true when age is over 65", 71, true],
+          ["returns true when age is exactly 65", 65, true],
+          ["returns false when age is under 65", 64, false]
+        ].each do |description, age, expected|
+          it description do
+            expect(rules.age_over_65(age)).to be expected
           end
         end
+      end
 
-        context 'when applicant is under 65' do
-          let(:date_of_birth) { Date.new(1990, 1, 1) }  # 35 years old in 2025
-
-          it 'determines not eligible for medicaid' do
-            result = engine.evaluate(:medicaid_eligibility)
-            expect(result.value).to be false
-            expect(result.reasons).to contain_exactly(
-              have_attributes(name: :state_of_residence, value: "AK"),
-              have_attributes(name: :age_over_65, value: false),
-              have_attributes(name: :modified_adjusted_gross_income, value: 35000)
-            )
+      describe '#state_of_residence' do
+        [
+          ["returns state from residential address", Address.new("123 A St", "", "Anchorage", "AK", "12345"), "AK"],
+          ["returns nil when address is nil", nil, nil]
+        ].each do |description, addr, expected|
+          it description do
+            expect(rules.state_of_residence(addr)).to expected.nil? ? be_nil : eq(expected)
           end
         end
+      end
 
-        context 'when state of residence is missing' do
-          let(:facts) do
-            {
-              date_of_birth: date_of_birth,
-              annual_income: 40000,
-              deductions: 5000
-            }
-          end
-
-          it 'includes nil state in reasons' do
-            result = engine.evaluate(:medicaid_eligibility)
-            expect(result.reasons.first).to have_attributes(
-              name: :state_of_residence,
-              value: nil
-            )
-          end
-        end
-
-        context 'when using pre-computed age' do
-          let(:facts) do
-            {
-              age: 70,
-              residential_address: address,
-              annual_income: 40000,
-              deductions: 5000
-            }
-          end
-
-          it 'uses provided age instead of calculating from date of birth' do
-            result = engine.evaluate(:medicaid_eligibility)
-            expect(result.value).to be true
-            expect(result.reasons).to include(
-              have_attributes(name: :age_over_65, value: true)
-            )
+      describe '#modified_adjusted_gross_income' do
+        [
+          ["subtracts deductions from annual income", 40000, 5000, 35000]
+        ].each do |description, income, deductions, expected|
+          it description do
+            expect(rules.modified_adjusted_gross_income(income, deductions)).to eq(expected)
           end
         end
       end

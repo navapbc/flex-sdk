@@ -4,10 +4,9 @@ module Flex
   module Rules
     RSpec.describe PaidLeaveRules do
       base_date = Date.new(2025, 7, 1)
-      
-      subject(:engine) { described_class.new(facts) }
+      let(:rules) { described_class.new }
 
-      describe 'submitted_within_60_days_of_leave_start' do
+      describe '#submitted_within_60_days_of_leave_start' do
         [
           ['submitted exactly 60 days before leave start', base_date, (base_date - 60.days).beginning_of_day, true],
           ['submitted 30 days before leave start', base_date, (base_date - 30.days).beginning_of_day, true],
@@ -17,20 +16,8 @@ module Flex
           ['leave_starts_on is nil', nil, base_date, nil]
         ].each do |description, leave_starts_on, submitted_at, expected|
           context "when #{description}" do
-            let(:facts) do
-              {
-                leave_starts_on: leave_starts_on,
-                submitted_at: submitted_at
-              }
-            end
-
             it "returns #{expected}" do
-              result = engine.evaluate(:submitted_within_60_days_of_leave_start)
-              expect(result.value).to eq(expected)
-              expect(result.reasons).to contain_exactly(
-                have_attributes(name: :submitted_at, value: submitted_at),
-                have_attributes(name: :leave_starts_on, value: leave_starts_on)
-              )
+              expect(rules.submitted_within_60_days_of_leave_start(submitted_at, leave_starts_on)).to eq(expected)
             end
           end
         end
