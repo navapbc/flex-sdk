@@ -17,6 +17,7 @@ module Flex
       end
 
       def age_over_65(age)
+        return nil if age.nil?
         age >= 65
       end
 

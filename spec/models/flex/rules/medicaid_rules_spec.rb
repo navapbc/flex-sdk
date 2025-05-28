@@ -41,7 +41,8 @@ module Flex
         [
           [ "returns true when age is over 65", 71, true ],
           [ "returns true when age is exactly 65", 65, true ],
-          [ "returns false when age is under 65", 64, false ]
+          [ "returns false when age is under 65", 64, false ],
+          [ "returns nil when age is nil", nil, nil ]
         ].each do |description, age, expected|
           it description do
             expect(rules.age_over_65(age)).to be expected
