@@ -15,11 +15,11 @@ module Flex
           end
 
           def age_over_65(age)
-            age >= 65
+            age >= 65 if age.present?
           end
 
           def age_over_18(age)
-            age >= 18
+            age >= 18 if age.present?
           end
         end
       }
@@ -54,7 +54,7 @@ module Flex
         context 'when input is missing' do
           let(:rules) { example_rules.new({}) }
 
-          it 'returns nil' do
+          it 'passes nil to rule' do
             result = rules.evaluate(:age)
             expect(result.value).to be_nil
             expect(result.reasons).to contain_exactly(
