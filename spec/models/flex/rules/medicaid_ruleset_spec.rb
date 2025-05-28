@@ -65,7 +65,11 @@ module Flex
 
       describe '#modified_adjusted_gross_income' do
         [
-          [ "subtracts deductions from annual income", 40000, 5000, 35000 ]
+          [ "subtracts deductions from annual income", 40000, 5000, 35000 ],
+          [ "calculates income without deductions", 40000, 0, 40000 ],
+          [ "calculates income where deductions exceeds income", 40000, 45000, 0 ],
+          [ "returns nil if income nil", nil, 5000, nil ],
+          [ "returns nil if deductions nil", 40000, nil, nil ]
         ].each do |description, income, deductions, expected|
           it description do
             expect(rules.modified_adjusted_gross_income(income, deductions)).to eq(expected)

@@ -26,6 +26,8 @@ module Flex
       end
 
       def modified_adjusted_gross_income(annual_income, deductions)
+        return nil if annual_income.nil? || deductions.nil?
+        return 0 if annual_income < deductions
         annual_income - deductions
       end
     end
