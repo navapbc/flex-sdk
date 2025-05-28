@@ -40,6 +40,7 @@ module Flex
     def submit_application
       puts "Submitting application with ID: #{id}"
       self[:status] = :submitted
+      self[:submitted_at] = Time.current
       save!
       publish_submitted
     end
@@ -50,7 +51,9 @@ module Flex
     #
     # @return [Hash] Payload with application_form_id
     def event_payload
-      { application_form_id: id }
+      payload = { application_form_id: id }
+      payload[:submitted_at] = submitted_at if submitted_at.present?
+      payload
     end
 
     protected
