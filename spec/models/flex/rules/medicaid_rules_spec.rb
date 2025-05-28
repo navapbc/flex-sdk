@@ -23,7 +23,7 @@ module Flex
             expect(result.reasons).to contain_exactly(
               have_attributes(name: :state_of_residence, value: "AK"),
               have_attributes(name: :age_over_65, value: true),
-              have_attributes(name: :magi, value: 35000)
+              have_attributes(name: :modified_adjusted_gross_income, value: 35000)
             )
           end
         end
@@ -44,7 +44,7 @@ module Flex
             expect(result.reasons).to contain_exactly(
               have_attributes(name: :state_of_residence, value: "AK"),
               have_attributes(name: :age_over_65, value: true),
-              have_attributes(name: :magi, value: 55000)
+              have_attributes(name: :modified_adjusted_gross_income, value: 55000)
             )
           end
         end
@@ -58,7 +58,7 @@ module Flex
             expect(result.reasons).to contain_exactly(
               have_attributes(name: :state_of_residence, value: "AK"),
               have_attributes(name: :age_over_65, value: false),
-              have_attributes(name: :magi, value: 35000)
+              have_attributes(name: :modified_adjusted_gross_income, value: 35000)
             )
           end
         end

@@ -1,8 +1,8 @@
 module Flex
   module Rules
     class MedicaidRules < Engine
-      def medicaid_eligibility(state_of_residence, age_over_65, magi)
-        age_over_65 && magi < 50000
+      def medicaid_eligibility(state_of_residence, age_over_65, modified_adjusted_gross_income)
+        age_over_65 && modified_adjusted_gross_income < 50000
       end
 
       def age(date_of_birth)
@@ -24,7 +24,7 @@ module Flex
         residential_address&.state
       end
 
-      def magi(annual_income, deductions)
+      def modified_adjusted_gross_income(annual_income, deductions)
         annual_income - deductions
       end
     end
