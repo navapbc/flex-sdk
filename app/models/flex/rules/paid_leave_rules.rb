@@ -34,14 +34,14 @@ module Flex
         false
       end
 
-      def base_period()
+      def base_period
         # A base period is the last 4 quarters you completed and were paid
         # prior to the start of your benefit year
         # TODO implement
         nil
       end
 
-      def individual_average_weekly_wage()
+      def individual_average_weekly_wage
       end
     end
   end
