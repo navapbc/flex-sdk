@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe RulesEngine do
-    let(:example_rules) {
+    let(:example_ruleset) {
       Class.new do
         def age(date_of_birth)
           return nil if date_of_birth.nil?
@@ -22,7 +22,7 @@ module Flex
         end
       end.new
     }
-    let(:rules_engine) { described_class.new(example_rules) }
+    let(:rules_engine) { described_class.new(example_ruleset) }
 
     describe '#evaluate' do
       let(:date_of_birth) { Date.new(1990, 1, 1) }  # 35 years old in 2025

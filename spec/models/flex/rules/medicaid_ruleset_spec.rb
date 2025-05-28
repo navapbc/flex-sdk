@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   module Rules
-    RSpec.describe MedicaidRules do
+    RSpec.describe MedicaidRuleset do
       evaluated_on = Date.new(2025, 5, 28) # Freeze time for testing
       let(:rules) { described_class.new }
 
