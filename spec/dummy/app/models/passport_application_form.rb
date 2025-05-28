@@ -1,9 +1,7 @@
 class PassportApplicationForm < Flex::ApplicationForm
   include Flex::Attributes
 
-  attribute :first_name, :string
-  attribute :last_name, :string
-
+  flex_attribute :name, :name
   flex_attribute :date_of_birth, :memorable_date
 
   def has_all_necessary_fields?

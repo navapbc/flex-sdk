@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_28_020100) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_28_225231) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -27,13 +27,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_020100) do
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
+    t.string "name_first"
+    t.string "name_last"
     t.date "date_of_birth"
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "submitted_at"
+    t.string "name_middle"
   end
 
   create_table "passport_cases", force: :cascade do |t|
