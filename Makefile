@@ -9,6 +9,9 @@ setup:
 	npm install --prefix spec/dummy
 	bundle install
 
+start:
+	cd spec/dummy && bundle exec rails server
+
 lint: ## Run the linter with auto-fixing
 	bundle exec rubocop -a
 
