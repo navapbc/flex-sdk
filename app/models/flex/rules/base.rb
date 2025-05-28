@@ -1,8 +1,6 @@
 module Flex
   module Rules
-    class Engine
-      attr_reader :facts
-
+    class Base
       def initialize(facts)
         @facts = facts.map do |name, value|
           [ name, Input.new(name, value) ]
