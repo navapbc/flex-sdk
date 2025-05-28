@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_23_152845) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_28_020100) do
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_23_152845) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "submitted_at"
   end
 
   create_table "passport_cases", force: :cascade do |t|
@@ -50,6 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_23_152845) do
     t.string "test_string"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "submitted_at"
   end
 
   create_table "test_cases", force: :cascade do |t|
