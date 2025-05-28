@@ -1,13 +1,11 @@
 module Flex
   module Rules
-    class MedicaidRules < Engine
+    class MedicaidRules < Base
       def medicaid_eligibility(state_of_residence, age_over_65, modified_adjusted_gross_income)
         age_over_65 && modified_adjusted_gross_income < 50000
       end
 
       def age(date_of_birth)
-        date_of_birth = get_fact(:date_of_birth)
-
         return nil if date_of_birth.nil?
 
         today = Date.today
