@@ -1,120 +1,26 @@
-# Contributing Flex Attributes
+# Contributing new Flex attributes
 
-This document provides guidance for contributing new attribute types to the Flex SDK. Following these guidelines will help ensure that new attributes are implemented consistently and maintain the quality of the codebase.
+This document describes how to create new Flex attributes
 
-## Attribute Implementation Pattern
+## Design
 
-When adding a new attribute type to the Flex SDK, follow this pattern:
+1. Decide whether or not to create a new value object in app/models/flex/
+   By default, Flex attributes will require creating a new value object. The exception is if the type of the attribute is already a native Ruby type, such as the memorable_date attribute which represents a Date object.
+2. Decide whether or not to implement the attribute using the `composed_of` method in Rails Active Record Aggregations (see [Active Record Aggregations](https://api.rubyonrails.org/classes/ActiveRecord/Aggregations/ClassMethods.html) for reference)
+   Use composed_of if the value object is composed of multiple database columns. Examples include name (which includes first, middle, and last) and address (which includes street, city, state, zip_code) attributes.
+3. Decide whether or not to create a new subclass of ActiveRecord::Type::Value
+   Subclasses of ActiveRecord::Type::Value are used to define how to cast values from other types to the value object type. When using composed_of, implement casting behavior using the constructor and converter options for composed_of. Do not create a subclass of ActiveRecord::Type::Value. When not using composed_of, create a subclass of ActiveRecord::Type::Value and define cast to accept a Hash object and return an instance of the value object. The specific class to subclass depends on your value type. For example for memorable_date we created a subclass of ActiveRecord::Type::Date, and for tax_id we created a subclass of ActiveRecord::Type::String.
+4. Decide if there are validations that need to be added by default.
+  Note:Do not add presence option or validation. By default all Flex attributes allow nil.
 
-1. Create a new module in `app/lib/flex/attributes/` (e.g., `address_attribute.rb`)
-2. Create a value object class if needed in `app/models/flex/` (e.g., `address.rb`)
-3. Include the attribute module in `Flex::Attributes`
-4. Add the attribute type to the `flex_attribute` method in `app/lib/flex/attributes.rb`
-5. Add tests in `spec/dummy/spec/lib/flex/attributes_spec.rb`
+## Implementation
 
-### Module Structure
-
-```ruby
-module Flex
-  module Attributes
-    module NewAttributeType
-      extend ActiveSupport::Concern
-      
-      class_methods do
-        def new_attribute_type_attribute(name, options = {})
-          # Define base attributes
-          
-          # Set up validations if needed
-          
-          # Set up composed_of for ActiveRecord models if needed
-        end
-      end
-    end
-  end
-end
-```
-
-### When to Use composed_of vs ActiveModel::Type::Value
-
-When implementing a new attribute type, choose between using `composed_of` or creating a custom `ActiveModel::Type::Value` based on how the attribute maps to the database:
-
-- Use `composed_of` when the value object represents data stored across multiple database columns. For example, an address attribute might map to street, city, state, and zip columns.
-- Use a custom `ActiveModel::Type::Value` when the attribute data is stored in a single database column.
-
-### Value Object Structure
-
-If your attribute needs a value object:
-
-```ruby
-module Flex
-  class NewValueObject
-    include Comparable
-    
-    attr_reader :property1, :property2
-    
-    def initialize(property1, property2)
-      @property1 = property1
-      @property2 = property2
-    end
-    
-    def <=>(other)
-      [property1, property2] <=> [other.property1, other.property2]
-    end
-  end
-end
-```
-
-### Integration with Flex::Attributes
-
-Update the `flex_attribute` method in `app/lib/flex/attributes.rb`:
-
-```ruby
-def flex_attribute(name, type, options = {})
-  case type
-  when :address
-    address_attribute name, options
-  # Add your new attribute type in alphabetical order
-  when :new_attribute_type
-    new_attribute_type_attribute name, options
-  when :memorable_date
-    memorable_date_attribute name, options
-  when :name
-    name_attribute name, options
-  else
-    raise ArgumentError, "Unsupported attribute type: #{type}"
-  end
-end
-```
-
-## Testing New Attributes
-
-Create comprehensive tests for your new attribute type:
-
-1. Test basic functionality (setting/getting values)
-2. Test edge cases and error conditions
-3. Test validation error messages
-4. Test integration with ActiveRecord models
-5. For attributes using `composed_of`, test that setting the main attribute properly sets all the mapped database columns. For example, if you have an `address` attribute that is composed of `street`, `city`, `state`, and `zip` columns, verify that setting the `address` also sets all these individual columns correctly.
-
-Example for testing a composed attribute:
-
-```ruby
-describe "Address attribute" do
-  it "sets mapped columns when setting the address" do
-    address = Flex::Address.new(
-      street: "123 Main St",
-      city: "Springfield",
-      state: "IL",
-      zip: "62701"
-    )
-    model.address = address
-    expect(model.address).to eq(address)
-    expect(model.address_street).to eq("123 Main St")
-    expect(model.address_city).to eq("Springfield")
-    expect(model.address_state).to eq("IL")
-    expect(model.address_zip).to eq("62701")
-  end
-end
-```
+1. Create the value object
+2. Create a module in app/lib/flex/attributes/ defining the new flex_attribute type and include the module in Flex::Attributes in app/lib/flex/attributes.rb
+3. For testing, add the new flex attribute to TestRecord in spec/dummy/app/models/test_record.rb
+4. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:
+  a. Assign a Hash to the attribute and make sure the attribute is cast to the value object type and has the correct value
+  b. Load the attribute from the database and make sure the attribute is correctly cast from the database record to the value object type and has the correct value
+  c. Test validation logic if relevant. When testing validation logic, check that the appropriate error objects are present and that the original uncast values are present so that they can be shown to the user to be fixed.
 
 See the existing attribute tests in the codebase for examples.
