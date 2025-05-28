@@ -24,8 +24,4 @@ jobs:
       - name: Install dependencies
         run: bundle install && npm install --prefix spec/dummy
 
-      - name: Run migrations for test job
-        if: matrix.make_command == 'test'
-        run: cd spec/dummy && bin/rails db:migrate && cd ../..
-
       - run: make ${{ matrix.make_command }}
