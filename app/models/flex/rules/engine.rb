@@ -5,13 +5,13 @@ module Flex
 
       def initialize(facts)
         @facts = facts.map do |name, value|
-          [name, Input.new(name, value)]
+          [ name, Input.new(name, value) ]
         end.to_h
       end
 
       def evaluate(fact_name)
         return @facts[fact_name] if @facts.key?(fact_name)
-        
+
         result = compute_fact(fact_name)
         @facts[fact_name] = result
         result

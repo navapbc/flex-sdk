@@ -7,7 +7,7 @@ module Flex
 
       def age(date_of_birth)
         date_of_birth = get_fact(:date_of_birth)
-        
+
         return nil if date_of_birth.nil?
 
         today = Date.today
