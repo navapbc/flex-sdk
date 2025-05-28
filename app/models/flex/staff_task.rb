@@ -17,15 +17,15 @@ module Flex
   class StaffTask
     include Step
 
-    attr_accessor :name, :task_management_service
+    attr_accessor :task, :task_management_service
 
-    def initialize(name, task_management_service)
-      @name = name
+    def initialize(task, task_management_service)
+      @task = task
       @task_management_service = task_management_service
     end
 
     def execute(kase)
-      @task_management_service.create_task(kase)
+      @task_management_service.create_task(@task, kase)
     end
   end
 end
