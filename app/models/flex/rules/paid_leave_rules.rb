@@ -1,5 +1,7 @@
 module Flex
   module Rules
+    # Implements eligibility rules for paid leave benefits based on Massachusetts PFML guidelines.
+    # Includes checks for submission timing, earnings requirements, and benefit calculations.
     class PaidLeaveRules
       def submitted_within_60_days_of_leave_start(submitted_at, leave_starts_on)
         return nil if submitted_at.nil? || leave_starts_on.nil?

@@ -1,5 +1,7 @@
 module Flex
   module Rules
+    # Implements eligibility rules for Medicaid benefits.
+    # Handles age calculations, residency verification, and income-based qualification.
     class MedicaidRules
       def medicaid_eligibility(state_of_residence, age_over_65, modified_adjusted_gross_income)
         age_over_65 && modified_adjusted_gross_income < 50000

@@ -1,5 +1,9 @@
 module Flex
+  # A generic rules engine that evaluates facts based on defined rules.
+  # Uses dependency injection for rule sets and maintains a fact cache.
   class RulesEngine
+    # Represents a computed or input fact in the rules engine.
+    # Tracks the fact's name, value, and the reasons (dependencies) that led to its value.
     class Fact
       attr_reader :name, :value, :reasons
 
@@ -31,6 +35,8 @@ module Flex
 
     private
 
+    # Represents an input fact with no dependencies.
+    # Used for facts that are directly set rather than computed from other facts.
     class Input < Fact
       def initialize(name, value)
         super(name, value, reasons: [])
