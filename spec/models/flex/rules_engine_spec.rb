@@ -22,7 +22,7 @@ module Flex
         end
       end.new
     }
-    let(:rules_engine) { Flex::RulesEngine.new(example_rules) }
+    let(:rules_engine) { described_class.new(example_rules) }
 
     describe '#evaluate' do
       let(:date_of_birth) { Date.new(1990, 1, 1) }  # 35 years old in 2025
