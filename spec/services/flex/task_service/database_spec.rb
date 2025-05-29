@@ -31,7 +31,19 @@ RSpec.describe Flex::TaskService::Database do
       expect(task.assignee_id).to be_nil
     end
 
-    context 'when case is nil' do
+    context 'when given task class is nil' do
+      it 'raises an error' do
+        expect { service.create_task(nil, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Flex::Task or a subclass of Flex::Task/)
+      end
+    end
+
+    context 'when given task class is not a subclass of Flex::Task' do
+      it 'raises an error' do
+        expect { service.create_task(String, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Flex::Task or a subclass of Flex::Task/)
+      end
+    end
+
+    context 'when given case is nil' do
       it 'raises an error' do
         expect { service.create_task(Flex::Task, nil) }.to raise_error(ArgumentError, /`kase` must be a subclass of Flex::Case/)
       end
