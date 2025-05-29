@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:kase) { TestCase.create! }
   let(:task) { described_class.create!(case_id: kase.id, description: Faker::Quote.yoda) }
 
@@ -95,6 +97,30 @@ RSpec.describe Flex::Task, type: :model do
   describe 'validations' do
     it 'validates presence of case_id on create' do
       expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+    end
+  end
+
+  context 'when initializing without a due_on value' do
+    it 'sets due_on to 7 days from now by default' do
+      freeze_time do
+        task = described_class.from_case(kase)
+
+        expect(task.due_on).to eq(Date.current + task.default_due_on_length)
+      end
+    end
+
+    it 'allows subclasses to override the default due_on length' do
+      freeze_time do
+        custom_task_class = Class.new(described_class) do
+          def default_due_on_length
+            14.days
+          end
+        end
+
+        custom_task = custom_task_class.from_case(kase)
+
+        expect(custom_task.due_on).to eq(Date.current + 14.days)
+      end
     end
   end
 end

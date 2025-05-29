@@ -18,6 +18,8 @@ module Flex
   # - Filtering capabilities through scopes
   #
   class Task < ApplicationRecord
+    after_initialize :set_due_on_to_default_length, if: -> { due_on.nil? }
+
     attribute :description, :text
     attribute :due_on, :date
     attr_readonly :case_id
@@ -49,6 +51,12 @@ module Flex
       new(case_id: kase.id)
     end
 
+    # Sets due_on for the task to the specified amount of time from now, if due_on is not provided.
+    # This can be overridden in subclasses to provide custom due_on timeframes for different tasks.
+    def default_due_on_length
+      7.days
+    end
+
     def assign(user_id)
       self[:assignee_id] = user_id
       save!
@@ -67,6 +75,12 @@ module Flex
     def mark_pending
       self[:status] = :pending
       save!
+    end
+
+    private
+
+    def set_due_on_to_default_length
+      self.due_on = Date.current + default_due_on_length
     end
   end
 end
