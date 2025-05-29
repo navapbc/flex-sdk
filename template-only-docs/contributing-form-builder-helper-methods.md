@@ -15,3 +15,4 @@ This document describes how to create a new FormBuilder helper method for render
 3. For value types that are `composed_of` nested value types (i.e. ones that are implemented using `composed_of`):
    1. Do not use `fields_for` block to group the nested fields. Create fields for the nested value objects directly in the `fieldset`.
    2. If there are no validations on the Flex attribute, do not render a top level `field_error` for the `fieldset`.
+4. Add LookBook previews for the new helper method in `app/previews/flex/`. You'll need to add an associated partial view in `app/views/flex/previews/` which renders the form field using the new helper method.
