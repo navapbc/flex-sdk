@@ -3,10 +3,10 @@ module Flex
     # Service class responsible for creating and managing tasks
     # Implements the TaskHandlerService interface
     class Database < Base
-      def create_task(task, kase)
-        raise ArgumentError, "`task` must be a Flex::Task or a subclass of Flex::Task" unless task.present? && task <= (Flex::Task)
+      def create_task(task_class, kase)
+        raise ArgumentError, "`task` must be a Flex::Task or a subclass of Flex::Task" unless task_class.present? && task <= (Flex::Task)
         raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
-        task.create(case_id: kase.id)
+        task_class.from_case(kase)
       end
     end
   end
