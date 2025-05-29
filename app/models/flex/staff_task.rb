@@ -8,7 +8,7 @@ module Flex
   #
   # @example Defining a staff task in a business process
   #   bp.step('verify_documents',
-  #     Flex::StaffTask.new("Verify Documents", Flex::Task))
+  #     Flex::StaffTask.new(MedicaidVerificationTask, Flex::TaskService.get))
   #
   # Key features:
   # - Integration with task management services
