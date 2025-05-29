@@ -4,7 +4,6 @@ RSpec.describe Flex::DateHelper, type: :helper do
   describe '#local_en_us' do
     it 'formats a date in US locale (MM/DD/YYYY)' do
       date = Date.new(2023, 1, 15)
-      allow(date).to receive(:to_formatted_s).with(:local_en_us).and_return('01/15/2023')
 
       expect(helper.local_en_us(date)).to eq('01/15/2023')
     end
