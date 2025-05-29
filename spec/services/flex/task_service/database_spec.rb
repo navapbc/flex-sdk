@@ -8,7 +8,6 @@ RSpec.describe Flex::TaskService::Database do
 
   let(:test_case) { TestCase.create! }
 
-
   describe '#create_task' do
     it 'creates a task associated with the given case' do
       task = service.create_task(DatabaseTestTask, test_case)
