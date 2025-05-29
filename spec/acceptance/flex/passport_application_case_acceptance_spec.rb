@@ -15,8 +15,7 @@ module Flex
       expect(kase.business_process_current_step).to eq ("submit_application")
 
       # submit application
-      test_form.first_name = "John"
-      test_form.last_name = "Doe"
+      test_form.name = Flex::Name.new("John", nil, "Doe")
       test_form.date_of_birth = Date.new(1990, 1, 1)
       test_form.save!
       test_form.submit_application
