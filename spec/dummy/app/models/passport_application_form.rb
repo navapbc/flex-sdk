@@ -5,14 +5,10 @@ class PassportApplicationForm < Flex::ApplicationForm
   flex_attribute :date_of_birth, :memorable_date
 
   def has_all_necessary_fields?
-    !first_name.nil? && !last_name.nil? && !date_of_birth.nil?
+    !name_first.nil? && !name_last.nil? && !date_of_birth.nil?
   end
 
   def submit_application
     has_all_necessary_fields? ? super : false
-  end
-
-  def full_name
-    "#{first_name} #{last_name}"
   end
 end
