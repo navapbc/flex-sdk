@@ -71,4 +71,12 @@ guard :rspec, cmd: "bundle exec rspec" do
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
+
+  ignore %r{^coverage/}
+  ignore %r{^tmp/}
+  ignore %r{^#{rspec.spec_dir}/dummy/node_modules/}
+  ignore %r{^#{rspec.spec_dir}/dummy/tmp/}
+  ignore %r{^#{rspec.spec_dir}/dummy/log/}
+  ignore %r{^#{rspec.spec_dir}/dummy/storage/}
+  # puts dsl.pretty_inspect
 end
