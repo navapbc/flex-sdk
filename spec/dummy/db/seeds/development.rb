@@ -40,3 +40,8 @@ end
   task.assign(users.sample.id)
   task.mark_completed if rand(0..5) == 0
 end
+
+5.times do
+  # Create tasks without a due_on date
+  PassportVerifyInfoTask.create!(case_id: passport_cases.sample.id)
+end
