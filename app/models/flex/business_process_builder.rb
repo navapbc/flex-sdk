@@ -50,9 +50,9 @@ module Flex
       steps[name] = step
     end
 
-    def staff_task(name, task)
-      raise ArgumentError, "`task` must be a Flex::Task or subclass of Flex::Task" unless task.present? && task <= (Flex::Task)
-      step(name, Flex::StaffTask.new(task, Flex::TaskService.get))
+    def staff_task(name, task_class)
+      raise ArgumentError, "`task_class` must be a Flex::Task or subclass of Flex::Task" unless task_class.present? && task_class <= (Flex::Task)
+      step(name, Flex::StaffTask.new(task_class, Flex::TaskService.get))
     end
 
     def system_process(name, callable)
