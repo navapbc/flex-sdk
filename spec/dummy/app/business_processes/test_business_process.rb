@@ -1,10 +1,10 @@
 TestBusinessProcess = Flex::BusinessProcess.define(:test, TestCase) do |bp|
   # Define steps
-  bp.staff_task('staff_task')
+  bp.staff_task('staff_task', PassportPhotoTask)
   bp.system_process('system_process', ->(kase) {
     Flex::EventManager.publish("event2", { case_id: kase.id })
   })
-  bp.staff_task('staff_task_2')
+  bp.staff_task('staff_task_2', PassportVerifyInfoTask)
   bp.applicant_task('applicant_task')
   bp.third_party_task('third_party_task')
   bp.system_process('system_process_2', ->(kase) {

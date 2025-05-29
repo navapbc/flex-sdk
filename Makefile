@@ -13,7 +13,7 @@ start:
 	cd spec/dummy && bundle exec rails server
 
 db-reset: ## Reset the database
-	cd spec/dummy && bundle exec rails db:drop db:create db:migrate
+	cd spec/dummy && bundle exec rails db:reset
 
 db-migrate: ## Run the database migrations
 	cd spec/dummy && bundle exec rails db:migrate

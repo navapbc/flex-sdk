@@ -8,7 +8,7 @@ module Flex
   #
   # @example Defining a staff task in a business process
   #   bp.step('verify_documents',
-  #     Flex::StaffTask.new("Verify Documents", DocumentVerificationService))
+  #     Flex::StaffTask.new(MedicaidVerificationTask, Flex::TaskService.get))
   #
   # Key features:
   # - Integration with task management services
@@ -17,15 +17,13 @@ module Flex
   class StaffTask
     include Step
 
-    attr_accessor :name, :task_management_service
-
-    def initialize(name, task_management_service)
-      @name = name
+    def initialize(task_class, task_management_service)
+      @task_class = task_class
       @task_management_service = task_management_service
     end
 
     def execute(kase)
-      @task_management_service.create_task(kase)
+      @task_management_service.create_task(@task_class, kase)
     end
   end
 end
