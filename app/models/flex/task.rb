@@ -41,6 +41,9 @@ module Flex
     scope :incomplete, -> { where.not(status: :completed) }
     scope :with_type, ->(type) { where(type: type) }
 
+    # Creates a new non-persisted task instance associated with the given case.
+    # @param kase [Flex::Case] The case to associate the task with.
+    # @return [Flex::Task] The newly created task instance.
     def self.from_case(kase)
       raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
       new(case_id: kase.id)
