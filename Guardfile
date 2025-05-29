@@ -78,5 +78,4 @@ guard :rspec, cmd: "bundle exec rspec" do
   ignore %r{^#{rspec.spec_dir}/dummy/tmp/}
   ignore %r{^#{rspec.spec_dir}/dummy/log/}
   ignore %r{^#{rspec.spec_dir}/dummy/storage/}
-  # puts dsl.pretty_inspect
 end
