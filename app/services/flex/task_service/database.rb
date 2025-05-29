@@ -6,7 +6,10 @@ module Flex
       def create_task(task_class, kase)
         raise ArgumentError, "`task` must be a Flex::Task or a subclass of Flex::Task" unless task_class.present? && task <= (Flex::Task)
         raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
-        task_class.from_case(kase)
+        task = task_class.from_case(kase)
+        task.save!
+
+        task
       end
     end
   end
