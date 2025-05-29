@@ -41,6 +41,11 @@ module Flex
     scope :incomplete, -> { where.not(status: :completed) }
     scope :with_type, ->(type) { where(type: type) }
 
+    def self.from_case(kase)
+      raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
+      new(case_id: kase.id)
+    end
+
     def assign(user_id)
       self[:assignee_id] = user_id
       save!
