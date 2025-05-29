@@ -1,6 +1,6 @@
 module Flex
   module TaskService
-    # Flex::TaskService::Base is an abstract base clsas that defines the interface for services
+    # Flex::TaskService::Base is an abstract base class that defines the interface for services
     # that create and manage tasks.
     class Base
       # Creates a new task associated with the given case
