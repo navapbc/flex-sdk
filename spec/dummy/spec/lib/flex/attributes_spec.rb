@@ -82,6 +82,13 @@ RSpec.describe Flex::Attributes do
       expect(object.name_last).to eq("Johnson")
     end
 
+    it "allows setting nested name attributes directly" do
+      object.name_first = "John"
+      object.name_middle = "Quincy"
+      object.name_last = "Adams"
+      expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
+    end
+
     it "preserves values exactly as entered without normalization" do
       object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
 
@@ -120,6 +127,15 @@ RSpec.describe Flex::Attributes do
       expect(object.address_city).to eq("San Francisco")
       expect(object.address_state).to eq("CA")
       expect(object.address_zip_code).to eq("94107")
+    end
+
+    it "allows setting nested address attributes directly" do
+      object.address_street_line_1 = "789 Broadway"
+      object.address_street_line_2 = "Suite 300"
+      object.address_city = "New York"
+      object.address_state = "NY"
+      object.address_zip_code = "10003"
+      expect(object.address).to eq(Flex::Address.new("789 Broadway", "Suite 300", "New York", "NY", "10003"))
     end
 
     it "preserves values exactly as entered without normalization" do
