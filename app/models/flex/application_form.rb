@@ -38,7 +38,7 @@ module Flex
     #
     # @return [Boolean] True if the submission was successful
     def submit_application
-      puts "Submitting application with ID: #{id}"
+      Rails.logger.debug "Submitting application with ID: #{id}"
       self[:status] = :submitted
       self[:submitted_at] = Time.current
       save!
