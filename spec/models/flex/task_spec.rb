@@ -76,6 +76,22 @@ RSpec.describe Flex::Task, type: :model do
     end
   end
 
+  describe '#from_case' do
+    let (:from_case_task) { described_class.from_case(kase) }
+
+    it 'creates a new task associated with the given case' do
+      expect(from_case_task).to be_a(described_class)
+    end
+
+    it 'sets the new task case_id to the given case id' do
+      expect(from_case_task.case_id).to eq(kase.id)
+    end
+
+    it 'creates a new, non-persisted record' do
+      expect(from_case_task).to be_new_record
+    end
+  end
+
   describe 'validations' do
     it 'validates presence of case_id on create' do
       expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
