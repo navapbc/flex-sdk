@@ -30,10 +30,6 @@ module Flex
       [ first, middle, last ] <=> [ other.first, other.middle, other.last ]
     end
 
-    def full_name
-      [ first, middle, last ].compact.join(" ")
-    end
-
     def persisted?
       false
     end
