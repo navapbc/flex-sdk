@@ -17,8 +17,6 @@ module Flex
   class StaffTask
     include Step
 
-    attr_reader :task, :task_management_service
-
     def initialize(task_class, task_management_service)
       @task_class = task_class
       @task_management_service = task_management_service
