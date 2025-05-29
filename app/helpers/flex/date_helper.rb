@@ -11,7 +11,7 @@ module Flex
     end
 
     def time_since_epoch(date)
-      date&.to_time.to_i
+      date&.to_time&.to_i
     end
   end
 end
