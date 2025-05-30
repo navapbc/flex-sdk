@@ -42,5 +42,5 @@ jobs:
         if: matrix.make_command == 'test'
         run: |
           cd spec/dummy
-          bin/rails db:create db:schema:load
+          bin/rails db:create db:migrate
       - run: make ${{ matrix.make_command }}
