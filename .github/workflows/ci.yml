@@ -38,4 +38,10 @@ jobs:
       - name: Install dependencies
         run: bundle install && npm install --prefix spec/dummy
 
+      - name: Setup database
+        if: matrix.make_command == 'test'
+        run: |
+          cd spec/dummy
+          bin/rails db:create db:schema:load
+
       - run: make ${{ matrix.make_command }}
