@@ -83,6 +83,20 @@ Or install it yourself as:
 $ gem install flex
 ```
 
+### Prerequisites
+
+#### PostgreSQL
+
+PostgreSQL is required for local development. We recommend installing PostgreSQL 14 using Homebrew:
+
+```bash
+# Install PostgreSQL 14
+brew install postgresql@14
+
+# Start PostgreSQL service (will also start on computer startup)
+brew services start postgresql@14
+```
+
 ## Contributing
 
 Contribution directions go here.
