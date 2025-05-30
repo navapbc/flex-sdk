@@ -5,12 +5,21 @@
 	test-coverage \
 	test-watch
 
-setup:
+setup: db-setup
 	npm install --prefix spec/dummy
 	bundle install
+	cd spec/dummy && bundle exec rails db:migrate
 
 start:
 	cd spec/dummy && bundle exec rails server
+
+db-setup: ## Set up PostgreSQL databases and roles
+	@echo "Setting up PostgreSQL..."
+	@command -v psql >/dev/null 2>&1 || { echo "Error: PostgreSQL not installed. Please install PostgreSQL first."; exit 1; }
+	@pg_isready >/dev/null 2>&1 || { echo "Error: PostgreSQL is not running. Please start PostgreSQL service."; exit 1; }
+	@psql -c "SELECT 1" >/dev/null 2>&1 || { echo "Creating postgres role..."; createuser -s postgres 2>/dev/null || echo "Using current user for database"; }
+	@createdb flex_sdk_dummy_development 2>/dev/null || echo "Development database already exists"
+	@createdb flex_sdk_dummy_test 2>/dev/null || echo "Test database already exists"
 
 db-reset: ## Reset the database
 	cd spec/dummy && bundle exec rails db:reset
