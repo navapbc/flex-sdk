@@ -1,12 +1,14 @@
 require 'rails_helper'
 
-class DatabaseTestTask < Flex::Task
-end
-
 RSpec.describe Flex::TaskService::Database do
   subject(:service) { described_class.new }
 
   let(:test_case) { TestCase.create! }
+  let(:task_class) { Class.new(Flex::Task) }
+
+  before do
+    stub_const("DatabaseTestTask", task_class)
+  end
 
   describe '#create_task' do
     it 'creates a task associated with the given case' do
