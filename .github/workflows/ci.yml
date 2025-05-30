@@ -24,4 +24,7 @@ jobs:
       - name: Install dependencies
         run: bundle install && npm install --prefix spec/dummy
 
+      - name: Setup database
+        run: cd spec/dummy && bundle exec rails db:create db:migrate
+
       - run: make ${{ matrix.make_command }}
