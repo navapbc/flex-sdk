@@ -26,6 +26,10 @@ module Flex
       @last = last
     end
 
+    def full_name
+      [ first, middle, last ].compact.join(" ")
+    end
+
     def <=>(other)
       [ first, middle, last ] <=> [ other.first, other.middle, other.last ]
     end

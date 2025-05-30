@@ -7,8 +7,8 @@ end
 
 50.times do |index|
   application_form = PassportApplicationForm.create!(
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
+    name_first: Faker::Name.first_name,
+    name_last: Faker::Name.last_name,
     date_of_birth: Faker::Date.birthday(min_age: 0, max_age: 130),
   )
 
@@ -39,4 +39,9 @@ end
 
   task.assign(users.sample.id)
   task.mark_completed if rand(0..5) == 0
+end
+
+5.times do
+  # Create tasks without a due_on date
+  PassportVerifyInfoTask.create!(case_id: passport_cases.sample.id)
 end
