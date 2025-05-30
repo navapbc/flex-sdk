@@ -1,4 +1,5 @@
 # These items were pulled from https://github.com/github/gitignore/blob/main/Rails.gitignore
+.env
 
 # Ignore all logfiles and tempfiles.
 tmp/
