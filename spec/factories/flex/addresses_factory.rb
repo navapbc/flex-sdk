@@ -6,7 +6,7 @@ FactoryBot.define do
       state { Faker::Address.state_abbr }
       zip_code { Faker::Address.zip_code }
     end
-  
+
     trait :with_street_line_2 do
       street_line_2 { Faker::Address.secondary_address }
     end

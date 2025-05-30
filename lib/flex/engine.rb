@@ -18,9 +18,9 @@ module Flex
       config.lookbook.preview_paths << Flex::Engine.root.join("app", "previews") if config.respond_to?(:lookbook)
     end
 
-    initializer 'flex.factory_bot', after: 'factory_bot.set_factory_paths' do
+    initializer "flex.factory_bot", after: "factory_bot.set_factory_paths" do
       if defined?(FactoryBot)
-        FactoryBot.definition_file_paths << File.expand_path('../../../spec/factories/flex', __FILE__)
+        FactoryBot.definition_file_paths << File.expand_path("../../../spec/factories/flex", __FILE__)
       end
     end
 

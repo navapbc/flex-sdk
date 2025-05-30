@@ -6,7 +6,7 @@ FactoryBot.define do
       first { Faker::Name.first_name }
       last { Faker::Name.last_name }
     end
-  
+
     trait :with_middle do
       middle { Faker::Name.middle_name }
     end
