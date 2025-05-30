@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_05_30_171450) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
@@ -20,10 +23,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_171450) do
     t.date "due_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "assignee_id" ], name: "index_flex_tasks_on_assignee_id"
-    t.index [ "case_id" ], name: "index_flex_tasks_on_case_id"
-    t.index [ "status" ], name: "index_flex_tasks_on_status"
-    t.index [ "type" ], name: "index_flex_tasks_on_type"
+    t.index ["assignee_id"], name: "index_flex_tasks_on_assignee_id"
+    t.index ["case_id"], name: "index_flex_tasks_on_case_id"
+    t.index ["status"], name: "index_flex_tasks_on_status"
+    t.index ["type"], name: "index_flex_tasks_on_type"
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
@@ -44,7 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_171450) do
     t.datetime "updated_at", null: false
     t.string "application_form_id"
     t.jsonb "facts", default: "{}", null: false
-    t.index [ "application_form_id" ], name: "index_passport_cases_on_application_form_id"
+    t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
   end
 
   create_table "test_application_forms", force: :cascade do |t|
@@ -62,7 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_171450) do
     t.datetime "updated_at", null: false
     t.string "application_form_id"
     t.jsonb "facts", default: "{}", null: false
-    t.index [ "application_form_id" ], name: "index_test_cases_on_application_form_id"
+    t.index ["application_form_id"], name: "index_test_cases_on_application_form_id"
   end
 
   create_table "test_records", force: :cascade do |t|
