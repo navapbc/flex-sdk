@@ -9,12 +9,10 @@
 # Constants
 ##################################################
 
-include .env
-
 DOCKER_CMD := docker
 DOCKER_APPROACH := run
 RAILS_RUN_CMD := bin/rails
-DB_RAILS_CMD := cd spec/dummy && DB_HOST=${DB_HOST} DB_USER=${DB_USER} DB_PASSWORD=${DB_PASSWORD} DB_PORT=${DB_PORT} DB_NAME=${DB_NAME} $(RAILS_RUN_CMD)
+DB_RAILS_CMD := cd spec/dummy && dotenv -f ../../.env $(RAILS_RUN_CMD)
 
 ##################################################
 # Setup
@@ -24,7 +22,6 @@ DB_RAILS_CMD := cd spec/dummy && DB_HOST=${DB_HOST} DB_USER=${DB_USER} DB_PASSWO
 	@([ -f .env ] && echo ".env file already exists, but local.env.example is newer (or you just switched branches), check for any updates" && touch .env) || cp local.env.example .env
 
 setup:
-	npm install --prefix spec/dummy
 	bundle install
 
 ##################################################
@@ -58,29 +55,11 @@ db-console: ## Access the rails db console
 wait-on-db:
 	dotenv ./bin/wait-for-local-postgres.sh
 
-start:
-	cd spec/dummy && bundle exec rails server
-
 # db-reset: ## Reset the database
 # 	cd spec/dummy && bundle exec rails db:reset
 
 # db-migrate: ## Run the database migrations
 # 	cd spec/dummy && bundle exec rails db:migrate
-
-lint: ## Run the linter with auto-fixing
-	bundle exec rubocop -a
-
-lint-ci: ## Run the linter, but don't fix anything
-	bundle exec rubocop
-
-test: ## Run the test suite and generate a coverage report
-	bundle exec rspec
-
-test-watch: ## Watch for file changes and run the test suite
-	bundle exec guard
-
-test-coverage: ## Open the test coverage report
-	open coverage/index.html
 
 help: ## Prints the help documentation and info about each command
 	@grep -Eh '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
