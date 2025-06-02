@@ -28,6 +28,7 @@ jobs:
         run: make .env
 
       - name: Setup database
+        if: ${{ matrix.make_command == 'test' }}
         run: make init-db
 
       - name: Run ${{ matrix.make_command }}
