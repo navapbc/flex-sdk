@@ -9,7 +9,7 @@
 # Constants
 ##################################################
 
-DB_RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bundle exec rails
+RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bundle exec rails
 
 ##################################################
 # Setup
@@ -34,22 +34,22 @@ db-up: ## Run just the database container
 	docker compose up --remove-orphans --detach $(DB_NAME)
 
 db-migrate: ## Run database migrations
-	$(DB_RAILS_CMD) db:migrate
+	$(RAILS_CMD) db:migrate
 
 db-rollback: ## Rollback a database migration
-	$(DB_RAILS_CMD) db:rollback
+	$(RAILS_CMD) db:rollback
 
 db-test-prepare: ## Prepare the test database
-	$(DB_RAILS_CMD) db:test:prepare
+	$(RAILS_CMD) db:test:prepare
 
 db-seed: ## Seed the database
-	$(DB_RAILS_CMD) db:seed
+	$(RAILS_CMD) db:seed
 
 db-reset: ## Reset the database
-	$(DB_RAILS_CMD) db:reset
+	$(RAILS_CMD) db:reset
 
 db-console: ## Access the rails db console
-	$(DB_RAILS_CMD) dbconsole
+	$(RAILS_CMD) dbconsole
 
 wait-on-db:
 	dotenv ./bin/wait-for-local-postgres.sh
