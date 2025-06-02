@@ -7,8 +7,8 @@ end
 
 50.times do |index|
   application_form = PassportApplicationForm.create!(
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
+    name_first: Faker::Name.first_name,
+    name_last: Faker::Name.last_name,
     date_of_birth: Faker::Date.birthday(min_age: 0, max_age: 130),
   )
 
