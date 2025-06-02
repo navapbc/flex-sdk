@@ -1,4 +1,4 @@
-class AddTimestampToTestForms < ActiveRecord::Migration[8.0]
+class AddSubmittedAtToTestApplicationForms < ActiveRecord::Migration[8.0]
   def change
     add_column :test_application_forms, :submitted_at, :datetime
 

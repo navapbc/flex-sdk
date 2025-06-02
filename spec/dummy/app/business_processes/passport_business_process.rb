@@ -6,7 +6,7 @@ PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) 
     IdentityVerificationService.new(kase).verify_identity
   })
 
-  bp.staff_task('manual_adjudicator_review')
+  bp.staff_task('manual_adjudicator_review', PassportTask)
 
   bp.system_process('review_passport_photo', ->(kase) {
     PhotoVerificationService.new(kase).verify_photo

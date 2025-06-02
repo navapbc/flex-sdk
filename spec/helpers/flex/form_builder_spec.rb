@@ -343,15 +343,15 @@ RSpec.describe Flex::FormBuilder do
     let(:object) { TestRecord.new }
 
     it 'includes first, middle, and last name fields' do
-      expect(result).to have_element(:input, name: 'object[name][first]')
-      expect(result).to have_element(:input, name: 'object[name][middle]')
-      expect(result).to have_element(:input, name: 'object[name][last]')
+      expect(result).to have_element(:input, name: 'object[name_first]')
+      expect(result).to have_element(:input, name: 'object[name_middle]')
+      expect(result).to have_element(:input, name: 'object[name_last]')
     end
 
     it 'applies the usa-input--xl class to all input fields' do
-      expect(result).to have_element(:input, name: 'object[name][first]', class: /usa-input--xl/)
-      expect(result).to have_element(:input, name: 'object[name][middle]', class: /usa-input--xl/)
-      expect(result).to have_element(:input, name: 'object[name][last]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name_first]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name_middle]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name_last]', class: /usa-input--xl/)
     end
 
     it 'marks the middle name as optional' do
@@ -370,18 +370,18 @@ RSpec.describe Flex::FormBuilder do
     end
 
     it 'adds appropriate autocomplete attributes to name fields' do
-      expect(result).to have_element(:input, name: 'object[name][first]', autocomplete: 'given-name')
-      expect(result).to have_element(:input, name: 'object[name][middle]', autocomplete: 'additional-name')
-      expect(result).to have_element(:input, name: 'object[name][last]', autocomplete: 'family-name')
+      expect(result).to have_element(:input, name: 'object[name_first]', autocomplete: 'given-name')
+      expect(result).to have_element(:input, name: 'object[name_middle]', autocomplete: 'additional-name')
+      expect(result).to have_element(:input, name: 'object[name_last]', autocomplete: 'family-name')
     end
 
     context 'with an existing name value' do
       let(:object) { TestRecord.new(name: Flex::Name.new("John", "A", "Doe")) }
 
       it 'pre-fills the name fields' do
-        expect(result).to have_element(:input, name: 'object[name][first]', value: 'John')
-        expect(result).to have_element(:input, name: 'object[name][middle]', value: 'A')
-        expect(result).to have_element(:input, name: 'object[name][last]', value: 'Doe')
+        expect(result).to have_element(:input, name: 'object[name_first]', value: 'John')
+        expect(result).to have_element(:input, name: 'object[name_middle]', value: 'A')
+        expect(result).to have_element(:input, name: 'object[name_last]', value: 'Doe')
       end
     end
 
