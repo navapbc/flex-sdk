@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_30_225231) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_02_143541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,7 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_225231) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "application_form_id"
-    t.jsonb "facts", default: "{}", null: false
+    t.jsonb "facts"
     t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
   end
 
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_225231) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "application_form_id"
-    t.jsonb "facts", default: "{}", null: false
+    t.jsonb "facts"
     t.index ["application_form_id"], name: "index_test_cases_on_application_form_id"
   end
 
