@@ -373,6 +373,139 @@ module Flex
       end
     end
 
+    # Renders an address input with street, city, state, zip code fields.
+    #
+    # @param [Symbol] attribute The attribute name
+    # @param [Hash] options Options for the address input
+    # @option options [String] :legend Custom legend text
+    # @return [String] The rendered HTML for the address input
+    def address_fields(attribute, options = {})
+      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.address.legend")
+
+      fieldset(legend_text, large_legend: true) do
+        @template.content_tag(:div) do
+          # Street address line 1
+          @template.content_tag(:div, class: "usa-form-group") do
+            text_field(
+              "#{attribute}_street_line_1",
+              label: I18n.t("flex.form_builder.address.street_line_1_label"),
+              class: "usa-input usa-input--xl",
+              autocomplete: "address-line1"
+            )
+          end +
+
+          # Street address line 2 (optional)
+          @template.content_tag(:div, class: "usa-form-group") do
+            text_field(
+              "#{attribute}_street_line_2",
+              label: I18n.t("flex.form_builder.address.street_line_2_label"),
+              class: "usa-input usa-input--xl",
+              optional: true,
+              autocomplete: "address-line2"
+            )
+          end +
+
+          # City (required)
+          @template.content_tag(:div, class: "usa-form-group") do
+            text_field(
+              "#{attribute}_city",
+              label: I18n.t("flex.form_builder.address.city_label"),
+              class: "usa-input usa-input--xl",
+              autocomplete: "address-level2"
+            )
+          end +
+
+          # State dropdown (required)
+          @template.content_tag(:div, class: "usa-form-group") do
+            select(
+              "#{attribute}_state",
+              us_states_and_territories,
+              { label: I18n.t("flex.form_builder.address.state_label") },
+              { class: "usa-select", autocomplete: "address-level1" }
+            )
+          end +
+
+          # ZIP code
+          @template.content_tag(:div, class: "usa-form-group") do
+            text_field(
+              "#{attribute}_zip_code",
+              label: I18n.t("flex.form_builder.address.zip_code_label"),
+              hint: I18n.t("flex.form_builder.address.zip_code_hint"),
+              class: "usa-input usa-input--md",
+              inputmode: "numeric",
+              pattern: "[0-9]{5}(-[0-9]{4})?",
+              autocomplete: "postal-code"
+            )
+          end
+        end
+      end
+    end
+
+    def us_states_and_territories
+      [
+        [ "", "" ],
+        [ "AK - Alaska", "AK" ],
+        [ "AL - Alabama", "AL" ],
+        [ "AR - Arkansas", "AR" ],
+        [ "AS - American Samoa", "AS" ],
+        [ "AZ - Arizona", "AZ" ],
+        [ "CA - California", "CA" ],
+        [ "CO - Colorado", "CO" ],
+        [ "CT - Connecticut", "CT" ],
+        [ "DC - District of Columbia", "DC" ],
+        [ "DE - Delaware", "DE" ],
+        [ "FL - Florida", "FL" ],
+        [ "GA - Georgia", "GA" ],
+        [ "GU - Guam", "GU" ],
+        [ "HI - Hawaii", "HI" ],
+        [ "IA - Iowa", "IA" ],
+        [ "ID - Idaho", "ID" ],
+        [ "IL - Illinois", "IL" ],
+        [ "IN - Indiana", "IN" ],
+        [ "KS - Kansas", "KS" ],
+        [ "KY - Kentucky", "KY" ],
+        [ "LA - Louisiana", "LA" ],
+        [ "MA - Massachusetts", "MA" ],
+        [ "MD - Maryland", "MD" ],
+        [ "ME - Maine", "ME" ],
+        [ "MI - Michigan", "MI" ],
+        [ "MN - Minnesota", "MN" ],
+        [ "MO - Missouri", "MO" ],
+        [ "MP - Northern Mariana Islands", "MP" ],
+        [ "MS - Mississippi", "MS" ],
+        [ "MT - Montana", "MT" ],
+        [ "NC - North Carolina", "NC" ],
+        [ "ND - North Dakota", "ND" ],
+        [ "NE - Nebraska", "NE" ],
+        [ "NH - New Hampshire", "NH" ],
+        [ "NJ - New Jersey", "NJ" ],
+        [ "NM - New Mexico", "NM" ],
+        [ "NV - Nevada", "NV" ],
+        [ "NY - New York", "NY" ],
+        [ "OH - Ohio", "OH" ],
+        [ "OK - Oklahoma", "OK" ],
+        [ "OR - Oregon", "OR" ],
+        [ "PA - Pennsylvania", "PA" ],
+        [ "PR - Puerto Rico", "PR" ],
+        [ "RI - Rhode Island", "RI" ],
+        [ "SC - South Carolina", "SC" ],
+        [ "SD - South Dakota", "SD" ],
+        [ "TN - Tennessee", "TN" ],
+        [ "TX - Texas", "TX" ],
+        [ "UT - Utah", "UT" ],
+        [ "VA - Virginia", "VA" ],
+        [ "VI - U.S. Virgin Islands", "VI" ],
+        [ "VT - Vermont", "VT" ],
+        [ "WA - Washington", "WA" ],
+        [ "WI - Wisconsin", "WI" ],
+        [ "WV - West Virginia", "WV" ],
+        [ "WY - Wyoming", "WY" ],
+        [ "AA - Armed Forces Americas", "AA" ],
+        [ "AE - Armed Forces Europe", "AE" ],
+        [ "AP - Armed Forces Pacific", "AP" ]
+      ]
+    end
+
     private
 
     def append_to_option(options, key, value)
@@ -446,10 +579,6 @@ module Flex
       end
 
       label(attribute, label_text, options)
-    end
-
-    def hint_id(attribute)
-      "#{attribute}_hint"
     end
 
     def hint_id(attribute)
