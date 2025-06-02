@@ -28,7 +28,7 @@ setup:
 ##################################################
 
 init-db: ## Initialize the project database
-init-db: .env db-up wait-on-db db-migrate db-test-prepare db-seed
+init-db: db-up wait-on-db db-migrate db-test-prepare db-seed
 
 db-up: ## Run just the database container
 	docker compose -f spec/dummy/docker-compose.yml up --remove-orphans --detach $(DB_NAME)
