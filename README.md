@@ -83,19 +83,18 @@ Or install it yourself as:
 $ gem install flex
 ```
 
+## Working locally in the flex-sdk repository
+
 ### Prerequisites
 
-#### PostgreSQL
+- A container runtime (e.g. [Docker](https://www.docker.com/)
 
-PostgreSQL is required for local development. We recommend installing PostgreSQL 14 using Homebrew:
+#### Environment variables
 
-```bash
-# Install PostgreSQL 14
-brew install postgresql@14
+Generate a `.env` file:
 
-# Start PostgreSQL service (will also start on computer startup)
-brew services start postgresql@14
-```
+1. Run `make .env` to create a `.env` file based on shared template.
+2. Update the variables, if necessary (likely won't be necessary)
 
 ## Contributing
 
