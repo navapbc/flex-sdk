@@ -87,14 +87,20 @@ $ gem install flex
 
 ### Prerequisites
 
-- A container runtime (e.g. [Docker](https://www.docker.com/)
+- [Docker](https://www.docker.com/)
+- [NodeJS](https://nodejs.org)
+- Ruby version matching [`.ruby-version`](./.ruby-version)
 
-#### Environment variables
+### Environment variables
 
 Generate a `.env` file:
 
 1. Run `make .env` to create a `.env` file based on shared template.
 2. Update the variables, if necessary (likely won't be necessary)
+
+### Run Setup
+
+Run `make setup`, which will install dependencies and setup the database container.
 
 ## Contributing
 
