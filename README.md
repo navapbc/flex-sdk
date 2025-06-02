@@ -99,7 +99,7 @@ Run `make setup`, which will install dependencies.
 
 Generate a `.env` file:
 
-1. Run `make .env` to create a `.env` file based on shared template.
+1. Run `make .env` to create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`.
 2. Update the variables, if necessary (likely won't be necessary)
 
 ### Generate the database
