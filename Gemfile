@@ -20,6 +20,8 @@ group :development, :test do
 
   # Lookbook
   gem "lookbook", ">= 2.3.9"
+
+  gem "factory_bot_rails"
 end
 
 group :development do

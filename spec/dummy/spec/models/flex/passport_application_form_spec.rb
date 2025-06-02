@@ -11,8 +11,8 @@ module Flex
       end
 
       before do
-        passport_application_form.first_name = "John"
-        passport_application_form.last_name = "Doe"
+        passport_application_form.name_first = "John"
+        passport_application_form.name_last = "Doe"
         passport_application_form.date_of_birth = generate_random_date_of_birth
         passport_application_form.save!
       end
@@ -25,8 +25,8 @@ module Flex
 
         it "loads the form with correct attributes" do
           loaded_form = described_class.find(passport_application_form.id)
-          expect(loaded_form.first_name).to eq("John")
-          expect(loaded_form.last_name).to eq("Doe")
+          expect(loaded_form.name_first).to eq("John")
+          expect(loaded_form.name_last).to eq("Doe")
           expect(loaded_form.date_of_birth).to eq(passport_application_form.date_of_birth)
         end
       end
