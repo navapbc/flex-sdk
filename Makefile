@@ -77,6 +77,13 @@ test-coverage: ## Open the test coverage report
 	open coverage/index.html
 
 ##################################################
+# Dummy App
+##################################################
+
+start:
+	cd spec/dummy && bundle exec rails server
+
+##################################################
 # Other
 ##################################################
 
