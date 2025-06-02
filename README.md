@@ -91,6 +91,10 @@ $ gem install flex
 - [NodeJS](https://nodejs.org)
 - Ruby version matching [`.ruby-version`](./.ruby-version)
 
+### Run Setup
+
+Run `make setup`, which will install dependencies.
+
 ### Environment variables
 
 Generate a `.env` file:
@@ -98,9 +102,9 @@ Generate a `.env` file:
 1. Run `make .env` to create a `.env` file based on shared template.
 2. Update the variables, if necessary (likely won't be necessary)
 
-### Run Setup
+### Generate the database
 
-Run `make setup`, which will install dependencies and setup the database container.
+Run `make init-db` to setup the database container for local development.
 
 ## Contributing
 
