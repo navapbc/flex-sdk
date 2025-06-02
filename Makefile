@@ -82,7 +82,7 @@ test-coverage: ## Open the test coverage report
 ##################################################
 
 start: ## Start the dummy app server
-	cd spec/dummy && bundle exec rails server
+	cd spec/dummy && dotenv -f ../../.env bundle exec rails server
 
 ##################################################
 # Other
