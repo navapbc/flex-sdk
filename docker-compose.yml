@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_NAME}
     healthcheck:
-      test: "pg_isready --username=app"
+      test: "pg_isready --username=${DB_USER} --dbname=${DB_NAME}"
       timeout: 10s
       retries: 20
     ports:
