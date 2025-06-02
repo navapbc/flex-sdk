@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe PassportBusinessProcess, type: :model do
-    let(:test_form) { PassportApplicationForm.new }
+    let(:test_form) { build(:passport_application_form) }
 
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
@@ -15,8 +15,7 @@ module Flex
       expect(kase.business_process_current_step).to eq ("submit_application")
 
       # submit application
-      test_form.first_name = "John"
-      test_form.last_name = "Doe"
+      test_form.name = Flex::Name.new("John", nil, "Doe")
       test_form.date_of_birth = Date.new(1990, 1, 1)
       test_form.save!
       test_form.submit_application
