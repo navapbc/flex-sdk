@@ -449,10 +449,10 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with custom legend' do
-      let(:result) { builder.address_fields(:address, legend: 'Custom Address Legend') }
+      let(:result) { builder.address_fields(:address, legend: 'What is your address?') }
 
       it 'displays the custom legend' do
-        expect(result).to have_element(:legend, text: 'Custom Address Legend')
+        expect(result).to have_element(:legend, text: 'What is your address?')
       end
     end
   end
