@@ -80,7 +80,7 @@ test-coverage: ## Open the test coverage report
 # Dummy App
 ##################################################
 
-start:
+start: ## Start the dummy app server
 	cd spec/dummy && bundle exec rails server
 
 ##################################################
