@@ -25,7 +25,7 @@ jobs:
         run: make setup
 
       - name: Setup required env variables
-        run: make .env
+        run: make spec/dummy/.env
 
       - name: Setup database
         if: ${{ matrix.make_command == 'test' }}
