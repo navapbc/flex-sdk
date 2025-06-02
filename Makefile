@@ -9,6 +9,7 @@
 # Constants
 ##################################################
 
+BUNDLE_EXEC_CMD := dotenv bundle exec
 RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bundle exec rails
 
 ##################################################
@@ -59,20 +60,20 @@ wait-on-db:
 ##################################################
 
 lint: ## Run the linter with auto-fixing
-	bundle exec rubocop -a
+	$(BUNDLE_EXEC_CMD) rubocop -a
 
 lint-ci: ## Run the linter, but don't fix anything
-	bundle exec rubocop
+	$(BUNDLE_EXEC_CMD) rubocop
 
 ##################################################
 # Testing
 ##################################################
 
 test: ## Run the test suite and generate a coverage report
-	dotenv bundle exec rspec
+	$(BUNDLE_EXEC_CMD) rspec
 
 test-watch: ## Watch for file changes and run the test suite
-	dotenv bundle exec guard
+	$(BUNDLE_EXEC_CMD) guard
 
 test-coverage: ## Open the test coverage report
 	dotenv open coverage/index.html
@@ -82,7 +83,7 @@ test-coverage: ## Open the test coverage report
 ##################################################
 
 start: ## Start the dummy app server
-	cd spec/dummy && dotenv -f ../../.env bundle exec rails server
+	$(RAILS_CMD) server
 
 ##################################################
 # Other
