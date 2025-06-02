@@ -31,7 +31,7 @@ init-db: ## Initialize the project database
 init-db: .env db-up wait-on-db db-migrate db-test-prepare db-seed
 
 db-up: ## Run just the database container
-	docker compose up --remove-orphans --detach $(DB_NAME)
+	docker compose -f spec/dummy/docker-compose.yml up --remove-orphans --detach $(DB_NAME)
 
 db-migrate: ## Run database migrations
 	$(RAILS_CMD) db:migrate
