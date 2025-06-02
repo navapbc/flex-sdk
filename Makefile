@@ -21,6 +21,7 @@ DB_RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bin/rails
 setup:
 	npm install --prefix spec/dummy
 	bundle install
+	make init-db
 
 ##################################################
 # Database
