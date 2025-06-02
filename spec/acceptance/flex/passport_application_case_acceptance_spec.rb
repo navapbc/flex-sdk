@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Flex
   RSpec.describe PassportBusinessProcess, type: :model do
-    let(:test_form) { PassportApplicationForm.new }
+    let(:test_form) { build(:passport_application_form) }
 
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
