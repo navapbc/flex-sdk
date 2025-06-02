@@ -399,4 +399,61 @@ RSpec.describe Flex::FormBuilder do
       end
     end
   end
+
+  describe '#address_fields' do
+    let(:result) { builder.address_fields(:address) }
+    let(:object) { TestRecord.new }
+
+    it 'includes street, city, state, and zip code fields' do
+      expect(result).to have_element(:input, name: 'object[address_street_line_1]')
+      expect(result).to have_element(:input, name: 'object[address_street_line_2]')
+      expect(result).to have_element(:input, name: 'object[address_city]')
+      expect(result).to have_element(:select, name: 'object[address_state]')
+      expect(result).to have_element(:input, name: 'object[address_zip_code]')
+    end
+
+    it 'marks street address line 2 as optional' do
+      expect(result).to have_element(:label, text: /Street address line 2.*optional/i)
+    end
+
+    it 'includes proper autocomplete attributes' do
+      # See https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
+      expect(result).to have_element(:input, name: 'object[address_street_line_1]', autocomplete: 'address-line1')
+      expect(result).to have_element(:input, name: 'object[address_street_line_2]', autocomplete: 'address-line2')
+      expect(result).to have_element(:input, name: 'object[address_city]', autocomplete: 'address-level2')
+      expect(result).to have_element(:select, name: 'object[address_state]', autocomplete: 'address-level1')
+      expect(result).to have_element(:input, name: 'object[address_zip_code]', autocomplete: 'postal-code')
+    end
+
+    it 'includes all states, territoriesm, and military posts in state dropdown' do
+      expect(result).to have_element(:select, name: 'object[address_state]') do |select|
+        expect(select).to have_element(:option, text: 'California', value: 'CA')
+        expect(select).to have_element(:option, text: 'New York', value: 'NY')
+        expect(select).to have_element(:option, text: 'Puerto Rico', value: 'PR')
+        expect(select).to have_element(:option, text: 'Armed Forces Pacific', value: 'AP')
+      end
+    end
+
+    context 'with an existing address value' do
+      let(:object) { TestRecord.new(address: Flex::Address.new("123 Main St", "Apt 4B", "Anytown", "CA", "12345")) }
+
+      it 'pre-fills the address fields' do
+        expect(result).to have_element(:input, name: 'object[address_street_line_1]', value: '123 Main St')
+        expect(result).to have_element(:input, name: 'object[address_street_line_2]', value: 'Apt 4B')
+        expect(result).to have_element(:input, name: 'object[address_city]', value: 'Anytown')
+        expect(result).to have_element(:select, name: 'object[address_state]') do |select|
+          expect(select).to have_element(:option, value: 'CA', selected: true)
+        end
+        expect(result).to have_element(:input, name: 'object[address_zip_code]', value: '12345')
+      end
+    end
+
+    context 'with custom legend' do
+      let(:result) { builder.address_fields(:address, legend: 'What is your address?') }
+
+      it 'displays the custom legend' do
+        expect(result).to have_element(:legend, text: 'What is your address?')
+      end
+    end
+  end
 end
