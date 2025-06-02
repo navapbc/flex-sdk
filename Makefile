@@ -9,15 +9,15 @@
 # Constants
 ##################################################
 
-BUNDLE_EXEC_CMD := dotenv bundle exec
-RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bundle exec rails
+RAILS_CMD := cd spec/dummy && bundle exec rails
 
 ##################################################
 # Setup
 ##################################################
 
-.env: local.env.example
-	@([ -f .env ] && echo ".env file already exists, but local.env.example is newer (or you just switched branches), check for any updates" && touch .env) || cp local.env.example .env
+.env: spec/dummy/local.env.example
+	@([ -f spec/dummy/.env ] && echo "spec/dummy/.env file already exists, but spec/dummy/local.env.example is newer (or you just switched branches), \
+	check for any updates" && touch spec/dummy/.env) || cp spec/dummy/local.env.example spec/dummy/.env
 
 setup:
 	npm install --prefix spec/dummy
@@ -59,23 +59,23 @@ wait-on-db:
 ##################################################
 
 lint: ## Run the linter with auto-fixing
-	$(BUNDLE_EXEC_CMD) rubocop -a
+	bundle exec rubocop -a
 
 lint-ci: ## Run the linter, but don't fix anything
-	$(BUNDLE_EXEC_CMD) rubocop
+	bundle exec rubocop
 
 ##################################################
 # Testing
 ##################################################
 
 test: ## Run the test suite and generate a coverage report
-	$(BUNDLE_EXEC_CMD) rspec
+	bundle exec rspec
 
 test-watch: ## Watch for file changes and run the test suite
-	$(BUNDLE_EXEC_CMD) guard
+	bundle exec guard
 
 test-coverage: ## Open the test coverage report
-	dotenv open coverage/index.html
+	open coverage/index.html
 
 ##################################################
 # Dummy App
