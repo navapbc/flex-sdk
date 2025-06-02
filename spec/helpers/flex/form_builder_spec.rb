@@ -425,7 +425,7 @@ RSpec.describe Flex::FormBuilder do
       expect(result).to have_element(:input, name: 'object[address_zip_code]', autocomplete: 'postal-code')
     end
 
-    it 'includes all US states and territories in state dropdown' do
+    it 'includes all states, territoriesm, and military posts in state dropdown' do
       expect(result).to have_element(:select, name: 'object[address_state]') do |select|
         expect(select).to have_element(:option, text: 'California', value: 'CA')
         expect(select).to have_element(:option, text: 'New York', value: 'NY')
