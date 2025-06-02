@@ -69,13 +69,13 @@ lint-ci: ## Run the linter, but don't fix anything
 ##################################################
 
 test: ## Run the test suite and generate a coverage report
-	bundle exec rspec
+	dotenv bundle exec rspec
 
 test-watch: ## Watch for file changes and run the test suite
-	bundle exec guard
+	dotenv bundle exec guard
 
 test-coverage: ## Open the test coverage report
-	open coverage/index.html
+	dotenv open coverage/index.html
 
 ##################################################
 # Dummy App
