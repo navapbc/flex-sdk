@@ -25,7 +25,7 @@ module Flex
 
     def custom_legend
       model = new_model
-      render template: "flex/previews/_address", locals: { model: model, legend: "Custom Address Legend" }
+      render template: "flex/previews/_address", locals: { model: model, legend: "What is your address?" }
     end
 
     private
