@@ -9,8 +9,8 @@ default: &default
 
 development:
   <<: *default
-  database: flex_sdk_dummy_development
+  database: <%= ENV.fetch("DB_NAME") %>_development
 
 test:
   <<: *default
-  database: flex_sdk_dummy_test
+  database: <%= ENV.fetch("DB_NAME") %>_test
