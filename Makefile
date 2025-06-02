@@ -15,7 +15,7 @@ RAILS_CMD := cd spec/dummy && bundle exec rails
 # Setup
 ##################################################
 
-.env: spec/dummy/local.env.example
+spec/dummy/.env: spec/dummy/local.env.example
 	@([ -f spec/dummy/.env ] && echo "spec/dummy/.env file already exists, but spec/dummy/local.env.example is newer (or you just switched branches), \
 	check for any updates" && touch spec/dummy/.env) || cp spec/dummy/local.env.example spec/dummy/.env
 
@@ -69,6 +69,7 @@ lint-ci: ## Run the linter, but don't fix anything
 ##################################################
 
 test: ## Run the test suite and generate a coverage report
+test: db-up
 	bundle exec rspec
 
 test-watch: ## Watch for file changes and run the test suite
@@ -82,6 +83,7 @@ test-coverage: ## Open the test coverage report
 ##################################################
 
 start: ## Start the dummy app server
+start: db-up
 	$(RAILS_CMD) server
 
 ##################################################
