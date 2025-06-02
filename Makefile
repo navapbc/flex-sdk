@@ -9,7 +9,7 @@
 # Constants
 ##################################################
 
-DB_RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bin/rails
+DB_RAILS_CMD := cd spec/dummy && dotenv -f ../../.env bundle exec rails
 
 ##################################################
 # Setup
