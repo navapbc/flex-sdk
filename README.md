@@ -99,11 +99,12 @@ Run `make setup`, which wil:
 2. Create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`
 3. Create the database for working locally with Flex
 
-### (Re-)Generate the database
+### Generate the local database
 
-_Note: The database is already generated for you after running `make setup`, however if you'd like to (re-)generate it separately follow the below instructions._
+_Note: The database is already generated for you after running `make setup`, however if you'd like to generate it separately follow the below instructions._
 
-Run `make init-db` to setup the database container for local development. The database will be setup using variables from `./spec/dummy/.env`.
+1. Make sure a `.env` file exists at `./spec/dummy/.env`. If it doesn't, run `make spec/dummy/.env`.
+2. Run `make init-db` to setup the database container for local development.
 
 ## Contributing
 
