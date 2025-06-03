@@ -21,15 +21,8 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
 
-      - name: Install dependencies
+      - name: Install dependencies, setup .env file, and setup database
         run: make setup
-
-      - name: Setup required env variables
-        run: make spec/dummy/.env
-
-      - name: Setup database
-        if: ${{ matrix.make_command == 'test' }}
-        run: make init-db
 
       - name: Run ${{ matrix.make_command }}
         run: make ${{ matrix.make_command }}
