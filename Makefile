@@ -15,13 +15,15 @@ RAILS_CMD := cd spec/dummy && bundle exec rails
 # Setup
 ##################################################
 
+install:
+	npm install --prefix spec/dummy
+	bundle install
+
 spec/dummy/.env: spec/dummy/local.env.example
 	@([ -f spec/dummy/.env ] && echo "spec/dummy/.env file already exists, but spec/dummy/local.env.example is newer (or you just switched branches), \
 	check for any updates" && touch spec/dummy/.env) || cp spec/dummy/local.env.example spec/dummy/.env
 
-setup:
-	npm install --prefix spec/dummy
-	bundle install
+setup: install spec/dummy/.env init-db
 
 ##################################################
 # Database
