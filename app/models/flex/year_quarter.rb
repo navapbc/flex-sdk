@@ -27,7 +27,7 @@ module Flex
     def <=>(other)
       return nil unless other.is_a?(YearQuarter)
 
-      [year, quarter] <=> [other.year, other.quarter]
+      [ year, quarter ] <=> [ other.year, other.quarter ]
     end
 
     def persisted?
