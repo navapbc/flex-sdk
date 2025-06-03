@@ -52,7 +52,7 @@ db-console: ## Access the rails db console
 	$(RAILS_CMD) dbconsole
 
 wait-on-db:
-	dotenv -f spec/dummy/.env ./spec/dummy/bin/wait-for-local-postgres.sh
+	./spec/dummy/bin/wait-for-local-postgres.sh
 
 ##################################################
 # Linting

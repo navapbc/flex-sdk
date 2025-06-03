@@ -1,6 +1,8 @@
 #!/bin/bash
 # wait-for-local-postgres
 
+source $(dirname $0)/../.env
+
 set -e
 
 # Color formatting
