@@ -235,6 +235,82 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "date_range attribute" do
+    it "allows setting date range as a Range object" do
+      start_date = Date.new(2023, 1, 1)
+      end_date = Date.new(2023, 12, 31)
+      date_range = Range.new(start_date, end_date)
+      object.date_range = date_range
+
+      expect(object.date_range).to eq(Range.new(start_date, end_date))
+      expect(object.date_range_start).to eq(start_date)
+      expect(object.date_range_end).to eq(end_date)
+      expect(object.date_range.begin).to eq(start_date)
+      expect(object.date_range.end).to eq(end_date)
+    end
+
+    it "allows setting date range as a hash" do
+      object.date_range = { start: Date.new(2023, 6, 1), end: Date.new(2023, 8, 31) }
+
+      expect(object.date_range).to eq(Range.new(Date.new(2023, 6, 1), Date.new(2023, 8, 31)))
+      expect(object.date_range_start).to eq(Date.new(2023, 6, 1))
+      expect(object.date_range_end).to eq(Date.new(2023, 8, 31))
+    end
+
+    it "allows setting date range with string keys" do
+      object.date_range = { "start" => Date.new(2023, 3, 1), "end" => Date.new(2023, 5, 31) }
+
+      expect(object.date_range).to eq(Range.new(Date.new(2023, 3, 1), Date.new(2023, 5, 31)))
+      expect(object.date_range_start).to eq(Date.new(2023, 3, 1))
+      expect(object.date_range_end).to eq(Date.new(2023, 5, 31))
+    end
+
+    it "allows setting nested date range attributes directly" do
+      object.date_range_start = Date.new(2023, 9, 1)
+      object.date_range_end = Date.new(2023, 11, 30)
+      expect(object.date_range).to eq(Range.new(Date.new(2023, 9, 1), Date.new(2023, 11, 30)))
+    end
+
+    it "handles nil values gracefully" do
+      object.date_range = nil
+      expect(object.date_range).to be_nil
+      expect(object.date_range_start).to be_nil
+      expect(object.date_range_end).to be_nil
+    end
+
+    it "handles partial date ranges" do
+      object.date_range = { start: Date.new(2023, 1, 1), end: nil }
+      expect(object.date_range).to eq(Range.new(Date.new(2023, 1, 1), nil))
+      expect(object.date_range_start).to eq(Date.new(2023, 1, 1))
+      expect(object.date_range_end).to be_nil
+    end
+
+    it "validates that start date is before or equal to end date" do
+      object.date_range_start = Date.new(2023, 12, 31)
+      object.date_range_end = Date.new(2023, 1, 1)
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("date_range")).to include("Date range start date must be before or equal to end date")
+    end
+
+    it "allows start date equal to end date" do
+      same_date = Date.new(2023, 6, 15)
+      object.date_range_start = same_date
+      object.date_range_end = same_date
+      expect(object).to be_valid
+      expect(object.date_range).to eq(Range.new(same_date, same_date))
+    end
+
+    it "does not validate when only one date is present" do
+      object.date_range_start = Date.new(2023, 1, 1)
+      object.date_range_end = nil
+      expect(object).to be_valid
+
+      object.date_range_start = nil
+      object.date_range_end = Date.new(2023, 12, 31)
+      expect(object).to be_valid
+    end
+  end
+
   describe "persisting and loading from database" do
     let(:record) { TestRecord.new }
 
@@ -289,11 +365,28 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.date_of_birth.day).to eq(2)
     end
 
+    it "persists and loads date range object correctly" do
+      start_date = Date.new(2023, 1, 1)
+      end_date = Date.new(2023, 12, 31)
+      date_range = Range.new(start_date, end_date)
+      record.date_range = date_range
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.date_range).to be_a(Range)
+      expect(loaded_record.date_range).to eq(date_range)
+      expect(loaded_record.date_range_start).to eq(start_date)
+      expect(loaded_record.date_range_end).to eq(end_date)
+      expect(loaded_record.date_range.begin).to eq(start_date)
+      expect(loaded_record.date_range.end).to eq(end_date)
+    end
+
     it "preserves all attributes when saving and loading multiple value objects" do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
       record.date_of_birth = Date.new(1990, 3, 15)
+      record.date_range = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
 
       loaded_record = TestRecord.find(record.id)
@@ -318,6 +411,11 @@ RSpec.describe Flex::Attributes do
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
+
+      # Verify date_range
+      expect(loaded_record.date_range).to eq(Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
+      expect(loaded_record.date_range_start).to eq(Date.new(2023, 1, 1))
+      expect(loaded_record.date_range_end).to eq(Date.new(2023, 12, 31))
     end
   end
 end

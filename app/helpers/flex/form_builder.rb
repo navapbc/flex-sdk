@@ -441,6 +441,32 @@ module Flex
       end
     end
 
+    def date_range(attribute, options = {})
+      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.date_range.legend", default: "Date range")
+      start_hint_text = options.delete(:start_hint) || I18n.t("flex.form_builder.date_range.start_hint", default: "Enter the start date")
+      end_hint_text = options.delete(:end_hint) || I18n.t("flex.form_builder.date_range.end_hint", default: "Enter the end date")
+
+      fieldset(legend_text, { attribute: attribute }) do
+        @template.content_tag(:div) do
+          @template.content_tag(:div, class: "usa-form-group") do
+            date_picker(
+              "#{attribute}_start",
+              label: I18n.t("flex.form_builder.date_range.start_label", default: "Start date"),
+              hint: start_hint_text
+            )
+          end +
+
+          @template.content_tag(:div, class: "usa-form-group") do
+            date_picker(
+              "#{attribute}_end",
+              label: I18n.t("flex.form_builder.date_range.end_label", default: "End date"),
+              hint: end_hint_text
+            )
+          end
+        end
+      end
+    end
+
     def us_states_and_territories
       [
         [ "", "" ],

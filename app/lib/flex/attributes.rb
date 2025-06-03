@@ -17,6 +17,7 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
     include Flex::Attributes::AddressAttribute
+    include Flex::Attributes::DateRangeAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
     include Flex::Attributes::TaxIdAttribute
@@ -25,7 +26,7 @@ module Flex
       # Defines a custom attribute with the specified type.
       #
       # @param [Symbol] name The name of the attribute
-      # @param [Symbol] type The type of attribute (:memorable_date, :name, :address, :tax_id)
+      # @param [Symbol] type The type of attribute (:memorable_date, :name, :address, :tax_id, :date_range)
       # @param [Hash] options Options for the attribute
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
@@ -39,6 +40,8 @@ module Flex
           address_attribute name, options
         when :tax_id
           tax_id_attribute name, options
+        when :date_range
+          date_range_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
