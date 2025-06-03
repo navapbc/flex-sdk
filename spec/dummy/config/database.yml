@@ -2,15 +2,15 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
-  port: 5432
-  username: postgres
-  password: postgres
+  host: <%= ENV.fetch("DB_HOST") %>
+  port: <%= ENV.fetch("DB_PORT") %>
+  username: <%= ENV.fetch("DB_USER") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
 
 development:
   <<: *default
-  database: flex_sdk_dummy_development
+  database: <%= ENV.fetch("DB_NAME") %>_development
 
 test:
   <<: *default
-  database: flex_sdk_dummy_test
+  database: <%= ENV.fetch("DB_NAME") %>_test

@@ -103,6 +103,7 @@ GEM
     date (3.4.1)
     diff-lcs (1.6.0)
     docile (1.4.1)
+    dotenv (3.1.8)
     drb (2.2.1)
     erubi (1.13.1)
     factory_bot (6.5.1)
@@ -387,6 +388,7 @@ PLATFORMS
 DEPENDENCIES
   actioncable
   capybara
+  dotenv
   factory_bot_rails
   faker
   flex!

@@ -83,19 +83,28 @@ Or install it yourself as:
 $ gem install flex
 ```
 
+## Working locally in the flex-sdk repository
+
 ### Prerequisites
 
-#### PostgreSQL
+- [Docker](https://www.docker.com/)
+- [NodeJS](https://nodejs.org)
+- Ruby version matching [`.ruby-version`](./.ruby-version)
 
-PostgreSQL is required for local development. We recommend installing PostgreSQL 14 using Homebrew:
+### Run Setup
 
-```bash
-# Install PostgreSQL 14
-brew install postgresql@14
+Run `make setup`, which wil:
 
-# Start PostgreSQL service (will also start on computer startup)
-brew services start postgresql@14
-```
+1. Install dependencies
+2. Create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`
+3. Create the database for working locally with Flex
+
+### Generate the local database
+
+_Note: The database is already generated for you after running `make setup`, however if you'd like to generate it separately follow the below instructions._
+
+1. Make sure a `.env` file exists at `./spec/dummy/.env`. If it doesn't, run `make spec/dummy/.env`.
+2. Run `make init-db` to setup the database container for local development.
 
 ## Contributing
 
