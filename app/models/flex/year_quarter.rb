@@ -26,10 +26,10 @@ module Flex
 
     def <=>(other)
       return nil unless other.is_a?(YearQuarter)
-      
+
       year_comparison = year <=> other.year
       return year_comparison unless year_comparison == 0
-      
+
       quarter <=> other.quarter
     end
 

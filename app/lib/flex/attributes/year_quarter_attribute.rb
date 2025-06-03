@@ -32,7 +32,7 @@ module Flex
           attribute "#{name}_quarter", :integer
 
           # Add validation for quarter values
-          validates "#{name}_quarter", inclusion: { in: [1, 2, 3, 4] }, allow_nil: true
+          validates "#{name}_quarter", inclusion: { in: [ 1, 2, 3, 4 ] }, allow_nil: true
 
           # Set up composed_of mapping
           composed_of name,
