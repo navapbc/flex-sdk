@@ -93,18 +93,17 @@ $ gem install flex
 
 ### Run Setup
 
-Run `make setup`, which will install dependencies.
+Run `make setup`, which wil:
 
-### Environment variables
+1. Install dependencies
+2. Create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`
+3. Create the database for working locally with Flex
 
-Generate a `.env` file:
+### (Re-)Generate the database
 
-1. Run `make .env` to create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`.
-2. Update the variables, if necessary (likely won't be necessary)
+_Note: The database is already generated for you after running `make setup`, however if you'd like to (re-)generate it separately follow the below instructions._
 
-### Generate the database
-
-Run `make init-db` to setup the database container for local development.
+Run `make init-db` to setup the database container for local development. The database will be setup using variables from `./spec/dummy/.env`.
 
 ## Contributing
 
