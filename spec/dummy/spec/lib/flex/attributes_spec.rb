@@ -156,6 +156,142 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "money attribute" do
+    it "allows setting money as a Money object" do
+      money = Flex::Money.new(1250)
+      object.money = money
+
+      expect(object.money).to be_a(Flex::Money)
+      expect(object.money.cents_amount).to eq(1250)
+      expect(object.money.dollar_amount).to eq(12.5)
+    end
+
+    it "allows setting money as an integer (cents)" do
+      object.money = 2500
+
+      expect(object.money).to be_a(Flex::Money)
+      expect(object.money.cents_amount).to eq(2500)
+      expect(object.money.dollar_amount).to eq(25.0)
+    end
+
+    it "allows setting money as a float (dollars)" do
+      object.money = 15.75
+
+      expect(object.money).to be_a(Flex::Money)
+      expect(object.money.cents_amount).to eq(1575)
+      expect(object.money.dollar_amount).to eq(15.75)
+    end
+
+    it "allows setting money as a hash with dollar_amount" do
+      object.money = { dollar_amount: 10.50 }
+
+      expect(object.money).to be_a(Flex::Money)
+      expect(object.money.cents_amount).to eq(1050)
+      expect(object.money.dollar_amount).to eq(10.5)
+    end
+
+    it "allows setting money as a hash with cents_amount" do
+      object.money = { cents_amount: 750 }
+
+      expect(object.money).to be_a(Flex::Money)
+      expect(object.money.cents_amount).to eq(750)
+      expect(object.money.dollar_amount).to eq(7.5)
+    end
+
+    it "formats money correctly using to_s" do
+      object.money = 1234
+
+      expect(object.money.to_s).to eq("$12.34")
+    end
+
+    describe "arithmetic operations" do
+      let(:money1) { Flex::Money.new(1000) }  # $10.00
+      let(:money2) { Flex::Money.new(500) }   # $5.00
+
+      it "adds two Money objects" do
+        result = money1 + money2
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(1500)
+        expect(result.dollar_amount).to eq(15.0)
+      end
+
+      it "subtracts two Money objects" do
+        result = money1 - money2
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(500)
+        expect(result.dollar_amount).to eq(5.0)
+      end
+
+      it "multiplies Money by a scalar" do
+        result = money1 * 2.5
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(2500)
+        expect(result.dollar_amount).to eq(25.0)
+      end
+
+      it "divides Money by a scalar, rounding down" do
+        money = Flex::Money.new(1001)  # $10.01
+        result = money / 3
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(333)  # Rounds down from 333.67
+        expect(result.dollar_amount).to eq(3.33)
+      end
+
+      it "adds Money and integer" do
+        result = money1 + 250
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(1250)
+      end
+
+      it "subtracts integer from Money" do
+        result = money1 - 250
+        expect(result).to be_a(Flex::Money)
+        expect(result.cents_amount).to eq(750)
+      end
+    end
+
+    describe "edge cases" do
+      it "handles nil values" do
+        object.money = nil
+        expect(object.money).to be_nil
+      end
+
+      it "handles zero values" do
+        object.money = 0
+        expect(object.money).to be_a(Flex::Money)
+        expect(object.money.cents_amount).to eq(0)
+        expect(object.money.dollar_amount).to eq(0.0)
+        expect(object.money.to_s).to eq("$0.00")
+      end
+
+      it "handles negative values" do
+        object.money = -500
+        expect(object.money).to be_a(Flex::Money)
+        expect(object.money.cents_amount).to eq(-500)
+        expect(object.money.dollar_amount).to eq(-5.0)
+        expect(object.money.to_s).to eq("-$5.00")
+      end
+
+      it "handles string input" do
+        object.money = "1500"
+        expect(object.money).to be_a(Flex::Money)
+        expect(object.money.cents_amount).to eq(1500)
+      end
+
+      it "handles hash with string keys" do
+        object.money = { "dollar_amount" => "12.34" }
+        expect(object.money).to be_a(Flex::Money)
+        expect(object.money.cents_amount).to eq(1234)
+        expect(object.money.dollar_amount).to eq(12.34)
+      end
+
+      it "returns nil for invalid hash" do
+        object.money = { invalid_key: 100 }
+        expect(object.money).to be_nil
+      end
+    end
+  end
+
   describe "tax_id attribute" do
     it "allows setting a tax_id as a TaxId object" do
       tax_id = Flex::TaxId.new("123456789")
@@ -277,6 +413,18 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.tax_id.formatted).to eq("123-45-6789")
     end
 
+    it "persists and loads money object correctly" do
+      money = Flex::Money.new(1250)
+      record.money = money
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.money).to be_a(Flex::Money)
+      expect(loaded_record.money).to eq(money)
+      expect(loaded_record.money.cents_amount).to eq(1250)
+      expect(loaded_record.money.dollar_amount).to eq(12.5)
+    end
+
     it "persists and loads memorable date correctly" do
       date = Date.new(2020, 1, 2)
       record.date_of_birth = date
@@ -293,6 +441,7 @@ RSpec.describe Flex::Attributes do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
+      record.money = Flex::Money.new(5000)
       record.date_of_birth = Date.new(1990, 3, 15)
       record.save!
 
@@ -315,6 +464,11 @@ RSpec.describe Flex::Attributes do
       # Verify tax_id
       expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
       expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
+
+      # Verify money
+      expect(loaded_record.money).to eq(Flex::Money.new(5000))
+      expect(loaded_record.money.cents_amount).to eq(5000)
+      expect(loaded_record.money.dollar_amount).to eq(50.0)
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
