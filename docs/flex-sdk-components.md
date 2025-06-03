@@ -3,8 +3,9 @@
 1. Flex Data Modeler
 2. Multi-Page Form Builder
 3. Business Process Modeler
-4. Policy as Code Rules Engine
-5. Master Person Record
+4. Task Management System
+5. Policy as Code Rules Engine
+6. Master Person Record
 
 ## Flex Data Modeler
 
@@ -44,9 +45,88 @@ flex_attribute :mailing_address, :address
 
 Use Flex Form Builder to create multi-page forms with ease. The Form Builder leverages the [task list design pattern](https://navasage.atlassian.net/wiki/spaces/PL/pages/445382671/Task+list) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).
 
+[The Multi-Page Form Builder is on the roadmap in Linear](https://linear.app/nava-platform/project/multi-page-application-form-flow-99f38344c043)
+
 ## Business Process Modeler
 
-Use Flex Business Process Modeler to define business processes for managing cases.
+Use Flex Business Process Modeler to define business processes for managing cases. 
+
+- Define applicant tasks, staff tasks, and automated system processes
+- Define custom task types for your staff tasks
+- Leverage an event-based architecture to define transitions between steps in your business process in a scalable way
+
+For example, the following code defines a business process for Medicaid eligibility determination:
+
+```ruby
+MedicaidBusinessProcess = Flex::BusinessProcess.define(:medicaid, MedicaidCase) do |bp|
+  # Steps
+  bp.applicant_task("submit_application")
+  bp.system_process("calculate_preliminary_eligibility", ->(kase) {
+    ...
+  })
+  bp.staff_task("check_income_eligibility", MedicaidCheckIncomeEligibilityTask)
+  bp.staff_task("check_blind_and_disabled", MedicaidCheckBlindAndDisabledTask)
+  bp.staff_task("make_final_decision", MedicaidMakeFinalDecisionTask)
+
+  # Start step
+  bp.start_on_application_form_created("submit_application")
+
+  # Transitions
+  bp.transition("submit_application", "MedicaidApplicationFormSubmitted", "calculate_preliminary_eligibility")
+  bp.transition("calculate_preliminary_eligibility", "PreliminaryEligibilityCalculated", "check_income_eligibility")
+  bp.transition("calculate_preliminary_eligibility", "DeterminedIneligibleForMedicaid", "end")
+  bp.transition("check_income_eligibility", "IncomeDeterminedEligible", "check_blind_and_disabled")
+  bp.transition("check_income_eligibility", "IncomeDeterminedIneligible", "make_final_decision")
+  bp.transition("check_blind_and_disabled", "DeterminedBlindAndDisabled", "make_final_decision")
+  bp.transition("check_blind_and_disabled", "DeterminedNotBlindAndDisabled", "make_final_decision")
+  bp.transition("make_final_decision", "DeterminedEligibleForMedicaid", "end")
+  bp.transition("make_final_decision", "DeterminedIneligibleForMedicaid", "end")
+end
+```
+
+```mermaid
+graph TD
+    Start(Start) --> SubmitApp[Submit Application]
+    SubmitApp -->|MedicaidApplicationFormSubmitted| CalcPrelim[Calculate Preliminary Eligibility]
+    
+    CalcPrelim -->|PreliminaryEligibilityCalculated| CheckIncElig[Check Income Eligibility]
+    CalcPrelim -->|DeterminedIneligibleForMedicaid| End
+    
+    CheckIncElig -->|IncomeDeterminedEligible| CheckBD[Check Blind and Disabled]
+    CheckIncElig -->|IncomeDeterminedIneligible| MakeFinal[Make Final Decision]
+    
+    CheckBD -->|DeterminedBlindAndDisabled| MakeFinal
+    CheckBD -->|DeterminedNotBlindAndDisabled| MakeFinal
+    
+    MakeFinal -->|DeterminedEligibleForMedicaid| End
+    MakeFinal -->|DeterminedIneligibleForMedicaid| End
+    
+    End(End)
+
+    classDef systemProcess fill:#a0d8ef,stroke:#333,stroke-width:2px;
+    classDef staffTask fill:#ffb366,stroke:#333,stroke-width:2px;
+    classDef applicantTask fill:#90EE90,stroke:#333,stroke-width:2px;
+    classDef endpoint fill:#f9f9f9,stroke:#333,stroke-width:2px;
+
+    class SubmitApp applicantTask;
+    class CalcPrelim systemProcess;
+    class CheckIncElig,CheckBD,MakeFinal staffTask;
+    class Start,End endpoint;
+```
+
+Legend:
+
+- 🟩 Green: Applicant Tasks
+- 🟦 Blue: System Processes
+- 🟧 Orange: Staff Tasks
+
+## Task Management System
+
+Use the Flex Task Management System to define custom tasks for your staff.
+
+- Define custom task types for your staff tasks
+- Define custom views
+- Define custom actions
 
 ## Policy as Code Rules Engine
 
