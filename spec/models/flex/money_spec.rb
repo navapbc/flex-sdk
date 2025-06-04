@@ -2,167 +2,133 @@ require "rails_helper"
 
 RSpec.describe Flex::Money do
   describe "initialization" do
-    it "creates a Money object with integer cents" do
-      money = Flex::Money.new(1250)
-      expect(money.cents_amount).to eq(1250)
-      expect(money.dollar_amount).to eq(12.5)
+    [
+      [ 1250, 1250, 12.5, "creates a Money object with integer cents" ],
+      [ 0, 0, 0.0, "handles zero" ],
+      [ -500, -500, -5.0, "handles negative values" ]
+    ].each do |input, expected_cents, expected_dollars, description|
+      it description do
+        money = described_class.new(input)
+        expect(money.cents_amount).to eq(expected_cents)
+        expect(money.dollar_amount).to eq(expected_dollars)
+      end
     end
 
-    it "converts float to integer cents" do
-      money = Flex::Money.new(12.5)
-      expect(money.cents_amount).to eq(12)
-    end
-
-    it "converts string to integer cents" do
-      money = Flex::Money.new("1500")
+    it "accepts valid string integers" do
+      money = described_class.new("1500")
       expect(money.cents_amount).to eq(1500)
     end
 
-    it "handles zero" do
-      money = Flex::Money.new(0)
-      expect(money.cents_amount).to eq(0)
-      expect(money.dollar_amount).to eq(0.0)
+    it "accepts whole number floats" do
+      money = described_class.new(12.0)
+      expect(money.cents_amount).to eq(12)
     end
 
-    it "handles negative values" do
-      money = Flex::Money.new(-500)
-      expect(money.cents_amount).to eq(-500)
-      expect(money.dollar_amount).to eq(-5.0)
+    it "raises ArgumentError for non-integer floats" do
+      expect { described_class.new(12.5) }.to raise_error(ArgumentError, "Float values must be whole numbers representing cents")
+    end
+
+    it "raises ArgumentError for invalid string values" do
+      expect { described_class.new("12.5") }.to raise_error(ArgumentError, "String values must be valid integers representing cents")
+      expect { described_class.new("abc") }.to raise_error(ArgumentError, "String values must be valid integers representing cents")
+    end
+
+    it "raises TypeError for unsupported types" do
+      expect { described_class.new([]) }.to raise_error(TypeError, "Expected Integer, Float, or String, got Array")
+      expect { described_class.new({}) }.to raise_error(TypeError, "Expected Integer, Float, or String, got Hash")
     end
   end
 
   describe "arithmetic operations" do
-    let(:money1) { Flex::Money.new(1000) }  # $10.00
-    let(:money2) { Flex::Money.new(500) }   # $5.00
+    let(:ten_dollars) { described_class.new(1000) }  # $10.00
+    let(:five_dollars) { described_class.new(500) }   # $5.00
 
     describe "addition" do
-      it "adds two Money objects" do
-        result = money1 + money2
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(1500)
-      end
-
-      it "adds Money and integer" do
-        result = money1 + 250
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(1250)
+      [
+        [ 1000, 500, 1500, "adds two Money objects" ],
+        [ 1000, 250, 1250, "adds Money and integer" ]
+      ].each do |amount1, amount2, expected, description|
+        it description do
+          money_a = described_class.new(amount1)
+          operand = amount2.is_a?(Integer) && description.include?("integer") ? amount2 : described_class.new(amount2)
+          result = money_a + operand
+          expect(result).to be_a(described_class)
+          expect(result.cents_amount).to eq(expected)
+        end
       end
 
       it "is commutative with integers" do
-        result1 = money1 + 250
-        result2 = 250 + money1
+        result1 = ten_dollars + 250
+        result2 = 250 + ten_dollars
         expect(result1.cents_amount).to eq(result2.cents_amount)
       end
     end
 
     describe "subtraction" do
-      it "subtracts two Money objects" do
-        result = money1 - money2
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(500)
-      end
-
-      it "subtracts integer from Money" do
-        result = money1 - 250
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(750)
-      end
-
-      it "can result in negative values" do
-        result = money2 - money1
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(-500)
+      [
+        [ 1000, 500, 500, "subtracts two Money objects" ],
+        [ 1000, 250, 750, "subtracts integer from Money" ],
+        [ 500, 1000, -500, "can result in negative values" ]
+      ].each do |amount1, amount2, expected, description|
+        it description do
+          money_a = described_class.new(amount1)
+          operand = amount2.is_a?(Integer) && description.include?("integer") ? amount2 : described_class.new(amount2)
+          result = money_a - operand
+          expect(result).to be_a(described_class)
+          expect(result.cents_amount).to eq(expected)
+        end
       end
     end
 
     describe "multiplication" do
-      it "multiplies Money by integer" do
-        result = money1 * 3
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(3000)
-      end
-
-      it "multiplies Money by float" do
-        result = money1 * 2.5
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(2500)
-      end
-
-      it "rounds to nearest cent" do
-        money = Flex::Money.new(333)  # $3.33
-        result = money * 1.5
-        expect(result.cents_amount).to eq(500)  # 333 * 1.5 = 499.5, rounded to 500
-      end
-
-      it "handles zero multiplication" do
-        result = money1 * 0
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(0)
-      end
-
-      it "handles negative multiplication" do
-        result = money1 * -2
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(-2000)
+      [
+        [ 1000, 3, 3000, "multiplies Money by integer" ],
+        [ 1000, 2.5, 2500, "multiplies Money by float" ],
+        [ 333, 1.5, 500, "rounds to nearest cent" ],
+        [ 1000, 0, 0, "handles zero multiplication" ],
+        [ 1000, -2, -2000, "handles negative multiplication" ]
+      ].each do |amount, multiplier, expected, description|
+        it description do
+          money = described_class.new(amount)
+          result = money * multiplier
+          expect(result).to be_a(described_class)
+          expect(result.cents_amount).to eq(expected)
+        end
       end
     end
 
     describe "division" do
-      it "divides Money by integer, rounding down" do
-        money = Flex::Money.new(1001)  # $10.01
-        result = money / 3
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(333)  # 1001 / 3 = 333.67, floored to 333
-      end
-
-      it "divides Money by float, rounding down" do
-        money = Flex::Money.new(1000)  # $10.00
-        result = money / 2.5
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(400)  # 1000 / 2.5 = 400.0
-      end
-
-      it "handles exact division" do
-        result = money1 / 2
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(500)
-      end
-
-      it "always rounds down" do
-        money = Flex::Money.new(999)  # $9.99
-        result = money / 3
-        expect(result.cents_amount).to eq(333)  # 999 / 3 = 333.0
-      end
-
-      it "handles negative division" do
-        result = money1 / -2
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(-500)
+      [
+        [ 1001, 3, 333, "divides Money by integer, rounding down" ],
+        [ 1000, 2.5, 400, "divides Money by float, rounding down" ],
+        [ 1000, 2, 500, "handles exact division" ],
+        [ 999, 3, 333, "always rounds down" ],
+        [ 1000, -2, -500, "handles negative division" ]
+      ].each do |amount, divisor, expected, description|
+        it description do
+          money = described_class.new(amount)
+          result = money / divisor
+          expect(result).to be_a(described_class)
+          expect(result.cents_amount).to eq(expected)
+        end
       end
     end
   end
 
   describe "conversion methods" do
-    let(:money) { Flex::Money.new(1234) }  # $12.34
+    let(:money) { described_class.new(1234) }  # $12.34
 
     describe "#dollar_amount" do
-      it "returns amount as float in dollars" do
-        expect(money.dollar_amount).to eq(12.34)
-      end
-
-      it "handles zero" do
-        zero_money = Flex::Money.new(0)
-        expect(zero_money.dollar_amount).to eq(0.0)
-      end
-
-      it "handles negative amounts" do
-        negative_money = Flex::Money.new(-500)
-        expect(negative_money.dollar_amount).to eq(-5.0)
-      end
-
-      it "handles single cents" do
-        small_money = Flex::Money.new(5)
-        expect(small_money.dollar_amount).to eq(0.05)
+      [
+        [ 1234, 12.34, "returns amount as float in dollars" ],
+        [ 0, 0.0, "handles zero" ],
+        [ -500, -5.0, "handles negative amounts" ],
+        [ 5, 0.05, "handles single cents" ]
+      ].each do |cents, expected_dollars, description|
+        it description do
+          test_money = described_class.new(cents)
+          expect(test_money.dollar_amount).to eq(expected_dollars)
+        end
       end
     end
 
@@ -178,72 +144,63 @@ RSpec.describe Flex::Money do
   end
 
   describe "#to_s" do
-    it "formats positive amounts as currency" do
-      money = Flex::Money.new(1234)
-      expect(money.to_s).to eq("$12.34")
-    end
-
-    it "formats zero as currency" do
-      money = Flex::Money.new(0)
-      expect(money.to_s).to eq("$0.00")
-    end
-
-    it "formats negative amounts as currency" do
-      money = Flex::Money.new(-500)
-      expect(money.to_s).to eq("-$5.00")
-    end
-
-    it "formats large amounts correctly" do
-      money = Flex::Money.new(123456789)  # $1,234,567.89
-      expect(money.to_s).to eq("$1,234,567.89")
-    end
-
-    it "formats small amounts correctly" do
-      money = Flex::Money.new(5)  # $0.05
-      expect(money.to_s).to eq("$0.05")
+    [
+      [ 1234, "$12.34", "formats positive amounts as currency" ],
+      [ 0, "$0.00", "formats zero as currency" ],
+      [ -500, "-$5.00", "formats negative amounts as currency" ],
+      [ 123456789, "$1234567.89", "formats large amounts correctly" ],
+      [ 5, "$0.05", "formats small amounts correctly" ]
+    ].each do |cents, expected_format, description|
+      it description do
+        money = described_class.new(cents)
+        expect(money.to_s).to eq(expected_format)
+      end
     end
   end
 
-  describe "inheritance from Integer" do
-    let(:money) { Flex::Money.new(1000) }
+  describe "integer-like behavior" do
+    let(:money) { described_class.new(1000) }
 
-    it "behaves like an Integer" do
-      expect(money).to be_a(Integer)
+    it "converts to integer" do
       expect(money.to_i).to eq(1000)
     end
 
-    it "supports Integer methods" do
-      expect(money.abs).to eq(1000)
+    it "supports Integer-like methods" do
+      expect(money.abs.cents_amount).to eq(1000)
       expect(money.zero?).to be(false)
     end
 
     it "supports comparison" do
-      money1 = Flex::Money.new(500)
-      money2 = Flex::Money.new(1000)
-      
+      money1 = described_class.new(500)
+      money2 = described_class.new(1000)
+
       expect(money1 < money2).to be(true)
       expect(money2 > money1).to be(true)
-      expect(money1 == Flex::Money.new(500)).to be(true)
+      expect(money1 == described_class.new(500)).to be(true)
     end
   end
 
   describe "edge cases and error handling" do
-    it "handles very large numbers" do
-      large_money = Flex::Money.new(999999999999)
-      expect(large_money.cents_amount).to eq(999999999999)
-      expect(large_money.dollar_amount).to eq(9999999999.99)
-    end
+    [
+      [ 999999999999, 999999999999, 9999999999.99, "handles very large numbers" ],
+      [ 1, 1, 0.01, "handles fractional cents in multiplication" ]
+    ].each do |input, expected_cents, expected_dollars, description|
+      it description do
+        money = described_class.new(input)
+        expect(money.cents_amount).to eq(expected_cents)
+        expect(money.dollar_amount).to eq(expected_dollars)
 
-    it "handles fractional cents in multiplication" do
-      money = Flex::Money.new(1)  # $0.01
-      result = money * 0.5
-      expect(result.cents_amount).to eq(1)  # Rounds 0.5 to 1
+        if description.include?("fractional")
+          result = money * 0.5
+          expect(result.cents_amount).to eq(1)
+        end
+      end
     end
 
     it "maintains precision in complex calculations" do
-      money = Flex::Money.new(1000)  # $10.00
+      money = described_class.new(1000)
       result = (money * 1.5) / 2
-      expect(result.cents_amount).to eq(750)  # (1000 * 1.5) / 2 = 750
+      expect(result.cents_amount).to eq(750)
     end
   end
 end

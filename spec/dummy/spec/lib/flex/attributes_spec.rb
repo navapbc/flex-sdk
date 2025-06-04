@@ -174,28 +174,12 @@ RSpec.describe Flex::Attributes do
       expect(object.money.dollar_amount).to eq(25.0)
     end
 
-    it "allows setting money as a float (dollars)" do
-      object.money = 15.75
-
-      expect(object.money).to be_a(Flex::Money)
-      expect(object.money.cents_amount).to eq(1575)
-      expect(object.money.dollar_amount).to eq(15.75)
-    end
-
     it "allows setting money as a hash with dollar_amount" do
       object.money = { dollar_amount: 10.50 }
 
       expect(object.money).to be_a(Flex::Money)
       expect(object.money.cents_amount).to eq(1050)
       expect(object.money.dollar_amount).to eq(10.5)
-    end
-
-    it "allows setting money as a hash with cents_amount" do
-      object.money = { cents_amount: 750 }
-
-      expect(object.money).to be_a(Flex::Money)
-      expect(object.money.cents_amount).to eq(750)
-      expect(object.money.dollar_amount).to eq(7.5)
     end
 
     it "formats money correctly using to_s" do
@@ -205,25 +189,25 @@ RSpec.describe Flex::Attributes do
     end
 
     describe "arithmetic operations" do
-      let(:money1) { Flex::Money.new(1000) }  # $10.00
-      let(:money2) { Flex::Money.new(500) }   # $5.00
+      let(:ten_dollars) { Flex::Money.new(1000) }  # $10.00
+      let(:five_dollars) { Flex::Money.new(500) }   # $5.00
 
       it "adds two Money objects" do
-        result = money1 + money2
+        result = ten_dollars + five_dollars
         expect(result).to be_a(Flex::Money)
         expect(result.cents_amount).to eq(1500)
         expect(result.dollar_amount).to eq(15.0)
       end
 
       it "subtracts two Money objects" do
-        result = money1 - money2
+        result = ten_dollars - five_dollars
         expect(result).to be_a(Flex::Money)
         expect(result.cents_amount).to eq(500)
         expect(result.dollar_amount).to eq(5.0)
       end
 
       it "multiplies Money by a scalar" do
-        result = money1 * 2.5
+        result = ten_dollars * 2.5
         expect(result).to be_a(Flex::Money)
         expect(result.cents_amount).to eq(2500)
         expect(result.dollar_amount).to eq(25.0)
@@ -238,13 +222,13 @@ RSpec.describe Flex::Attributes do
       end
 
       it "adds Money and integer" do
-        result = money1 + 250
+        result = ten_dollars + 250
         expect(result).to be_a(Flex::Money)
         expect(result.cents_amount).to eq(1250)
       end
 
       it "subtracts integer from Money" do
-        result = money1 - 250
+        result = ten_dollars - 250
         expect(result).to be_a(Flex::Money)
         expect(result.cents_amount).to eq(750)
       end
@@ -272,12 +256,6 @@ RSpec.describe Flex::Attributes do
         expect(object.money.to_s).to eq("-$5.00")
       end
 
-      it "handles string input" do
-        object.money = "1500"
-        expect(object.money).to be_a(Flex::Money)
-        expect(object.money.cents_amount).to eq(1500)
-      end
-
       it "handles hash with string keys" do
         object.money = { "dollar_amount" => "12.34" }
         expect(object.money).to be_a(Flex::Money)
@@ -287,6 +265,11 @@ RSpec.describe Flex::Attributes do
 
       it "returns nil for invalid hash" do
         object.money = { invalid_key: 100 }
+        expect(object.money).to be_nil
+      end
+
+      it "returns nil for unsupported types" do
+        object.money = 15.75
         expect(object.money).to be_nil
       end
     end

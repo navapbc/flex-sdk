@@ -24,33 +24,37 @@ module Flex
       # A custom ActiveRecord type that allows storing money amounts.
       # It uses the Flex::Money value object for storage and arithmetic operations.
       class MoneyType < ActiveRecord::Type::Integer
-        # Override cast to ensure proper Money format
         def cast(value)
           return nil if value.nil?
 
-          # If it's already a Money object, return it
           return value if value.is_a?(Flex::Money)
 
-          # Handle different input types
           case value
+          when Integer
+            Flex::Money.new(value)
           when Hash
-            # Support hash input with dollar_amount or cents_amount keys
-            if value.key?(:dollar_amount) || value.key?("dollar_amount")
-              dollar_value = value[:dollar_amount] || value["dollar_amount"]
+            hash = value.with_indifferent_access
+            if hash.key?(:dollar_amount) || hash.key?("dollar_amount")
+              dollar_value = hash[:dollar_amount] || hash["dollar_amount"]
+              return nil if dollar_value.blank?
               Flex::Money.new((dollar_value.to_f * 100).round)
-            elsif value.key?(:cents_amount) || value.key?("cents_amount")
-              cents_value = value[:cents_amount] || value["cents_amount"]
-              Flex::Money.new(cents_value.to_i)
             else
               nil
             end
-          when Float
-            # Assume float input is in dollars, convert to cents
-            Flex::Money.new((value * 100).round)
           else
-            # Otherwise create a new Money object (assumes cents)
-            Flex::Money.new(value)
+            nil
           end
+        end
+
+        def serialize(value)
+          return nil if value.nil?
+          return value.cents if value.is_a?(Flex::Money)
+          value
+        end
+
+        def deserialize(value)
+          return nil if value.nil?
+          Flex::Money.new(value)
         end
 
         def type
