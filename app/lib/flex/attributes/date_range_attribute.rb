@@ -50,10 +50,20 @@ module Flex
                         when String
                           # Optional: Add string parsing logic if needed
                           nil
+                        when nil
+                          nil
                         else
                           nil
                         end
-                      }
+                      },
+                      constructor: ->(start_date, end_date) {
+                        if start_date || end_date
+                          Range.new(start_date, end_date)
+                        else
+                          nil
+                        end
+                      },
+                      allow_nil: true
 
           # Add validation for date range
           validate :"validate_#{name}_range"

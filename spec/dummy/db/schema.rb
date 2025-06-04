@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_02_143541) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_170708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_143541) do
     t.string "address_state"
     t.string "address_zip_code"
     t.string "tax_id"
+    t.date "date_range_start"
+    t.date "date_range_end"
   end
 
   create_table "users", force: :cascade do |t|
