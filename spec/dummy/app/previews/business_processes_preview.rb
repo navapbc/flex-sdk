@@ -1,4 +1,4 @@
-class BusinessProcessPreview < Lookbook::Preview
+class BusinessProcessesPreview < Lookbook::Preview
   def passport_business_process
     render template: "flex/previews/_business_process", locals: { business_process: PassportBusinessProcess }
   end
