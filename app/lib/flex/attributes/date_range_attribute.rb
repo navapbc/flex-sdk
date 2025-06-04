@@ -47,11 +47,6 @@ module Flex
                           else
                             nil
                           end
-                        when String
-                          # Optional: Add string parsing logic if needed
-                          nil
-                        when nil
-                          nil
                         else
                           nil
                         end
