@@ -35,6 +35,10 @@ es-US:
         state_label: "Estado, territorio o puesto militar"
         zip_code_label: "Código postal"
         zip_code_hint: "Código ZIP de 5 dígitos o ZIP+4"
+      date_range:
+        legend: "Período"
+        start_label: "Fecha de inicio"
+        end_label: "Fecha de fin"
     tasks:
       breadcrumbs:
         home: "Inicio"
