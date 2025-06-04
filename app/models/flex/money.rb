@@ -1,7 +1,9 @@
 module Flex
   # Money is a value object representing US dollar amounts stored as cents.
-  # It uses composition to wrap an Integer value and provides arithmetic
-  # operations and formatting capabilities for monetary values.
+  # It uses composition instead of Integer inheritance due to Ruby's limitations
+  # with immutable value types and to avoid ActiveSupport dependency issues.
+  # Integer inheritance cannot work properly because you cannot override `new`
+  # or call `super` in `initialize` for immutable value types.
   #
   # This class is used with MoneyAttribute to provide structured money handling
   # in form models.
@@ -52,7 +54,7 @@ module Flex
 
     # Support coercion for commutative operations with integers
     def coerce(other)
-      [ Money.new(other), self ]
+      [ self, other ]
     end
 
     # Subtract another Money object or integer value

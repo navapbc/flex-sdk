@@ -189,8 +189,8 @@ RSpec.describe Flex::Attributes do
     end
 
     describe "arithmetic operations" do
-      let(:ten_dollars) { Flex::Money.new(1000) }  # $10.00
-      let(:five_dollars) { Flex::Money.new(500) }   # $5.00
+      let(:ten_dollars) { Flex::Money.new(1000) }
+      let(:five_dollars) { Flex::Money.new(500) }
 
       it "adds two Money objects" do
         result = ten_dollars + five_dollars
@@ -214,10 +214,10 @@ RSpec.describe Flex::Attributes do
       end
 
       it "divides Money by a scalar, rounding down" do
-        money = Flex::Money.new(1001)  # $10.01
+        money = Flex::Money.new(1001)
         result = money / 3
         expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(333)  # Rounds down from 333.67
+        expect(result.cents_amount).to eq(333)
         expect(result.dollar_amount).to eq(3.33)
       end
 
