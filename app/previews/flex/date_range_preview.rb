@@ -1,30 +1,24 @@
 module Flex
   # Preview for the date_range form builder helper method
-  class DateRangePreview < ViewComponent::Preview
+  class DateRangePreview < Lookbook::Preview
     layout "component_preview"
 
     def empty
-      render_with_template(locals: { record: test_record })
+      render template: "flex/previews/_date_range", locals: { model: TestRecord.new }
     end
 
     def filled
-      record = test_record
-      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
-      render_with_template(locals: { record: record })
+      record = TestRecord.new
+      record.period = Range.new(Date.new(2023, 1, 15), Date.new(2023, 12, 31))
+      render template: "flex/previews/_date_range", locals: { model: record }
     end
 
     def invalid
-      record = test_record
+      record = TestRecord.new
       record.period_start = Date.new(2023, 12, 31)
-      record.period_end = Date.new(2023, 1, 1)
+      record.period_end = Date.new(2023, 1, 15)
       record.valid?
-      render_with_template(locals: { record: record })
-    end
-
-    private
-
-    def test_record
-      TestRecord.new
+      render template: "flex/previews/_date_range", locals: { model: record }
     end
   end
 end
