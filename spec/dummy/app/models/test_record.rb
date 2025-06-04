@@ -6,4 +6,5 @@ class TestRecord < ApplicationRecord
   flex_attribute :period, :date_range
   flex_attribute :name, :name
   flex_attribute :tax_id, :tax_id
+  flex_attribute :reporting_period, :year_quarter
 end
