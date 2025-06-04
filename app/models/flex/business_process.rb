@@ -101,7 +101,7 @@ module Flex
       diagram = "flowchart TD\n"
 
       @steps.each do |name, step|
-        node_name = name.gsub(' ', '_')
+        node_name = name.gsub(" ", "_")
         node_class = step.class.name.demodulize
         diagram += "  #{node_name}:::#{node_class}\n"
       end
@@ -120,7 +120,7 @@ module Flex
         "classDef ApplicantTask fill:#90EE90,stroke:#333,stroke-width:2px;",
         "classDef StaffTask fill:#ffb366,stroke:#333,stroke-width:2px;",
         "classDef SystemProcess fill:#a0d8ef,stroke:#333,stroke-width:2px;",
-        "classDef ThirdPartyTask fill:#c0c0ff,stroke:#333,stroke-width:2px;",
+        "classDef ThirdPartyTask fill:#c0c0ff,stroke:#333,stroke-width:2px;"
       ].join("\n")
 
       diagram
