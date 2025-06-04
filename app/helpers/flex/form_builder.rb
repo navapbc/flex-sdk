@@ -303,7 +303,7 @@ module Flex
     end
 
     def field_error(attribute)
-      return unless has_error?(attribute)
+      return "".html_safe unless has_error?(attribute)
 
       @template.content_tag(:span, object.errors.full_messages_for(attribute).first, class: "usa-error-message")
     end
@@ -442,11 +442,12 @@ module Flex
     end
 
     def date_range(attribute, options = {})
-      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.date_range.legend")
+      legend_text = options.delete(:legend) || human_name(attribute)
       start_hint_text = options.delete(:start_hint) || I18n.t("flex.form_builder.date_range.start_hint")
       end_hint_text = options.delete(:end_hint) || I18n.t("flex.form_builder.date_range.end_hint")
 
-      fieldset(legend_text, { attribute: attribute }) do
+      fieldset(legend_text) do
+        field_error(attribute) +
         form_group do
           date_picker(
             "#{attribute}_start",
@@ -454,7 +455,6 @@ module Flex
             hint: start_hint_text
           )
         end +
-
         form_group do
           date_picker(
             "#{attribute}_end",

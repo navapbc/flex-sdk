@@ -42,7 +42,6 @@ en:
         zip_code_label: "ZIP code"
         zip_code_hint: "5-digit ZIP or ZIP+4"
       date_range:
-        legend: "Period"
         start_label: "Start date"
         end_label: "End date"
     tasks:
