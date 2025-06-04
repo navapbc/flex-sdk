@@ -162,6 +162,35 @@ module Flex
       @start_events.key?(event_name)
     end
 
+    def to_mermaid
+      diagram = "flowchart TD\n"
+
+      @steps.each do |name, step|
+        node_type = step_node_type(step)
+        diagram += "  #{name}#{node_type}\n"
+      end
+
+      diagram += "  end((End))\n"
+
+      @transitions.each do |from, events|
+        events.each do |event, to|
+          diagram += "  #{from} -->|#{event}| #{to}\n"
+        end
+      end
+
+      diagram
+    end
+
+    def step_node_type(step)
+      case step
+      when Flex::StaffTask then "[\"#{step.instance_variable_get(:@task_class).name}\"]"
+      when Flex::SystemProcess then "{\"#{step.name}\"}"
+      when Flex::ApplicantTask then "(\"#{step.name}\")"
+      when Flex::ThirdPartyTask then "[(\"#{step.name}\")]"
+      else "[\"Unknown\"]"
+      end
+    end
+
     class << self
       def define(name, case_class)
         business_process_builder = BusinessProcessBuilder.new(name, case_class)
