@@ -311,8 +311,6 @@ RSpec.describe Flex::Attributes do
     end
   end
 
-||||||| ae7451d
-=======
   describe "year_quarter attribute" do
     it "allows setting year_quarter as a value object" do
       year_quarter = Flex::YearQuarter.new(2023, 2)
