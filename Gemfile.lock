@@ -409,6 +409,7 @@ DEPENDENCIES
   shoulda-matchers (~> 6.0)
   simplecov
   sprockets-rails
+  validates_timeliness (>= 7.0.0)
 
 BUNDLED WITH
    2.5.22
