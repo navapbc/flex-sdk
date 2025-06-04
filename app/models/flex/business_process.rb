@@ -97,6 +97,35 @@ module Flex
       @listening = false
     end
 
+    def to_mermaid
+      diagram = "flowchart TD\n"
+
+      @steps.each do |name, step|
+        node_name = name.gsub(" ", "_")
+        node_class = step.class.name.demodulize
+        diagram += "  #{node_name}:::#{node_class}\n"
+      end
+
+      diagram += "  END((End))\n"
+
+      @transitions.each do |from, events|
+        events.each do |event, to|
+          # Capitalize the "END" node since Mermaid breaks if one of the nodes is named "end" https://github.com/mermaid-js/mermaid/issues/1444
+          to = "END" if to == "end"
+          diagram += "  #{from} -->|#{event}| #{to}\n"
+        end
+      end
+
+      diagram += [
+        "classDef ApplicantTask fill:#90EE90,stroke:#333,stroke-width:2px;",
+        "classDef StaffTask fill:#ffb366,stroke:#333,stroke-width:2px;",
+        "classDef SystemProcess fill:#a0d8ef,stroke:#333,stroke-width:2px;",
+        "classDef ThirdPartyTask fill:#c0c0ff,stroke:#333,stroke-width:2px;"
+      ].join("\n")
+
+      diagram
+    end
+
     private
 
     def create_case_from_event(event)
