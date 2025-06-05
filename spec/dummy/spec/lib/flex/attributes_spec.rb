@@ -354,6 +354,128 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "period attribute" do
+    it "allows setting period as a Range object" do
+      object.period = Date.new(2023, 1, 1)..Date.new(2023, 12, 31)
+
+      expect(object.period).to eq(Date.new(2023, 1, 1)..Date.new(2023, 12, 31))
+      expect(object.period_start).to eq(Date.new(2023, 1, 1))
+      expect(object.period_end).to eq(Date.new(2023, 12, 31))
+      expect(object.period.begin).to eq(Date.new(2023, 1, 1))
+      expect(object.period.end).to eq(Date.new(2023, 12, 31))
+    end
+
+    it "allows setting period as a hash" do
+      object.period = { start: Date.new(2023, 6, 1), end: Date.new(2023, 8, 31) }
+
+      expect(object.period).to eq(Date.new(2023, 6, 1)..Date.new(2023, 8, 31))
+      expect(object.period_start).to eq(Date.new(2023, 6, 1))
+      expect(object.period_end).to eq(Date.new(2023, 8, 31))
+    end
+
+    it "allows setting period with string keys" do
+      object.period = { "start" => Date.new(2023, 3, 1), "end" => Date.new(2023, 5, 31) }
+
+      expect(object.period).to eq(Date.new(2023, 3, 1)..Date.new(2023, 5, 31))
+      expect(object.period_start).to eq(Date.new(2023, 3, 1))
+      expect(object.period_end).to eq(Date.new(2023, 5, 31))
+    end
+
+    it "allows setting nested period attributes directly" do
+      object.period_start = Date.new(2023, 9, 1)
+      object.period_end = Date.new(2023, 11, 30)
+      expect(object.period).to eq(Date.new(2023, 9, 1)..Date.new(2023, 11, 30))
+    end
+
+    it "handles nil values gracefully" do
+      object.period = nil
+      expect(object.period).to be_nil
+      expect(object.period_start).to be_nil
+      expect(object.period_end).to be_nil
+    end
+
+    it "handles partial periods" do
+      object.period = { start: Date.new(2023, 1, 1), end: nil }
+      expect(object.period).to eq(Date.new(2023, 1, 1)..nil)
+      expect(object.period_start).to eq(Date.new(2023, 1, 1))
+      expect(object.period_end).to be_nil
+
+      object.period = nil..Date.new(2023, 12, 31)
+      expect(object.period).to eq(nil..Date.new(2023, 12, 31))
+      expect(object.period_start).to be_nil
+      expect(object.period_end).to eq(Date.new(2023, 12, 31))
+    end
+
+    it "validates that start date is before or equal to end date" do
+      object.period_start = Date.new(2023, 12, 31)
+      object.period_end = Date.new(2023, 1, 1)
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("period")).to include("Period start date must be before or equal to end date")
+    end
+
+    it "allows start date equal to end date" do
+      same_date = Date.new(2023, 6, 15)
+      object.period_start = same_date
+      object.period_end = same_date
+      expect(object).to be_valid
+      expect(object.period).to eq(Range.new(same_date, same_date))
+    end
+
+    it "allows only one date to be present" do
+      object.period_start = Date.new(2023, 1, 1)
+      object.period_end = nil
+      expect(object).to be_valid
+
+      object.period_start = nil
+      object.period_end = Date.new(2023, 12, 31)
+      expect(object).to be_valid
+    end
+
+    describe "handling invalid dates" do
+      it "validates invalid start date format" do
+        object.period_start = "not-a-date"
+        object.period_end = "2023-12-31"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
+
+      it "validates invalid end date format" do
+        object.period_start = "2023-01-01"
+        object.period_end = "invalid-date"
+        expect(object).not_to be_valid
+        expect(object.period_end).to be_nil
+        expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
+      end
+
+      it "validates both dates when both are invalid" do
+        object.period = { start: "bad-start", end: "bad-end" }
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.period_end).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+        expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
+      end
+
+      it "handles invalid date components" do
+        object.period_start = "13/45/2023"
+        object.period_end = "12/31/2023"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
+
+      it "handles leap year edge cases" do
+        object.period_start = "02/29/2023"
+        object.period_end = "02/29/2024"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.period_end).to be_a(Date)  # This date is valid since 2024 is a leap year
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
+    end
+  end
+
   describe "year_quarter attribute" do
     it "allows setting year_quarter as a value object" do
       year_quarter = Flex::YearQuarter.new(2023, 2)
@@ -492,12 +614,36 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.date_of_birth.day).to eq(2)
     end
 
+    it "persists and loads period object correctly" do
+      record.period = Date.new(2023, 1, 1)..Date.new(2023, 12, 31)
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.period).to eq(Date.new(2023, 1, 1)..Date.new(2023, 12, 31))
+      expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
+      expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
+      expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 1))
+      expect(loaded_record.period.end).to eq(Date.new(2023, 12, 31))
+
+      record.period_start = "01/05/2023"
+      record.period_end = "06/12/2023"
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.period).to eq(Date.new(2023, 1, 5)..Date.new(2023, 6, 12))
+      expect(loaded_record.period_start).to eq(Date.new(2023, 1, 5))
+      expect(loaded_record.period_end).to eq(Date.new(2023, 6, 12))
+      expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 5))
+      expect(loaded_record.period.end).to eq(Date.new(2023, 6, 12))
+    end
+
     it "preserves all attributes when saving and loading multiple value objects" do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
       record.money = Flex::Money.new(5000)
       record.date_of_birth = Date.new(1990, 3, 15)
+      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
 
       loaded_record = TestRecord.find(record.id)
@@ -527,6 +673,11 @@ RSpec.describe Flex::Attributes do
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
+
+      # Verify date_range
+      expect(loaded_record.period).to eq(Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
+      expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
+      expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
     end
 
     it "persists and loads year_quarter object correctly" do
