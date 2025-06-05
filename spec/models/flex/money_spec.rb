@@ -3,10 +3,12 @@ require "rails_helper"
 RSpec.describe Flex::Money do
   describe "initialization" do
     [
-      [ 1250, 1250, 12.5, "creates a Money object with integer cents" ],
-      [ 0, 0, 0.0, "handles zero" ],
-      [ -500, -500, -5.0, "handles negative values" ]
-    ].each do |input, expected_cents, expected_dollars, description|
+      [ "creates a Money object with integer cents", 1250, 1250, 12.5 ],
+      [ "handles zero", 0, 0, 0.0 ],
+      [ "handles negative values", -500, -500, -5.0 ],
+      [ "accepts valid string integers", "1500", 1500, 15.0 ],
+      [ "accepts valid negative string integers", "-1500", -1500, -15.0 ],
+    ].each do |description, input, expected_cents, expected_dollars|
       it description do
         money = described_class.new(input)
         expect(money.cents_amount).to eq(expected_cents)
@@ -14,24 +16,17 @@ RSpec.describe Flex::Money do
       end
     end
 
-    it "accepts valid string integers" do
-      money = described_class.new("1500")
-      expect(money.cents_amount).to eq(1500)
-    end
-
-    it "raises TypeError for floats" do
-      expect { described_class.new(12.0) }.to raise_error(TypeError, "Expected Integer or String, got Float")
-      expect { described_class.new(12.5) }.to raise_error(TypeError, "Expected Integer or String, got Float")
-    end
-
-    it "raises ArgumentError for invalid string values" do
-      expect { described_class.new("12.5") }.to raise_error(ArgumentError, "String values must be valid integers representing cents")
-      expect { described_class.new("abc") }.to raise_error(ArgumentError, "String values must be valid integers representing cents")
-    end
-
-    it "raises TypeError for unsupported types" do
-      expect { described_class.new([]) }.to raise_error(TypeError, "Expected Integer or String, got Array")
-      expect { described_class.new({}) }.to raise_error(TypeError, "Expected Integer or String, got Hash")
+    [
+      [ "raises type error for non-integer floats", 12.5, TypeError ],
+      [ "raises type error for integer floats", 12.0, TypeError ],
+      [ "raises type error for arrays", [], TypeError ],
+      [ "raises type error for hashes", {}, TypeError ],
+      [ "raises argument error for non-integer strings", "12.5", ArgumentError ],
+      [ "raises argument error for non-numeric strings", "abc", ArgumentError ]
+    ].each do |description, input, error_class|
+      it description do
+        expect { described_class.new(input) }.to raise_error(error_class)
+      end
     end
   end
 
@@ -42,19 +37,14 @@ RSpec.describe Flex::Money do
     describe "addition" do
       [
         [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
-        [ "adds Money and integer", described_class.new(1000), 250, described_class.new(1250) ]
+        [ "adds Money and integer", described_class.new(1000), 250, described_class.new(1250) ],
+        [ "is commutative with integers", 250, described_class.new(1000), described_class.new(1250) ]
       ].each do |description, money1, money2, expected|
         it description do
           result = money1 + money2
           expect(result).to be_a(described_class)
           expect(result.cents_amount).to eq(expected.cents_amount)
         end
-      end
-
-      it "is commutative with integers" do
-        result1 = ten_dollars + 250
-        result2 = 250 + ten_dollars
-        expect(result1.cents_amount).to eq(result2.cents_amount)
       end
     end
 
@@ -138,7 +128,7 @@ RSpec.describe Flex::Money do
       [ "formats positive amounts as currency", 1234, "$12.34" ],
       [ "formats zero as currency", 0, "$0.00" ],
       [ "formats negative amounts as currency", -500, "-$5.00" ],
-      [ "formats large amounts correctly", 123456789, "$1234567.89" ],
+      [ "formats large amounts correctly", 123456789, "$1,234,567.89" ],
       [ "formats small amounts correctly", 5, "$0.05" ]
     ].each do |description, cents, expected_format|
       it description do

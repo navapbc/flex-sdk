@@ -21,6 +21,7 @@ module Flex
   #
   class Money
     include Comparable
+    include ActiveSupport::NumberHelper
 
     attr_reader :cents
 
@@ -99,11 +100,7 @@ module Flex
     #
     # @return [String] The formatted currency (e.g., "$12.50")
     def to_s
-      if @cents < 0
-        sprintf("-$%.2f", dollar_amount.abs)
-      else
-        sprintf("$%.2f", dollar_amount)
-      end
+      number_to_currency(dollar_amount)
     end
 
     # Comparison operator for Comparable
