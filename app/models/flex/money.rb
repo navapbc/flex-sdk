@@ -28,18 +28,17 @@ module Flex
     #
     # @param [Integer, Float, String] cents The amount in cents
     def initialize(cents)
-      @cents = case cents
+      case cents
       when Integer
-        cents
-      when Float
-        raise ArgumentError, "Float values must be whole numbers representing cents" unless cents == cents.to_i
-        cents.to_i
+        @cents = cents
       when String
-        parsed = Integer(cents) rescue nil
-        raise ArgumentError, "String values must be valid integers representing cents" if parsed.nil?
-        parsed
+        begin
+          @cents = Integer(cents)
+        rescue ArgumentError
+          raise ArgumentError, "String values must be valid integers representing cents"
+        end
       else
-        raise TypeError, "Expected Integer, Float, or String, got #{cents.class}"
+        raise TypeError, "Expected Integer or String, got #{cents.class}"
       end
     end
 

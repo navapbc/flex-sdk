@@ -19,13 +19,9 @@ RSpec.describe Flex::Money do
       expect(money.cents_amount).to eq(1500)
     end
 
-    it "accepts whole number floats" do
-      money = described_class.new(12.0)
-      expect(money.cents_amount).to eq(12)
-    end
-
-    it "raises ArgumentError for non-integer floats" do
-      expect { described_class.new(12.5) }.to raise_error(ArgumentError, "Float values must be whole numbers representing cents")
+    it "raises TypeError for floats" do
+      expect { described_class.new(12.0) }.to raise_error(TypeError, "Expected Integer or String, got Float")
+      expect { described_class.new(12.5) }.to raise_error(TypeError, "Expected Integer or String, got Float")
     end
 
     it "raises ArgumentError for invalid string values" do
@@ -34,8 +30,8 @@ RSpec.describe Flex::Money do
     end
 
     it "raises TypeError for unsupported types" do
-      expect { described_class.new([]) }.to raise_error(TypeError, "Expected Integer, Float, or String, got Array")
-      expect { described_class.new({}) }.to raise_error(TypeError, "Expected Integer, Float, or String, got Hash")
+      expect { described_class.new([]) }.to raise_error(TypeError, "Expected Integer or String, got Array")
+      expect { described_class.new({}) }.to raise_error(TypeError, "Expected Integer or String, got Hash")
     end
   end
 
