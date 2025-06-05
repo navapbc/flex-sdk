@@ -116,10 +116,6 @@ RSpec.describe Flex::Money do
       it "returns amount as integer in cents" do
         expect(money.cents_amount).to eq(1234)
       end
-
-      it "is equivalent to the Money object itself" do
-        expect(money.cents_amount).to eq(money.to_i)
-      end
     end
   end
 
@@ -135,28 +131,6 @@ RSpec.describe Flex::Money do
         money = described_class.new(cents)
         expect(money.to_s).to eq(expected_format)
       end
-    end
-  end
-
-  describe "integer-like behavior" do
-    let(:money) { described_class.new(1000) }
-
-    it "converts to integer" do
-      expect(money.to_i).to eq(1000)
-    end
-
-    it "supports Integer-like methods" do
-      expect(money.abs.cents_amount).to eq(1000)
-      expect(money.zero?).to be(false)
-    end
-
-    it "supports comparison" do
-      money1 = described_class.new(500)
-      money2 = described_class.new(1000)
-
-      expect(money1 < money2).to be(true)
-      expect(money2 > money1).to be(true)
-      expect(money1 == described_class.new(500)).to be(true)
     end
   end
 

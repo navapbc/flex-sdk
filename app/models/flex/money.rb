@@ -48,13 +48,8 @@ module Flex
     # @param [Money, Integer] other The value to add
     # @return [Money] A new Money object with the sum
     def +(other)
-      other_cents = other.is_a?(Money) ? other.cents : other.to_i
+      other_cents = other.is_a?(Money) ? other.cents : other
       Money.new(@cents + other_cents)
-    end
-
-    # Support coercion for commutative operations with integers
-    def coerce(other)
-      [ self, other ]
     end
 
     # Subtract another Money object or integer value
@@ -62,7 +57,7 @@ module Flex
     # @param [Money, Integer] other The value to subtract
     # @return [Money] A new Money object with the difference
     def -(other)
-      other_cents = other.is_a?(Money) ? other.cents : other.to_i
+      other_cents = other.is_a?(Money) ? other.cents : other
       Money.new(@cents - other_cents)
     end
 
@@ -71,7 +66,7 @@ module Flex
     # @param [Integer, Float] scalar The multiplier
     # @return [Money] A new Money object with the product
     def *(scalar)
-      Money.new((@cents.to_f * scalar.to_f).round)
+      Money.new((@cents * scalar.to_f).round)
     end
 
     # Divide by a scalar value, rounding down to nearest cent
@@ -79,7 +74,12 @@ module Flex
     # @param [Integer, Float] scalar The divisor
     # @return [Money] A new Money object with the quotient
     def /(scalar)
-      Money.new((@cents.to_f / scalar.to_f).floor)
+      Money.new((@cents / scalar.to_f).floor)
+    end
+
+    # Support coercion for commutative operations with integers and floats
+    def coerce(other)
+      [ self, other ]
     end
 
     # Returns the amount as a Float in dollars
@@ -125,34 +125,6 @@ module Flex
     # @return [Integer] The hash code
     def hash
       @cents.hash
-    end
-
-    # Convert to integer (cents)
-    #
-    # @return [Integer] The cents amount
-    def to_i
-      @cents
-    end
-
-    # Convert to float (cents)
-    #
-    # @return [Float] The cents amount as float
-    def to_f
-      @cents.to_f
-    end
-
-    # Check if zero
-    #
-    # @return [Boolean] True if zero cents
-    def zero?
-      @cents.zero?
-    end
-
-    # Absolute value
-    #
-    # @return [Money] A new Money object with absolute value
-    def abs
-      Money.new(@cents.abs)
     end
   end
 end
