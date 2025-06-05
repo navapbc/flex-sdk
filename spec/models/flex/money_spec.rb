@@ -173,7 +173,7 @@ RSpec.describe Flex::Money do
     it "treats equal amounts as the same key" do
       hash = { described_class.new(1000) => "original" }
       hash[described_class.new(1000)] = "updated"
-      
+
       expect(hash.size).to eq(1)
       expect(hash[described_class.new(1000)]).to eq("updated")
     end
@@ -192,8 +192,8 @@ RSpec.describe Flex::Money do
       ]
 
       sorted = amounts.sort
-      
-      expect(sorted.map(&:cents_amount)).to eq([-500, 0, 500, 1000, 1000, 1000, 1500])
+
+      expect(sorted.map(&:cents_amount)).to eq([ -500, 0, 500, 1000, 1000, 1000, 1500 ])
     end
 
     it "can't be compared with non-Money objects" do
