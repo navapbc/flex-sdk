@@ -159,33 +159,33 @@ RSpec.describe Flex::Attributes do
   describe "money attribute" do
     it "allows setting money as a Money object" do
       money = Flex::Money.new(1250)
-      object.money = money
+      object.weekly_wage = money
 
-      expect(object.money).to be_a(Flex::Money)
-      expect(object.money.cents_amount).to eq(1250)
-      expect(object.money.dollar_amount).to eq(12.5)
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(1250)
+      expect(object.weekly_wage.dollar_amount).to eq(12.5)
     end
 
     it "allows setting money as an integer (cents)" do
-      object.money = 2500
+      object.weekly_wage = 2500
 
-      expect(object.money).to be_a(Flex::Money)
-      expect(object.money.cents_amount).to eq(2500)
-      expect(object.money.dollar_amount).to eq(25.0)
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(2500)
+      expect(object.weekly_wage.dollar_amount).to eq(25.0)
     end
 
     it "allows setting money as a hash with dollar_amount" do
-      object.money = { dollar_amount: 10.50 }
+      object.weekly_wage = { dollar_amount: 10.50 }
 
-      expect(object.money).to be_a(Flex::Money)
-      expect(object.money.cents_amount).to eq(1050)
-      expect(object.money.dollar_amount).to eq(10.5)
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(1050)
+      expect(object.weekly_wage.dollar_amount).to eq(10.5)
     end
 
     it "formats money correctly using to_s" do
-      object.money = 1234
+      object.weekly_wage = 1234
 
-      expect(object.money.to_s).to eq("$12.34")
+      expect(object.weekly_wage.to_s).to eq("$12.34")
     end
 
     describe "arithmetic operations" do
@@ -236,41 +236,41 @@ RSpec.describe Flex::Attributes do
 
     describe "edge cases" do
       it "handles nil values" do
-        object.money = nil
-        expect(object.money).to be_nil
+        object.weekly_wage = nil
+        expect(object.weekly_wage).to be_nil
       end
 
       it "handles zero values" do
-        object.money = 0
-        expect(object.money).to be_a(Flex::Money)
-        expect(object.money.cents_amount).to eq(0)
-        expect(object.money.dollar_amount).to eq(0.0)
-        expect(object.money.to_s).to eq("$0.00")
+        object.weekly_wage = 0
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(0)
+        expect(object.weekly_wage.dollar_amount).to eq(0.0)
+        expect(object.weekly_wage.to_s).to eq("$0.00")
       end
 
       it "handles negative values" do
-        object.money = -500
-        expect(object.money).to be_a(Flex::Money)
-        expect(object.money.cents_amount).to eq(-500)
-        expect(object.money.dollar_amount).to eq(-5.0)
-        expect(object.money.to_s).to eq("-$5.00")
+        object.weekly_wage = -500
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(-500)
+        expect(object.weekly_wage.dollar_amount).to eq(-5.0)
+        expect(object.weekly_wage.to_s).to eq("-$5.00")
       end
 
       it "handles hash with string keys" do
-        object.money = { "dollar_amount" => "12.34" }
-        expect(object.money).to be_a(Flex::Money)
-        expect(object.money.cents_amount).to eq(1234)
-        expect(object.money.dollar_amount).to eq(12.34)
+        object.weekly_wage = { "dollar_amount" => "12.34" }
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(1234)
+        expect(object.weekly_wage.dollar_amount).to eq(12.34)
       end
 
       it "returns nil for invalid hash" do
-        object.money = { invalid_key: 100 }
-        expect(object.money).to be_nil
+        object.weekly_wage = { invalid_key: 100 }
+        expect(object.weekly_wage).to be_nil
       end
 
       it "returns nil for unsupported types" do
-        object.money = 15.75
-        expect(object.money).to be_nil
+        object.weekly_wage = 15.75
+        expect(object.weekly_wage).to be_nil
       end
     end
   end
@@ -592,14 +592,14 @@ RSpec.describe Flex::Attributes do
 
     it "persists and loads money object correctly" do
       money = Flex::Money.new(1250)
-      record.money = money
+      record.weekly_wage = money
       record.save!
 
       loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.money).to be_a(Flex::Money)
-      expect(loaded_record.money).to eq(money)
-      expect(loaded_record.money.cents_amount).to eq(1250)
-      expect(loaded_record.money.dollar_amount).to eq(12.5)
+      expect(loaded_record.weekly_wage).to be_a(Flex::Money)
+      expect(loaded_record.weekly_wage).to eq(money)
+      expect(loaded_record.weekly_wage.cents_amount).to eq(1250)
+      expect(loaded_record.weekly_wage.dollar_amount).to eq(12.5)
     end
 
     it "persists and loads memorable date correctly" do
@@ -641,7 +641,7 @@ RSpec.describe Flex::Attributes do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
-      record.money = Flex::Money.new(5000)
+      record.weekly_wage = Flex::Money.new(5000)
       record.date_of_birth = Date.new(1990, 3, 15)
       record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
@@ -667,9 +667,9 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
 
       # Verify money
-      expect(loaded_record.money).to eq(Flex::Money.new(5000))
-      expect(loaded_record.money.cents_amount).to eq(5000)
-      expect(loaded_record.money.dollar_amount).to eq(50.0)
+      expect(loaded_record.weekly_wage).to eq(Flex::Money.new(5000))
+      expect(loaded_record.weekly_wage.cents_amount).to eq(5000)
+      expect(loaded_record.weekly_wage.dollar_amount).to eq(50.0)
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))

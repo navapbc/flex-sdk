@@ -86,7 +86,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
     t.integer "reporting_period_quarter"
     t.date "period_start"
     t.date "period_end"
-    t.integer "money"
+    t.integer "weekly_wage"
   end
 
   create_table "users", force: :cascade do |t|
