@@ -2,30 +2,34 @@ require "rails_helper"
 
 RSpec.describe Flex::Money do
   describe "initialization" do
-    [
-      [ "creates a Money object with integer cents", 1250, 1250, 12.5 ],
-      [ "handles zero", 0, 0, 0.0 ],
-      [ "handles negative values", -500, -500, -5.0 ],
-      [ "accepts valid string integers", "1500", 1500, 15.0 ],
-      [ "accepts valid negative string integers", "-1500", -1500, -15.0 ]
-    ].each do |description, input, expected_cents, expected_dollars|
-      it description do
-        money = described_class.new(input)
-        expect(money.cents_amount).to eq(expected_cents)
-        expect(money.dollar_amount).to eq(expected_dollars)
+    describe "with valid inputs" do
+      [
+        [ "creates a Money object with integer cents", 1250, 1250, 12.5 ],
+        [ "handles zero", 0, 0, 0.0 ],
+        [ "handles negative values", -500, -500, -5.0 ],
+        [ "accepts valid string integers", "1500", 1500, 15.0 ],
+        [ "accepts valid negative string integers", "-1500", -1500, -15.0 ]
+      ].each do |description, input, expected_cents, expected_dollars|
+        it description do
+          money = described_class.new(input)
+          expect(money.cents_amount).to eq(expected_cents)
+          expect(money.dollar_amount).to eq(expected_dollars)
+        end
       end
     end
 
-    [
-      [ "raises type error for non-integer floats", 12.5, TypeError ],
-      [ "raises type error for integer floats", 12.0, TypeError ],
-      [ "raises type error for arrays", [], TypeError ],
-      [ "raises type error for hashes", {}, TypeError ],
-      [ "raises argument error for non-integer strings", "12.5", ArgumentError ],
-      [ "raises argument error for non-numeric strings", "abc", ArgumentError ]
-    ].each do |description, input, error_class|
-      it description do
-        expect { described_class.new(input) }.to raise_error(error_class)
+    describe "with invalid inputs" do
+      [
+        [ "raises type error for non-integer floats", 12.5, TypeError ],
+        [ "raises type error for integer floats", 12.0, TypeError ],
+        [ "raises type error for arrays", [], TypeError ],
+        [ "raises type error for hashes", {}, TypeError ],
+        [ "raises argument error for non-integer strings", "12.5", ArgumentError ],
+        [ "raises argument error for non-numeric strings", "abc", ArgumentError ]
+      ].each do |description, input, error_class|
+        it description do
+          expect { described_class.new(input) }.to raise_error(error_class)
+        end
       end
     end
   end
