@@ -148,7 +148,12 @@ module Flex
     end
 
     def date_picker(attribute, options = {})
-      raw_value = object.send(attribute) if object
+      if object
+        raw_value = object.send(attribute)
+        if raw_value.nil? && object.respond_to?("#{attribute}_before_type_cast")
+          raw_value = object.send("#{attribute}_before_type_cast")
+        end
+      end
 
       append_to_option(options, :hint, @template.content_tag(:p, I18n.t("flex.form_builder.date_picker_format")))
 
@@ -158,6 +163,8 @@ module Flex
       if raw_value.is_a?(Date)
         append_to_option(group_options, :"data-default-value", raw_value.strftime("%Y-%m-%d"))
         value = raw_value.strftime("%m/%d/%Y") if raw_value.is_a?(Date)
+      else
+        value = raw_value
       end
 
       text_field(attribute, options.merge(value: value, group_options: group_options))
@@ -443,23 +450,23 @@ module Flex
 
     def date_range(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
-      start_hint_text = options.delete(:start_hint) || I18n.t("flex.form_builder.date_range.start_hint")
-      end_hint_text = options.delete(:end_hint) || I18n.t("flex.form_builder.date_range.end_hint")
+      start_hint_text = I18n.t("flex.form_builder.date_range.start_hint")
+      end_hint_text = I18n.t("flex.form_builder.date_range.end_hint")
 
       fieldset(legend_text) do
         field_error(attribute) +
         form_group do
           date_picker(
             "#{attribute}_start",
-            label: I18n.t("flex.form_builder.date_range.start_label"),
-            hint: start_hint_text
+            hint: start_hint_text,
+            label: I18n.t("flex.form_builder.date_range.start_label")
           )
         end +
         form_group do
           date_picker(
             "#{attribute}_end",
-            label: I18n.t("flex.form_builder.date_range.end_label"),
-            hint: end_hint_text
+            hint: end_hint_text,
+            label: I18n.t("flex.form_builder.date_range.end_label")
           )
         end
       end

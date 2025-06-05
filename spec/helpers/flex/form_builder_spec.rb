@@ -277,8 +277,8 @@ RSpec.describe Flex::FormBuilder do
   end
 
   describe '#memorable_date' do
-    let(:result) { builder.memorable_date(:date_of_birth) }
     let(:object) { TestRecord.new }
+    let(:result) { builder.memorable_date(:date_of_birth) }
 
     it 'includes a month select with all months' do
       expect(result).to have_element(:select, name: 'object[date_of_birth][month]')
@@ -453,6 +453,45 @@ RSpec.describe Flex::FormBuilder do
 
       it 'displays the custom legend' do
         expect(result).to have_element(:legend, text: 'What is your address?')
+      end
+    end
+  end
+
+  describe '#date_range' do
+    let(:object) { TestRecord.new }
+    let(:result) { builder.date_range(:period) }
+
+    it 'outputs two text fields with start and end dates' do
+      expect(result).to have_element(:input, name: 'object[period_start]')
+      expect(result).to have_element(:input, name: 'object[period_end]')
+    end
+
+    context 'with existing date values' do
+      let(:object) { TestRecord.new(period: Date.new(2024, 1, 1)..Date.new(2024, 12, 31)) }
+
+      it 'pre-fills the start and end date fields' do
+        expect(result).to have_element(:input, name: 'object[period_start]', value: '01/01/2024')
+        expect(result).to have_element(:input, name: 'object[period_end]', value: '12/31/2024')
+      end
+    end
+
+    context 'with custom legend' do
+      let(:result) { builder.date_range(:period, legend: 'Date range') }
+
+      it 'displays custom legend' do
+        expect(result).to have_element(:legend, text: 'Date range')
+      end
+    end
+
+    context 'with errors' do
+      let(:object) do
+        record = TestRecord.new(period: Date.new(2024, 12, 31)..Date.new(2023, 1, 1))
+        record.valid?
+        record
+      end
+
+      it 'displays error messages for both fields' do
+        expect(result).to have_element(:span, text: 'Period start date must be before or equal to end date')
       end
     end
   end
