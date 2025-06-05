@@ -27,8 +27,8 @@ module Flex
         # @return [void]
         def date_range_attribute(name, options = {})
           # Define individual columns for start and end dates
-          attribute "#{name}_start", :date
-          attribute "#{name}_end", :date
+          flex_attribute "#{name}_start", :us_date
+          flex_attribute "#{name}_end", :us_date
 
           validates_date "#{name}_start", allow_blank: true
           validates_date "#{name}_end", allow_blank: true

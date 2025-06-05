@@ -24,6 +24,12 @@ module Flex
       end
     end
 
+    initializer 'flex.inflections' do
+      ActiveSupport::Inflector.inflections(:en) do |inflect|
+        inflect.acronym 'US'
+      end
+    end
+
     config.after_initialize do
       Rails.autoloaders.main.on_unload("Flex::EventManager") do |klass|
         klass.unsubscribe_all

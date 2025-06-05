@@ -339,16 +339,16 @@ RSpec.describe Flex::Attributes do
       end
 
       it "handles invalid date components" do
-        object.period_start = "2023-13-45"
-        object.period_end = "2023-12-31"
+        object.period_start = "13/45/2023"
+        object.period_end = "12/31/2023"
         expect(object).not_to be_valid
         expect(object.period_start).to be_nil
         expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
       end
 
       it "handles leap year edge cases" do
-        object.period_start = "2023-02-29"
-        object.period_end = "2024-02-29"
+        object.period_start = "02/29/2023"
+        object.period_end = "02/29/2024"
         expect(object).not_to be_valid
         expect(object.period_start).to be_nil
         expect(object.period_end).to be_a(Date)  # This date is valid since 2024 is a leap year

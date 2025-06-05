@@ -21,6 +21,7 @@ module Flex
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::NameAttribute
     include Flex::Attributes::TaxIdAttribute
+    include Flex::Attributes::USDateAttribute
     include Flex::Attributes::YearQuarterAttribute
 
     class_methods do
@@ -33,16 +34,18 @@ module Flex
       # @return [void]
       def flex_attribute(name, type, options = {})
         case type
+        when :address
+          address_attribute name, options
+        when :date_range
+          date_range_attribute name, options
         when :memorable_date
           memorable_date_attribute name, options
         when :name
           name_attribute name, options
-        when :address
-          address_attribute name, options
         when :tax_id
           tax_id_attribute name, options
-        when :date_range
-          date_range_attribute name, options
+        when :us_date
+          us_date_attribute name, options
         when :year_quarter
           year_quarter_attribute name, options
         else
