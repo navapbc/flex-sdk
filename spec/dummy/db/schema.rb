@@ -82,6 +82,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_232036) do
     t.string "address_state"
     t.string "address_zip_code"
     t.string "tax_id"
+    t.integer "reporting_period_year"
+    t.integer "reporting_period_quarter"
     t.integer "money"
   end
 

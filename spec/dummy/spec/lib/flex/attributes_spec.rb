@@ -354,6 +354,78 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "year_quarter attribute" do
+    it "allows setting year_quarter as a value object" do
+      year_quarter = Flex::YearQuarter.new(2023, 2)
+      object.reporting_period = year_quarter
+
+      expect(object.reporting_period).to eq(Flex::YearQuarter.new(2023, 2))
+      expect(object.reporting_period_year).to eq(2023)
+      expect(object.reporting_period_quarter).to eq(2)
+    end
+
+    it "allows setting year_quarter as a hash" do
+      object.reporting_period = { year: 2024, quarter: 3 }
+
+      expect(object.reporting_period).to eq(Flex::YearQuarter.new(2024, 3))
+      expect(object.reporting_period_year).to eq(2024)
+      expect(object.reporting_period_quarter).to eq(3)
+    end
+
+    it "allows setting nested year_quarter attributes directly" do
+      object.reporting_period_year = 2025
+      object.reporting_period_quarter = 1
+      expect(object.reporting_period).to eq(Flex::YearQuarter.new(2025, 1))
+    end
+
+    it "validates quarter values are between 1 and 4" do
+      object.reporting_period_quarter = 5
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+
+      object.reporting_period_quarter = 0
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+
+      object.reporting_period_quarter = 2
+      expect(object).to be_valid
+    end
+
+    describe "YearQuarter.<=>" do
+      it "allows sorting year quarters" do
+        year_quarters = [
+          Flex::YearQuarter.new(2024, 3),
+          Flex::YearQuarter.new(2023, 1),
+          Flex::YearQuarter.new(2024, 1)
+        ]
+
+        sorted_year_quarters = year_quarters.sort
+        expect(sorted_year_quarters).to eq([
+          Flex::YearQuarter.new(2023, 1),
+          Flex::YearQuarter.new(2024, 1),
+          Flex::YearQuarter.new(2024, 3)
+        ])
+      end
+
+      it "compares year quarters by year first, then quarter" do
+        earlier = Flex::YearQuarter.new(2023, 4)
+        later = Flex::YearQuarter.new(2024, 1)
+
+        expect(earlier <=> later).to eq(-1)
+        expect(later <=> earlier).to eq(1)
+        expect(earlier <=> earlier).to eq(0)
+      end
+
+      it "compares quarters within the same year" do
+        q1 = Flex::YearQuarter.new(2024, 1)
+        q3 = Flex::YearQuarter.new(2024, 3)
+
+        expect(q1 <=> q3).to eq(-1)
+        expect(q3 <=> q1).to eq(1)
+      end
+    end
+  end
+
   describe "persisting and loading from database" do
     let(:record) { TestRecord.new }
 
@@ -455,6 +527,18 @@ RSpec.describe Flex::Attributes do
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
+    end
+
+    it "persists and loads year_quarter object correctly" do
+      year_quarter = Flex::YearQuarter.new(2023, 4)
+      record.reporting_period = year_quarter
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.reporting_period).to be_a(Flex::YearQuarter)
+      expect(loaded_record.reporting_period).to eq(year_quarter)
+      expect(loaded_record.reporting_period_year).to eq(2023)
+      expect(loaded_record.reporting_period_quarter).to eq(4)
     end
   end
 end
