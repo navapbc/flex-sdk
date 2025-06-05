@@ -195,5 +195,12 @@ RSpec.describe Flex::Money do
       
       expect(sorted.map(&:cents_amount)).to eq([-500, 0, 500, 1000, 1000, 1000, 1500])
     end
+
+    it "can't be compared with non-Money objects" do
+      money = described_class.new(1000)
+      expect(money <=> "not a money object").to be_nil
+      expect(money <=> nil).to be_nil
+      expect(nil <=> money).to be_nil
+    end
   end
 end
