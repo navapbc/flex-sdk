@@ -11,7 +11,7 @@ This document describes how to create new Flex attributes
 3. Decide whether or not to create a new subclass of ActiveRecord::Type::Value
    Subclasses of ActiveRecord::Type::Value are used to define how to cast values from other types to the value object type. When using composed_of, implement casting behavior using the constructor and converter options for composed_of. Do not create a subclass of ActiveRecord::Type::Value. When not using composed_of, create a subclass of ActiveRecord::Type::Value and define cast to accept a Hash object and return an instance of the value object. The specific class to subclass depends on your value type. For example for memorable_date we created a subclass of ActiveRecord::Type::Date, and for tax_id we created a subclass of ActiveRecord::Type::String.
 4. Decide if there are validations that need to be added by default.
-  Note:Do not add presence option or validation. By default all Flex attributes allow nil.
+   Note:Do not add presence option or validation. By default all Flex attributes allow nil.
 
 ## Implementation
 
@@ -22,5 +22,6 @@ This document describes how to create new Flex attributes
   a. Assign a Hash to the attribute and make sure the attribute is cast to the value object type and has the correct value
   b. Load the attribute from the database and make sure the attribute is correctly cast from the database record to the value object type and has the correct value
   c. Test validation logic if relevant. When testing validation logic, check that the appropriate error objects are present and that the original uncast values are present so that they can be shown to the user to be fixed.
+5. Create the associated FormBuilder helper method for rendering the form fields associated with the Flex attribute. (See [Contributing FormBuilder helper methods](/docs/contributing/contributing-form-builder-helper-methods.md))
 
 See the existing attribute tests in the codebase for examples.

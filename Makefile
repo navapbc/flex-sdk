@@ -75,6 +75,7 @@ test: db-up
 	bundle exec rspec
 
 test-watch: ## Watch for file changes and run the test suite
+test-watch: db-up
 	bundle exec guard
 
 test-coverage: ## Open the test coverage report

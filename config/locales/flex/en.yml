@@ -41,6 +41,9 @@ en:
         state_label: "State, territory, or military post"
         zip_code_label: "ZIP code"
         zip_code_hint: "5-digit ZIP or ZIP+4"
+      date_range:
+        start_label: "Start date"
+        end_label: "End date"
     tasks:
       breadcrumbs:
         home: "Home"

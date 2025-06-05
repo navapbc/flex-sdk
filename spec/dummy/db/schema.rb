@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_03_231500) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_170708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,6 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_231500) do
     t.string "tax_id"
     t.integer "reporting_period_year"
     t.integer "reporting_period_quarter"
+    t.date "period_start"
+    t.date "period_end"
   end
 
   create_table "users", force: :cascade do |t|
