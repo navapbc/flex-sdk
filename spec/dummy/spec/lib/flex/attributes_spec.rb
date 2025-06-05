@@ -493,6 +493,17 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
       expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period.end).to eq(Date.new(2023, 12, 31))
+
+      record.period_start = "01/05/2023"
+      record.period_end = "06/12/2023"
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.period).to eq(Date.new(2023, 1, 5)..Date.new(2023, 6, 12))
+      expect(loaded_record.period_start).to eq(Date.new(2023, 1, 5))
+      expect(loaded_record.period_end).to eq(Date.new(2023, 6, 12))
+      expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 5))
+      expect(loaded_record.period.end).to eq(Date.new(2023, 6, 12))
     end
 
     it "preserves all attributes when saving and loading multiple value objects" do
