@@ -7,7 +7,7 @@ RSpec.describe Flex::Money do
       [ "handles zero", 0, 0, 0.0 ],
       [ "handles negative values", -500, -500, -5.0 ],
       [ "accepts valid string integers", "1500", 1500, 15.0 ],
-      [ "accepts valid negative string integers", "-1500", -1500, -15.0 ],
+      [ "accepts valid negative string integers", "-1500", -1500, -15.0 ]
     ].each do |description, input, expected_cents, expected_dollars|
       it description do
         money = described_class.new(input)
