@@ -30,6 +30,9 @@ module Flex
           attribute "#{name}_start", :date
           attribute "#{name}_end", :date
 
+          validates_date "#{name}_start", allow_blank: true
+          validates_date "#{name}_end", allow_blank: true
+
           # Set up composed_of mapping to Range
           composed_of name,
                       class_name: "Range",
@@ -39,11 +42,13 @@ module Flex
                       ],
                       converter: ->(value) {
                         case value
+                        when Range
+                          value
                         when Hash
                           start_date = value[:start] || value["start"]
                           end_date = value[:end] || value["end"]
                           if start_date || end_date
-                            Range.new(start_date, end_date)
+                            start_date..end_date
                           else
                             nil
                           end
@@ -53,7 +58,7 @@ module Flex
                       },
                       constructor: ->(start_date, end_date) {
                         if start_date || end_date
-                          Range.new(start_date, end_date)
+                          start_date..end_date
                         else
                           nil
                         end

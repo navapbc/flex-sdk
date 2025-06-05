@@ -84,8 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_170708) do
     t.string "tax_id"
     t.integer "reporting_period_year"
     t.integer "reporting_period_quarter"
-    t.date "date_range_start"
-    t.date "date_range_end"
+    t.date "period_start"
+    t.date "period_end"
   end
 
   create_table "users", force: :cascade do |t|
