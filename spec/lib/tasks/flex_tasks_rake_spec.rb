@@ -1,8 +1,8 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'flex:emit_event', type: :task do
-  let(:task) { Rake::Task['flex:emit_event'] }
+RSpec.describe 'flex:publish_event', type: :task do
+  let(:task) { Rake::Task['flex:publish_event'] }
   let(:event_manager) { class_double(Flex::EventManager) }
 
   before do
@@ -45,7 +45,7 @@ RSpec.describe 'flex:emit_event', type: :task do
       allow(TestCase).to receive(:find).with(case_id).and_return(test_case)
 
       expect {
-        Rake::Task['flex:emit_event'].invoke(event_name, "TestCase", case_id)
+        Rake::Task['flex:publish_event'].invoke(event_name, "TestCase", case_id)
       }.to output(/Event '#{event_name}' emitted for 'TestCase' with ID '#{case_id}'/).to_stdout
       expect(Flex::EventManager).to have_received(:publish).with(event_name, hash_including(kase: test_case))
     end
