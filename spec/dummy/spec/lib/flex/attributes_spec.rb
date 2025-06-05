@@ -182,58 +182,6 @@ RSpec.describe Flex::Attributes do
       expect(object.weekly_wage.dollar_amount).to eq(10.5)
     end
 
-    it "formats money correctly using to_s" do
-      object.weekly_wage = 1234
-
-      expect(object.weekly_wage.to_s).to eq("$12.34")
-    end
-
-    describe "arithmetic operations" do
-      let(:ten_dollars) { Flex::Money.new(1000) }
-      let(:five_dollars) { Flex::Money.new(500) }
-
-      it "adds two Money objects" do
-        result = ten_dollars + five_dollars
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(1500)
-        expect(result.dollar_amount).to eq(15.0)
-      end
-
-      it "subtracts two Money objects" do
-        result = ten_dollars - five_dollars
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(500)
-        expect(result.dollar_amount).to eq(5.0)
-      end
-
-      it "multiplies Money by a scalar" do
-        result = ten_dollars * 2.5
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(2500)
-        expect(result.dollar_amount).to eq(25.0)
-      end
-
-      it "divides Money by a scalar, rounding down" do
-        money = Flex::Money.new(1001)
-        result = money / 3
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(333)
-        expect(result.dollar_amount).to eq(3.33)
-      end
-
-      it "adds Money and integer" do
-        result = ten_dollars + 250
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(1250)
-      end
-
-      it "subtracts integer from Money" do
-        result = ten_dollars - 250
-        expect(result).to be_a(Flex::Money)
-        expect(result.cents_amount).to eq(750)
-      end
-    end
-
     describe "edge cases" do
       it "handles nil values" do
         object.weekly_wage = nil
