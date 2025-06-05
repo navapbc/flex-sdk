@@ -7,10 +7,6 @@ module Flex
     before_action :set_task, only: %i[ show update ]
     before_action :add_task_details_view_path, only: %i[ show ]
 
-    def task_class
-      controller_path.classify.constantize
-    end
-
     def index
       @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
@@ -31,7 +27,7 @@ module Flex
     private
 
     def set_task
-      @task = task_class.find(params[:id]) if params[:id].present?
+      @task = Flex::Task.find(params[:id]) if params[:id].present?
     end
 
     def add_task_details_view_path
@@ -43,7 +39,7 @@ module Flex
     end
 
     def filter_tasks
-      tasks = filter_tasks_by_date(task_class.all, index_filter_params[:filter_date])
+      tasks = filter_tasks_by_date(Flex::Task.all, index_filter_params[:filter_date])
       tasks = filter_tasks_by_type(tasks, index_filter_params[:filter_type])
       tasks = filter_tasks_by_status(tasks, index_filter_params[:filter_status])
 
