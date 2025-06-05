@@ -11,6 +11,6 @@ namespace :flex do
 
     kase = case_class.constantize.find(case_id)
     Flex::EventManager.publish(event_name, { kase: kase })
-    puts "Event '#{event_name}' emitted for #{case_class} with ID '#{case_id}'"
+    puts "Event '#{event_name}' emitted for '#{case_class}' with ID '#{case_id}'"
   end
 end
