@@ -24,9 +24,9 @@ module Flex
       end
     end
 
-    initializer 'flex.inflections' do
+    initializer "flex.inflections" do
       ActiveSupport::Inflector.inflections(:en) do |inflect|
-        inflect.acronym 'US'
+        inflect.acronym "US"
       end
     end
 
