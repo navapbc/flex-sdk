@@ -112,12 +112,12 @@ module Flex
       @cents <=> other.cents
     end
 
-    # Equality comparison
+    # Equality comparison for hash key functionality
     #
     # @param [Object] other The other object to compare
     # @return [Boolean] True if equal
-    def ==(other)
-      other.is_a?(Money) && @cents == other.cents
+    def eql?(other)
+      (self <=> other) == 0
     end
 
     # Hash code for use in hashes and sets

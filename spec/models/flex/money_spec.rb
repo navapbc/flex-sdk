@@ -157,4 +157,43 @@ RSpec.describe Flex::Money do
       expect(result.cents_amount).to eq(750)
     end
   end
+
+  describe "hash key usage" do
+    it "can be used as hash keys" do
+      hash = {
+        described_class.new(1000) => "ten dollars",
+        described_class.new(500) => "five dollars"
+      }
+
+      expect(hash[described_class.new(1000)]).to eq("ten dollars")
+      expect(hash[described_class.new(500)]).to eq("five dollars")
+      expect(hash[described_class.new(2000)]).to be_nil
+    end
+
+    it "treats equal amounts as the same key" do
+      hash = { described_class.new(1000) => "original" }
+      hash[described_class.new(1000)] = "updated"
+      
+      expect(hash.size).to eq(1)
+      expect(hash[described_class.new(1000)]).to eq("updated")
+    end
+  end
+
+  describe "sorting" do
+    it "can be sorted" do
+      amounts = [
+        described_class.new(1500),
+        described_class.new(500),
+        described_class.new(1000),
+        described_class.new(1000),
+        described_class.new(0),
+        described_class.new(1000),
+        described_class.new(-500)
+      ]
+
+      sorted = amounts.sort
+      
+      expect(sorted.map(&:cents_amount)).to eq([-500, 0, 500, 1000, 1000, 1000, 1500])
+    end
+  end
 end
