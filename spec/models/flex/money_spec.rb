@@ -34,99 +34,100 @@ RSpec.describe Flex::Money do
     end
   end
 
-  describe "arithmetic operations" do
+  describe "+" do
     let(:ten_dollars) { described_class.new(1000) }
     let(:five_dollars) { described_class.new(500) }
 
-    describe "addition" do
-      context "with valid inputs" do
-        [
-          [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
-          [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ],
-          [ "handles negative money values", described_class.new(1000), described_class.new(-500), described_class.new(500) ]
-        ].each do |description, money1, money2, expected|
-          it description do
-            result = money1 + money2
-            expect(result).to be_a(described_class)
-            expect(result.cents_amount).to eq(expected.cents_amount)
-          end
-        end
-      end
-
-      context "with invalid inputs" do
-        let(:money) { described_class.new(1000) }
-
-        it "raises TypeError for integer operands" do
-          expect { money + 250 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Integer'")
-        end
-
-        it "raises TypeError for other non-Money objects" do
-          expect { money + "500" }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'String'")
-          expect { money + 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Float'")
-          expect { money + nil }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'NilClass'")
-        end
-      end
-    end
-
-    describe "subtraction" do
-      context "with valid inputs" do
-        [
-          [ "subtracts two Money objects", described_class.new(1000), described_class.new(500), described_class.new(500) ],
-          [ "can result in negative values", described_class.new(500), described_class.new(1000), described_class.new(-500) ],
-          [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ]
-        ].each do |description, money1, money2, expected|
-          it description do
-            result = money1 - money2
-            expect(result).to be_a(described_class)
-            expect(result.cents_amount).to eq(expected.cents_amount)
-          end
-        end
-      end
-
-      context "with invalid inputs" do
-        let(:money) { described_class.new(1000) }
-
-        it "raises TypeError for integer operands" do
-          expect { money - 250 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Integer'")
-        end
-
-        it "raises TypeError for other non-Money objects" do
-          expect { money - "500" }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'String'")
-          expect { money - 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Float'")
-          expect { money - nil }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'NilClass'")
-        end
-      end
-    end
-
-    describe "multiplication" do
+    context "with valid inputs" do
       [
-        [ "multiplies Money by integer", described_class.new(1000), 3, described_class.new(3000) ],
-        [ "multiplies Money by float", described_class.new(1000), 2.5, described_class.new(2500) ],
-        [ "rounds to nearest cent", described_class.new(333), 1.5, described_class.new(500) ],
-        [ "handles zero multiplication", described_class.new(1000), 0, described_class.new(0) ],
-        [ "handles negative multiplication", described_class.new(1000), -2, described_class.new(-2000) ]
-      ].each do |description, money, multiplier, expected|
+        [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
+        [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ],
+        [ "handles negative money values", described_class.new(1000), described_class.new(-500), described_class.new(500) ]
+      ].each do |description, money1, money2, expected|
         it description do
-          result = money * multiplier
+          result = money1 + money2
           expect(result).to be_a(described_class)
           expect(result.cents_amount).to eq(expected.cents_amount)
         end
       end
     end
 
-    describe "division" do
+    context "with invalid inputs" do
+      let(:money) { described_class.new(1000) }
+
+      it "raises TypeError for integer operands" do
+        expect { money + 250 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Integer'")
+      end
+
+      it "raises TypeError for other non-Money objects" do
+        expect { money + "500" }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'String'")
+        expect { money + 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Float'")
+        expect { money + nil }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'NilClass'")
+      end
+    end
+  end
+
+  describe "-" do
+    let(:ten_dollars) { described_class.new(1000) }
+    let(:five_dollars) { described_class.new(500) }
+
+    context "with valid inputs" do
       [
-        [ "divides Money by integer, rounding down", described_class.new(1001), 3, described_class.new(333) ],
-        [ "divides Money by float, rounding down", described_class.new(1000), 2.5, described_class.new(400) ],
-        [ "handles exact division", described_class.new(1000), 2, described_class.new(500) ],
-        [ "always rounds down", described_class.new(999), 3, described_class.new(333) ],
-        [ "handles negative division", described_class.new(1000), -2, described_class.new(-500) ]
-      ].each do |description, money, divisor, expected|
+        [ "subtracts two Money objects", described_class.new(1000), described_class.new(500), described_class.new(500) ],
+        [ "can result in negative values", described_class.new(500), described_class.new(1000), described_class.new(-500) ],
+        [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ]
+      ].each do |description, money1, money2, expected|
         it description do
-          result = money / divisor
+          result = money1 - money2
           expect(result).to be_a(described_class)
           expect(result.cents_amount).to eq(expected.cents_amount)
         end
+      end
+    end
+
+    context "with invalid inputs" do
+      let(:money) { described_class.new(1000) }
+
+      it "raises TypeError for integer operands" do
+        expect { money - 250 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Integer'")
+      end
+
+      it "raises TypeError for other non-Money objects" do
+        expect { money - "500" }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'String'")
+        expect { money - 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Float'")
+        expect { money - nil }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'NilClass'")
+      end
+    end
+  end
+
+  describe "*" do
+    [
+      [ "multiplies Money by integer", described_class.new(1000), 3, described_class.new(3000) ],
+      [ "multiplies Money by float", described_class.new(1000), 2.5, described_class.new(2500) ],
+      [ "rounds to nearest cent", described_class.new(333), 1.5, described_class.new(500) ],
+      [ "handles zero multiplication", described_class.new(1000), 0, described_class.new(0) ],
+      [ "handles negative multiplication", described_class.new(1000), -2, described_class.new(-2000) ]
+    ].each do |description, money, multiplier, expected|
+      it description do
+        result = money * multiplier
+        expect(result).to be_a(described_class)
+        expect(result.cents_amount).to eq(expected.cents_amount)
+      end
+    end
+  end
+
+  describe "/" do
+    [
+      [ "divides Money by integer, rounding down", described_class.new(1001), 3, described_class.new(333) ],
+      [ "divides Money by float, rounding down", described_class.new(1000), 2.5, described_class.new(400) ],
+      [ "handles exact division", described_class.new(1000), 2, described_class.new(500) ],
+      [ "always rounds down", described_class.new(999), 3, described_class.new(333) ],
+      [ "handles negative division", described_class.new(1000), -2, described_class.new(-500) ]
+    ].each do |description, money, divisor, expected|
+      it description do
+        result = money / divisor
+        expect(result).to be_a(described_class)
+        expect(result.cents_amount).to eq(expected.cents_amount)
       end
     end
   end
