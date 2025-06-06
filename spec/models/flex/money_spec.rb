@@ -150,6 +150,9 @@ RSpec.describe Flex::Money do
 
   describe "#cents_amount" do
     let(:money) { described_class.new(1234) }
+
+
+
     it "returns amount as integer in cents" do
       expect(money.cents_amount).to eq(1234)
     end
