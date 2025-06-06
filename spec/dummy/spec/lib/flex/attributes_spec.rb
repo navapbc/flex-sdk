@@ -156,6 +156,73 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "money attribute" do
+    it "allows setting money as a Money object" do
+      money = Flex::Money.new(1250)
+      object.weekly_wage = money
+
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(1250)
+      expect(object.weekly_wage.dollar_amount).to eq(12.5)
+    end
+
+    it "allows setting money as an integer (cents)" do
+      object.weekly_wage = 2500
+
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(2500)
+      expect(object.weekly_wage.dollar_amount).to eq(25.0)
+    end
+
+    it "allows setting money as a hash with dollar_amount" do
+      object.weekly_wage = { dollar_amount: 10.50 }
+
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(1050)
+      expect(object.weekly_wage.dollar_amount).to eq(10.5)
+    end
+
+    describe "edge cases" do
+      it "handles nil values" do
+        object.weekly_wage = nil
+        expect(object.weekly_wage).to be_nil
+      end
+
+      it "handles zero values" do
+        object.weekly_wage = 0
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(0)
+        expect(object.weekly_wage.dollar_amount).to eq(0.0)
+        expect(object.weekly_wage.to_s).to eq("$0.00")
+      end
+
+      it "handles negative values" do
+        object.weekly_wage = -500
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(-500)
+        expect(object.weekly_wage.dollar_amount).to eq(-5.0)
+        expect(object.weekly_wage.to_s).to eq("-$5.00")
+      end
+
+      it "handles hash with string keys" do
+        object.weekly_wage = { "dollar_amount" => "12.34" }
+        expect(object.weekly_wage).to be_a(Flex::Money)
+        expect(object.weekly_wage.cents_amount).to eq(1234)
+        expect(object.weekly_wage.dollar_amount).to eq(12.34)
+      end
+
+      it "returns nil for invalid hash" do
+        object.weekly_wage = { invalid_key: 100 }
+        expect(object.weekly_wage).to be_nil
+      end
+
+      it "returns nil for unsupported types" do
+        object.weekly_wage = 15.75
+        expect(object.weekly_wage).to be_nil
+      end
+    end
+  end
+
   describe "tax_id attribute" do
     it "allows setting a tax_id as a TaxId object" do
       tax_id = Flex::TaxId.new("123456789")
@@ -471,6 +538,18 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.tax_id.formatted).to eq("123-45-6789")
     end
 
+    it "persists and loads money object correctly" do
+      money = Flex::Money.new(1250)
+      record.weekly_wage = money
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.weekly_wage).to be_a(Flex::Money)
+      expect(loaded_record.weekly_wage).to eq(money)
+      expect(loaded_record.weekly_wage.cents_amount).to eq(1250)
+      expect(loaded_record.weekly_wage.dollar_amount).to eq(12.5)
+    end
+
     it "persists and loads memorable date correctly" do
       date = Date.new(2020, 1, 2)
       record.date_of_birth = date
@@ -510,6 +589,7 @@ RSpec.describe Flex::Attributes do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
+      record.weekly_wage = Flex::Money.new(5000)
       record.date_of_birth = Date.new(1990, 3, 15)
       record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
@@ -533,6 +613,11 @@ RSpec.describe Flex::Attributes do
       # Verify tax_id
       expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
       expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
+
+      # Verify money
+      expect(loaded_record.weekly_wage).to eq(Flex::Money.new(5000))
+      expect(loaded_record.weekly_wage.cents_amount).to eq(5000)
+      expect(loaded_record.weekly_wage.dollar_amount).to eq(50.0)
 
       # Verify date_of_birth
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
