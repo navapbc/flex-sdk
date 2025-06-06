@@ -4,23 +4,22 @@ module Flex
     # Generator that creates migrations for Flex attributes by mapping
     # each flex attribute type to its required database columns
     class MigrationGenerator < Rails::Generators::NamedBase
-      source_root File.expand_path("templates", __dir__)
+      argument :attrs, type: :array, default: [], banner: "attribute:type attribute:type"
 
-      def initialize(args, *options)
-        # Extract migration name and flex attributes from args
-        @migration_name = args.shift
-        @flex_attributes = args
+      # def initialize(args, *options)
+      #   # Extract migration name and flex attributes from args
+      #   @migration_name = args.shift
+      #   @flex_attributes = args
 
-        # Call super with just the migration name
-        super([ @migration_name ], *options)
-      end
+      #   # Call super with just the migration name
+      #   super([ @migration_name ], *options)
+      # end
 
       def create_migration_file
         columns = []
-
-        @flex_attributes.each do |attribute_string|
+        attrs.each do |attribute_string|
           name, type = attribute_string.split(":")
-          type = type.to_sym if type
+          type = type.to_sym
 
           case type
           when :name
@@ -51,12 +50,13 @@ module Flex
             raise ArgumentError, "Unsupported flex attribute type: #{type}"
           end
         end
-
-        if columns.any?
-          generate("migration", file_name, *columns)
-        else
-          generate("migration", file_name)
-        end
+        
+        puts name
+        generate("migration", name, *columns)
+        # if columns.any?
+        # else
+        #   generate("migration", file_name)
+        # end
       end
     end
   end
