@@ -41,7 +41,7 @@ module Flex
             raise ArgumentError, "Unsupported flex attribute type: #{type}"
           end
         end
-        
+
         generate("migration", name, *columns)
       end
     end
