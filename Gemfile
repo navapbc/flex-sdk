@@ -16,7 +16,6 @@ gem "validates_timeliness", ">= 7.0.0"
 group :development, :test do
   gem "pg", "~> 1.1"
   gem "guard-rspec", require: false
-  gem "generator_spec"
   gem "rspec-rails", "~> 7.0.0"
   gem "shoulda-matchers", "~> 6.0"
   gem "faker"
