@@ -43,22 +43,24 @@ module Flex
       end
     end
 
-    # Add another Money object or integer value
+    # Add another Money object
     #
-    # @param [Money, Integer] other The value to add
+    # @param [Money] other The Money object to add
     # @return [Money] A new Money object with the sum
+    # @raise [TypeError] if other is not a Money object
     def +(other)
-      other_cents = other.is_a?(Money) ? other.cents : other
-      Money.new(@cents + other_cents)
+      raise TypeError, "unsupported operand type(s) for +: 'Money' and '#{other.class}'" unless other.is_a?(Money)
+      Money.new(@cents + other.cents)
     end
 
-    # Subtract another Money object or integer value
+    # Subtract another Money object
     #
-    # @param [Money, Integer] other The value to subtract
+    # @param [Money] other The Money object to subtract
     # @return [Money] A new Money object with the difference
+    # @raise [TypeError] if other is not a Money object
     def -(other)
-      other_cents = other.is_a?(Money) ? other.cents : other
-      Money.new(@cents - other_cents)
+      raise TypeError, "unsupported operand type(s) for -: 'Money' and '#{other.class}'" unless other.is_a?(Money)
+      Money.new(@cents - other.cents)
     end
 
     # Multiply by a scalar value
@@ -75,11 +77,6 @@ module Flex
     # @return [Money] A new Money object with the quotient
     def /(scalar)
       Money.new((@cents / scalar.to_f).floor)
-    end
-
-    # Support coercion for commutative operations with integers and floats
-    def coerce(other)
-      [ self, other ]
     end
 
     # Returns the amount as a Float in dollars

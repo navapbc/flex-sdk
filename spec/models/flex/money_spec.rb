@@ -39,29 +39,61 @@ RSpec.describe Flex::Money do
     let(:five_dollars) { described_class.new(500) }
 
     describe "addition" do
-      [
-        [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
-        [ "adds Money and integer", described_class.new(1000), 250, described_class.new(1250) ],
-        [ "is commutative with integers", 250, described_class.new(1000), described_class.new(1250) ]
-      ].each do |description, money1, money2, expected|
-        it description do
-          result = money1 + money2
-          expect(result).to be_a(described_class)
-          expect(result.cents_amount).to eq(expected.cents_amount)
+      context "with valid inputs" do
+        [
+          [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
+          [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ],
+          [ "handles negative money values", described_class.new(1000), described_class.new(-500), described_class.new(500) ]
+        ].each do |description, money1, money2, expected|
+          it description do
+            result = money1 + money2
+            expect(result).to be_a(described_class)
+            expect(result.cents_amount).to eq(expected.cents_amount)
+          end
+        end
+      end
+
+      context "with invalid inputs" do
+        let(:money) { described_class.new(1000) }
+
+        it "raises TypeError for integer operands" do
+          expect { money + 250 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Integer'")
+        end
+
+        it "raises TypeError for other non-Money objects" do
+          expect { money + "500" }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'String'")
+          expect { money + 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Float'")
+          expect { money + nil }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'NilClass'")
         end
       end
     end
 
     describe "subtraction" do
-      [
-        [ "subtracts two Money objects", described_class.new(1000), described_class.new(500), described_class.new(500) ],
-        [ "subtracts integer from Money", described_class.new(1000), 250, described_class.new(750) ],
-        [ "can result in negative values", described_class.new(500), described_class.new(1000), described_class.new(-500) ]
-      ].each do |description, money1, money2, expected|
-        it description do
-          result = money1 - money2
-          expect(result).to be_a(described_class)
-          expect(result.cents_amount).to eq(expected.cents_amount)
+      context "with valid inputs" do
+        [
+          [ "subtracts two Money objects", described_class.new(1000), described_class.new(500), described_class.new(500) ],
+          [ "can result in negative values", described_class.new(500), described_class.new(1000), described_class.new(-500) ],
+          [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ]
+        ].each do |description, money1, money2, expected|
+          it description do
+            result = money1 - money2
+            expect(result).to be_a(described_class)
+            expect(result.cents_amount).to eq(expected.cents_amount)
+          end
+        end
+      end
+
+      context "with invalid inputs" do
+        let(:money) { described_class.new(1000) }
+
+        it "raises TypeError for integer operands" do
+          expect { money - 250 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Integer'")
+        end
+
+        it "raises TypeError for other non-Money objects" do
+          expect { money - "500" }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'String'")
+          expect { money - 10.5 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Float'")
+          expect { money - nil }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'NilClass'")
         end
       end
     end
