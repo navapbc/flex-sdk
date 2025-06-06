@@ -132,27 +132,26 @@ RSpec.describe Flex::Money do
     end
   end
 
-  describe "conversion methods" do
+  describe "#dollar_amount" do
     let(:money) { described_class.new(1234) }
 
-    describe "#dollar_amount" do
-      [
-        [ "returns amount as float in dollars", 1234, 12.34 ],
-        [ "handles zero", 0, 0.0 ],
-        [ "handles negative amounts", -500, -5.0 ],
-        [ "handles single cents", 5, 0.05 ]
-      ].each do |description, cents, expected_dollars|
-        it description do
-          test_money = described_class.new(cents)
-          expect(test_money.dollar_amount).to eq(expected_dollars)
-        end
+    [
+      [ "returns amount as float in dollars", 1234, 12.34 ],
+      [ "handles zero", 0, 0.0 ],
+      [ "handles negative amounts", -500, -5.0 ],
+      [ "handles single cents", 5, 0.05 ]
+    ].each do |description, cents, expected_dollars|
+      it description do
+        test_money = described_class.new(cents)
+        expect(test_money.dollar_amount).to eq(expected_dollars)
       end
     end
+  end
 
-    describe "#cents_amount" do
-      it "returns amount as integer in cents" do
-        expect(money.cents_amount).to eq(1234)
-      end
+  describe "#cents_amount" do
+    let(:money) { described_class.new(1234) }
+    it "returns amount as integer in cents" do
+      expect(money.cents_amount).to eq(1234)
     end
   end
 
@@ -195,7 +194,7 @@ RSpec.describe Flex::Money do
     end
   end
 
-  describe "hash key usage" do
+  describe "as hash keys" do
     it "can be used as hash keys" do
       hash = {
         described_class.new(1000) => "ten dollars",
