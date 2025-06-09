@@ -16,6 +16,17 @@ RSpec.describe Flex::Money do
           expect(money.dollar_amount).to eq(expected_dollars)
         end
       end
+
+      it "accepts Flex::Money objects as input" do
+        original_money = described_class.new(1750)
+        new_money = described_class.new(original_money)
+
+        expect(new_money).to be_a(described_class)
+        expect(new_money.cents_amount).to eq(1750)
+        expect(new_money.dollar_amount).to eq(17.5)
+        expect(new_money).not_to be(original_money)
+        expect(new_money).to eq(original_money)
+      end
     end
 
     describe "with invalid inputs" do

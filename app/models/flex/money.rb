@@ -27,7 +27,7 @@ module Flex
 
     # Initialize a new Money object with the given cents amount
     #
-    # @param [Integer, Float, String] cents The amount in cents
+    # @param [Integer, String, Flex::Money] cents The amount in cents
     def initialize(cents)
       case cents
       when Integer
@@ -38,8 +38,10 @@ module Flex
         rescue ArgumentError
           raise ArgumentError, "String values must be valid integers representing cents"
         end
+      when Flex::Money
+        @cents = cents.cents
       else
-        raise TypeError, "Expected Integer or String, got #{cents.class}"
+        raise TypeError, "Expected Integer, String, or Flex::Money, got #{cents.class}"
       end
     end
 
