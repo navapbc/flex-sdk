@@ -44,11 +44,27 @@ module Flex
                       converter: ->(value) {
                         case value
                         when Hash
-                          Flex::YearQuarter.new(value[:year], value[:quarter])
+                          year = value[:year] || value["year"]
+                          quarter = value[:quarter] || value["quarter"]
+                          if year && quarter
+                            Flex::YearQuarter.new(year, quarter)
+                          else
+                            nil
+                          end
+                        when Flex::YearQuarter
+                          value
                         else
                           nil
                         end
-                      }
+                      },
+                      constructor: ->(year, quarter) {
+                        if year && quarter
+                          Flex::YearQuarter.new(year, quarter)
+                        else
+                          nil
+                        end
+                      },
+                      allow_nil: true
         end
       end
     end

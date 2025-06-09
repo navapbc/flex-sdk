@@ -494,6 +494,80 @@ RSpec.describe Flex::Attributes do
         expect(q3 <=> q1).to eq(1)
       end
     end
+
+    describe "YearQuarter arithmetic operations" do
+      it "adds quarters correctly" do
+        yq = Flex::YearQuarter.new(2023, 2)
+        result = yq + 1
+        expect(result.year).to eq(2023)
+        expect(result.quarter).to eq(3)
+      end
+
+      it "adds quarters across year boundaries" do
+        yq = Flex::YearQuarter.new(2023, 4)
+        result = yq + 1
+        expect(result.year).to eq(2024)
+        expect(result.quarter).to eq(1)
+      end
+
+      it "subtracts quarters correctly" do
+        yq = Flex::YearQuarter.new(2023, 3)
+        result = yq - 1
+        expect(result.year).to eq(2023)
+        expect(result.quarter).to eq(2)
+      end
+
+      it "subtracts quarters across year boundaries" do
+        yq = Flex::YearQuarter.new(2023, 1)
+        result = yq - 1
+        expect(result.year).to eq(2022)
+        expect(result.quarter).to eq(4)
+      end
+
+      it "supports commutative operations with coerce" do
+        yq = Flex::YearQuarter.new(2023, 2)
+        result = 1 + yq
+        expect(result.year).to eq(2023)
+        expect(result.quarter).to eq(3)
+      end
+
+      it "raises TypeError for non-integer arguments" do
+        yq = Flex::YearQuarter.new(2023, 2)
+        expect { yq + "invalid" }.to raise_error(TypeError, "Integer expected, got String")
+      end
+    end
+
+    describe "YearQuarter Range behavior" do
+      it "behaves as a Range with proper date boundaries" do
+        yq = Flex::YearQuarter.new(2023, 2)
+        expect(yq.begin).to eq(Date.new(2023, 4, 1))
+        expect(yq.end).to eq(Date.new(2023, 6, 30))
+      end
+
+      it "includes dates within the quarter" do
+        yq = Flex::YearQuarter.new(2023, 2)
+        expect(yq.include?(Date.new(2023, 5, 15))).to be true
+        expect(yq.include?(Date.new(2023, 3, 15))).to be false
+      end
+
+      it "calculates correct date ranges for all quarters" do
+        q1 = Flex::YearQuarter.new(2023, 1)
+        expect(q1.begin).to eq(Date.new(2023, 1, 1))
+        expect(q1.end).to eq(Date.new(2023, 3, 31))
+
+        q2 = Flex::YearQuarter.new(2023, 2)
+        expect(q2.begin).to eq(Date.new(2023, 4, 1))
+        expect(q2.end).to eq(Date.new(2023, 6, 30))
+
+        q3 = Flex::YearQuarter.new(2023, 3)
+        expect(q3.begin).to eq(Date.new(2023, 7, 1))
+        expect(q3.end).to eq(Date.new(2023, 9, 30))
+
+        q4 = Flex::YearQuarter.new(2023, 4)
+        expect(q4.begin).to eq(Date.new(2023, 10, 1))
+        expect(q4.end).to eq(Date.new(2023, 12, 31))
+      end
+    end
   end
 
   describe "persisting and loading from database" do
