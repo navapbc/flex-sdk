@@ -4,20 +4,13 @@ RSpec.describe Flex::YearQuarter do
   describe "+" do
     [
       [ "adds quarters correctly", described_class.new(2023, 2), 1, described_class.new(2023, 3) ],
-      [ "adds quarters across year boundaries", described_class.new(2023, 4), 1, described_class.new(2024, 1) ]
+      [ "adds quarters across year boundaries", described_class.new(2023, 4), 1, described_class.new(2024, 1) ],
+      [ "supports commutative operations with coerce", 1, described_class.new(2023, 2), described_class.new(2023, 3) ]
     ].each do |description, year_quarter, n, expected|
       it description do
         result = year_quarter + n
-        expect(result.year).to eq(expected.year)
-        expect(result.quarter).to eq(expected.quarter)
+        expect(result).to eq(expected)
       end
-    end
-
-    it "supports commutative operations with coerce" do
-      yq = described_class.new(2023, 2)
-      result = 1 + yq
-      expect(result.year).to eq(2023)
-      expect(result.quarter).to eq(3)
     end
 
     it "raises TypeError for non-integer arguments" do
@@ -33,43 +26,21 @@ RSpec.describe Flex::YearQuarter do
     ].each do |description, year_quarter, n, expected|
       it description do
         result = year_quarter - n
-        expect(result.year).to eq(expected.year)
-        expect(result.quarter).to eq(expected.quarter)
+        expect(result).to eq(expected)
       end
     end
   end
 
   describe "to_date_range" do
-    it "returns proper date range for Q2" do
-      yq = described_class.new(2023, 2)
-      range = yq.to_date_range
-      expect(range.begin).to eq(Date.new(2023, 4, 1))
-      expect(range.end).to eq(Date.new(2023, 6, 30))
-    end
-
-    it "includes dates within the quarter" do
-      yq = described_class.new(2023, 2)
-      range = yq.to_date_range
-      expect(range.include?(Date.new(2023, 5, 15))).to be true
-      expect(range.include?(Date.new(2023, 3, 15))).to be false
-    end
-
-    it "calculates correct date ranges for all quarters" do
-      q1 = described_class.new(2023, 1)
-      expect(q1.to_date_range.begin).to eq(Date.new(2023, 1, 1))
-      expect(q1.to_date_range.end).to eq(Date.new(2023, 3, 31))
-
-      q2 = described_class.new(2023, 2)
-      expect(q2.to_date_range.begin).to eq(Date.new(2023, 4, 1))
-      expect(q2.to_date_range.end).to eq(Date.new(2023, 6, 30))
-
-      q3 = described_class.new(2023, 3)
-      expect(q3.to_date_range.begin).to eq(Date.new(2023, 7, 1))
-      expect(q3.to_date_range.end).to eq(Date.new(2023, 9, 30))
-
-      q4 = described_class.new(2023, 4)
-      expect(q4.to_date_range.begin).to eq(Date.new(2023, 10, 1))
-      expect(q4.to_date_range.end).to eq(Date.new(2023, 12, 31))
+    [
+      [ "calculates correct date ranges for Q1", described_class.new(2023, 1), Date.new(2023, 1, 1)..Date.new(2023, 3, 31) ],
+      [ "calculates correct date ranges for Q2", described_class.new(2023, 2), Date.new(2023, 4, 1)..Date.new(2023, 6, 30) ],
+      [ "calculates correct date ranges for Q3", described_class.new(2023, 3), Date.new(2023, 7, 1)..Date.new(2023, 9, 30) ],
+      [ "calculates correct date ranges for Q4", described_class.new(2023, 4), Date.new(2023, 10, 1)..Date.new(2023, 12, 31) ]
+    ].each do |description, year_quarter, expected|
+      it description do
+        expect(year_quarter.to_date_range).to eq(expected)
+      end
     end
   end
 end
