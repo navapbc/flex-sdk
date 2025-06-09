@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_09_235214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,6 +27,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
     t.index ["case_id"], name: "index_flex_tasks_on_case_id"
     t.index ["status"], name: "index_flex_tasks_on_status"
     t.index ["type"], name: "index_flex_tasks_on_type"
+  end
+
+  create_table "income_records", force: :cascade do |t|
+    t.string "person_id"
+    t.integer "amount"
+    t.integer "period_year"
+    t.integer "period_quarter"
+    t.date "period_start"
+    t.date "period_end"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "passport_application_forms", force: :cascade do |t|
