@@ -68,5 +68,13 @@ module Flex
       self[:status] = :pending
       save!
     end
+
+    def complete?
+      status == "completed"
+    end
+
+    def incomplete?
+      !complete?
+    end
   end
 end
