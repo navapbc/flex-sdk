@@ -1,31 +1,31 @@
 namespace :flex do
   namespace :events do
-    desc "Publish a specified Flex event"
-    task :publish_event, [ :event_name ] => [ :environment ] do |t, args|
-      event_name = args[:event_name]
-
-      if event_name.blank?
-        raise "Error: event_name is required."
+    def fetch_required_args!(args, required_keys)
+      missing = required_keys.select { |k| args[k].blank? }
+      if missing.any?
+        verb = missing.size == 1 ? "is" : "are"
+        raise "Error: #{missing.to_sentence} #{verb} required"
       end
 
-      Flex::EventManager.publish(event_name)
+      required_keys.map { |k| args[k] }
+    end
 
+    desc "Publish a specified Flex event"
+    task :publish_event, [ :event_name ] => [ :environment ] do |t, args|
+      event_name = *fetch_required_args!(args, [ :event_name ])
+      Flex::EventManager.publish(event_name)
       Rails.logger.info "Event '#{event_name}' emitted successfully"
     end
 
     desc "Publish a specified Flex event for a given case with a given ID"
     task :publish_case_event, [ :event_name, :case_class, :case_id ] => [ :environment ] do |t, args|
-      event_name = args[:event_name]
-      case_id = args[:case_id]
-      case_class = args[:case_class]
-
-      if event_name.blank? || case_class.blank? || case_id.blank?
-        raise "Error: event_name, case_class, and case_id are required."
+      event_name, case_class, case_id = *fetch_required_args!(args, [ :event_name, :case_class, :case_id ])
+      begin
+        kase = case_class.constantize.find(case_id)
+      rescue NameError
+        raise "Error: case_class '#{case_class}' is not a valid constant."
       end
-
-      kase = case_class.constantize.find(case_id)
       Flex::EventManager.publish(event_name, { kase: kase })
-
       Rails.logger.info "Event '#{event_name}' emitted for '#{case_class}' with ID '#{case_id}'"
     end
   end
