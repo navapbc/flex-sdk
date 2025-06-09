@@ -97,4 +97,26 @@ RSpec.describe Flex::Task, type: :model do
       expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
     end
   end
+
+  describe '#complete?' do
+    it 'returns true if the task is completed' do
+      task.mark_completed
+      expect(task.complete?).to be true
+    end
+
+    it 'returns false if the task is not completed' do
+      expect(task.complete?).to be false
+    end
+  end
+
+  describe '#incomplete?' do
+    it 'returns true if the task is not completed' do
+      expect(task.incomplete?).to be true
+    end
+
+    it 'returns false if the task is completed' do
+      task.mark_completed
+      expect(task.incomplete?).to be false
+    end
+  end
 end
