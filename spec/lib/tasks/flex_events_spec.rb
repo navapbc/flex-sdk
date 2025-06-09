@@ -2,12 +2,12 @@ require 'rails_helper'
 require 'rake'
 
 RSpec.describe 'flex:events', type: :task do
-  describe 'flex:publish_case_event' do
+  describe 'publish_case_event' do
     let(:task) { Rake::Task['flex:events:publish_case_event'] }
     let(:event_manager) { class_double(Flex::EventManager) }
 
     before do
-      Rake.application.rake_require('tasks/flex_tasks')
+      Rake.application.rake_require('tasks/flex_events')
       Rake::Task.define_task(:environment)
       stub_const('Flex::EventManager', event_manager)
       allow(Flex::EventManager).to receive(:publish)
