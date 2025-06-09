@@ -1,33 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Flex::YearQuarter do
-  describe "arithmetic operations" do
-    it "adds quarters correctly" do
-      yq = described_class.new(2023, 2)
-      result = yq + 1
-      expect(result.year).to eq(2023)
-      expect(result.quarter).to eq(3)
-    end
-
-    it "adds quarters across year boundaries" do
-      yq = described_class.new(2023, 4)
-      result = yq + 1
-      expect(result.year).to eq(2024)
-      expect(result.quarter).to eq(1)
-    end
-
-    it "subtracts quarters correctly" do
-      yq = described_class.new(2023, 3)
-      result = yq - 1
-      expect(result.year).to eq(2023)
-      expect(result.quarter).to eq(2)
-    end
-
-    it "subtracts quarters across year boundaries" do
-      yq = described_class.new(2023, 1)
-      result = yq - 1
-      expect(result.year).to eq(2022)
-      expect(result.quarter).to eq(4)
+  describe "+" do
+    [
+      [ "adds quarters correctly", described_class.new(2023, 2), 1, described_class.new(2023, 3) ],
+      [ "adds quarters across year boundaries", described_class.new(2023, 4), 1, described_class.new(2024, 1) ]
+    ].each do |description, year_quarter, n, expected|
+      it description do
+        result = year_quarter + n
+        expect(result.year).to eq(expected.year)
+        expect(result.quarter).to eq(expected.quarter)
+      end
     end
 
     it "supports commutative operations with coerce" do
@@ -40,6 +23,19 @@ RSpec.describe Flex::YearQuarter do
     it "raises TypeError for non-integer arguments" do
       yq = described_class.new(2023, 2)
       expect { yq + "invalid" }.to raise_error(TypeError, "Integer expected, got String")
+    end
+  end
+
+  describe "-" do
+    [
+      [ "subtracts quarters correctly", described_class.new(2023, 3), 1, described_class.new(2023, 2) ],
+      [ "subtracts quarters across year boundaries", described_class.new(2023, 1), 1, described_class.new(2022, 4) ]
+    ].each do |description, year_quarter, n, expected|
+      it description do
+        result = year_quarter - n
+        expect(result.year).to eq(expected.year)
+        expect(result.quarter).to eq(expected.quarter)
+      end
     end
   end
 
