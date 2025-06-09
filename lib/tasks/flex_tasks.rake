@@ -1,5 +1,5 @@
 namespace :flex do
-  desc "Emit a specified Flex event for a given case with a given ID"
+  desc "Publish a specified Flex event for a given case with a given ID"
   task :publish_event, [ :event_name, :case_class, :case_id ] => [ :environment ] do |t, args|
     event_name = args[:event_name]
     case_id = args[:case_id]
