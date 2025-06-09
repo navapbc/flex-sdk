@@ -37,8 +37,6 @@ module Flex
           when :year_quarter
             columns << "#{name}_year:integer"
             columns << "#{name}_quarter:integer"
-          else
-            raise ArgumentError, "Unsupported flex attribute type: #{type}"
           end
         end
 
