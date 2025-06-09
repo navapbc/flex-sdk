@@ -182,6 +182,15 @@ RSpec.describe Flex::Attributes do
       expect(object.weekly_wage.dollar_amount).to eq(10.5)
     end
 
+    it "allows setting money as a Flex::Money object" do
+      money = Flex::Money.new(1750)
+      object.weekly_wage = money
+
+      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage.cents_amount).to eq(1750)
+      expect(object.weekly_wage.dollar_amount).to eq(17.5)
+    end
+
     describe "edge cases" do
       it "handles nil values" do
         object.weekly_wage = nil
