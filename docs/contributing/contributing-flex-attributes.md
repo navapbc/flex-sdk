@@ -17,11 +17,12 @@ This document describes how to create new Flex attributes
 
 1. Create the value object
 2. Create a module in app/lib/flex/attributes/ defining the new flex_attribute type and include the module in Flex::Attributes in app/lib/flex/attributes.rb
-3. For testing, add the new flex attribute to TestRecord in spec/dummy/app/models/test_record.rb
-4. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:
+3. Extend the `flex:migration` generator in `migration_generator.rb` to include the new Flex attribute.
+4. For testing, add the new flex attribute to TestRecord in `spec/dummy/app/models/test_record.rb`. Try using the flex migration generator to generate this migration by running `cd spec/dummy && bin/rails generate flex:migration Add<AttributeName>ToTestRecords <attribute_name>:<flex_attribute_type>` and then run the migration with `bin/rails db:migrate`
+5. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:
   a. Assign a Hash to the attribute and make sure the attribute is cast to the value object type and has the correct value
   b. Load the attribute from the database and make sure the attribute is correctly cast from the database record to the value object type and has the correct value
   c. Test validation logic if relevant. When testing validation logic, check that the appropriate error objects are present and that the original uncast values are present so that they can be shown to the user to be fixed.
-5. Create the associated FormBuilder helper method for rendering the form fields associated with the Flex attribute. (See [Contributing FormBuilder helper methods](/docs/contributing/contributing-form-builder-helper-methods.md))
+1. Create the associated FormBuilder helper method for rendering the form fields associated with the Flex attribute. (See [Contributing FormBuilder helper methods](/docs/contributing/contributing-form-builder-helper-methods.md))
 
 See the existing attribute tests in the codebase for examples.
