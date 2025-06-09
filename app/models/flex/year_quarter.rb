@@ -10,12 +10,12 @@ module Flex
   #
   # Key features:
   # - Stores year and quarter components
-  # - Inherits from Range to provide date range functionality
   # - Provides comparison between year quarter objects
   # - Supports arithmetic operations for quarter manipulation
+  # - Provides date range functionality via to_date_range method
   # - Immutable value object
   #
-  class YearQuarter < Range
+  class YearQuarter
     include ActiveModel::Model
     include Comparable
 
@@ -24,9 +24,6 @@ module Flex
     def initialize(year, quarter)
       @year = year
       @quarter = quarter
-
-      start_date, end_date = calculate_date_range(year, quarter)
-      Range.instance_method(:initialize).bind(self).call(start_date, end_date)
     end
 
     def +(other)
@@ -49,6 +46,11 @@ module Flex
       else
         raise TypeError, "#{self.class} can't be coerced into #{other.class}"
       end
+    end
+
+    def to_date_range
+      start_date, end_date = calculate_date_range(@year, @quarter)
+      start_date..end_date
     end
 
     def <=>(other)
