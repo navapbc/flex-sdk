@@ -4,6 +4,7 @@ module Flex
     # Generator that creates migrations for Flex attributes by mapping
     # each flex attribute type to its required database columns
     class MigrationGenerator < Rails::Generators::NamedBase
+      source_root File.expand_path("USAGE", __dir__)
       argument :attrs, type: :array, default: [], banner: "attribute:type attribute:type"
 
       def create_migration_file
