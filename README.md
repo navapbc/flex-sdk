@@ -63,32 +63,6 @@ end
 
 At this point you should be able to use your newly created model to implement a form. If you used the `scaffold` command, you will likely need to update references, views, etc. that were auto-generated with the scaffold command.
 
-### Flex Migration Generator
-
-The Flex SDK provides a Rails generator to automatically create database migrations with the correct column definitions for Flex attributes.
-
-#### Usage
-
-```shell
-bin/rails generate flex:migration AddAttributesToModel attribute_name:attribute_type
-```
-
-#### Example
-
-```shell
-bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date address:address
-```
-
-This generates a migration with the appropriate columns:
-- `name_first`, `name_middle`, `name_last` (string columns for the name attribute)
-- `date_of_birth` (date column for the memorable_date attribute)  
-- `address_street_line_1`, `address_street_line_2`, `address_city`, `address_state`, `address_zip_code` (string columns for the address attribute)
-
-For a complete list of supported attribute types and their column mappings, run:
-```shell
-bin/rails generate flex:migration --help
-```
-
 ## Installation
 
 Add this line to your application's Gemfile:
