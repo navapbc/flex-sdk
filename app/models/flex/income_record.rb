@@ -22,7 +22,7 @@ module Flex
   class IncomeRecord < ApplicationRecord
     include Flex::Attributes
 
-    self.table_name = 'income_records'
+    self.table_name = "income_records"
 
     attribute :person_id, :string
     money_attribute :amount
