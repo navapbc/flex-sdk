@@ -29,17 +29,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_235214) do
     t.index ["type"], name: "index_flex_tasks_on_type"
   end
 
-  create_table "income_records", force: :cascade do |t|
-    t.string "person_id"
-    t.integer "amount"
-    t.integer "period_year"
-    t.integer "period_quarter"
-    t.date "period_start"
-    t.date "period_end"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "passport_application_forms", force: :cascade do |t|
     t.string "name_first"
     t.string "name_last"
