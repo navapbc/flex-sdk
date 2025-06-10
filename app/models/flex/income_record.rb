@@ -38,7 +38,6 @@ module Flex
 
         elsif period_type == :date_range || period_type == Range
           flex_attribute :period, :date_range
-          self.table_name = "income_records"
 
           define_singleton_method :period_type do
             :date_range

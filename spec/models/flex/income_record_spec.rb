@@ -1,69 +1,95 @@
 require 'rails_helper'
+require 'temporary_tables'
 
 module Flex
   RSpec.describe IncomeRecord, type: :model do
-    describe 'factory pattern' do
-      it 'creates YearQuarter-based subclass' do
-        quarterly_wage = described_class[Flex::YearQuarter]
+    describe 'IncomeRecord[YearQuarter]' do
+      include TemporaryTables::Methods
 
-        expect(quarterly_wage.period_type).to eq(:year_quarter)
-        expect(quarterly_wage.superclass).to eq(described_class)
+      temporary_table :quarterly_wages do |t|
+        t.string :person_id
+        t.integer :amount
+        t.integer :period_year
+        t.integer :period_quarter
+        t.timestamps
       end
 
-      it 'creates DateRange-based subclass' do
-        annual_salary = described_class[Range]
-
-        expect(annual_salary.period_type).to eq(:date_range)
-        expect(annual_salary.superclass).to eq(described_class)
+      before do
+        stub_const("QuarterlyWage", described_class[Flex::YearQuarter])
       end
 
-      it 'raises error for unsupported period type' do
+      describe '#period_type' do
+        it 'returns :year_quarter' do
+          expect(QuarterlyWage.period_type).to eq(:year_quarter)
+        end
+      end
+
+      describe '#create' do
+        it 'creates an instance of an IncomeRecord with a YearQuarter period' do
+          record = QuarterlyWage.create(
+            person_id: "123",
+            amount: Flex::Money.new(5000),
+            period: Flex::YearQuarter.new(2023, 2)
+          )
+
+          record = QuarterlyWage.find(record.id)
+
+          expect(record.person_id).to eq("123")
+          expect(record.amount).to eq(Flex::Money.new(5000))
+          expect(record.period).to eq(Flex::YearQuarter.new(2023, 2))
+        end
+      end
+    end
+
+    describe 'IncomeRecord[Range]' do
+      include TemporaryTables::Methods
+
+      temporary_table :weekly_wages do |t|
+        t.string :person_id
+        t.integer :amount
+        t.date :period_start
+        t.date :period_end
+        t.timestamps
+      end
+
+      before do
+        stub_const("WeeklyWage", described_class[Range])
+      end
+
+      describe '#period_type' do
+        it 'returns :date_range' do
+          expect(WeeklyWage.period_type).to eq(:date_range)
+        end
+      end
+
+      describe '#create' do
+        it 'creates an instance of an IncomeRecord with a DateRange period' do
+          start_date = Date.new(2023, 1, 1)
+          end_date = Date.new(2023, 1, 7)
+          record = WeeklyWage.create(
+            person_id: "456",
+            amount: Flex::Money.new(1000),
+            period: start_date..end_date
+          )
+          record = WeeklyWage.find(record.id)
+          expect(record.person_id).to eq("456")
+          expect(record.amount).to eq(Flex::Money.new(1000))
+          expect(record.period).to eq(start_date..end_date)
+        end
+      end
+    end
+
+    describe 'IncomeRecord[:invalid]' do
+      it 'raises an error for unsupported period type' do
         expect { described_class[:invalid] }.to raise_error(ArgumentError, "Unsupported period type: invalid")
       end
     end
 
-    describe 'YearQuarter subclass functionality' do
-      let(:quarterly_wage_class) { described_class[Flex::YearQuarter] }
-
-      it 'handles YearQuarter period assignment' do
-        record = quarterly_wage_class.new(
-          person_id: "123",
-          amount: Flex::Money.new(5000),
-          period: Flex::YearQuarter.new(2023, 2)
-        )
-
-        expect(record.person_id).to eq("123")
-        expect(record.amount).to eq(Flex::Money.new(5000))
-        expect(record.period).to eq(Flex::YearQuarter.new(2023, 2))
-        expect(record.period_year).to eq(2023)
-        expect(record.period_quarter).to eq(2)
-      end
-    end
-
-    describe 'DateRange subclass functionality' do
-      let(:annual_salary_class) { described_class[Range] }
-
-      it 'handles DateRange period assignment' do
-        start_date = Date.new(2023, 1, 1)
-        end_date = Date.new(2023, 12, 31)
-
-        record = annual_salary_class.new(
-          person_id: "456",
-          amount: Flex::Money.new(75000_00),
-          period: start_date..end_date
-        )
-
-        expect(record.person_id).to eq("456")
-        expect(record.amount).to eq(Flex::Money.new(75000_00))
-        expect(record.period).to eq(start_date..end_date)
-        expect(record.period_start).to eq(start_date)
-        expect(record.period_end).to eq(end_date)
-      end
-    end
-
     describe 'base class' do
-      it 'has nil period_type' do
-        expect(described_class.period_type).to be_nil
+      describe '#period_type' do
+        it 'returns nil' do
+          expect(described_class.period_type).to be_nil
+        end
       end
     end
   end
