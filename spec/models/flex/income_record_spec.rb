@@ -26,17 +26,16 @@ module Flex
 
       describe '#create' do
         it 'creates an instance of an IncomeRecord with a YearQuarter period' do
-          record = QuarterlyWage.create(
-            person_id: "123",
-            amount: Flex::Money.new(5000),
-            period: Flex::YearQuarter.new(2023, 2)
-          )
+          person_id = Faker::Number.number(digits: 3).to_s
+          amount = build(:money)
+          period = build(:year_quarter)
 
+          record = QuarterlyWage.create(person_id:, amount:, period:)
           record = QuarterlyWage.find(record.id)
 
-          expect(record.person_id).to eq("123")
-          expect(record.amount).to eq(Flex::Money.new(5000))
-          expect(record.period).to eq(Flex::YearQuarter.new(2023, 2))
+          expect(record.person_id).to eq(person_id)
+          expect(record.amount).to eq(amount)
+          expect(record.period).to eq(period)
         end
       end
     end
@@ -64,17 +63,14 @@ module Flex
 
       describe '#create' do
         it 'creates an instance of an IncomeRecord with a DateRange period' do
-          start_date = Date.new(2023, 1, 1)
-          end_date = Date.new(2023, 1, 7)
-          record = WeeklyWage.create(
-            person_id: "456",
-            amount: Flex::Money.new(1000),
-            period: start_date..end_date
-          )
+          person_id = Faker::Number.number(digits: 3).to_s
+          amount = build(:money)
+          period = build(:date_range)
+          record = WeeklyWage.create(person_id:, amount:, period:)
           record = WeeklyWage.find(record.id)
-          expect(record.person_id).to eq("456")
-          expect(record.amount).to eq(Flex::Money.new(1000))
-          expect(record.period).to eq(start_date..end_date)
+          expect(record.person_id).to eq(person_id)
+          expect(record.amount).to eq(amount)
+          expect(record.period).to eq(period)
         end
       end
     end
