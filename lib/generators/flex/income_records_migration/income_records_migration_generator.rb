@@ -15,7 +15,7 @@ module Flex
       def create_migration_file
         columns = [ "person_id:string", "amount:integer" ]
 
-        raise ArgumentError, "Unsupported period type: #{period_type}. Use 'year_quarter' or 'date_range'" if ![ "year_quarter", "date_range" ].include(period_type)
+        raise ArgumentError, "Unsupported period type: #{period_type}. Use 'year_quarter' or 'date_range'" if ![ "year_quarter", "date_range" ].include?(period_type)
         columns << "period:#{period_type}"
 
         generate("flex:migration", name, *columns)
