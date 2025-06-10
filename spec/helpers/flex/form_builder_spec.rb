@@ -495,4 +495,66 @@ RSpec.describe Flex::FormBuilder do
       end
     end
   end
+
+  describe '#year_quarter_range' do
+    let(:object) { TestRecord.new }
+    let(:result) { builder.year_quarter_range(:base_period) }
+
+    it 'outputs year quarter fields for start and end' do
+      expect(result).to have_element(:input, name: 'object[base_period_start_year]')
+      expect(result).to have_element(:select, name: 'object[base_period_start_quarter]')
+      expect(result).to have_element(:input, name: 'object[base_period_end_year]')
+      expect(result).to have_element(:select, name: 'object[base_period_end_quarter]')
+    end
+
+    it 'includes quarter options 1-4' do
+      expect(result).to have_element(:option, value: '1')
+      expect(result).to have_element(:option, value: '2')
+      expect(result).to have_element(:option, value: '3')
+      expect(result).to have_element(:option, value: '4')
+    end
+
+    it 'includes proper labels and hints' do
+      expect(result).to have_element(:legend, text: 'Base period')
+      expect(result).to include('Start')
+      expect(result).to include('End')
+      expect(result).to include('Enter the starting year and quarter')
+      expect(result).to include('Enter the ending year and quarter')
+    end
+
+    context 'with existing year quarter range values' do
+      let(:object) do
+        TestRecord.new(base_period: Flex::YearQuarter.new(2023, 1)..Flex::YearQuarter.new(2024, 4))
+      end
+
+      it 'pre-fills the start and end year quarter fields' do
+        expect(result).to have_element(:input, name: 'object[base_period_start_year]', value: '2023')
+        expect(result).to have_element(:option, value: '1', selected: true)
+        expect(result).to have_element(:input, name: 'object[base_period_end_year]', value: '2024')
+        expect(result).to have_element(:option, value: '4', selected: true)
+      end
+    end
+
+    context 'with custom legend' do
+      let(:result) { builder.year_quarter_range(:base_period, legend: 'Base Period') }
+
+      it 'displays custom legend' do
+        expect(result).to have_element(:legend, text: 'Base Period')
+      end
+    end
+
+    context 'with errors' do
+      let(:object) do
+        record = TestRecord.new
+        record.base_period_start = Flex::YearQuarter.new(2024, 4)
+        record.base_period_end = Flex::YearQuarter.new(2023, 1)
+        record.valid?
+        record
+      end
+
+      it 'displays error messages' do
+        expect(result).to have_element(:span, text: 'Base period start must be before or equal to end')
+      end
+    end
+  end
 end

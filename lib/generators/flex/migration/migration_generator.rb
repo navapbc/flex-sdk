@@ -38,6 +38,11 @@ module Flex
           when :year_quarter
             columns << "#{name}_year:integer"
             columns << "#{name}_quarter:integer"
+          when :year_quarter_range
+            columns << "#{name}_start_year:integer"
+            columns << "#{name}_start_quarter:integer"
+            columns << "#{name}_end_year:integer"
+            columns << "#{name}_end_quarter:integer"
           end
         end
 

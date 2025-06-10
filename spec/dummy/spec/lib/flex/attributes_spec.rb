@@ -496,6 +496,70 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "base_period attribute" do
+    it "allows setting base_period as a Range object" do
+      start_yq = Flex::YearQuarter.new(2023, 1)
+      end_yq = Flex::YearQuarter.new(2023, 4)
+      object.base_period = start_yq..end_yq
+
+      expect(object.base_period).to eq(start_yq..end_yq)
+      expect(object.base_period_start).to eq(start_yq)
+      expect(object.base_period_end).to eq(end_yq)
+      expect(object.base_period.begin).to eq(start_yq)
+      expect(object.base_period.end).to eq(end_yq)
+    end
+
+    it "allows setting nested base_period attributes directly" do
+      start_yq = Flex::YearQuarter.new(2023, 2)
+      end_yq = Flex::YearQuarter.new(2024, 1)
+      object.base_period_start = start_yq
+      object.base_period_end = end_yq
+      expect(object.base_period).to eq(start_yq..end_yq)
+    end
+
+    it "handles nil values gracefully" do
+      object.base_period = nil
+      expect(object.base_period).to be_nil
+      expect(object.base_period_start).to be_nil
+      expect(object.base_period_end).to be_nil
+    end
+
+    it "returns nil when only one component is present" do
+      object.base_period_start = Flex::YearQuarter.new(2023, 1)
+      object.base_period_end = nil
+      expect(object.base_period).to be_nil
+
+      object.base_period_start = nil
+      object.base_period_end = Flex::YearQuarter.new(2023, 4)
+      expect(object.base_period).to be_nil
+    end
+
+    it "validates that start year quarter is before or equal to end year quarter" do
+      object.base_period_start = Flex::YearQuarter.new(2024, 4)
+      object.base_period_end = Flex::YearQuarter.new(2023, 1)
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("base_period")).to include("Base period start must be before or equal to end")
+    end
+
+    it "allows start year quarter equal to end year quarter" do
+      same_yq = Flex::YearQuarter.new(2023, 3)
+      object.base_period_start = same_yq
+      object.base_period_end = same_yq
+      expect(object).to be_valid
+      expect(object.base_period).to eq(Range.new(same_yq, same_yq))
+    end
+
+    it "allows only one year quarter to be present without validation error" do
+      object.base_period_start = Flex::YearQuarter.new(2023, 1)
+      object.base_period_end = nil
+      expect(object).to be_valid
+
+      object.base_period_start = nil
+      object.base_period_end = Flex::YearQuarter.new(2023, 4)
+      expect(object).to be_valid
+    end
+  end
+
   describe "persisting and loading from database" do
     let(:record) { TestRecord.new }
 
@@ -638,6 +702,20 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.reporting_period).to eq(year_quarter)
       expect(loaded_record.reporting_period_year).to eq(2023)
       expect(loaded_record.reporting_period_quarter).to eq(4)
+    end
+
+    it "persists and loads year_quarter_range object correctly" do
+      start_yq = Flex::YearQuarter.new(2023, 1)
+      end_yq = Flex::YearQuarter.new(2023, 4)
+      range = start_yq..end_yq
+      record.base_period = range
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.base_period).to be_a(Range)
+      expect(loaded_record.base_period).to eq(range)
+      expect(loaded_record.base_period_start).to eq(start_yq)
+      expect(loaded_record.base_period_end).to eq(end_yq)
     end
   end
 end

@@ -44,6 +44,13 @@ en:
       date_range:
         start_label: "Start date"
         end_label: "End date"
+        start_hint: "Enter the start date"
+        end_hint: "Enter the end date"
+      year_quarter_range:
+        start_label: "Start"
+        end_label: "End"
+        start_hint: "Enter the starting year and quarter"
+        end_hint: "Enter the ending year and quarter"
     tasks:
       breadcrumbs:
         home: "Home"

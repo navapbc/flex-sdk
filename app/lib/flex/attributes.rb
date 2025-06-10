@@ -25,6 +25,7 @@ module Flex
     include Flex::Attributes::TaxIdAttribute
     include Flex::Attributes::USDateAttribute
     include Flex::Attributes::YearQuarterAttribute
+    include Flex::Attributes::YearQuarterRangeAttribute
 
     class_methods do
       # Defines a custom attribute with the specified type.
@@ -52,6 +53,8 @@ module Flex
           us_date_attribute name, options
         when :year_quarter
           year_quarter_attribute name, options
+        when :year_quarter_range
+          year_quarter_range_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
