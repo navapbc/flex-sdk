@@ -22,22 +22,24 @@ module Flex
   class IncomeRecord < ApplicationRecord
     include Flex::Attributes
 
-    self.table_name = "income_records"
+    self.abstract_class = true
 
     attribute :person_id, :string
-    money_attribute :amount
+    flex_attribute :amount, :money
 
     def self.[](period_type)
       Class.new(self) do
         if period_type == :year_quarter || period_type == Flex::YearQuarter
-          year_quarter_attribute :period
+          flex_attribute :period, :year_quarter
+          self.table_name = "income_records"
 
           define_singleton_method :period_type do
             :year_quarter
           end
 
         elsif period_type == :date_range || period_type == Range
-          date_range_attribute :period
+          flex_attribute :period, :date_range
+          self.table_name = "income_records"
 
           define_singleton_method :period_type do
             :date_range
