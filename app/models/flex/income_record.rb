@@ -31,7 +31,6 @@ module Flex
       Class.new(self) do
         if period_type == :year_quarter || period_type == Flex::YearQuarter
           flex_attribute :period, :year_quarter
-          self.table_name = "income_records"
 
           define_singleton_method :period_type do
             :year_quarter
