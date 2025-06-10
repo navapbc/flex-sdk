@@ -10,7 +10,7 @@ module Flex
     #   rails generate flex:income_records_migration CreateIncomeRecords date_range
     #
     class IncomeRecordsMigrationGenerator < Rails::Generators::NamedBase
-      argument :period_type, type: :string, default: "date_range", banner: "period_type"
+      argument :period_type, type: :string, banner: "period_type"
 
       def create_migration_file
         columns = [ "person_id:string", "amount:money" ]
