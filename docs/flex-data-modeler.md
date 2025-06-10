@@ -35,7 +35,7 @@ This allows you to define attributes with specialized behavior and column mappin
 
 ## Flex Migration Generator
 
-The Flex SDK provides a Rails generator to automatically create database migrations with the correct column definitions for Flex attributes.
+The Flex SDK provides a Rails generator to automatically create database migrations with the correct column definitions for Flex attributes. It also works with regular Rails attribute types.
 
 ### Usage
 
@@ -46,7 +46,7 @@ bin/rails generate flex:migration AddAttributesToModel attribute_name:attribute_
 ### Example
 
 ```shell
-bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date address:address
+bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date address:address email:string
 ```
 
 This generates a migration with the appropriate columns:
@@ -56,6 +56,8 @@ This generates a migration with the appropriate columns:
 - `date_of_birth` (date column for the memorable_date attribute)  
 
 - `address_street_line_1`, `address_street_line_2`, `address_city`, `address_state`, `address_zip_code` (string columns for the address attribute)
+
+- `email` (string column for the email attribute)
 
 For a complete list of supported attribute types and their column mappings, run:
 
