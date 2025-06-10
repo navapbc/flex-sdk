@@ -10,12 +10,13 @@ module Flex
     #   rails generate flex:income_records_migration CreateIncomeRecords date_range
     #
     class IncomeRecordsMigrationGenerator < Rails::Generators::NamedBase
-      argument :period_type, type: :string, default: "year_quarter", banner: "period_type"
+      argument :period_type, type: :string, default: "date_range", banner: "period_type"
 
       def create_migration_file
         columns = [ "person_id:string", "amount:integer" ]
 
         raise ArgumentError, "Unsupported period type: #{period_type}. Use 'year_quarter' or 'date_range'" if ![ "year_quarter", "date_range" ].include?(period_type)
+
         columns << "period:#{period_type}"
 
         generate("flex:migration", name, *columns)
