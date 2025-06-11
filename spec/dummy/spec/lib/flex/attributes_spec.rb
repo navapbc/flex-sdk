@@ -158,6 +158,12 @@ RSpec.describe Flex::Attributes do
         year_quarter_2 = build(:year_quarter)
         record.reporting_periods = [year_quarter_1, year_quarter_2]
 
+        # TODO(https://linear.app/nava-platform/issue/TSS-148/refactor-daterange-to-not-subclass-range)
+        # This won't work until we refactor DateRange to not subclass Range
+        # leave_period_1 = Date.new(2023, 1, 1)..Date.new(2023, 1, 31)
+        # leave_period_2 = Date.new(2023, 2, 1)..Date.new(2023, 2, 28)
+        # record.leave_periods = [leave_period_1, leave_period_2]
+
         record.save!
         loaded_record = TestRecord.find(record.id)
 
@@ -172,6 +178,11 @@ RSpec.describe Flex::Attributes do
         expect(loaded_record.reporting_periods.size).to eq(2)
         expect(loaded_record.reporting_periods[0]).to eq(year_quarter_1)
         expect(loaded_record.reporting_periods[1]).to eq(year_quarter_2)
+
+        # TODO(https://linear.app/nava-platform/issue/TSS-148/refactor-daterange-to-not-subclass-range)
+        # expect(loaded_record.leave_periods.size).to eq(2)
+        # expect(loaded_record.leave_periods[0]).to eq(leave_period_1)
+        # expect(loaded_record.leave_periods[1]).to eq(leave_period_2)
       end
     end
   end
