@@ -3,15 +3,43 @@ module Flex
     # ArrayAttribute provides a DSL for defining attributes representing arrays
     # of value objects.
     #
-    # @example TODO
+    # @example Defining an array of addresses
+    #   class Company < ApplicationRecord
+    #     include Flex::Attributes
+    #
+    #     flex_attribute :office_locations, [:address]
+    #   end
+    #
+    #   company = Company.new
+    #   company.office_locations = [
+    #     Flex::Address.new("123 Main St", nil, "Boston", "MA", "02108"),
+    #     Flex::Address.new("456 Oak Ave", "Suite 4", "San Francisco", "CA", "94107")
+    #   ]
     #
     # Key features:
-    # - TODO
+    # - Stores arrays of value objects in a single jsonb column
+    # - Automatic serialization and deserialization of array items
+    # - Built-in validation of array items
+    # - Support for various Flex value object types
     #
     module ArrayAttribute
       extend ActiveSupport::Concern
 
+      # Custom type for handling arrays of value objects in ActiveRecord attributes
+      #
+      # @api private
+      # @example Internal usage by array_attribute
+      #   attribute :addresses, ArrayType.new("Flex::Address")
+      #
       class ArrayType < ActiveModel::Type::Value
+        # @return [String] The fully qualified class name of the array items
+        attr_reader :item_class_name
+
+        # Creates a new ArrayType for a specific value object class
+        #
+        # @param [String] item_class_name The fully qualified class name of items in the array
+        # @example
+        #   ArrayType.new("Flex::Address")
         def initialize(item_class_name)
           @item_class_name = item_class_name
         end
