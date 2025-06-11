@@ -3,6 +3,7 @@ en:
     tax_id: "Tax ID"    
   errors:
     messages:
+      invalid_array: "contains one or more invalid items"
       invalid_date: "is an invalid date"
       invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
   flex:

@@ -1,4 +1,11 @@
 es-US:
+  attributes:
+    tax_id: "Número de identificación fiscal"    
+  errors:
+    messages:
+      invalid_array: "contiene uno o más elementos inválidos"
+      invalid_date: "Fecha inválida"
+      invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
   flex:
     application_forms:
       index:
@@ -74,10 +81,6 @@ es-US:
             all: "Todas las tareas"
         no_tasks_alert:
           message: "¡No hay tareas disponibles!"
-  errors:
-    messages:
-      invalid_date: "Fecha inválida"
-      invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
   layouts:
     staff:
       header:
