@@ -14,7 +14,7 @@ Examples:
 
 Supported Attribute Types:
     address         - Creates columns: street_line_1, street_line_2, city, state, zip_code (all :string)
-    array          - Creates columns: single :jsonb column for storing arrays of objects
+    array           - Creates columns: single :jsonb column for storing arrays of objects
     date_range      - Creates columns: start, end (both :date)
     memorable_date  - Creates columns: single :date column
     money           - Creates columns: single :integer column (stores cents)
