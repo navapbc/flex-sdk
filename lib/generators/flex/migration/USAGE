@@ -10,9 +10,11 @@ Examples:
     bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date
     bin/rails generate flex:migration AddAddressesToApplications home_address:address work_address:address
     bin/rails generate flex:migration AddFinancialInfoToReports salary:money tax_id:tax_id
+    bin/rails generate flex:migration AddPeriodicsToProfile leave_periods:array reporting_periods:array
 
 Supported Attribute Types:
     address         - Creates columns: street_line_1, street_line_2, city, state, zip_code (all :string)
+    array          - Creates columns: single :jsonb column for storing arrays of objects
     date_range      - Creates columns: start, end (both :date)
     memorable_date  - Creates columns: single :date column
     money           - Creates columns: single :integer column (stores cents)
