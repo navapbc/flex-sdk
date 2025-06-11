@@ -33,37 +33,24 @@ module Flex
           validates_date "#{name}_start", allow_blank: true
           validates_date "#{name}_end", allow_blank: true
 
-          # Set up composed_of mapping to Range
-          composed_of name,
-                      class_name: "Range",
-                      mapping: [
-                        [ "#{name}_start", "begin" ],
-                        [ "#{name}_end", "end" ]
-                      ],
-                      converter: ->(value) {
-                        case value
-                        when Range
-                          value
-                        when Hash
-                          start_date = value[:start] || value["start"]
-                          end_date = value[:end] || value["end"]
-                          if start_date || end_date
-                            start_date..end_date
-                          else
-                            nil
-                          end
-                        else
-                          nil
-                        end
-                      },
-                      constructor: ->(start_date, end_date) {
-                        if start_date || end_date
-                          start_date..end_date
-                        else
-                          nil
-                        end
-                      },
-                      allow_nil: true
+          # Define the getter method
+          define_method(name) do
+            start_date = send("#{name}_start")
+            end_date = send("#{name}_end")
+            start_date || end_date ? (start_date..end_date) : nil
+          end
+
+          # Define the setter method
+          define_method("#{name}=") do |value|
+            case value
+            when Range
+              send("#{name}_start=", value.begin)
+              send("#{name}_end=", value.end)
+            when Hash
+              send("#{name}_start=", value[:start] || value["start"])
+              send("#{name}_end=", value[:end] || value["end"])
+            end
+          end
 
           # Add validation for date range
           validate :"validate_#{name}_range"
