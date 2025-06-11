@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_11_170308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
     t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
   end
 
+  create_table "temp", force: :cascade do |t|
+  end
+
   create_table "test_application_forms", force: :cascade do |t|
     t.integer "status", default: 0
     t.string "test_string"
@@ -87,6 +90,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_232036) do
     t.date "period_start"
     t.date "period_end"
     t.integer "weekly_wage"
+    t.jsonb "addresses"
+    t.jsonb "names"
+    t.jsonb "reporting_periods"
   end
 
   create_table "users", force: :cascade do |t|
