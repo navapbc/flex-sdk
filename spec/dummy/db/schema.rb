@@ -91,6 +91,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_170308) do
     t.date "period_end"
     t.integer "weekly_wage"
     t.jsonb "addresses"
+    t.jsonb "leave_periods"
     t.jsonb "names"
     t.jsonb "reporting_periods"
   end
