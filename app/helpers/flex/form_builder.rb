@@ -472,62 +472,7 @@ module Flex
       end
     end
 
-    def year_quarter(attribute, options = {})
-      legend_text = options.delete(:legend) || human_name(attribute)
-      hint_text = options.delete(:hint)
-      label_text = options.delete(:label) || legend_text
 
-      form_group do
-        us_text_field_label(attribute, label_text, hint: hint_text) +
-        @template.content_tag(:div, class: "usa-input-group") do
-          text_field(
-            "#{attribute}_year",
-            placeholder: "YYYY",
-            class: "usa-input usa-input--md",
-            inputmode: "numeric",
-            pattern: "[0-9]{4}",
-            maxlength: "4"
-          ) +
-          @template.content_tag(:span, "Q", class: "usa-input-prefix", "aria-hidden": "true") +
-          select(
-            "#{attribute}_quarter",
-            [
-              ["", ""],
-              ["1", 1],
-              ["2", 2], 
-              ["3", 3],
-              ["4", 4]
-            ],
-            {},
-            { class: "usa-select usa-select--sm" }
-          )
-        end
-      end
-    end
-
-    def year_quarter_range(attribute, options = {})
-      legend_text = options.delete(:legend) || human_name(attribute)
-      start_hint_text = I18n.t("flex.form_builder.year_quarter_range.start_hint")
-      end_hint_text = I18n.t("flex.form_builder.year_quarter_range.end_hint")
-
-      fieldset(legend_text) do
-        field_error(attribute) +
-        form_group do
-          year_quarter(
-            "#{attribute}_start",
-            hint: start_hint_text,
-            label: I18n.t("flex.form_builder.year_quarter_range.start_label")
-          )
-        end +
-        form_group do
-          year_quarter(
-            "#{attribute}_end",
-            hint: end_hint_text,
-            label: I18n.t("flex.form_builder.year_quarter_range.end_label")
-          )
-        end
-      end
-    end
 
     def us_states_and_territories
       [

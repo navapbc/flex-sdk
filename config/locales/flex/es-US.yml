@@ -40,11 +40,6 @@ es-US:
         end_label: "Fecha de fin"
         start_hint: "Ingrese la fecha de inicio"
         end_hint: "Ingrese la fecha de finalización"
-      year_quarter_range:
-        start_label: "Inicio"
-        end_label: "Fin"
-        start_hint: "Ingrese el año y trimestre de inicio"
-        end_hint: "Ingrese el año y trimestre de finalización"
     tasks:
       breadcrumbs:
         home: "Inicio"
