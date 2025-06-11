@@ -15,6 +15,7 @@ module Flex
   # - Provides comparison between tax ID objects
   #
   class TaxId < String
+    include ActiveModel::Model
     include Comparable
 
     TAX_ID_FORMAT_NO_DASHES = /\A\d{9}\z/
