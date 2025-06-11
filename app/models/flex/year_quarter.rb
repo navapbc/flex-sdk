@@ -51,13 +51,13 @@ module Flex
     def to_date_range
       case @quarter
       when 1
-        Date.new(@year, 1, 1)..Date.new(@year, 3, 31)
+        Range.new(Date.new(@year, 1, 1), Date.new(@year, 3, 31))
       when 2
-        Date.new(@year, 4, 1)..Date.new(@year, 6, 30)
+        Range.new(Date.new(@year, 4, 1), Date.new(@year, 6, 30))
       when 3
-        Date.new(@year, 7, 1)..Date.new(@year, 9, 30)
+        Range.new(Date.new(@year, 7, 1), Date.new(@year, 9, 30))
       when 4
-        Date.new(@year, 10, 1)..Date.new(@year, 12, 31)
+        Range.new(Date.new(@year, 10, 1), Date.new(@year, 12, 31))
       else
         raise ArgumentError, "Quarter must be 1, 2, 3, or 4"
       end
