@@ -51,9 +51,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_170308) do
     t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
   end
 
-  create_table "temp", force: :cascade do |t|
-  end
-
   create_table "test_application_forms", force: :cascade do |t|
     t.integer "status", default: 0
     t.string "test_string"
