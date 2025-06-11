@@ -354,6 +354,8 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     stringio (3.1.5)
+    temporary_tables (1.0.0)
+      activerecord (>= 6.0)
     thor (1.3.2)
     timeliness (0.5.3)
     timeout (0.4.3)
@@ -409,6 +411,7 @@ DEPENDENCIES
   shoulda-matchers (~> 6.0)
   simplecov
   sprockets-rails
+  temporary_tables
   validates_timeliness (>= 7.0.0)
 
 BUNDLED WITH

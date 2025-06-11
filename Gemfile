@@ -41,4 +41,5 @@ end
 group :test do
   gem "simplecov", require: false
   gem "capybara"
+  gem "temporary_tables", require: false
 end
