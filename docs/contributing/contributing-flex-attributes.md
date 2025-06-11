@@ -6,12 +6,68 @@ This document describes how to create new Flex attributes
 
 1. Decide whether or not to create a new value object in app/models/flex/
    By default, Flex attributes will require creating a new value object. The exception is if the type of the attribute is already a native Ruby type, such as the memorable_date attribute which represents a Date object.
-2. Decide whether or not to implement the attribute using the `composed_of` method in Rails Active Record Aggregations (see [Active Record Aggregations](https://api.rubyonrails.org/classes/ActiveRecord/Aggregations/ClassMethods.html) for reference).
-   Use composed_of if the value object is composed of multiple attributes that map directly to database columns. Examples include name (which includes first, middle, and last) and address (which includes street, city, state, zip_code) attributes. Do not use composed_of if the value object is a single attribute. Also do not use composed_of if any of the attributes that the object is composed of does not map directly to a database column, such as if the attribute is a virtual attribute defined by composed_of. In this case, implement the attribute by manually defining an attribute getter and setter in the model.
-3. Decide whether or not to create a new subclass of ActiveRecord::Type::Value
-   Subclasses of ActiveRecord::Type::Value are used to define how to cast values from other types to the value object type. When using composed_of, implement casting behavior using the constructor and converter options for composed_of. Do not create a subclass of ActiveRecord::Type::Value. When not using composed_of, create a subclass of ActiveRecord::Type::Value and define cast to accept a Hash object and return an instance of the value object. The specific class to subclass depends on your value type. For example for memorable_date we created a subclass of ActiveRecord::Type::Date, and for tax_id we created a subclass of ActiveRecord::Type::String.
-4. Decide if there are validations that need to be added by default.
-   Note:Do not add presence option or validation. By default all Flex attributes allow nil.
+
+2. Determine if the attribute is composed of multiple nested attributes:
+
+   If YES (e.g., name with first/middle/last or address with street/city/state):
+   - Implement using getter and setter methods
+   - Define individual attributes for each component
+   - Define a getter that constructs the value object from components
+   - Define a setter that handles both value object and hash input
+
+   Example:
+
+   ```ruby
+   # Define components
+   attribute "#{name}_first", :string
+   attribute "#{name}_last", :string
+   
+   # Getter returns value object
+   define_method(name) do
+     first = send("#{name}_first")
+     last = send("#{name}_last")
+     Flex::Name.new(first, last)
+   end
+   
+   # Setter handles both types
+   define_method("#{name}=") do |value|
+     case value
+     when Flex::Name
+       send("#{name}_first=", value.first)
+       send("#{name}_last=", value.last)
+     when Hash
+       send("#{name}_first=", value[:first])
+       send("#{name}_last=", value[:last])
+     end
+   end
+   ```
+
+   If NO (e.g., tax_id or money):
+   - Create a subclass of ActiveModel::Type::Value
+   - Implement the cast method to handle conversion from various input types
+   - Use attribute with the custom type
+
+   Example:
+
+   ```ruby
+   class MoneyType < ActiveModel::Type::Integer
+     def cast(value)
+       case value
+       when Flex::Money
+         value
+       when Hash
+         Flex::Money.new(value[:cents])
+       when Integer
+         Flex::Money.new(value)
+       end
+     end
+   end
+   
+   attribute name, MoneyType.new
+   ```
+
+3. Decide if there are validations that need to be added by default.
+   Note: Do not add presence option or validation. By default all Flex attributes allow nil.
 
 ## Implementation
 

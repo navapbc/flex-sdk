@@ -9,7 +9,7 @@ module Flex
       # as the default Date type, but when casting a string it uses the US regional
       # format (MM/DD/YYYY) instead of default heuristics used by Date.parse which can
       # incorrectly interpret dates as DD/MM/YYYY.
-      class USDateType < ActiveRecord::Type::Date
+      class USDateType < ActiveModel::Type::Date
         # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
         def cast(value)
           return nil if value.nil?

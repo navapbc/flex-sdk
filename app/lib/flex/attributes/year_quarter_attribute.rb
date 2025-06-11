@@ -34,21 +34,24 @@ module Flex
           # Add validation for quarter values
           validates "#{name}_quarter", inclusion: { in: [ 1, 2, 3, 4 ] }, allow_nil: true
 
-          # Set up composed_of mapping
-          composed_of name,
-                      class_name: "Flex::YearQuarter",
-                      mapping: [
-                        [ "#{name}_year", "year" ],
-                        [ "#{name}_quarter", "quarter" ]
-                      ],
-                      converter: ->(value) {
-                        case value
-                        when Hash
-                          Flex::YearQuarter.new(value[:year], value[:quarter])
-                        else
-                          nil
-                        end
-                      }
+          # Define the getter method
+          define_method(name) do
+            year = send("#{name}_year")
+            quarter = send("#{name}_quarter")
+            year || quarter ? Flex::YearQuarter.new(year, quarter) : nil
+          end
+
+          # Define the setter method
+          define_method("#{name}=") do |value|
+            case value
+            when Flex::YearQuarter
+              send("#{name}_year=", value.year)
+              send("#{name}_quarter=", value.quarter)
+            when Hash
+              send("#{name}_year=", value[:year])
+              send("#{name}_quarter=", value[:quarter])
+            end
+          end
         end
       end
     end

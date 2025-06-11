@@ -28,30 +28,33 @@ module Flex
           attribute "#{name}_state", :string
           attribute "#{name}_zip_code", :string
 
-          # Set up composed_of mapping
-          composed_of name,
-                      class_name: "Flex::Address",
-                      mapping: [
-                        [ "#{name}_street_line_1", "street_line_1" ],
-                        [ "#{name}_street_line_2", "street_line_2" ],
-                        [ "#{name}_city", "city" ],
-                        [ "#{name}_state", "state" ],
-                        [ "#{name}_zip_code", "zip_code" ]
-                      ],
-                      converter: ->(value) {
-                        case value
-                        when Hash
-                          Flex::Address.new(
-                            value[:street_line_1],
-                            value[:street_line_2],
-                            value[:city],
-                            value[:state],
-                            value[:zip_code]
-                          )
-                        else
-                          nil
-                        end
-                      }
+          # Define the getter method
+          define_method(name) do
+            street_line_1 = send("#{name}_street_line_1")
+            street_line_2 = send("#{name}_street_line_2")
+            city = send("#{name}_city")
+            state = send("#{name}_state")
+            zip_code = send("#{name}_zip_code")
+            Flex::Address.new(street_line_1, street_line_2, city, state, zip_code)
+          end
+
+          # Define the setter method
+          define_method("#{name}=") do |value|
+            case value
+            when Flex::Address
+              send("#{name}_street_line_1=", value.street_line_1)
+              send("#{name}_street_line_2=", value.street_line_2)
+              send("#{name}_city=", value.city)
+              send("#{name}_state=", value.state)
+              send("#{name}_zip_code=", value.zip_code)
+            when Hash
+              send("#{name}_street_line_1=", value[:street_line_1])
+              send("#{name}_street_line_2=", value[:street_line_2])
+              send("#{name}_city=", value[:city])
+              send("#{name}_state=", value[:state])
+              send("#{name}_zip_code=", value[:zip_code])
+            end
+          end
         end
       end
     end
