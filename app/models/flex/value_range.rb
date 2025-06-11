@@ -23,8 +23,9 @@ module Flex
     def self.from_h(hash)
       start_h = hash[:start] || hash["start"]
       end_h = hash[:end] || hash["end"]
-      start = self.class.value_class.from_h(start_h)
-      end_value = self.class.value_class.from_h(start_h)
+      value_class = self.class.value_class
+      start = value_class.response_to?(:from_h) ? value_class.from_h(start_h) : start_h
+      end_value = value_class.response_to?(:from_h) ? value_class.from_h(end_h) : end_h
       new(start, end_value)
     end
 
