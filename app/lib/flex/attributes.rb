@@ -18,6 +18,7 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
     include Flex::Attributes::AddressAttribute
+    include Flex::Attributes::ArrayAttribute
     include Flex::Attributes::DateRangeAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::MoneyAttribute
@@ -38,6 +39,8 @@ module Flex
         case type
         when :address
           address_attribute name, options
+        when :array
+          array_attribute name, options
         when :date_range
           date_range_attribute name, options
         when :memorable_date
