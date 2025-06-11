@@ -146,33 +146,32 @@ RSpec.describe Flex::Attributes do
       let(:record) { TestRecord.new }
 
       it "persists and loads arrays of value objects" do
-        record.addresses = [
-          Flex::Address.new("123 Main St", nil, "Boston", "MA", "02108"),
-          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107")
-        ]
-        record.names = [
-          Flex::Name.new("John", nil, "Smith"),
-          Flex::Name.new("Jane", "Marie", "Doe")
-        ]
-        record.reporting_periods = [
-          Flex::YearQuarter.new(2023, 1),
-          Flex::YearQuarter.new(2023, 2)
-        ]
+        address_1 = build(:address, :base)
+        address_2 = build(:address, :base)
+        record.addresses = [address_1, address_2]
+
+        name_1 = build(:name, :base)
+        name_2 = build(:name, :base, :with_middle)
+        record.names = [name_1, name_2]
+
+        year_quarter_1 = build(:year_quarter)
+        year_quarter_2 = build(:year_quarter)
+        record.reporting_periods = [year_quarter_1, year_quarter_2]
 
         record.save!
         loaded_record = TestRecord.find(record.id)
 
         expect(loaded_record.addresses.size).to eq(2)
-        expect(loaded_record.addresses[0]).to eq(record.addresses[0])
-        expect(loaded_record.addresses[1]).to eq(record.addresses[1])
+        expect(loaded_record.addresses[0]).to eq(address_1)
+        expect(loaded_record.addresses[1]).to eq(address_2)
 
         expect(loaded_record.names.size).to eq(2)
-        expect(loaded_record.names[0]).to eq(record.names[0])
-        expect(loaded_record.names[1]).to eq(record.names[1])
+        expect(loaded_record.names[0]).to eq(name_1)
+        expect(loaded_record.names[1]).to eq(name_2)
 
         expect(loaded_record.reporting_periods.size).to eq(2)
-        expect(loaded_record.reporting_periods[0]).to eq(record.reporting_periods[0])
-        expect(loaded_record.reporting_periods[1]).to eq(record.reporting_periods[1])
+        expect(loaded_record.reporting_periods[0]).to eq(year_quarter_1)
+        expect(loaded_record.reporting_periods[1]).to eq(year_quarter_2)
       end
     end
   end

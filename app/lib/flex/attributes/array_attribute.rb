@@ -12,17 +12,25 @@ module Flex
       extend ActiveSupport::Concern
 
       class ArrayType < ActiveModel::Type::Value
+        def initialize(item_class_name)
+          @item_class_name = item_class_name
+        end
+
         def cast(value)
           Array(value)
         end
 
         def serialize(value)
-          value.to_json
+          value.map do |item|
+            item.to_h
+          end.to_json
         end
 
         def deserialize(value)
           return [] if value.nil?
-          JSON.parse(value)
+          JSON.parse(value).map do |item_hash|
+            @item_class_name.constantize.from_h(item_hash)
+          end
         end
       end
 
@@ -34,7 +42,8 @@ module Flex
         # @return [void]
         # @param [Object] item_type
         def array_attribute(name, item_type, options = {})
-          attribute name, ArrayType.new, default: []
+          item_class_name = "Flex::#{item_type.to_s.camelize}"
+          attribute name, ArrayType.new(item_class_name), default: []
           validate :"validate_#{name}"
 
           # Create a validation method that validates each of the value objects

@@ -74,5 +74,16 @@ module Flex
     def persisted?
       false
     end
+
+    def to_h
+      {
+        year: year,
+        quarter: quarter
+      }
+    end
+
+    def self.from_h(h)
+      new(*h.fetch_values('year', 'quarter'))
+    end
   end
 end

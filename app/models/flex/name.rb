@@ -37,5 +37,17 @@ module Flex
     def persisted?
       false
     end
+
+    def to_h
+      {
+        first: first,
+        middle: middle,
+        last: last
+      }
+    end
+
+    def self.from_h(h)
+      new(*h.fetch_values('first', 'middle', 'last'))
+    end
   end
 end

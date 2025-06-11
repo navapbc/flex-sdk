@@ -34,5 +34,19 @@ module Flex
     def <=>(other)
       [ street_line_1, street_line_2, city, state, zip_code ] <=> [ other.street_line_1, other.street_line_2, other.city, other.state, other.zip_code ]
     end
+
+    def to_h
+      {
+        street_line_1: street_line_1,
+        street_line_2: street_line_2,
+        city: city,
+        state: state,
+        zip_code: zip_code
+      }
+    end
+
+    def self.from_h(h)
+      new(*h.fetch_values('street_line_1', 'street_line_2', 'city', 'state', 'zip_code'))
+    end
   end
 end
