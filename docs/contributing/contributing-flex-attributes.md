@@ -43,14 +43,14 @@ This document describes how to create new Flex attributes
    ```
 
    If NO (e.g., tax_id or money):
-   - Create a subclass of ActiveRecord::Type::Value
+   - Create a subclass of ActiveModel::Type::Value
    - Implement the cast method to handle conversion from various input types
    - Use attribute with the custom type
 
    Example:
 
    ```ruby
-   class MoneyType < ActiveRecord::Type::Integer
+   class MoneyType < ActiveModel::Type::Integer
      def cast(value)
        case value
        when Flex::Money

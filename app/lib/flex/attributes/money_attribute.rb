@@ -23,7 +23,7 @@ module Flex
 
       # A custom ActiveRecord type that allows storing money amounts.
       # It uses the Flex::Money value object for storage and arithmetic operations.
-      class MoneyType < ActiveRecord::Type::Integer
+      class MoneyType < ActiveModel::Type::Integer
         def cast(value)
           return nil if value.nil?
 

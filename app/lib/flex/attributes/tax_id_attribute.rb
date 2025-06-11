@@ -23,7 +23,7 @@ module Flex
 
       # A custom ActiveRecord type that allows storing a Tax ID (such as SSN).
       # It uses the Flex::TaxId value object for storage and formatting.
-      class TaxIdType < ActiveRecord::Type::String
+      class TaxIdType < ActiveModel::Type::String
         # Override cast to ensure proper Tax ID format
         def cast(value)
           return nil if value.nil?
