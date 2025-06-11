@@ -13,6 +13,7 @@ module Flex
   # - Provides comparison between address objects
   #
   class Address
+    include ActiveModel::Model
     include Comparable
 
     attr_reader :street_line_1, :street_line_2, :city, :state, :zip_code
