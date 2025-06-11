@@ -37,10 +37,11 @@ module Flex
       # @return [void]
       def flex_attribute(name, type, options = {})
         case type
+        when Array
+          item_type = type.first
+          array_attribute name, item_type, options
         when :address
           address_attribute name, options
-        when :array
-          array_attribute name, options
         when :date_range
           date_range_attribute name, options
         when :memorable_date
