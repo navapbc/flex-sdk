@@ -32,6 +32,7 @@ module Flex
         # @param [Symbol] name The base name for the attribute
         # @param [Hash] options Options for the attribute
         # @return [void]
+        # @param [Object] item_type
         def array_attribute(name, item_type, options = {})
           attribute name, ArrayType.new, default: []
           validate :"validate_#{name}"

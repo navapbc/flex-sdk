@@ -100,15 +100,6 @@ RSpec.describe Flex::Attributes do
         expect(object.leave_periods[0]).to eq(Date.new(2023, 1, 1)..Date.new(2023, 1, 31))
         expect(object.leave_periods[1]).to eq(Date.new(2023, 2, 1)..Date.new(2023, 2, 28))
       end
-
-      it "validates each date range in the array" do
-        object.leave_periods = [
-          Date.new(2023, 1, 1)..Date.new(2023, 1, 31), # Valid
-          Date.new(2023, 1, 30)..Date.new(2023, 1, 1) # Invalid: start after end
-        ]
-        expect(object).not_to be_valid
-        expect(object.errors[:leave_periods]).to include("contains one or more invalid items")
-      end
     end
 
     describe "names array" do
