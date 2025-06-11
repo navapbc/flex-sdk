@@ -40,6 +40,9 @@ module Flex
           when :year_quarter
             columns << "#{name}_year:integer"
             columns << "#{name}_quarter:integer"
+          else
+            # Allow built-in types like string, integer, etc.
+            columns << "#{name}:#{type}"
           end
         end
 
