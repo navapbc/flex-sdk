@@ -60,6 +60,132 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "array attributes" do
+    let(:object) { TestRecord.new }
+
+    describe "addresses array" do
+      it "allows setting an array of addresses" do
+        addresses = [
+          Flex::Address.new("123 Main St", "Apt 1", "Boston", "MA", "02108"),
+          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107")
+        ]
+        object.addresses = addresses
+
+        expect(object.addresses).to be_an(Array)
+        expect(object.addresses.size).to eq(2)
+        expect(object.addresses[0]).to eq(addresses[0])
+        expect(object.addresses[1]).to eq(addresses[1])
+      end
+
+      it "validates each address in the array" do
+        object.addresses = [
+          Flex::Address.new("123 Main St", nil, nil, "MA", "02108"), # Invalid: missing city
+          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107") # Valid
+        ]
+
+        expect(object).not_to be_valid
+        expect(object.errors[:addresses]).to include("contains one or more invalid items")
+      end
+    end
+
+    describe "leave_periods array" do
+      it "allows setting an array of date ranges" do
+        periods = [
+          Date.new(2023, 1, 1)..Date.new(2023, 1, 31),
+          Date.new(2023, 2, 1)..Date.new(2023, 2, 28)
+        ]
+        object.leave_periods = periods
+        expect(object.leave_periods).to be_an(Array)
+        expect(object.leave_periods.size).to eq(2)
+        expect(object.leave_periods[0]).to eq(Date.new(2023, 1, 1)..Date.new(2023, 1, 31))
+        expect(object.leave_periods[1]).to eq(Date.new(2023, 2, 1)..Date.new(2023, 2, 28))
+      end
+
+      it "validates each date range in the array" do
+        object.leave_periods = [
+          Date.new(2023, 1, 1)..Date.new(2023, 1, 31), # Valid
+          Date.new(2023, 1, 30)..Date.new(2023, 1, 1) # Invalid: start after end
+        ]
+        expect(object).not_to be_valid
+        expect(object.errors[:leave_periods]).to include("contains one or more invalid items")
+      end
+    end
+
+    describe "names array" do
+      it "allows setting an array of names" do
+        names = [
+          Flex::Name.new("John", nil, "Smith"),
+          Flex::Name.new("Jane", "Marie", "Doe")
+        ]
+        object.names = names
+
+        expect(object.names).to be_an(Array)
+        expect(object.names.size).to eq(2)
+        expect(object.names[0]).to eq(names[0])
+        expect(object.names[1]).to eq(names[1])
+      end
+    end
+
+    describe "reporting_periods array" do
+      it "allows setting an array of year quarters" do
+        periods = [
+          Flex::YearQuarter.new(2023, 1),
+          Flex::YearQuarter.new(2023, 2)
+        ]
+        object.reporting_periods = periods
+
+        expect(object.reporting_periods).to be_an(Array)
+        expect(object.reporting_periods.size).to eq(2)
+        expect(object.reporting_periods[0]).to eq(periods[0])
+        expect(object.reporting_periods[1]).to eq(periods[1])
+      end
+
+      it "validates each year quarter in the array" do
+        object.reporting_periods = [
+          Flex::YearQuarter.new(2023, 5), # Invalid: quarter > 4
+          Flex::YearQuarter.new(2023, 2)  # Valid
+        ]
+
+        expect(object).not_to be_valid
+        expect(object.errors[:reporting_periods]).to include("contains one or more invalid items")
+      end
+    end
+
+    describe "persistence" do
+      let(:record) { TestRecord.new }
+
+      it "persists and loads arrays of value objects" do
+        record.addresses = [
+          Flex::Address.new("123 Main St", nil, "Boston", "MA", "02108"),
+          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107")
+        ]
+        record.names = [
+          Flex::Name.new("John", nil, "Smith"),
+          Flex::Name.new("Jane", "Marie", "Doe")
+        ]
+        record.reporting_periods = [
+          Flex::YearQuarter.new(2023, 1),
+          Flex::YearQuarter.new(2023, 2)
+        ]
+
+        record.save!
+        loaded_record = TestRecord.find(record.id)
+
+        expect(loaded_record.addresses.size).to eq(2)
+        expect(loaded_record.addresses[0]).to eq(record.addresses[0])
+        expect(loaded_record.addresses[1]).to eq(record.addresses[1])
+
+        expect(loaded_record.names.size).to eq(2)
+        expect(loaded_record.names[0]).to eq(record.names[0])
+        expect(loaded_record.names[1]).to eq(record.names[1])
+
+        expect(loaded_record.reporting_periods.size).to eq(2)
+        expect(loaded_record.reporting_periods[0]).to eq(record.reporting_periods[0])
+        expect(loaded_record.reporting_periods[1]).to eq(record.reporting_periods[1])
+      end
+    end
+  end
+
   describe "memorable_date attribute" do
     it "allows setting a Date" do
       object.date_of_birth = Date.new(2020, 1, 2)

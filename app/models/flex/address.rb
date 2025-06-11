@@ -18,6 +18,11 @@ module Flex
 
     attr_reader :street_line_1, :street_line_2, :city, :state, :zip_code
 
+    validates :street_line_1, presence: true
+    validates :city, presence: true
+    validates :state, presence: true, length: { is: 2 }
+    validates :zip_code, presence: true, format: { with: /\A\d{5}(-\d{4})?\z/, message: "must be a valid US zip code" }
+
     def initialize(street_line_1, street_line_2, city, state, zip_code)
       @street_line_1 = street_line_1
       @street_line_2 = street_line_2
