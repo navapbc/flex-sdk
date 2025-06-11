@@ -47,7 +47,7 @@ module Flex
     end
 
     def self.from_h(h)
-      new(*h.fetch_values('first', 'middle', 'last'))
+      new(*h.fetch_values("first", "middle", "last"))
     end
   end
 end

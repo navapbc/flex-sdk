@@ -83,7 +83,7 @@ module Flex
     end
 
     def self.from_h(h)
-      new(*h.fetch_values('year', 'quarter'))
+      new(*h.fetch_values("year", "quarter"))
     end
   end
 end

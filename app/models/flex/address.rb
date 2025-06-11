@@ -46,7 +46,7 @@ module Flex
     end
 
     def self.from_h(h)
-      new(*h.fetch_values('street_line_1', 'street_line_2', 'city', 'state', 'zip_code'))
+      new(*h.fetch_values("street_line_1", "street_line_2", "city", "state", "zip_code"))
     end
   end
 end

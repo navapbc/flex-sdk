@@ -148,15 +148,15 @@ RSpec.describe Flex::Attributes do
       it "persists and loads arrays of value objects" do
         address_1 = build(:address, :base)
         address_2 = build(:address, :base)
-        record.addresses = [address_1, address_2]
+        record.addresses = [ address_1, address_2 ]
 
         name_1 = build(:name, :base)
         name_2 = build(:name, :base, :with_middle)
-        record.names = [name_1, name_2]
+        record.names = [ name_1, name_2 ]
 
         year_quarter_1 = build(:year_quarter)
         year_quarter_2 = build(:year_quarter)
-        record.reporting_periods = [year_quarter_1, year_quarter_2]
+        record.reporting_periods = [ year_quarter_1, year_quarter_2 ]
 
         # TODO(https://linear.app/nava-platform/issue/TSS-148/refactor-daterange-to-not-subclass-range)
         # This won't work until we refactor DateRange to not subclass Range
