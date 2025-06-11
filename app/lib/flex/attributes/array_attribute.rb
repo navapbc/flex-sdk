@@ -39,7 +39,20 @@ module Flex
           # Create a validation method that validates each of the value objects
           define_method "validate_#{name}" do
             items = send(name)
-            errors.add(name, :invalid_array) if items.any?(&:invalid?)
+            errors.add(name, :invalid_array) if items.any? do |item|
+              if item.respond_to?(:invalid?)
+                item.invalid?
+              else
+                # TODO(https://linear.app/nava-platform/issue/TSS-147/handle-validation-of-native-ruby-objects-in-array-class)
+                # for cases where the item is a native Ruby type rather than an
+                # ActiveModel (for example :memorable_date, :tax_id,
+                # :date_range, etc.) the validation logic isn't on the class
+                # itself, so we can't call `invalid?` directly. In this case we
+                # should refactor the validation logic to be used both here and
+                # in the value object attribute class.
+                false
+              end
+            end
           end
         end
       end
