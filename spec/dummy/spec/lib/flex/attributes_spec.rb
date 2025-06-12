@@ -303,7 +303,7 @@ RSpec.describe Flex::Attributes do
   end
 
   describe "period attribute" do
-    it "allows setting period as a Range object" do
+    it "allows setting period as a Flex::DateRange object" do
       object.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
 
       expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
@@ -586,7 +586,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "persists and loads period object correctly" do
-      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+      record.period = Date.new(2023, 1, 1)..Date.new(2023, 12, 31)
       record.save!
 
       loaded_record = TestRecord.find(record.id)
