@@ -422,6 +422,29 @@ RSpec.describe Flex::Attributes do
         expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
       end
     end
+
+    [
+      [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(Date.new(2023, 6, 15), Date.new(2023, 6, 15)) ],
+      [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(nil, Date.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(Date.new(2023, 1, 1), nil) ],
+      [ "sets nil if setting a nil..nil Range", nil, nil, nil ]
+    ].each do |description, start_date, end_date, expected|
+      it description do
+        object.period = start_date..end_date
+
+        expect(object.period).to eq(expected)
+        expect(object.period_start).to eq(start_date)
+        expect(object.period_end).to eq(end_date)
+      end
+    end
+
+    it "ignores Range objects that don't contain dates" do
+      object.period = 1..10
+      expect(object.period).to be_nil
+      expect(object.period_start).to be_nil
+      expect(object.period_end).to be_nil
+    end
   end
 
   describe "year_quarter attribute" do
@@ -563,7 +586,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "persists and loads period object correctly" do
-      record.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
 
       loaded_record = TestRecord.find(record.id)

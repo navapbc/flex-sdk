@@ -52,5 +52,5 @@ module Flex
         define_singleton_method(:value_class) { value_class }
       end
     end
-  end  
+  end
 end

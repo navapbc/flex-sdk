@@ -46,6 +46,11 @@ module Flex
             when DateRange
               send("#{name}_start=", value.start)
               send("#{name}_end=", value.end)
+            when Range
+              if value.begin.is_a?(Date) || value.end.is_a?(Date)
+                send("#{name}_start=", value.begin)
+                send("#{name}_end=", value.end)
+              end
             when Hash
               send("#{name}_start=", value[:start] || value["start"])
               send("#{name}_end=", value[:end] || value["end"])
