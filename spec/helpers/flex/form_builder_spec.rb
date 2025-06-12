@@ -467,7 +467,7 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with existing date values' do
-      let(:object) { TestRecord.new(period: Date.new(2024, 1, 1)..Date.new(2024, 12, 31)) }
+      let(:object) { TestRecord.new(period: Flex::DateRange.new(Date.new(2024, 1, 1), Date.new(2024, 12, 31))) }
 
       it 'pre-fills the start and end date fields' do
         expect(result).to have_element(:input, name: 'object[period_start]', value: '01/01/2024')
@@ -485,13 +485,13 @@ RSpec.describe Flex::FormBuilder do
 
     context 'with errors' do
       let(:object) do
-        record = TestRecord.new(period: Date.new(2024, 12, 31)..Date.new(2023, 1, 1))
+        record = TestRecord.new(period: Flex::DateRange.new(Date.new(2024, 12, 31), Date.new(2023, 1, 1)))
         record.valid?
         record
       end
 
       it 'displays error messages for both fields' do
-        expect(result).to have_element(:span, text: 'Period start date must be before or equal to end date')
+        expect(result).to have_element(:span, text: 'Period start date cannot be after end date')
       end
     end
   end
