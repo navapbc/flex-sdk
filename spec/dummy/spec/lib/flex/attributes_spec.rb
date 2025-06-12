@@ -304,19 +304,19 @@ RSpec.describe Flex::Attributes do
 
   describe "period attribute" do
     it "allows setting period as a Range object" do
-      object.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+      object.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
 
-      expect(object.period).to eq(Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
+      expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
       expect(object.period_start).to eq(Date.new(2023, 1, 1))
       expect(object.period_end).to eq(Date.new(2023, 12, 31))
-      expect(object.period.begin).to eq(Date.new(2023, 1, 1))
+      expect(object.period.start).to eq(Date.new(2023, 1, 1))
       expect(object.period.end).to eq(Date.new(2023, 12, 31))
     end
 
     it "allows setting period as a hash" do
       object.period = { start: Date.new(2023, 6, 1), end: Date.new(2023, 8, 31) }
 
-      expect(object.period).to eq(Date.new(2023, 6, 1)..Date.new(2023, 8, 31))
+      expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 6, 1), Date.new(2023, 8, 31)))
       expect(object.period_start).to eq(Date.new(2023, 6, 1))
       expect(object.period_end).to eq(Date.new(2023, 8, 31))
     end
@@ -324,7 +324,7 @@ RSpec.describe Flex::Attributes do
     it "allows setting period with string keys" do
       object.period = { "start" => Date.new(2023, 3, 1), "end" => Date.new(2023, 5, 31) }
 
-      expect(object.period).to eq(Date.new(2023, 3, 1)..Date.new(2023, 5, 31))
+      expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 3, 1), Date.new(2023, 5, 31)))
       expect(object.period_start).to eq(Date.new(2023, 3, 1))
       expect(object.period_end).to eq(Date.new(2023, 5, 31))
     end
@@ -332,7 +332,7 @@ RSpec.describe Flex::Attributes do
     it "allows setting nested period attributes directly" do
       object.period_start = Date.new(2023, 9, 1)
       object.period_end = Date.new(2023, 11, 30)
-      expect(object.period).to eq(Date.new(2023, 9, 1)..Date.new(2023, 11, 30))
+      expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 9, 1), Date.new(2023, 11, 30)))
     end
 
     it "handles nil values gracefully" do
@@ -344,12 +344,12 @@ RSpec.describe Flex::Attributes do
 
     it "handles partial periods" do
       object.period = { start: Date.new(2023, 1, 1), end: nil }
-      expect(object.period).to eq(Range.new(Date.new(2023, 1, 1), nil))
+      expect(object.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), nil))
       expect(object.period_start).to eq(Date.new(2023, 1, 1))
       expect(object.period_end).to be_nil
 
-      object.period = Range.new(nil, Date.new(2023, 12, 31))
-      expect(object.period).to eq(Range.new(nil, Date.new(2023, 12, 31)))
+      object.period = Flex::DateRange.new(nil, Date.new(2023, 12, 31))
+      expect(object.period).to eq(Flex::DateRange.new(nil, Date.new(2023, 12, 31)))
       expect(object.period_start).to be_nil
       expect(object.period_end).to eq(Date.new(2023, 12, 31))
     end
@@ -358,7 +358,7 @@ RSpec.describe Flex::Attributes do
       object.period_start = Date.new(2023, 12, 31)
       object.period_end = Date.new(2023, 1, 1)
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("period")).to include("Period start date must be before or equal to end date")
+      expect(object.errors.full_messages_for("period")).to include("Period start date cannot be after end date")
     end
 
     it "allows start date equal to end date" do
@@ -366,7 +366,7 @@ RSpec.describe Flex::Attributes do
       object.period_start = same_date
       object.period_end = same_date
       expect(object).to be_valid
-      expect(object.period).to eq(Range.new(same_date, same_date))
+      expect(object.period).to eq(Flex::DateRange.new(same_date, same_date))
     end
 
     it "allows only one date to be present" do
@@ -563,14 +563,14 @@ RSpec.describe Flex::Attributes do
     end
 
     it "persists and loads period object correctly" do
-      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+      record.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
 
       loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.period).to eq(Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
-      expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 1))
+      expect(loaded_record.period.start).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period.end).to eq(Date.new(2023, 12, 31))
 
       record.period_start = "01/05/2023"
@@ -578,10 +578,10 @@ RSpec.describe Flex::Attributes do
       record.save!
 
       loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.period).to eq(Date.new(2023, 1, 5)..Date.new(2023, 6, 12))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 5), Date.new(2023, 6, 12)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 5))
       expect(loaded_record.period_end).to eq(Date.new(2023, 6, 12))
-      expect(loaded_record.period.begin).to eq(Date.new(2023, 1, 5))
+      expect(loaded_record.period.start).to eq(Date.new(2023, 1, 5))
       expect(loaded_record.period.end).to eq(Date.new(2023, 6, 12))
     end
 
@@ -591,7 +591,7 @@ RSpec.describe Flex::Attributes do
       record.tax_id = Flex::TaxId.new("987-65-4321")
       record.weekly_wage = Flex::Money.new(5000)
       record.date_of_birth = Date.new(1990, 3, 15)
-      record.period = Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+      record.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
       record.save!
 
       loaded_record = TestRecord.find(record.id)
@@ -623,7 +623,7 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.date_of_birth).to eq(Date.new(1990, 3, 15))
 
       # Verify date_range
-      expect(loaded_record.period).to eq(Range.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
     end

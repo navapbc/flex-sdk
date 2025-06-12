@@ -1,12 +1,26 @@
 module Flex
   class ValueRange
+    include ActiveModel::Model
+
     attr_reader :start, :end
 
-    def initialize(start, end_value)
-      raise ArgumentError, "Start value must be less than or equal to end value" if start > end_value
+    validates_date :start, allow_blank: true
+    validates_date :end, allow_blank: true
+    validate :start_cannot_be_greater_than_end
 
+    def initialize(start, end_value)
       @start = start
       @end = end_value
+    end
+
+    def start_cannot_be_greater_than_end
+      if start && self.end && start > self.end
+        errors.add(:base, start_greater_than_end_error_type)
+      end
+    end
+
+    def start_greater_than_end_error_type
+      :"#{self.class.value_class.name.downcase}_range_start_greater_than_end"
     end
 
     def include?(value)
@@ -33,13 +47,9 @@ module Flex
       other.is_a?(ValueRange) && @start == other.start && @end == other.end
     end
 
-    def self.[](klass)
+    def self.[](value_class)
       Class.new(self) do
-        class << self
-          def value_class
-            klass
-          end
-        end
+        define_singleton_method(:value_class) { value_class }
       end
     end
   end  
