@@ -40,8 +40,8 @@ module Flex
       start_h = hash[:start] || hash["start"]
       end_h = hash[:end] || hash["end"]
       value_class = self.value_class
-      start = value_class.respond_to?(:from_hash) ? value_class.from_hash(start_h) : value_class.parse(start_h)
-      end_value = value_class.respond_to?(:from_hash) ? value_class.from_hash(end_h) : value_class.parse(end_h)
+      start = value_class.respond_to?(:from_hash) ? value_class.from_hash(start_h) : start_h
+      end_value = value_class.respond_to?(:from_hash) ? value_class.from_hash(end_h) : end_h
       new(start, end_value)
     end
 
