@@ -49,15 +49,13 @@ module Flex
         end
 
         def serialize(value)
-          value.map do |item|
-            item.to_h
-          end.to_json
+          value.to_json
         end
 
         def deserialize(value)
           return [] if value.nil?
           JSON.parse(value).map do |item_hash|
-            @item_class_name.constantize.from_h(item_hash)
+            @item_class_name.constantize.from_hash(item_hash)
           end
         end
       end

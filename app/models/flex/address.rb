@@ -35,7 +35,7 @@ module Flex
       [ street_line_1, street_line_2, city, state, zip_code ] <=> [ other.street_line_1, other.street_line_2, other.city, other.state, other.zip_code ]
     end
 
-    def to_h
+    def as_json
       {
         street_line_1: street_line_1,
         street_line_2: street_line_2,
@@ -45,7 +45,7 @@ module Flex
       }
     end
 
-    def self.from_h(h)
+    def self.from_hash(h)
       new(*h.fetch_values("street_line_1", "street_line_2", "city", "state", "zip_code"))
     end
   end

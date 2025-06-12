@@ -38,7 +38,7 @@ module Flex
       false
     end
 
-    def to_h
+    def as_json
       {
         first: first,
         middle: middle,
@@ -46,7 +46,7 @@ module Flex
       }
     end
 
-    def self.from_h(h)
+    def self.from_hash(h)
       new(*h.fetch_values("first", "middle", "last"))
     end
   end
