@@ -29,19 +29,19 @@ module Flex
       value >= @start && value <= @end
     end
 
-    def to_h
+    def as_json
       {
-        start: @start.respond_to?(:to_h) ? @start.to_h : @start,
-        end: @end.respond_to?(:to_h) ? @end.to_h : @end
+        start: @start.respond_to?(:as_json) ? @start.as_json : @start,
+        end: @end.respond_to?(:as_json) ? @end.as_json : @end
       }
     end
 
-    def self.from_h(hash)
+    def self.from_hash(hash)
       start_h = hash[:start] || hash["start"]
       end_h = hash[:end] || hash["end"]
       value_class = self.value_class
-      start = value_class.respond_to?(:from_h) ? value_class.from_h(start_h) : value_class.parse(start_h)
-      end_value = value_class.respond_to?(:from_h) ? value_class.from_h(end_h) : value_class.parse(end_h)
+      start = value_class.respond_to?(:from_hash) ? value_class.from_hash(start_h) : value_class.parse(start_h)
+      end_value = value_class.respond_to?(:from_hash) ? value_class.from_hash(end_h) : value_class.parse(end_h)
       new(start, end_value)
     end
 

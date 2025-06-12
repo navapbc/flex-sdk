@@ -42,19 +42,21 @@ RSpec.describe Flex::ValueRange do
       end
     end
 
-    describe '#to_h' do
-      it 'converts the range to a hash' do
-        expect(date_range.to_h).to eq({
-          start: start_date,
-          end: end_date
+    describe '#as_json' do
+      it 'converts the range to a serializable hash' do
+        hash = date_range.as_json
+        expect(hash).to eq({
+          start: start_date.strftime('%Y-%m-%d'),
+          end: end_date.strftime('%Y-%m-%d')
         })
+        expect(hash.to_json).to eq("{\"start\":\"2023-01-01\",\"end\":\"2023-12-31\"}")
       end
     end
 
-    describe '.from_h' do
+    describe '.from_hash' do
       it 'deserializes from a serialized object' do
-        serialized = date_range.to_h.to_json
-        range = Flex::DateRange.from_h(JSON.parse(serialized))
+        serialized = date_range.to_json
+        range = Flex::DateRange.from_hash(JSON.parse(serialized))
         expect(range).to eq(Flex::DateRange.new(start_date, end_date))
         expect(range.start).to eq(start_date)
         expect(range.end).to eq(end_date)
