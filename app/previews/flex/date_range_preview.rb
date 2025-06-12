@@ -9,7 +9,7 @@ module Flex
 
     def filled
       record = TestRecord.new
-      record.period = Date.new(2023, 1, 15)..Date.new(2023, 12, 31)
+      record.period = Range.new(Date.new(2023, 1, 15), Date.new(2023, 12, 31))
       render template: "flex/previews/_date_range", locals: { model: record }
     end
 
