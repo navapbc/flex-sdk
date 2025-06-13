@@ -11,8 +11,6 @@ class TestRecord < ApplicationRecord
 
   # Array types
   flex_attribute :addresses, [ :address ]
-  # TODO(https://linear.app/nava-platform/issue/TSS-148/refactor-daterange-to-not-subclass-range)
-  # Leave Periods currently doesn't work
   flex_attribute :leave_periods, [ :date_range ]
   flex_attribute :names, [ :name ]
   flex_attribute :reporting_periods, [ :year_quarter ]
