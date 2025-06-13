@@ -7,7 +7,7 @@ module Flex
     #   class Company < ApplicationRecord
     #     include Flex::Attributes
     #
-    #     flex_attribute :office_locations, [:address]
+    #     flex_attribute :office_locations, :address, array: true
     #   end
     #
     #   company = Company.new
