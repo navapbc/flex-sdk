@@ -12,14 +12,7 @@ module Flex
       class USDateType < ActiveModel::Type::Date
         # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
         def cast(value)
-          return nil if value.nil?
-          return value if value.is_a?(Date)
-
-          begin
-            Date.strptime(value, "%m/%d/%Y")
-          rescue ArgumentError
-            nil
-          end
+          Flex::USDate.cast(value)
         end
 
         def type
