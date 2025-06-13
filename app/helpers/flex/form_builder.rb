@@ -537,6 +537,37 @@ module Flex
       ]
     end
 
+    # Renders a document upload field for multiple file attachments
+    #
+    # @param [Symbol] attribute The name of the document attribute
+    # @param [Hash] options Options for the field
+    # @option options [String] :label The label text
+    # @option options [String] :hint The hint text
+    # @option options [Boolean] :multiple Whether to allow multiple files (default: true)
+    # @option options [String] :accept File types to accept (e.g., "image/*,.pdf")
+    # @return [String] The rendered HTML
+    def document_field(attribute, options = {})
+      multiple = options.fetch(:multiple, true)
+      accept = options[:accept]
+
+      field_options = {
+        multiple: multiple,
+        class: "usa-file-input"
+      }
+      field_options[:accept] = accept if accept.present?
+
+      # Use the underlying _files attribute for the actual file input
+      files_attribute = :"#{attribute}_files"
+
+      fieldset(attribute, options) do
+        file_field(files_attribute, field_options.merge(
+          label: options[:label],
+          hint: options[:hint],
+          skip_form_group: true
+        ))
+      end
+    end
+
     private
 
     def append_to_option(options, key, value)
@@ -615,5 +646,6 @@ module Flex
     def hint_id(attribute)
       "#{attribute}_hint"
     end
+
   end
 end

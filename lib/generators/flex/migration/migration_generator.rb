@@ -23,6 +23,9 @@ module Flex
           when :date_range
             columns << "#{name}_start:date"
             columns << "#{name}_end:date"
+          when :document
+            # Document attributes use ActiveStorage, no additional columns needed
+            # The has_many_attached declaration will be added to the model
           when :memorable_date
             columns << "#{name}:date"
           when :money

@@ -8,4 +8,5 @@ class TestRecord < ApplicationRecord
   flex_attribute :period, :date_range
   flex_attribute :tax_id, :tax_id
   flex_attribute :reporting_period, :year_quarter
+  flex_attribute :attachments, :document
 end

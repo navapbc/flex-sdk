@@ -1,0 +1,5 @@
+<%= flex_form_with(model: model, url: false) do |f| %>
+  <%= f.document_field :attachments,
+      label: "Supporting Documents",
+      hint: "Upload multiple files (PDF, images, etc.)" %>
+<% end %>
