@@ -37,7 +37,7 @@ module Flex
           end
 
         elsif period_type == :date_range || period_type == Range
-          flex_attribute :period, :date_range
+          flex_attribute :period, :us_date, range: true
 
           define_singleton_method :period_type do
             :date_range
