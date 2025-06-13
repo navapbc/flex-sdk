@@ -42,7 +42,7 @@ module Flex
           array_attribute name, type, options
           return
         end
-          
+
         case type
         when :address
           address_attribute name, options
