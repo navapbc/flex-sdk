@@ -6,9 +6,6 @@ module Flex
 
     attr_reader :start, :end
 
-    # validates_date :start, allow_blank: true
-    # validates_date :end, allow_blank: true
-
     validate :validate_start
     validate :validate_end
     validate :start_cannot_be_greater_than_end
@@ -60,9 +57,13 @@ module Flex
     private
 
     def validate_start
+      # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
+      # figure out how to validate nested attribute
     end
 
     def validate_end
+      # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
+      # figure out how to validate nested attribute
     end
 
     def start_cannot_be_greater_than_end
