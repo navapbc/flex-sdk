@@ -23,7 +23,7 @@ module Flex
           flex_attribute "#{name}_start", :year_quarter
           flex_attribute "#{name}_end", :year_quarter
 
-          define_method name do
+          define_method(name) do
             start_yq = send("#{name}_start")
             end_yq = send("#{name}_end")
 
@@ -34,26 +34,34 @@ module Flex
             end
           end
 
-          define_method "#{name}=" do |period|
-            case period
+          define_method("#{name}=") do |value|
+            case value
+            when YearQuarterRange
+              send("#{name}_start=", value.start)
+              send("#{name}_end=", value.end)
             when Range
-              send("#{name}_start=", period.begin)
-              send("#{name}_end=", period.end)
+              send("#{name}_start=", value.begin)
+              send("#{name}_end=", value.end)
             when nil
               send("#{name}_start=", nil)
               send("#{name}_end=", nil)
             end
           end
 
-          validate :"validate_#{name}_range"
+          validate :"validate_#{name}"
 
-          define_method "validate_#{name}_range" do
-            start_yq = send("#{name}_start")
-            end_yq = send("#{name}_end")
-
-            if start_yq.present? && end_yq.present? && start_yq > end_yq
-              errors.add(name, :invalid_year_quarter_range,
-                message: "start must be before or equal to end")
+          # TODO
+          # This looks like it could be generalized into a "nested object" validator
+          define_method "validate_#{name}" do
+            range = send(name)
+            if range && range.invalid?
+              range.errors.each do |error|
+                if error.attribute == :base
+                  errors.add(name, error.type)
+                else
+                  errors.add("#{name}_#{attribute}", error.type)
+                end
+              end
             end
           end
         end

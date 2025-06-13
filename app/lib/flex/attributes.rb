@@ -23,6 +23,7 @@ module Flex
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::MoneyAttribute
     include Flex::Attributes::NameAttribute
+    include Flex::Attributes::RangeAttribute
     include Flex::Attributes::TaxIdAttribute
     include Flex::Attributes::USDateAttribute
     include Flex::Attributes::YearQuarterAttribute
@@ -38,9 +39,15 @@ module Flex
       # @return [void]
       def flex_attribute(name, type, options = {})
         is_array = options.delete(:array) || false
+        is_range = options.delete(:range) || false
 
         if is_array
           array_attribute name, type, options
+          return
+        end
+
+        if is_range
+          range_attribute name, type, options
           return
         end
 
