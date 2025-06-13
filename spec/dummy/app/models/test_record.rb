@@ -5,10 +5,11 @@ class TestRecord < ApplicationRecord
   flex_attribute :date_of_birth, :memorable_date
   flex_attribute :weekly_wage, :money
   flex_attribute :name, :name
-  flex_attribute :period, :date_range
+  flex_attribute :adopted_on, :us_date
+  flex_attribute :period, :us_date, range: true
   flex_attribute :tax_id, :tax_id
   flex_attribute :reporting_period, :year_quarter
-  flex_attribute :base_period, :year_quarter_range
+  flex_attribute :base_period, :year_quarter, range: true
 
   # Array types
   flex_attribute :addresses, :address, array: true
