@@ -10,8 +10,11 @@ module Flex
     validate :validate_end
     validate :start_cannot_be_greater_than_end
 
-    def initialize(start, end_value)
-      @start = start
+    def initialize(start_value, end_value)
+      raise TypeError, "Expected #{self.class.value_class.name} for start, got #{start_value.class.name}" unless start_value.is_a?(self.class.value_class) || start_value.nil?
+      raise TypeError, "Expected #{self.class.value_class.name} for end, got #{end_value.class.name}" unless end_value.is_a?(self.class.value_class) || end_value.nil?
+
+      @start = start_value
       @end = end_value
     end
 
@@ -76,7 +79,7 @@ module Flex
     end
 
     def start_greater_than_end_error_type
-      :"#{self.class.value_class.name.downcase}_range_start_greater_than_end"
+      :"#{self.class.value_class.name.demodulize.underscore}_range_start_greater_than_end"
     end
   end
 end
