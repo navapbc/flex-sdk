@@ -51,7 +51,8 @@ module Flex
     end
 
     def self.[](value_class)
-      Class.new(self) do
+      @value_range_classes ||= {}
+      @value_range_classes[value_class] ||= Class.new(self) do
         define_singleton_method(:value_class) { value_class }
       end
     end

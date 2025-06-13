@@ -262,4 +262,13 @@ RSpec.describe Flex::ValueRange do
       end
     end
   end
+
+  describe ".[]" do
+    it 'memoizes the value range class for a given value class' do
+      expect(Flex::ValueRange[Date]).to be(Flex::DateRange)
+      [Date, Integer, String].each do |value_class|
+        expect(Flex::ValueRange[value_class]).to be(Flex::ValueRange[value_class])
+      end
+    end
+  end
 end
