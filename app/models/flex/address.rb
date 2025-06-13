@@ -13,9 +13,15 @@ module Flex
   # - Provides comparison between address objects
   #
   class Address
+    include ActiveModel::Model
     include Comparable
 
     attr_reader :street_line_1, :street_line_2, :city, :state, :zip_code
+
+    validates :street_line_1, presence: true
+    validates :city, presence: true
+    validates :state, presence: true, length: { is: 2 }
+    validates :zip_code, presence: true, format: { with: /\A\d{5}(-\d{4})?\z/, message: "must be a valid US zip code" }
 
     def initialize(street_line_1, street_line_2, city, state, zip_code)
       @street_line_1 = street_line_1
@@ -27,6 +33,20 @@ module Flex
 
     def <=>(other)
       [ street_line_1, street_line_2, city, state, zip_code ] <=> [ other.street_line_1, other.street_line_2, other.city, other.state, other.zip_code ]
+    end
+
+    def as_json
+      {
+        street_line_1: street_line_1,
+        street_line_2: street_line_2,
+        city: city,
+        state: state,
+        zip_code: zip_code
+      }
+    end
+
+    def self.from_hash(h)
+      new(*h.fetch_values("street_line_1", "street_line_2", "city", "state", "zip_code"))
     end
   end
 end

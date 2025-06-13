@@ -32,6 +32,7 @@ module Flex
           attribute "#{name}_quarter", :integer
 
           # Add validation for quarter values
+          # TODO DRY this up with validation defined in Flex::YearQuarter
           validates "#{name}_quarter", inclusion: { in: [ 1, 2, 3, 4 ] }, allow_nil: true
 
           # Define the getter method

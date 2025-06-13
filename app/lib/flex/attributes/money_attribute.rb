@@ -4,13 +4,11 @@ module Flex
     # It creates an integer field with validation and formatting capabilities for
     # US dollar amounts stored as cents.
     #
-    # This module includes a custom ActiveRecord type that integrates with the
-    # Flex::Money value object for storage and formatting.
-    #
     # @example Adding a money attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes::MoneyAttribute
-    #     money_attribute :salary
+    #     include Flex::Attributes
+    #
+    #     flex_attribute :salary, :money
     #   end
     #
     # Key features:

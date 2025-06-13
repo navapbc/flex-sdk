@@ -20,6 +20,8 @@ module Flex
             columns << "#{name}_city:string"
             columns << "#{name}_state:string"
             columns << "#{name}_zip_code:string"
+          when :array
+            columns << "#{name}:jsonb"
           when :date_range
             columns << "#{name}_start:date"
             columns << "#{name}_end:date"
