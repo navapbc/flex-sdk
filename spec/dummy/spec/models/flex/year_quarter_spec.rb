@@ -33,10 +33,10 @@ RSpec.describe Flex::YearQuarter do
 
   describe "to_date_range" do
     [
-      [ "calculates correct date ranges for Q1", described_class.new(2023, 1), Date.new(2023, 1, 1)..Date.new(2023, 3, 31) ],
-      [ "calculates correct date ranges for Q2", described_class.new(2023, 2), Date.new(2023, 4, 1)..Date.new(2023, 6, 30) ],
-      [ "calculates correct date ranges for Q3", described_class.new(2023, 3), Date.new(2023, 7, 1)..Date.new(2023, 9, 30) ],
-      [ "calculates correct date ranges for Q4", described_class.new(2023, 4), Date.new(2023, 10, 1)..Date.new(2023, 12, 31) ]
+      [ "calculates correct date ranges for Q1", described_class.new(2023, 1), Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 3, 31)) ],
+      [ "calculates correct date ranges for Q2", described_class.new(2023, 2), Flex::DateRange.new(Date.new(2023, 4, 1), Date.new(2023, 6, 30)) ],
+      [ "calculates correct date ranges for Q3", described_class.new(2023, 3), Flex::DateRange.new(Date.new(2023, 7, 1), Date.new(2023, 9, 30)) ],
+      [ "calculates correct date ranges for Q4", described_class.new(2023, 4), Flex::DateRange.new(Date.new(2023, 10, 1), Date.new(2023, 12, 31)) ]
     ].each do |description, year_quarter, expected|
       it description do
         expect(year_quarter.to_date_range).to eq(expected)
