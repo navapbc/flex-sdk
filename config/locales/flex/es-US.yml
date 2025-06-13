@@ -1,4 +1,11 @@
 es-US:
+  errors:
+    messages:
+      date_range_start_greater_than_end: "la fecha de inicio no puede ser posterior a la fecha de fin"
+      integer_range_start_greater_than_end: "el valor inicial no puede ser mayor que el valor final"
+      invalid_date: "Fecha inválida"
+      invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
+      string_range_start_greater_than_end: "el texto inicial debe ir antes alfabéticamente que el texto final"
   flex:
     application_forms:
       index:
@@ -76,10 +83,6 @@ es-US:
             all: "Todas las tareas"
         no_tasks_alert:
           message: "¡No hay tareas disponibles!"
-  errors:
-    messages:
-      invalid_date: "Fecha inválida"
-      invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
   layouts:
     staff:
       header:

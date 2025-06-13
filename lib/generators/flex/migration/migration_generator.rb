@@ -43,6 +43,9 @@ module Flex
             columns << "#{name}_start_quarter:integer"
             columns << "#{name}_end_year:integer"
             columns << "#{name}_end_quarter:integer"
+          else
+            # Allow built-in types like string, integer, etc.
+            columns << "#{name}:#{type}"
           end
         end
 

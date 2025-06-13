@@ -491,7 +491,7 @@ RSpec.describe Flex::FormBuilder do
       end
 
       it 'displays error messages for both fields' do
-        expect(result).to have_element(:span, text: 'Period start date must be before or equal to end date')
+        expect(result).to have_element(:span, text: 'Period start date cannot be after end date')
       end
     end
   end

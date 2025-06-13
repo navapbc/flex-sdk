@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :address do
+  factory :address, class: 'Flex::Address' do
     trait :base do
       street_line_1 { Faker::Address.street_address }
       city { Faker::Address.city }

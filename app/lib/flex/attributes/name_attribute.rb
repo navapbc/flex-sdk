@@ -31,22 +31,27 @@ module Flex
           attribute "#{name}_middle", :string
           attribute "#{name}_last", :string
 
-          # Set up composed_of mapping
-          composed_of name,
-                      class_name: "Flex::Name",
-                      mapping: [
-                        [ "#{name}_first", "first" ],
-                        [ "#{name}_middle", "middle" ],
-                        [ "#{name}_last", "last" ]
-                      ],
-                      converter: ->(value) {
-                        case value
-                        when Hash
-                          Flex::Name.new(value[:first], value[:middle], value[:last])
-                        else
-                          nil
-                        end
-                      }
+          # Define the getter method
+          define_method(name) do
+            first = send("#{name}_first")
+            middle = send("#{name}_middle")
+            last = send("#{name}_last")
+            Flex::Name.new(first, middle, last)
+          end
+
+          # Define the setter method
+          define_method("#{name}=") do |value|
+            case value
+            when Flex::Name
+              send("#{name}_first=", value.first)
+              send("#{name}_middle=", value.middle)
+              send("#{name}_last=", value.last)
+            when Hash
+              send("#{name}_first=", value[:first])
+              send("#{name}_middle=", value[:middle])
+              send("#{name}_last=", value[:last])
+            end
+          end
         end
       end
     end

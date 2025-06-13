@@ -33,48 +33,44 @@ module Flex
           validates_date "#{name}_start", allow_blank: true
           validates_date "#{name}_end", allow_blank: true
 
-          # Set up composed_of mapping to Range
-          composed_of name,
-                      class_name: "Range",
-                      mapping: [
-                        [ "#{name}_start", "begin" ],
-                        [ "#{name}_end", "end" ]
-                      ],
-                      converter: ->(value) {
-                        case value
-                        when Range
-                          value
-                        when Hash
-                          start_date = value[:start] || value["start"]
-                          end_date = value[:end] || value["end"]
-                          if start_date || end_date
-                            start_date..end_date
-                          else
-                            nil
-                          end
-                        else
-                          nil
-                        end
-                      },
-                      constructor: ->(start_date, end_date) {
-                        if start_date || end_date
-                          start_date..end_date
-                        else
-                          nil
-                        end
-                      },
-                      allow_nil: true
-
-          # Add validation for date range
-          validate :"validate_#{name}_range"
-
-          # Create a validation method that checks if start <= end
-          define_method "validate_#{name}_range" do
+          # Define the getter method
+          define_method(name) do
             start_date = send("#{name}_start")
             end_date = send("#{name}_end")
+            start_date || end_date ? DateRange.new(start_date, end_date) : nil
+          end
 
-            if start_date.present? && end_date.present? && start_date > end_date
-              errors.add(name, :invalid_date_range, message: "start date must be before or equal to end date")
+          # Define the setter method
+          define_method("#{name}=") do |value|
+            case value
+            when DateRange
+              send("#{name}_start=", value.start)
+              send("#{name}_end=", value.end)
+            when Range
+              if value.begin.is_a?(Date) || value.end.is_a?(Date)
+                send("#{name}_start=", value.begin)
+                send("#{name}_end=", value.end)
+              end
+            when Hash
+              send("#{name}_start=", value[:start] || value["start"])
+              send("#{name}_end=", value[:end] || value["end"])
+            end
+          end
+
+          validate :"validate_#{name}"
+
+          # TODO
+          # This looks like it could be generalized into a "nested object" validator
+          define_method "validate_#{name}" do
+            range = send(name)
+            if range && range.invalid?
+              range.errors.each do |error|
+                if error.attribute == :base
+                  errors.add(name, error.type)
+                else
+                  errors.add("#{name}_#{attribute}", error.type)
+                end
+              end
             end
           end
         end

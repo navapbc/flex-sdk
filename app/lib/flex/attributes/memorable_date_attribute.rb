@@ -25,7 +25,7 @@ module Flex
       # as the default Date type, but it allows setting the attribute using a hash
       # with keys :year, :month, and :day. This is meant to be used in conjunction
       # with the memorable_date method in the Flex form builder
-      class MemorableDate < ActiveRecord::Type::Date
+      class MemorableDate < ActiveModel::Type::Date
         # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
         def cast(value)
           return super(value) unless value.is_a?(Hash)
