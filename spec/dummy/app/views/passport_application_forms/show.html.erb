@@ -1,9 +1,27 @@
-<%= render template: "flex/application_forms/show", locals: {
-  title: t(".title"),
-  back_link_text: t(".back"),
-  index_path: passport_application_forms_path,
-  created_at: @passport_application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
-  current_status: @passport_application_form.status,
-  next_step: t(".next_step.status.#{@passport_application_form.status}"),
-  submitted_on_text: t(".submitted_on")
+<% content_for :title, t(".title") %>
+
+<%= link_to t(".back"), passport_application_forms_path %>
+
+<h1><%= t(".title") %></h1>
+
+<%= render partial: "flex/shared/step_indicator", locals: {
+  steps: [:in_progress, :submitted, :decision_made],
+  current_step: @passport_application_form.status
 } %>
+
+<p class="usa-intro">
+  <%= t(".next_step.status.#{@passport_application_form.status}") %>
+</p>
+
+<p>
+  <%= t(".submitted_on") %>: <%= @passport_application_form.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+</p>
+
+<% if @passport_application_form.supporting_documents.present? %>
+  <h2>Supporting Documents</h2>
+  <ul>
+    <% @passport_application_form.supporting_documents.files.each do |document| %>
+      <li><%= document.filename %> (<%= number_to_human_size(document.byte_size) %>)</li>
+    <% end %>
+  </ul>
+<% end %>

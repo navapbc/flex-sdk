@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :passport_application_forms, only: [ :index, :new, :show ]
+  resources :passport_application_forms, only: [ :index, :new, :create, :show ]
   resources :tasks, only: [ :index, :show, :update ]
 
   get "staff", to: "staff#index"

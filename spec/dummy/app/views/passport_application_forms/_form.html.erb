@@ -1,5 +1,8 @@
 <%= flex_form_with(model: passport_application_form) do |f| %>
   <%= f.name :name %>
+  <%= f.document_field :supporting_documents,
+      label: "Supporting Documents",
+      hint: "Upload any supporting documents (PDF, images, etc.)" %>
   
   <%= f.submit "Save", value: "Save", big: true %>
   <%= f.submit t(".submit"), value: "Submit", big: true %>
