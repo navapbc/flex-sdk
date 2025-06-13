@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_13_224234) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_234034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -95,6 +95,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_13_224234) do
     t.jsonb "names"
     t.jsonb "reporting_periods"
     t.date "adopted_on"
+    t.integer "base_period_start_year"
+    t.integer "base_period_start_quarter"
+    t.integer "base_period_end_year"
+    t.integer "base_period_end_quarter"
   end
 
   create_table "users", force: :cascade do |t|
