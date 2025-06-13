@@ -36,10 +36,14 @@ module Flex
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
       def flex_attribute(name, type, options = {})
+        is_array = options.delete(:array) || false
+
+        if is_array
+          array_attribute name, type, options
+          return
+        end
+          
         case type
-        when Array
-          item_type = type.first
-          array_attribute name, item_type, options
         when :address
           address_attribute name, options
         when :date_range

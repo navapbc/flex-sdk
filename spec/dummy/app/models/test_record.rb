@@ -10,8 +10,8 @@ class TestRecord < ApplicationRecord
   flex_attribute :reporting_period, :year_quarter
 
   # Array types
-  flex_attribute :addresses, [ :address ]
-  flex_attribute :leave_periods, [ :date_range ]
-  flex_attribute :names, [ :name ]
-  flex_attribute :reporting_periods, [ :year_quarter ]
+  flex_attribute :addresses, :address, array: true
+  flex_attribute :leave_periods, :date_range, array: true
+  flex_attribute :names, :name, array: true
+  flex_attribute :reporting_periods, :year_quarter, array: true
 end
