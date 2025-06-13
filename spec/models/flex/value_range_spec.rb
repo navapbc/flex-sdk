@@ -8,10 +8,10 @@ RSpec.describe Flex::ValueRange do
   end
   let(:range) { klass.new(start_value, end_value) }
 
-  describe "ValueRange[Date]" do
-    let(:value_class) { Date }
-    let(:start_value) { Date.new(2023, 1, 1) }
-    let(:end_value) { Date.new(2023, 12, 31) }
+  describe "ValueRange[USDate]" do
+    let(:value_class) { Flex::USDate }
+    let(:start_value) { Flex::USDate.new(2023, 1, 1) }
+    let(:end_value) { Flex::USDate.new(2023, 12, 31) }
 
     describe 'validations' do
       it 'is valid with valid start and end dates' do
@@ -87,8 +87,8 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start_value, Date.new(2023, 6, 1)))
-        expect(range).not_to eq(klass.new(Date.new(2023, 1, 2), end_value))
+        expect(range).not_to eq(klass.new(start_value, Flex::USDate.new(2023, 6, 1)))
+        expect(range).not_to eq(klass.new(Flex::USDate.new(2023, 1, 2), end_value))
       end
     end
   end
@@ -265,7 +265,7 @@ RSpec.describe Flex::ValueRange do
 
   describe ".[]" do
     it 'memoizes the value range class for a given value class' do
-      expect(Flex::ValueRange[Date]).to be(Flex::DateRange)
+      expect(Flex::DateRange).to be(Flex::ValueRange[Flex::USDate])
       [Date, Integer, String].each do |value_class|
         expect(Flex::ValueRange[value_class]).to be(Flex::ValueRange[value_class])
       end

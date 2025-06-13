@@ -1,3 +1,3 @@
 module Flex
-  DateRange = ValueRange[Date]
+  DateRange = ValueRange[USDate]
 end
