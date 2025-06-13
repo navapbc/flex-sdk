@@ -3,12 +3,13 @@ en:
     tax_id: "Tax ID"    
   errors:
     messages:
-      date_range_start_greater_than_end: "start date cannot be after end date"
       integer_range_start_greater_than_end: "start cannot be greater than end"
       invalid_array: "contains one or more invalid items"
       invalid_date: "is an invalid date"
       invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
       string_range_start_greater_than_end: "start must come before end alphabetically"
+      us_date_range_start_greater_than_end: "start date cannot be after end date"
+      year_quarter_range_start_greater_than_end: "start cannot be after end"
   flex:
     application_forms:
       index:
