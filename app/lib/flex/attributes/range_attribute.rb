@@ -80,10 +80,6 @@ module Flex
           flex_attribute :"#{name}_start", value_type
           flex_attribute :"#{name}_end", value_type
 
-          validate :"validate_#{name}_start"
-          validate :"validate_#{name}_end"
-          validate :"validate_#{name}"
-
           # Define the getter method
           define_method(name) do
             start_value = send("#{name}_start")
@@ -108,11 +104,7 @@ module Flex
             end
           end
 
-          define_method "validate_#{name}_start" do
-          end
-
-          define_method "validate_#{name}_end" do
-          end
+          validate :"validate_#{name}"
 
           # TODO
           # This looks like it could be generalized into a "nested object" validator
