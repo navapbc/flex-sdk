@@ -575,9 +575,9 @@ RSpec.describe Flex::Attributes do
 
   describe "us_date attribute" do
     [
-      ["allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15)],
-      ["allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15)],
-      ["allows setting nil", nil, nil],
+      [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting nil", nil, nil ]
     ].each do |description, value, expected|
       it description do
         object.adopted_on = value

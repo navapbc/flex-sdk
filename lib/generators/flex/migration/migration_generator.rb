@@ -14,18 +14,18 @@ module Flex
           name = attribute_parts.first
           type = attribute_parts[1]&.to_sym
           option = attribute_parts.last.to_sym
-          
+
           columns += get_columns_for_attribute(name, type, option)
         end
 
         generate("migration", name, *columns)
       end
 
-      private 
+      private
 
       def get_columns_for_attribute(name, type, option = nil)
-        return ["#{name}:jsonb"] if option == :array
-        
+        return [ "#{name}:jsonb" ] if option == :array
+
         if option == :range
           return get_columns_for_attribute("#{name}_start", type) +
                  get_columns_for_attribute("#{name}_end", type)
@@ -41,11 +41,11 @@ module Flex
             "#{name}_zip_code:string"
           ]
         when :array
-          ["#{name}:jsonb"]
+          [ "#{name}:jsonb" ]
         when :memorable_date
-          ["#{name}:date"]
+          [ "#{name}:date" ]
         when :money
-          ["#{name}:integer"]
+          [ "#{name}:integer" ]
         when :name
           [
             "#{name}_first:string",
@@ -53,9 +53,9 @@ module Flex
             "#{name}_last:string"
           ]
         when :tax_id
-          ["#{name}:string"]
+          [ "#{name}:string" ]
         when :us_date
-          ["#{name}:date"]
+          [ "#{name}:date" ]
         when :year_quarter
           [
             "#{name}_year:integer",
@@ -63,7 +63,7 @@ module Flex
           ]
         else
           # Allow built-in types like string, integer, etc.
-          ["#{name}:#{type}"]
+          [ "#{name}:#{type}" ]
         end
       end
     end

@@ -45,7 +45,7 @@ module Flex
           when Flex::ValueRange[value_class]
             value
           when Hash
-            Flex::ValueRange[value_class].new(value['start'], value['end'])
+            Flex::ValueRange[value_class].new(value["start"], value["end"])
           else
             nil
           end
@@ -53,13 +53,13 @@ module Flex
 
         def serialize(value)
           return nil if value.nil?
-          { 'start' => value.start, 'end' => value.end }.to_json
+          { "start" => value.start, "end" => value.end }.to_json
         end
 
         def deserialize(value)
           return nil if value.nil?
           data = JSON.parse(value)
-          Flex::ValueRange.new(data['start'], data['end'])
+          Flex::ValueRange.new(data["start"], data["end"])
         end
       end
 
@@ -69,6 +69,7 @@ module Flex
         # @param [Symbol] name The base name for the attribute
         # @param [Hash] options Options for the attribute
         # @return [void]
+        # @param [Object] value_type
         def range_attribute(name, value_type, options = {})
           value_class = begin
                           "Flex::#{value_type.to_s.camelize}".constantize

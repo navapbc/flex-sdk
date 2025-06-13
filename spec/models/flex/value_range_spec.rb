@@ -266,7 +266,7 @@ RSpec.describe Flex::ValueRange do
   describe ".[]" do
     it 'memoizes the value range class for a given value class' do
       expect(Flex::DateRange).to be(Flex::ValueRange[Flex::USDate])
-      [Date, Integer, String].each do |value_class|
+      [ Date, Integer, String ].each do |value_class|
         expect(Flex::ValueRange[value_class]).to be(Flex::ValueRange[value_class])
       end
     end
