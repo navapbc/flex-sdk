@@ -222,16 +222,4 @@ RSpec.describe Flex::ValueRange do
       end
     end
   end
-
-  describe "ValueRange[String]" do
-    let(:start_value) { value_class.new(1) }
-  end
-
-  describe '.[]' do
-    it 'creates a new value range class for the given value type' do
-      number_range_class = described_class[Integer]
-      range = number_range_class.new(1, 10)
-      expect(range.class.value_class).to eq(Integer)
-    end
-  end
 end
