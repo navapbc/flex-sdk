@@ -58,8 +58,6 @@ RSpec.describe Flex::ValueRange do
         serialized = date_range.to_json
         range = Flex::DateRange.from_hash(JSON.parse(serialized))
         expect(range).to eq(Flex::DateRange.new(start_date, end_date))
-        expect(range.start).to eq(start_date)
-        expect(range.end).to eq(end_date)
       end
     end
 
@@ -74,13 +72,93 @@ RSpec.describe Flex::ValueRange do
         expect(date_range).not_to eq(other_range)
       end
     end
+  end
 
-    describe '.[]' do
-      it 'creates a new value range class for the given value type' do
-        number_range_class = described_class[Integer]
-        range = number_range_class.new(1, 10)
-        expect(range.class.value_class).to eq(Integer)
+  describe "ValueRange[Integer]" do
+    let(:klass) { Flex::ValueRange[Integer] }
+    let(:start_value) { Faker::Number.within(range: -100..100) }
+    let(:end_value) { start_value + Faker::Number.within(range: 1..100) }
+    let(:range) { klass.new(start_value, end_value) }
+
+    before do
+      stub_const("IntegerRange", klass)
+    end
+
+    describe 'validations' do
+      it 'is valid with valid start and end dates' do
+        expect(range).to be_valid
       end
+
+      it 'is invalid when start is greater than end' do
+        invalid_range = klass.new(start_value, start_value - 1)
+        expect(invalid_range).not_to be_valid
+        expect(invalid_range.errors[:base]).to include("start cannot be greater than end")
+      end
+
+      it 'is valid when start and end is blank' do
+        range = klass.new(nil, nil)
+        expect(range).to be_valid
+      end
+    end
+
+    describe '#include?' do
+      it 'returns true for a number within the range' do
+        value = (start_value + end_value) / 2
+        expect(range.include?(value)).to be true
+      end
+
+      it 'returns true for boundary dates' do
+        expect(range.include?(start_value)).to be true
+        expect(range.include?(end_value)).to be true
+      end
+
+      it 'returns false for values outside the range' do
+        expect(range.include?(start_value - 1)).to be false
+        expect(range.include?(end_value + 1)).to be false
+      end
+    end
+
+    describe '#as_json' do
+      it 'converts the range to a serializable hash' do
+        hash = range.as_json
+        expect(hash).to eq({
+          start: start_value,
+          end: end_value
+        })
+        expect(hash.to_json).to eq("{\"start\":#{start_value},\"end\":#{end_value}}")
+      end
+    end
+
+    describe '.from_hash' do
+      it 'deserializes from a serialized object' do
+        serialized = range.to_json
+        range = IntegerRange.from_hash(JSON.parse(serialized))
+        expect(range).to eq(IntegerRange.new(start_value, end_value))
+      end
+    end
+
+    describe '#==' do
+      it 'returns true for ranges with same start and end values' do
+        other_range = IntegerRange.new(start_value, end_value)
+        expect(range).to eq(other_range)
+      end
+
+      it 'returns false for ranges with different values' do
+        other_range = IntegerRange.new(start_value, start_value + 1)
+        expect(range).not_to eq(other_range)
+      end
+    end
+  end
+
+  describe "ValueRange[String]" do
+    let(:start_value) { value_class.new(1) }
+  end
+
+  describe '.[]' do
+    it 'creates a new value range class for the given value type' do
+      number_range_class = described_class[Integer]
+      range = number_range_class.new(1, 10)
+      expect(range.class.value_class).to eq(Integer)
     end
   end
 end
