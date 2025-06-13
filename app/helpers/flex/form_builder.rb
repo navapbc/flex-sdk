@@ -646,6 +646,5 @@ module Flex
     def hint_id(attribute)
       "#{attribute}_hint"
     end
-
   end
 end
