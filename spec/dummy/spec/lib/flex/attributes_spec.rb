@@ -571,6 +571,19 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  describe "us_date attribute" do
+    [
+      ["allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15)],
+      ["allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15)],
+      ["allows setting nil", nil, nil],
+    ].each do |description, value, expected|
+      it description do
+        object.adopted_on = value
+        expect(object.adopted_on).to eq(expected)
+      end
+    end
+  end
+
   describe "year_quarter attribute" do
     it "allows setting year_quarter as a value object" do
       year_quarter = Flex::YearQuarter.new(2023, 2)
