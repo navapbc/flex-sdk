@@ -66,6 +66,18 @@ RSpec.describe Flex::ValueRange do
         range = klass.from_hash(JSON.parse(serialized))
         expect(range).to eq(klass.new(start_value, end_value))
       end
+
+      it 'raises an error with nil' do
+        expect { klass.from_hash(nil) }.to raise_error(TypeError)
+      end
+
+      it 'raises an error if hash is missing start key' do
+        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
+      end
+
+      it 'raises an error if hash is missing end key' do
+        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
+      end
     end
 
     describe '#==' do
@@ -138,6 +150,20 @@ RSpec.describe Flex::ValueRange do
         range = klass.from_hash(JSON.parse(serialized))
         expect(range).to eq(klass.new(start_value, end_value))
       end
+
+      it 'raises an error with nil' do
+        expect { klass.from_hash(nil) }.to raise_error(TypeError)
+      end
+
+      it 'raises an error if hash is missing start or end key' do
+        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
+        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
+      end
+
+      it 'does not raise an error if start or end is 0' do
+        expect { klass.from_hash({ "start" => 0, "end" => end_value }) }.not_to raise_error
+        expect { klass.from_hash({ "start" => start_value, "end" => 0 }) }.not_to raise_error
+      end
     end
 
     describe '#==' do
@@ -207,6 +233,20 @@ RSpec.describe Flex::ValueRange do
         serialized = range.to_json
         range = klass.from_hash(JSON.parse(serialized))
         expect(range).to eq(klass.new(start_value, end_value))
+      end
+
+      it 'raises an error with nil' do
+        expect { klass.from_hash(nil) }.to raise_error(TypeError)
+      end
+
+      it 'raises an error if hash is missing start or end key' do
+        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
+        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
+      end
+
+      it 'does not raise an error if start or end is an empty string' do
+        expect { klass.from_hash({ "start" => "", "end" => end_value }) }.not_to raise_error
+        expect { klass.from_hash({ "start" => start_value, "end" => "" }) }.not_to raise_error
       end
     end
 

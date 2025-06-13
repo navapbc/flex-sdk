@@ -27,8 +27,10 @@ module Flex
     end
 
     def self.from_hash(hash)
+      raise TypeError unless hash.is_a?(Hash)
       start_hash = hash[:start] || hash["start"]
       end_hash = hash[:end] || hash["end"]
+      raise ArgumentError, "Missing start or end value" unless start_hash && end_hash
       start_value = self.parse_nested_attribute(start_hash)
       end_value = self.parse_nested_attribute(end_hash)
       new(start_value, end_value)
