@@ -103,7 +103,7 @@ module Flex
 
           validate :"validate_#{name}"
 
-          # TODO
+          # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
           # This looks like it could be generalized into a "nested object" validator
           define_method "validate_#{name}" do
             range = send(name)
