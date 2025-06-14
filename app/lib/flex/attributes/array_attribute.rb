@@ -68,26 +68,7 @@ module Flex
         # @return [void]
         # @param [Object] item_type
         def array_attribute(name, item_type, options = {})
-          if item_type.is_a?(Array)
-            # Recursively handle nested attributes that are arrays or ranges
-            nested_type = item_type.first
-            nested_options = item_type.last
-            is_nested_type_an_array = nested_options.delete(:array) || false
-            is_nested_type_a_range = nested_options.delete(:range) || false
-            if is_nested_type_an_array
-              raise ArgumentError, "Arrays of arrays are not currently supported"
-            end
-            raise ArgumentError, "Expected range to be true for array item type when using syntax: `flex_attribute :name, [:type, range: true], array: true`" unless is_nested_type_a_range
-            # TODO extract this logic into a helper method
-            value_class = begin
-                            "Flex::#{nested_type.to_s.camelize}".constantize
-                          rescue NameError
-                            nested_type.to_s.camelize.constantize
-                          end
-            item_class = Flex::ValueRange[value_class]
-          else
-            item_class = "Flex::#{item_type.to_s.camelize}".constantize
-          end
+          item_class = Flex::Attributes::ArrayAttribute.get_item_class(item_type)
 
           attribute name, ArrayType.new(item_class), default: []
           validate :"validate_#{name}"
