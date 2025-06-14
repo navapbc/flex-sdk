@@ -494,10 +494,10 @@ RSpec.describe Flex::Attributes do
     end
   end
 
-  describe "tax_id attribute" do
-    it "allows setting a tax_id as a TaxId object" do
-      tax_id = Flex::TaxId.new("123456789")
-      object.tax_id = tax_id
+  describe "name attribute" do
+    it "allows setting name as a value object" do
+      name = Flex::Name.new("Jane", "Marie", "Doe")
+      object.name = name
 
       expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
       expect(object.name_first).to eq("Jane")
@@ -518,6 +518,7 @@ RSpec.describe Flex::Attributes do
       object.name_first = "John"
       object.name_middle = "Quincy"
       object.name_last = "Adams"
+
       expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
     end
 
