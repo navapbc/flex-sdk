@@ -91,14 +91,14 @@ RSpec.describe Flex::Attributes do
     describe "leave_periods array" do
       it "allows setting an array of date ranges" do
         periods = [
-          Flex::USDate.new(2023, 1, 1)..Flex::USDate.new(2023, 1, 31),
-          Flex::USDate.new(2023, 2, 1)..Flex::USDate.new(2023, 2, 28)
+          Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 1, 31)),
+          Flex::DateRange.new(Flex::USDate.new(2023, 2, 1), Flex::USDate.new(2023, 2, 28))
         ]
         object.leave_periods = periods
         expect(object.leave_periods).to be_an(Array)
         expect(object.leave_periods.size).to eq(2)
-        expect(object.leave_periods[0]).to eq(Flex::USDate.new(2023, 1, 1)..Flex::USDate.new(2023, 1, 31))
-        expect(object.leave_periods[1]).to eq(Flex::USDate.new(2023, 2, 1)..Flex::USDate.new(2023, 2, 28))
+        expect(object.leave_periods[0]).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 1, 31)))
+        expect(object.leave_periods[1]).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 2, 1), Flex::USDate.new(2023, 2, 28)))
       end
     end
 
@@ -186,7 +186,7 @@ RSpec.describe Flex::Attributes do
 
   describe "memorable_date attribute" do
     it "allows setting a Date" do
-      object.date_of_birth = Flex::USDate.new(2020, 1, 2)
+      object.date_of_birth = Date.new(2020, 1, 2)
       expect(object.date_of_birth).to eq(Flex::USDate.new(2020, 1, 2))
       expect(object.date_of_birth.year).to eq(2020)
       expect(object.date_of_birth.month).to eq(1)
@@ -347,7 +347,99 @@ RSpec.describe Flex::Attributes do
     end
   end
 
-  describe "period attribute" do
+  describe "tax_id attribute" do
+    it "allows setting a tax_id as a TaxId object" do
+      tax_id = Flex::TaxId.new("123456789")
+      object.tax_id = tax_id
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    it "allows setting a tax_id as a string" do
+      object.tax_id = "123456789"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    [
+      [ "123456789", "123-45-6789" ],
+      [ "123-45-6789", "123-45-6789" ],
+      [ "123 45 6789", "123-45-6789" ]
+    ].each do |input_string, expected|
+      it "formats tax_id correctly [#{input_string}]" do
+        object.tax_id = input_string
+        expect(object.tax_id.formatted).to eq(expected)
+      end
+    end
+
+    it "preserves invalid values for validation" do
+      object.tax_id = "12345"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
+    end
+
+    describe "TaxId.<=>" do
+      it "allows sorting tax ids" do
+        tax_ids = [
+          Flex::TaxId.new("987654321"),
+          Flex::TaxId.new("123456789"),
+          Flex::TaxId.new("456789123")
+        ]
+
+        sorted_tax_ids = tax_ids.sort
+        expect(sorted_tax_ids.map(&:formatted)).to eq([
+          "123-45-6789",
+          "456-78-9123",
+          "987-65-4321"
+        ])
+      end
+
+      it "compares tax ids numerically" do
+        lower = Flex::TaxId.new("123456789")
+        higher = Flex::TaxId.new("987654321")
+
+        expect(lower <=> higher).to eq(-1)
+        expect(higher <=> lower).to eq(1)
+        expect(lower <=> lower).to eq(0)
+      end
+
+      it "handles comparison with different formats" do
+        tax_id1 = Flex::TaxId.new("123-45-6789")
+        tax_id2 = Flex::TaxId.new("123456789")
+
+        expect(tax_id1 <=> tax_id2).to eq(0)
+      end
+
+      it "handles comparison with string values" do
+        tax_id = Flex::TaxId.new("123-45-6789")
+        string_value = "123456789"
+
+        expect(tax_id <=> string_value).to eq(0)
+        expect(tax_id <=> "987654321").to eq(-1)
+        expect(tax_id <=> "000456789").to eq(1)
+      end
+    end
+  end
+
+  describe "us_date attribute" do
+    [
+      [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting nil", nil, nil ]
+    ].each do |description, value, expected|
+      it description do
+        object.adopted_on = value
+        expect(object.adopted_on).to eq(expected)
+      end
+    end
+  end
+
+  describe "us_date attribute with range option" do
     it "allows setting period as a Flex::DateRange object" do
       object.period = Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31))
 
@@ -491,98 +583,6 @@ RSpec.describe Flex::Attributes do
       expect(object.period).to be_nil
       expect(object.period_start).to be_nil
       expect(object.period_end).to be_nil
-    end
-  end
-
-  describe "tax_id attribute" do
-    it "allows setting a tax_id as a TaxId object" do
-      tax_id = Flex::TaxId.new("123456789")
-      object.tax_id = tax_id
-
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("123-45-6789")
-    end
-
-    it "allows setting a tax_id as a string" do
-      object.tax_id = "123456789"
-
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("123-45-6789")
-    end
-
-    [
-      [ "123456789", "123-45-6789" ],
-      [ "123-45-6789", "123-45-6789" ],
-      [ "123 45 6789", "123-45-6789" ]
-    ].each do |input_string, expected|
-      it "formats tax_id correctly [#{input_string}]" do
-        object.tax_id = input_string
-        expect(object.tax_id.formatted).to eq(expected)
-      end
-    end
-
-    it "preserves invalid values for validation" do
-      object.tax_id = "12345"
-
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
-      expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
-    end
-
-    describe "TaxId.<=>" do
-      it "allows sorting tax ids" do
-        tax_ids = [
-          Flex::TaxId.new("987654321"),
-          Flex::TaxId.new("123456789"),
-          Flex::TaxId.new("456789123")
-        ]
-
-        sorted_tax_ids = tax_ids.sort
-        expect(sorted_tax_ids.map(&:formatted)).to eq([
-          "123-45-6789",
-          "456-78-9123",
-          "987-65-4321"
-        ])
-      end
-
-      it "compares tax ids numerically" do
-        lower = Flex::TaxId.new("123456789")
-        higher = Flex::TaxId.new("987654321")
-
-        expect(lower <=> higher).to eq(-1)
-        expect(higher <=> lower).to eq(1)
-        expect(lower <=> lower).to eq(0)
-      end
-
-      it "handles comparison with different formats" do
-        tax_id1 = Flex::TaxId.new("123-45-6789")
-        tax_id2 = Flex::TaxId.new("123456789")
-
-        expect(tax_id1 <=> tax_id2).to eq(0)
-      end
-
-      it "handles comparison with string values" do
-        tax_id = Flex::TaxId.new("123-45-6789")
-        string_value = "123456789"
-
-        expect(tax_id <=> string_value).to eq(0)
-        expect(tax_id <=> "987654321").to eq(-1)
-        expect(tax_id <=> "000456789").to eq(1)
-      end
-    end
-  end
-
-  describe "us_date attribute" do
-    [
-      [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
-      [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
-      [ "allows setting nil", nil, nil ]
-    ].each do |description, value, expected|
-      it description do
-        object.adopted_on = value
-        expect(object.adopted_on).to eq(expected)
-      end
     end
   end
 
