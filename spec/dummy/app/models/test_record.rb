@@ -13,7 +13,7 @@ class TestRecord < ApplicationRecord
 
   # Array types
   flex_attribute :addresses, :address, array: true
-  flex_attribute :leave_periods, :date_range, array: true
+  flex_attribute :leave_periods, [:us_date, range: true], array: true
   flex_attribute :names, :name, array: true
   flex_attribute :reporting_periods, :year_quarter, array: true
 end

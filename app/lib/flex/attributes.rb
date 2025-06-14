@@ -19,7 +19,6 @@ module Flex
     extend ActiveSupport::Concern
     include Flex::Attributes::AddressAttribute
     include Flex::Attributes::ArrayAttribute
-    include Flex::Attributes::DateRangeAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::MoneyAttribute
     include Flex::Attributes::NameAttribute
@@ -27,14 +26,26 @@ module Flex
     include Flex::Attributes::TaxIdAttribute
     include Flex::Attributes::USDateAttribute
     include Flex::Attributes::YearQuarterAttribute
-    include Flex::Attributes::YearQuarterRangeAttribute
+
+    # Helper method. Given a type, return the corresponding class in the Flex module.
+    # If the class is not found in the Flex module, it will try to find it
+    # in the global namespace.
+    def self.resolve_class(type)
+      begin
+        "Flex::#{type.to_s.camelize}".constantize
+      rescue NameError
+        type.to_s.camelize.constantize
+      end
+    end
 
     class_methods do
       # Defines a custom attribute with the specified type.
       #
       # @param [Symbol] name The name of the attribute
-      # @param [Symbol] type The type of attribute (:address, :date_range, :memorable_date, :money, :name, :tax_id, :us_date, :year_quarter)
-      # @param [Hash] options Options for the attribute
+      # @param [Symbol] type The type of attribute (:address, :memorable_date, :money, :name, :tax_id, :us_date, :year_quarter)
+      # @param [Hash] options Options for the attribute. This includes:
+      #   - `:array` (Boolean): If true, the attribute will be an array of the specified type
+      #   - `:range` (Boolean): If true, the attribute will be a Flex::ValueRange of the specified type
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
       def flex_attribute(name, type, options = {})
@@ -54,8 +65,6 @@ module Flex
         case type
         when :address
           address_attribute name, options
-        when :date_range
-          date_range_attribute name, options
         when :memorable_date
           memorable_date_attribute name, options
         when :money

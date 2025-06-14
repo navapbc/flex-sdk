@@ -71,11 +71,7 @@ module Flex
         # @return [void]
         # @param [Object] value_type
         def range_attribute(name, value_type, options = {})
-          value_class = begin
-                          "Flex::#{value_type.to_s.camelize}".constantize
-                        rescue NameError
-                          value_type.to_s.camelize.constantize
-                        end
+          value_class = Flex::Attributes.resolve_class(value_type)
 
           # Define individual columns for start and end dates
           flex_attribute :"#{name}_start", value_type
