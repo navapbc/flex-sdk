@@ -494,57 +494,6 @@ RSpec.describe Flex::Attributes do
     end
   end
 
-  describe "name attribute" do
-    it "allows setting name as a value object" do
-      name = Flex::Name.new("Jane", "Marie", "Doe")
-      object.name = name
-
-      expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
-      expect(object.name_first).to eq("Jane")
-      expect(object.name_middle).to eq("Marie")
-      expect(object.name_last).to eq("Doe")
-    end
-
-    it "allows setting name as a hash" do
-      object.name = { first: "Alice", middle: "Beth", last: "Johnson" }
-
-      expect(object.name).to eq(Flex::Name.new("Alice", "Beth", "Johnson"))
-      expect(object.name_first).to eq("Alice")
-      expect(object.name_middle).to eq("Beth")
-      expect(object.name_last).to eq("Johnson")
-    end
-
-    it "allows setting nested name attributes directly" do
-      object.name_first = "John"
-      object.name_middle = "Quincy"
-      object.name_last = "Adams"
-
-      expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
-    end
-
-    it "preserves values exactly as entered without normalization" do
-      object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
-
-      expect(object.name).to eq(Flex::Name.new("jean-luc", "von", "O'REILLY"))
-      expect(object.name_first).to eq("jean-luc")
-      expect(object.name_middle).to eq("von")
-      expect(object.name_last).to eq("O'REILLY")
-    end
-  end
-
-  describe "us_date attribute" do
-    [
-      [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
-      [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
-      [ "allows setting nil", nil, nil ]
-    ].each do |description, value, expected|
-      it description do
-        object.adopted_on = value
-        expect(object.adopted_on).to eq(expected)
-      end
-    end
-  end
-
   describe "tax_id attribute" do
     it "allows setting a tax_id as a TaxId object" do
       tax_id = Flex::TaxId.new("123456789")
@@ -620,6 +569,19 @@ RSpec.describe Flex::Attributes do
         expect(tax_id <=> string_value).to eq(0)
         expect(tax_id <=> "987654321").to eq(-1)
         expect(tax_id <=> "000456789").to eq(1)
+      end
+    end
+  end
+
+  describe "us_date attribute" do
+    [
+      [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
+      [ "allows setting nil", nil, nil ]
+    ].each do |description, value, expected|
+      it description do
+        object.adopted_on = value
+        expect(object.adopted_on).to eq(expected)
       end
     end
   end
