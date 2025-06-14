@@ -674,87 +674,87 @@ RSpec.describe Flex::Attributes do
     end
 
     it "returns a DocumentCollection when accessed" do
-      expect(test_record.attachments).to be_a(Flex::DocumentCollection)
-      expect(test_record.attachments).to be_empty
+      expect(test_record.state_id_document).to be_a(Flex::DocumentCollection)
+      expect(test_record.state_id_document).to be_empty
     end
 
     it "handles single file upload assignment" do
-      test_record.attachments = uploaded_file
-      expect(test_record.attachments_files).to be_attached
-      expect(test_record.attachments.count).to eq(1)
+      test_record.state_id_document = uploaded_file
+      expect(test_record.state_id_document_files).to be_attached
+      expect(test_record.state_id_document.count).to eq(1)
     end
 
     it "handles multiple file uploads" do
       files = [ uploaded_file, second_file ]
-      test_record.attachments = files
-      expect(test_record.attachments.count).to eq(2)
+      test_record.state_id_document = files
+      expect(test_record.state_id_document.count).to eq(2)
     end
 
     it "handles empty array assignment" do
-      test_record.attachments = []
-      expect(test_record.attachments).to be_empty
-      expect(test_record.attachments.count).to eq(0)
+      test_record.state_id_document = []
+      expect(test_record.state_id_document).to be_empty
+      expect(test_record.state_id_document.count).to eq(0)
     end
 
     it "handles nil assignment" do
-      test_record.attachments = nil
-      expect(test_record.attachments).to be_empty
-      expect(test_record.attachments.count).to eq(0)
+      test_record.state_id_document = nil
+      expect(test_record.state_id_document).to be_empty
+      expect(test_record.state_id_document.count).to eq(0)
     end
 
     it "provides access to filenames" do
-      test_record.attachments = uploaded_file
-      expect(test_record.attachments.filenames).to include("test_document.txt")
+      test_record.state_id_document = uploaded_file
+      expect(test_record.state_id_document.filenames).to include("test_document.txt")
     end
 
     it "calculates total size" do
-      test_record.attachments = uploaded_file
-      expect(test_record.attachments.total_size).to be > 0
+      test_record.state_id_document = uploaded_file
+      expect(test_record.state_id_document.total_size).to be > 0
     end
 
     it "supports enumeration" do
-      test_record.attachments = uploaded_file
-      expect(test_record.attachments).to all(respond_to(:filename))
+      test_record.state_id_document = uploaded_file
+      expect(test_record.state_id_document).to all(respond_to(:filename))
     end
 
     it "supports present? and empty? methods" do
-      expect(test_record.attachments).to be_empty
-      expect(test_record.attachments).not_to be_present
+      expect(test_record.state_id_document).to be_empty
+      expect(test_record.state_id_document).not_to be_present
 
-      test_record.attachments = uploaded_file
-      expect(test_record.attachments).not_to be_empty
-      expect(test_record.attachments).to be_present
+      test_record.state_id_document = uploaded_file
+      expect(test_record.state_id_document).not_to be_empty
+      expect(test_record.state_id_document).to be_present
     end
 
     describe "persistence" do
       it "persists and loads document attachments correctly" do
-        test_record.attachments = uploaded_file
+        test_record.state_id_document = uploaded_file
         test_record.save!
 
         loaded_record = TestRecord.find(test_record.id)
-        expect(loaded_record.attachments).to be_a(Flex::DocumentCollection)
-        expect(loaded_record.attachments.count).to eq(1)
-        expect(loaded_record.attachments.filenames).to include("test_document.txt")
+        expect(loaded_record.state_id_document).to be_a(Flex::DocumentCollection)
+        expect(loaded_record.state_id_document.count).to eq(1)
+        expect(loaded_record.state_id_document.filenames).to include("test_document.txt")
       end
 
       it "persists multiple attachments correctly" do
         files = [ uploaded_file, second_file ]
-        test_record.attachments = files
+        test_record.state_id_document = files
         test_record.save!
 
         loaded_record = TestRecord.find(test_record.id)
-        expect(loaded_record.attachments.count).to eq(2)
-        expect(loaded_record.attachments.filenames.all? { |name| name == "test_document.txt" }).to be true
+        expect(loaded_record.state_id_document.count).to eq(2)
+        expect(loaded_record.state_id_document.filenames.all? { |name| name == "test_document.txt" }).to be true
       end
 
       it "handles attachment removal" do
-        test_record.attachments = uploaded_file
+        test_record.state_id_document = uploaded_file
         test_record.save!
-        expect(test_record.attachments.count).to eq(1)
+        expect(test_record.state_id_document.count).to eq(1)
 
-        test_record.attachments_files.purge
+        test_record.state_id_document_files.purge
         test_record.reload
-        expect(test_record.attachments).to be_empty
+        expect(test_record.state_id_document).to be_empty
       end
     end
   end

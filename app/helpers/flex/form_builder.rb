@@ -548,7 +548,7 @@ module Flex
     # @return [String] The rendered HTML
     def document_field(attribute, options = {})
       multiple = options.fetch(:multiple, true)
-      accept = options[:accept]
+      accept = options.delete(:accept)
 
       field_options = {
         multiple: multiple,
@@ -562,8 +562,7 @@ module Flex
       fieldset(attribute, options) do
         file_field(files_attribute, field_options.merge(
           label: options[:label],
-          hint: options[:hint],
-          skip_form_group: true
+          hint: options[:hint]
         ))
       end
     end
