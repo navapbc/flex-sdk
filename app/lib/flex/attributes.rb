@@ -18,6 +18,7 @@ module Flex
   module Attributes
     extend ActiveSupport::Concern
     include Flex::Attributes::AddressAttribute
+    include Flex::Attributes::ArrayAttribute
     include Flex::Attributes::DateRangeAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::MoneyAttribute
@@ -35,6 +36,13 @@ module Flex
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
       def flex_attribute(name, type, options = {})
+        is_array = options.delete(:array) || false
+
+        if is_array
+          array_attribute name, type, options
+          return
+        end
+
         case type
         when :address
           address_attribute name, options

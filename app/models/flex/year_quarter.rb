@@ -21,6 +21,8 @@ module Flex
 
     attr_reader :year, :quarter
 
+    validates :quarter, inclusion: { in: [ 1, 2, 3, 4 ] }
+
     def initialize(year, quarter)
       @year = year
       @quarter = quarter
@@ -71,6 +73,17 @@ module Flex
 
     def persisted?
       false
+    end
+
+    def as_json
+      {
+        year: year,
+        quarter: quarter
+      }
+    end
+
+    def self.from_hash(h)
+      new(*h.fetch_values("year", "quarter"))
     end
   end
 end

@@ -4,13 +4,11 @@ module Flex
     # It creates a string field with validation and formatting capabilities for
     # tax identification numbers (e.g., SSNs).
     #
-    # This module includes a custom ActiveRecord type that integrates with the
-    # Flex::TaxId value object for storage and formatting.
-    #
     # @example Adding a tax ID attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes::TaxIdAttribute
-    #     tax_id_attribute :ssn
+    #     include Flex::Attributes
+    #
+    #     flex_attribute :ssn, :tax_id
     #   end
     #
     # Key features:

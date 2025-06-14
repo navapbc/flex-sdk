@@ -3,6 +3,187 @@ require "rails_helper"
 RSpec.describe Flex::Attributes do
   let(:object) { TestRecord.new }
 
+  describe "address attribute" do
+    it "allows setting address as a value object" do
+      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      object.address = address
+
+      expect(object.address).to eq(Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108"))
+      expect(object.address_street_line_1).to eq("123 Main St")
+      expect(object.address_street_line_2).to eq("Apt 4B")
+      expect(object.address_city).to eq("Boston")
+      expect(object.address_state).to eq("MA")
+      expect(object.address_zip_code).to eq("02108")
+    end
+
+    it "allows setting address as a hash" do
+      object.address = {
+        street_line_1: "456 Oak Ave",
+        street_line_2: "Unit 7C",
+        city: "San Francisco",
+        state: "CA",
+        zip_code: "94107"
+      }
+
+      expect(object.address).to eq(Flex::Address.new("456 Oak Ave", "Unit 7C", "San Francisco", "CA", "94107"))
+      expect(object.address_street_line_1).to eq("456 Oak Ave")
+      expect(object.address_street_line_2).to eq("Unit 7C")
+      expect(object.address_city).to eq("San Francisco")
+      expect(object.address_state).to eq("CA")
+      expect(object.address_zip_code).to eq("94107")
+    end
+
+    it "allows setting nested address attributes directly" do
+      object.address_street_line_1 = "789 Broadway"
+      object.address_street_line_2 = "Suite 300"
+      object.address_city = "New York"
+      object.address_state = "NY"
+      object.address_zip_code = "10003"
+      expect(object.address).to eq(Flex::Address.new("789 Broadway", "Suite 300", "New York", "NY", "10003"))
+    end
+
+    it "preserves values exactly as entered without normalization" do
+      object.address = {
+        street_line_1: "789 BROADWAY",
+        street_line_2: "",
+        city: "new york",
+        state: "NY",
+        zip_code: "10003"
+      }
+
+      expect(object.address).to eq(Flex::Address.new("789 BROADWAY", "", "new york", "NY", "10003"))
+      expect(object.address_street_line_1).to eq("789 BROADWAY")
+      expect(object.address_street_line_2).to eq("")
+      expect(object.address_city).to eq("new york")
+      expect(object.address_state).to eq("NY")
+      expect(object.address_zip_code).to eq("10003")
+    end
+  end
+
+  describe "array attributes" do
+    let(:object) { TestRecord.new }
+
+    describe "addresses array" do
+      it "allows setting an array of addresses" do
+        addresses = [
+          Flex::Address.new("123 Main St", "Apt 1", "Boston", "MA", "02108"),
+          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107")
+        ]
+        object.addresses = addresses
+
+        expect(object.addresses).to be_an(Array)
+        expect(object.addresses.size).to eq(2)
+        expect(object.addresses[0]).to eq(addresses[0])
+        expect(object.addresses[1]).to eq(addresses[1])
+      end
+
+      it "validates each address in the array" do
+        object.addresses = [
+          Flex::Address.new("123 Main St", nil, nil, "MA", "02108"), # Invalid: missing city
+          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107") # Valid
+        ]
+
+        expect(object).not_to be_valid
+        expect(object.errors[:addresses]).to include("contains one or more invalid items")
+      end
+    end
+
+    describe "leave_periods array" do
+      it "allows setting an array of date ranges" do
+        periods = [
+          Date.new(2023, 1, 1)..Date.new(2023, 1, 31),
+          Date.new(2023, 2, 1)..Date.new(2023, 2, 28)
+        ]
+        object.leave_periods = periods
+        expect(object.leave_periods).to be_an(Array)
+        expect(object.leave_periods.size).to eq(2)
+        expect(object.leave_periods[0]).to eq(Date.new(2023, 1, 1)..Date.new(2023, 1, 31))
+        expect(object.leave_periods[1]).to eq(Date.new(2023, 2, 1)..Date.new(2023, 2, 28))
+      end
+    end
+
+    describe "names array" do
+      it "allows setting an array of names" do
+        names = [
+          Flex::Name.new("John", nil, "Smith"),
+          Flex::Name.new("Jane", "Marie", "Doe")
+        ]
+        object.names = names
+
+        expect(object.names).to be_an(Array)
+        expect(object.names.size).to eq(2)
+        expect(object.names[0]).to eq(names[0])
+        expect(object.names[1]).to eq(names[1])
+      end
+    end
+
+    describe "reporting_periods array" do
+      it "allows setting an array of year quarters" do
+        periods = [
+          Flex::YearQuarter.new(2023, 1),
+          Flex::YearQuarter.new(2023, 2)
+        ]
+        object.reporting_periods = periods
+
+        expect(object.reporting_periods).to be_an(Array)
+        expect(object.reporting_periods.size).to eq(2)
+        expect(object.reporting_periods[0]).to eq(periods[0])
+        expect(object.reporting_periods[1]).to eq(periods[1])
+      end
+
+      it "validates each year quarter in the array" do
+        object.reporting_periods = [
+          Flex::YearQuarter.new(2023, 5), # Invalid: quarter > 4
+          Flex::YearQuarter.new(2023, 2)  # Valid
+        ]
+
+        expect(object).not_to be_valid
+        expect(object.errors[:reporting_periods]).to include("contains one or more invalid items")
+      end
+    end
+
+    describe "persistence" do
+      let(:record) { TestRecord.new }
+
+      it "persists and loads arrays of value objects" do
+        address_1 = build(:address, :base)
+        address_2 = build(:address, :base)
+        record.addresses = [ address_1, address_2 ]
+
+        name_1 = build(:name, :base)
+        name_2 = build(:name, :base, :with_middle)
+        record.names = [ name_1, name_2 ]
+
+        year_quarter_1 = build(:year_quarter)
+        year_quarter_2 = build(:year_quarter)
+        record.reporting_periods = [ year_quarter_1, year_quarter_2 ]
+
+        leave_period_1 = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 1, 31))
+        leave_period_2 = Flex::DateRange.new(Date.new(2023, 2, 1), Date.new(2023, 2, 28))
+        record.leave_periods = [ leave_period_1, leave_period_2 ]
+
+        record.save!
+        loaded_record = TestRecord.find(record.id)
+
+        expect(loaded_record.addresses.size).to eq(2)
+        expect(loaded_record.addresses[0]).to eq(address_1)
+        expect(loaded_record.addresses[1]).to eq(address_2)
+
+        expect(loaded_record.names.size).to eq(2)
+        expect(loaded_record.names[0]).to eq(name_1)
+        expect(loaded_record.names[1]).to eq(name_2)
+
+        expect(loaded_record.reporting_periods.size).to eq(2)
+        expect(loaded_record.reporting_periods[0]).to eq(year_quarter_1)
+        expect(loaded_record.reporting_periods[1]).to eq(year_quarter_2)
+
+        expect(loaded_record.leave_periods.size).to eq(2)
+        expect(loaded_record.leave_periods[0]).to eq(leave_period_1)
+        expect(loaded_record.leave_periods[1]).to eq(leave_period_2)
+      end
+    end
+  end
+
   describe "memorable_date attribute" do
     it "allows setting a Date" do
       object.date_of_birth = Date.new(2020, 1, 2)
@@ -59,100 +240,6 @@ RSpec.describe Flex::Attributes do
         expect(object).not_to be_valid
         expect(object.errors.full_messages_for("date_of_birth")).to eq([ "Date of birth is an invalid date" ])
       end
-    end
-  end
-
-  describe "name attribute" do
-    it "allows setting name as a value object" do
-      name = Flex::Name.new("Jane", "Marie", "Doe")
-      object.name = name
-
-      expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
-      expect(object.name_first).to eq("Jane")
-      expect(object.name_middle).to eq("Marie")
-      expect(object.name_last).to eq("Doe")
-    end
-
-    it "allows setting name as a hash" do
-      object.name = { first: "Alice", middle: "Beth", last: "Johnson" }
-
-      expect(object.name).to eq(Flex::Name.new("Alice", "Beth", "Johnson"))
-      expect(object.name_first).to eq("Alice")
-      expect(object.name_middle).to eq("Beth")
-      expect(object.name_last).to eq("Johnson")
-    end
-
-    it "allows setting nested name attributes directly" do
-      object.name_first = "John"
-      object.name_middle = "Quincy"
-      object.name_last = "Adams"
-      expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
-    end
-
-    it "preserves values exactly as entered without normalization" do
-      object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
-
-      expect(object.name).to eq(Flex::Name.new("jean-luc", "von", "O'REILLY"))
-      expect(object.name_first).to eq("jean-luc")
-      expect(object.name_middle).to eq("von")
-      expect(object.name_last).to eq("O'REILLY")
-    end
-  end
-
-  describe "address attribute" do
-    it "allows setting address as a value object" do
-      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
-      object.address = address
-
-      expect(object.address).to eq(Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108"))
-      expect(object.address_street_line_1).to eq("123 Main St")
-      expect(object.address_street_line_2).to eq("Apt 4B")
-      expect(object.address_city).to eq("Boston")
-      expect(object.address_state).to eq("MA")
-      expect(object.address_zip_code).to eq("02108")
-    end
-
-    it "allows setting address as a hash" do
-      object.address = {
-        street_line_1: "456 Oak Ave",
-        street_line_2: "Unit 7C",
-        city: "San Francisco",
-        state: "CA",
-        zip_code: "94107"
-      }
-
-      expect(object.address).to eq(Flex::Address.new("456 Oak Ave", "Unit 7C", "San Francisco", "CA", "94107"))
-      expect(object.address_street_line_1).to eq("456 Oak Ave")
-      expect(object.address_street_line_2).to eq("Unit 7C")
-      expect(object.address_city).to eq("San Francisco")
-      expect(object.address_state).to eq("CA")
-      expect(object.address_zip_code).to eq("94107")
-    end
-
-    it "allows setting nested address attributes directly" do
-      object.address_street_line_1 = "789 Broadway"
-      object.address_street_line_2 = "Suite 300"
-      object.address_city = "New York"
-      object.address_state = "NY"
-      object.address_zip_code = "10003"
-      expect(object.address).to eq(Flex::Address.new("789 Broadway", "Suite 300", "New York", "NY", "10003"))
-    end
-
-    it "preserves values exactly as entered without normalization" do
-      object.address = {
-        street_line_1: "789 BROADWAY",
-        street_line_2: "",
-        city: "new york",
-        state: "NY",
-        zip_code: "10003"
-      }
-
-      expect(object.address).to eq(Flex::Address.new("789 BROADWAY", "", "new york", "NY", "10003"))
-      expect(object.address_street_line_1).to eq("789 BROADWAY")
-      expect(object.address_street_line_2).to eq("")
-      expect(object.address_city).to eq("new york")
-      expect(object.address_state).to eq("NY")
-      expect(object.address_zip_code).to eq("10003")
     end
   end
 
@@ -223,82 +310,40 @@ RSpec.describe Flex::Attributes do
     end
   end
 
-  describe "tax_id attribute" do
-    it "allows setting a tax_id as a TaxId object" do
-      tax_id = Flex::TaxId.new("123456789")
-      object.tax_id = tax_id
+  describe "name attribute" do
+    it "allows setting name as a value object" do
+      name = Flex::Name.new("Jane", "Marie", "Doe")
+      object.name = name
 
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("123-45-6789")
+      expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
+      expect(object.name_first).to eq("Jane")
+      expect(object.name_middle).to eq("Marie")
+      expect(object.name_last).to eq("Doe")
     end
 
-    it "allows setting a tax_id as a string" do
-      object.tax_id = "123456789"
+    it "allows setting name as a hash" do
+      object.name = { first: "Alice", middle: "Beth", last: "Johnson" }
 
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("123-45-6789")
+      expect(object.name).to eq(Flex::Name.new("Alice", "Beth", "Johnson"))
+      expect(object.name_first).to eq("Alice")
+      expect(object.name_middle).to eq("Beth")
+      expect(object.name_last).to eq("Johnson")
     end
 
-    [
-      [ "123456789", "123-45-6789" ],
-      [ "123-45-6789", "123-45-6789" ],
-      [ "123 45 6789", "123-45-6789" ]
-    ].each do |input_string, expected|
-      it "formats tax_id correctly [#{input_string}]" do
-        object.tax_id = input_string
-        expect(object.tax_id.formatted).to eq(expected)
-      end
+    it "allows setting nested name attributes directly" do
+      object.name_first = "John"
+      object.name_middle = "Quincy"
+      object.name_last = "Adams"
+      expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
     end
 
-    it "preserves invalid values for validation" do
-      object.tax_id = "12345"
+    it "preserves values exactly as entered without normalization" do
+      object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
 
-      expect(object.tax_id).to be_a(Flex::TaxId)
-      expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
-      expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
-    end
-
-    describe "TaxId.<=>" do
-      it "allows sorting tax ids" do
-        tax_ids = [
-          Flex::TaxId.new("987654321"),
-          Flex::TaxId.new("123456789"),
-          Flex::TaxId.new("456789123")
-        ]
-
-        sorted_tax_ids = tax_ids.sort
-        expect(sorted_tax_ids.map(&:formatted)).to eq([
-          "123-45-6789",
-          "456-78-9123",
-          "987-65-4321"
-        ])
-      end
-
-      it "compares tax ids numerically" do
-        lower = Flex::TaxId.new("123456789")
-        higher = Flex::TaxId.new("987654321")
-
-        expect(lower <=> higher).to eq(-1)
-        expect(higher <=> lower).to eq(1)
-        expect(lower <=> lower).to eq(0)
-      end
-
-      it "handles comparison with different formats" do
-        tax_id1 = Flex::TaxId.new("123-45-6789")
-        tax_id2 = Flex::TaxId.new("123456789")
-
-        expect(tax_id1 <=> tax_id2).to eq(0)
-      end
-
-      it "handles comparison with string values" do
-        tax_id = Flex::TaxId.new("123-45-6789")
-        string_value = "123456789"
-
-        expect(tax_id <=> string_value).to eq(0)
-        expect(tax_id <=> "987654321").to eq(-1)
-        expect(tax_id <=> "000456789").to eq(1)
-      end
+      expect(object.name).to eq(Flex::Name.new("jean-luc", "von", "O'REILLY"))
+      expect(object.name_first).to eq("jean-luc")
+      expect(object.name_middle).to eq("von")
+      expect(object.name_last).to eq("O'REILLY")
     end
   end
 
@@ -444,6 +489,85 @@ RSpec.describe Flex::Attributes do
       expect(object.period).to be_nil
       expect(object.period_start).to be_nil
       expect(object.period_end).to be_nil
+    end
+  end
+
+  describe "tax_id attribute" do
+    it "allows setting a tax_id as a TaxId object" do
+      tax_id = Flex::TaxId.new("123456789")
+      object.tax_id = tax_id
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    it "allows setting a tax_id as a string" do
+      object.tax_id = "123456789"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("123-45-6789")
+    end
+
+    [
+      [ "123456789", "123-45-6789" ],
+      [ "123-45-6789", "123-45-6789" ],
+      [ "123 45 6789", "123-45-6789" ]
+    ].each do |input_string, expected|
+      it "formats tax_id correctly [#{input_string}]" do
+        object.tax_id = input_string
+        expect(object.tax_id.formatted).to eq(expected)
+      end
+    end
+
+    it "preserves invalid values for validation" do
+      object.tax_id = "12345"
+
+      expect(object.tax_id).to be_a(Flex::TaxId)
+      expect(object.tax_id.formatted).to eq("12345") # Raw value since not 9 digits
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("tax_id")).to eq([ "Tax ID is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)" ])
+    end
+
+    describe "TaxId.<=>" do
+      it "allows sorting tax ids" do
+        tax_ids = [
+          Flex::TaxId.new("987654321"),
+          Flex::TaxId.new("123456789"),
+          Flex::TaxId.new("456789123")
+        ]
+
+        sorted_tax_ids = tax_ids.sort
+        expect(sorted_tax_ids.map(&:formatted)).to eq([
+          "123-45-6789",
+          "456-78-9123",
+          "987-65-4321"
+        ])
+      end
+
+      it "compares tax ids numerically" do
+        lower = Flex::TaxId.new("123456789")
+        higher = Flex::TaxId.new("987654321")
+
+        expect(lower <=> higher).to eq(-1)
+        expect(higher <=> lower).to eq(1)
+        expect(lower <=> lower).to eq(0)
+      end
+
+      it "handles comparison with different formats" do
+        tax_id1 = Flex::TaxId.new("123-45-6789")
+        tax_id2 = Flex::TaxId.new("123456789")
+
+        expect(tax_id1 <=> tax_id2).to eq(0)
+      end
+
+      it "handles comparison with string values" do
+        tax_id = Flex::TaxId.new("123-45-6789")
+        string_value = "123456789"
+
+        expect(tax_id <=> string_value).to eq(0)
+        expect(tax_id <=> "987654321").to eq(-1)
+        expect(tax_id <=> "000456789").to eq(1)
+      end
     end
   end
 
@@ -608,6 +732,18 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.period.end).to eq(Date.new(2023, 6, 12))
     end
 
+    it "persists and loads year_quarter object correctly" do
+      year_quarter = Flex::YearQuarter.new(2023, 4)
+      record.reporting_period = year_quarter
+      record.save!
+
+      loaded_record = TestRecord.find(record.id)
+      expect(loaded_record.reporting_period).to be_a(Flex::YearQuarter)
+      expect(loaded_record.reporting_period).to eq(year_quarter)
+      expect(loaded_record.reporting_period_year).to eq(2023)
+      expect(loaded_record.reporting_period_quarter).to eq(4)
+    end
+
     it "preserves all attributes when saving and loading multiple value objects" do
       record.name = Flex::Name.new("Jane", "Marie", "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
@@ -649,18 +785,6 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.period).to eq(Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
-    end
-
-    it "persists and loads year_quarter object correctly" do
-      year_quarter = Flex::YearQuarter.new(2023, 4)
-      record.reporting_period = year_quarter
-      record.save!
-
-      loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.reporting_period).to be_a(Flex::YearQuarter)
-      expect(loaded_record.reporting_period).to eq(year_quarter)
-      expect(loaded_record.reporting_period_year).to eq(2023)
-      expect(loaded_record.reporting_period_quarter).to eq(4)
     end
   end
 end
