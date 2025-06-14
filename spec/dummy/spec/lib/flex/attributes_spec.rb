@@ -658,6 +658,7 @@ RSpec.describe Flex::Attributes do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe "year_quarter with range option" do
     let(:start_year) { 2023 }
     let(:start_quarter) { 1 }
@@ -732,6 +733,7 @@ RSpec.describe Flex::Attributes do
       expect(object).to be_valid
     end
   end
+  # rubocop:enable RSpec/TooManyMemoizedHelpers
 
   describe "base_period attribute" do
     it "allows setting base_period as a Range object" do
