@@ -472,8 +472,6 @@ module Flex
       end
     end
 
-
-
     def us_states_and_territories
       [
         [ "", "" ],
