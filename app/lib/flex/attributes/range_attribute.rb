@@ -21,6 +21,8 @@ module Flex
     module RangeAttribute
       extend ActiveSupport::Concern
 
+      include Flex::Validations
+
       # Custom type for handling ValueRange objects in ActiveRecord attributes
       #
       # @api private
