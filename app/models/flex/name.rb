@@ -37,5 +37,17 @@ module Flex
     def persisted?
       false
     end
+
+    def as_json
+      {
+        first: first,
+        middle: middle,
+        last: last
+      }
+    end
+
+    def self.from_hash(h)
+      new(*h.fetch_values("first", "middle", "last"))
+    end
   end
 end
