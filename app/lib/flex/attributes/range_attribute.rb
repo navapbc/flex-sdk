@@ -20,6 +20,7 @@ module Flex
     #
     module RangeAttribute
       extend ActiveSupport::Concern
+      include Flex::Validations
 
       class_methods do
         # Defines an attribute representing a range using ValueRange.
