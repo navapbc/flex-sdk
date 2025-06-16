@@ -3,11 +3,12 @@ module Flex
   # It provides validation, comparison, and serialization functionality for ranges.
   class ValueRange
     include ActiveModel::Model
+    include Flex::Validations
 
     attr_reader :start, :end
 
-    validate :validate_start
-    validate :validate_end
+    flex_validates_nested :start
+    flex_validates_nested :end
     validate :start_cannot_be_greater_than_end
 
     def initialize(start_value, end_value)
@@ -61,16 +62,6 @@ module Flex
     end
 
     private
-
-    def validate_start
-      # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
-      # figure out how to validate nested attribute
-    end
-
-    def validate_end
-      # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
-      # figure out how to validate nested attribute
-    end
 
     def start_cannot_be_greater_than_end
       if start && self.end && start > self.end
