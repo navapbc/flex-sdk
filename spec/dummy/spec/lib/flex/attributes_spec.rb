@@ -516,51 +516,49 @@ RSpec.describe Flex::Attributes do
       expect(object).to be_valid
     end
 
-    # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
-    # Figure out how to validate nested attribute in ValueRange class
-    # describe "handling invalid dates" do
-    #   it "validates invalid start date format" do
-    #     object.period_start = "not-a-date"
-    #     object.period_end = "2023-12-31"
-    #     expect(object).not_to be_valid
-    #     expect(object.period_start).to be_nil
-    #     expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
-    #   end
+    describe "handling invalid dates" do
+      it "validates invalid start date format" do
+        object.period_start = "not-a-date"
+        object.period_end = "2023-12-31"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
 
-    #   it "validates invalid end date format" do
-    #     object.period_start = "2023-01-01"
-    #     object.period_end = "invalid-date"
-    #     expect(object).not_to be_valid
-    #     expect(object.period_end).to be_nil
-    #     expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
-    #   end
+      it "validates invalid end date format" do
+        object.period_start = "2023-01-01"
+        object.period_end = "invalid-date"
+        expect(object).not_to be_valid
+        expect(object.period_end).to be_nil
+        expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
+      end
 
-    #   it "validates both dates when both are invalid" do
-    #     object.period = { start: "bad-start", end: "bad-end" }
-    #     expect(object).not_to be_valid
-    #     expect(object.period_start).to be_nil
-    #     expect(object.period_end).to be_nil
-    #     expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
-    #     expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
-    #   end
+      it "validates both dates when both are invalid" do
+        object.period = { start: "bad-start", end: "bad-end" }
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.period_end).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+        expect(object.errors.full_messages_for("period_end")).to include("Period end is an invalid date")
+      end
 
-    #   it "handles invalid date components" do
-    #     object.period_start = "13/45/2023"
-    #     object.period_end = "12/31/2023"
-    #     expect(object).not_to be_valid
-    #     expect(object.period_start).to be_nil
-    #     expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
-    #   end
+      it "handles invalid date components" do
+        object.period_start = "13/45/2023"
+        object.period_end = "12/31/2023"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
 
-    #   it "handles leap year edge cases" do
-    #     object.period_start = "02/29/2023"
-    #     object.period_end = "02/29/2024"
-    #     expect(object).not_to be_valid
-    #     expect(object.period_start).to be_nil
-    #     expect(object.period_end).to be_a(Date)  # This date is valid since 2024 is a leap year
-    #     expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
-    #   end
-    # end
+      it "handles leap year edge cases" do
+        object.period_start = "02/29/2023"
+        object.period_end = "02/29/2024"
+        expect(object).not_to be_valid
+        expect(object.period_start).to be_nil
+        expect(object.period_end).to be_a(Date)  # This date is valid since 2024 is a leap year
+        expect(object.errors.full_messages_for("period_start")).to include("Period start is an invalid date")
+      end
+    end
 
     [
       [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31)) ],
