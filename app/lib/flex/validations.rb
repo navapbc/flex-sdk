@@ -17,9 +17,9 @@ module Flex
         # @param [Symbol] name The base name for the attribute
         # @return [void]
         define_method "validate_nested_#{name}" do
-          range = send(name)
-          if range && range.invalid?
-            range.errors.each do |error|
+          value = send(name)
+          if value && value.invalid?
+            value.errors.each do |error|
               if error.attribute == :base
                 errors.add(name, error.type)
               else
