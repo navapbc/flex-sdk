@@ -94,7 +94,7 @@ module Flex
         # with the attribute name. For example, if the attribute is :date_range,
         # and the value object has an error on :start, it will be added as
         # "date_range_start" in the root model's errors.
-        # 
+        #
         # @param [Symbol] name The base name for the attribute
         # @return [void]
         define_method "validate_nested_#{name}" do
