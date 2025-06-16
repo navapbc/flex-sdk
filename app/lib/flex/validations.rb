@@ -18,7 +18,7 @@ module Flex
         # @return [void]
         define_method "validate_nested_#{name}" do
           value = send(name)
-          if value && value.invalid?
+          if value && value.respond_to?(:invalid?) && value.invalid?
             value.errors.each do |error|
               if error.attribute == :base
                 errors.add(name, error.type)
