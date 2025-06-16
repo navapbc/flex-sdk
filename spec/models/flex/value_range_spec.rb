@@ -91,6 +91,16 @@ RSpec.describe Flex::ValueRange do
         expect(range).not_to eq(klass.new(Flex::USDate.new(2023, 1, 2), end_value))
       end
     end
+
+    describe '#initialize' do
+      it 'raises TypeError when start value is of wrong type' do
+        expect { klass.new("2023-01-01", end_value) }.to raise_error(TypeError, "Expected Flex::USDate for start, got String")
+      end
+
+      it 'raises TypeError when end value is of wrong type' do
+        expect { klass.new(start_value, "2023-12-31") }.to raise_error(TypeError, "Expected Flex::USDate for end, got String")
+      end
+    end
   end
 
   describe "ValueRange[Integer]" do
@@ -177,6 +187,16 @@ RSpec.describe Flex::ValueRange do
         expect(range).not_to eq(klass.new(start_value + 1, end_value))
       end
     end
+
+    describe '#initialize' do
+      it 'raises TypeError when start value is of wrong type' do
+        expect { klass.new("123", end_value) }.to raise_error(TypeError, "Expected Integer for start, got String")
+      end
+
+      it 'raises TypeError when end value is of wrong type' do
+        expect { klass.new(start_value, "456") }.to raise_error(TypeError, "Expected Integer for end, got String")
+      end
+    end
   end
 
   describe "ValueRange[String]" do
@@ -259,6 +279,16 @@ RSpec.describe Flex::ValueRange do
       it 'returns false for ranges with different values' do
         expect(range).not_to eq(klass.new(start_value, "orange"))
         expect(range).not_to eq(klass.new("apple", end_value))
+      end
+    end
+
+    describe '#initialize' do
+      it 'raises TypeError when start value is of wrong type' do
+        expect { klass.new(123, end_value) }.to raise_error(TypeError, "Expected String for start, got Integer")
+      end
+
+      it 'raises TypeError when end value is of wrong type' do
+        expect { klass.new(start_value, 456) }.to raise_error(TypeError, "Expected String for end, got Integer")
       end
     end
   end
