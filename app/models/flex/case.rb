@@ -24,7 +24,7 @@ module Flex
     enum :status, open: 0, closed: 1
 
     attribute :business_process_current_step, :string
-    attribute :facts, :jsonb, default: {}
+    attribute :facts, Flex::Attributes::FactsAttribute::FactsType.new
 
     # Closes the case, changing its status to 'closed'.
     #

@@ -5,12 +5,13 @@ module Flex
     # Represents a computed or input fact in the rules engine.
     # Tracks the fact's name, value, and the reasons (dependencies) that led to its value.
     class Fact
-      attr_reader :name, :value, :reasons
+      attr_reader :name, :value, :reasons, :created_at
 
-      def initialize(name, value, reasons: [])
+      def initialize(name, value, reasons: [], created_at: Time.now)
         @name = name
         @value = value
         @reasons = reasons
+        @created_at = created_at
       end
     end
 
