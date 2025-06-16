@@ -21,48 +21,6 @@ module Flex
     module RangeAttribute
       extend ActiveSupport::Concern
 
-      # Custom type for handling ValueRange objects in ActiveRecord attributes
-      #
-      # @api private
-      # @example Internal usage by range_attribute
-      #   attribute :period, RangeType.new
-      #
-      class RangeType < ActiveModel::Type::Value
-        # @return [String] The fully qualified class name of the array items
-        attr_reader :value_class
-
-        # Creates a new ArrayType for a specific value object class
-        #
-        # @param [String] value_class The fully qualified class name of items in the array
-        # @example
-        #   ArrayType.new("Flex::Address")
-        def initialize(value_class)
-          @value_class = value_class
-        end
-
-        def cast(value)
-          case value
-          when Flex::ValueRange[value_class]
-            value
-          when Hash
-            Flex::ValueRange[value_class].new(value["start"], value["end"])
-          else
-            nil
-          end
-        end
-
-        def serialize(value)
-          return nil if value.nil?
-          { "start" => value.start, "end" => value.end }.to_json
-        end
-
-        def deserialize(value)
-          return nil if value.nil?
-          data = JSON.parse(value)
-          Flex::ValueRange.new(data["start"], data["end"])
-        end
-      end
-
       class_methods do
         # Defines an attribute representing a range using ValueRange.
         #
