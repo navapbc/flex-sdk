@@ -1,6 +1,7 @@
 module Flex
   module Validations
     extend ActiveSupport::Concern
+    include ActiveModel::Validations
 
     class_methods do
       def flex_validates_nested(name)
@@ -23,7 +24,7 @@ module Flex
               if error.attribute == :base
                 errors.add(name, error.type)
               else
-                errors.add("#{name}_#{attribute}", error.type)
+                errors.add("#{name}_#{error.attribute}", error.type, **error.options)
               end
             end
           end

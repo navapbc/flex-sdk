@@ -19,6 +19,7 @@ module Flex
     #
     module YearQuarterAttribute
       extend ActiveSupport::Concern
+      include Flex::Validations
 
       class_methods do
         # Defines a year quarter attribute with year and quarter components.
@@ -30,10 +31,6 @@ module Flex
           # Define the base attribute with its subfields
           attribute :"#{name}_year", :integer
           attribute :"#{name}_quarter", :integer
-
-          # Add validation for quarter values
-          # TODO DRY this up with validation defined in Flex::YearQuarter
-          validates "#{name}_quarter", inclusion: { in: [ 1, 2, 3, 4 ] }, allow_nil: true
 
           # Define the getter method
           define_method(name) do
@@ -53,6 +50,8 @@ module Flex
               send("#{name}_quarter=", value[:quarter])
             end
           end
+
+          flex_validates_nested(name)
         end
       end
     end

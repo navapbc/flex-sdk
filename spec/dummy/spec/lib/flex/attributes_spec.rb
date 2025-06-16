@@ -611,11 +611,11 @@ RSpec.describe Flex::Attributes do
     it "validates quarter values are between 1 and 4" do
       object.reporting_period_quarter = 5
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
 
       object.reporting_period_quarter = 0
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
 
       object.reporting_period_quarter = 2
       expect(object).to be_valid
@@ -721,11 +721,11 @@ RSpec.describe Flex::Attributes do
     it "validates quarter values are between 1 and 4" do
       object.reporting_period_quarter = 5
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
 
       object.reporting_period_quarter = 0
       expect(object).not_to be_valid
-      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter is not included in the list")
+      expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
 
       object.reporting_period_quarter = 2
       expect(object).to be_valid
