@@ -77,8 +77,6 @@ module Flex
           us_date_attribute name, options
         when :year_quarter
           year_quarter_attribute name, options
-        when :year_quarter_range
-          year_quarter_range_attribute name, options
         else
           raise ArgumentError, "Unsupported attribute type: #{type}"
         end
