@@ -1,4 +1,20 @@
 module Flex
+  # Validations is a module that provides nested validation support for value objects.
+  # It extends ActiveModel::Validations to handle validation of nested attributes in a
+  # consistent way, propagating errors from nested objects to the parent model with
+  # appropriate attribute name prefixing.
+  #
+  # This module should be included in models that need to validate nested value objects.
+  # It provides the flex_validates_nested class method for defining these validations.
+  # It is automatically included in the Flex::Attributes module.
+  #
+  # @example Including Validations in a model and validating a nested date range
+  #   class MyModel < ApplicationRecord
+  #     include Flex::Validations
+  #
+  #     flex_validates_nested :period
+  #   end
+  #
   module Validations
     extend ActiveSupport::Concern
     include ActiveModel::Validations
