@@ -293,6 +293,97 @@ RSpec.describe Flex::ValueRange do
     end
   end
 
+  describe "ValueRange[YearQuarter]" do
+    let(:value_class) { Flex::YearQuarter }
+    let(:start_value) { Flex::YearQuarter.new(2023, 1) }
+    let(:end_value) { Flex::YearQuarter.new(2023, 4) }
+
+    describe 'validations' do
+      it 'is valid with valid start and end quarters' do
+        expect(range).to be_valid
+      end
+
+      it 'is invalid when start quarter is after end quarter' do
+        invalid_range = klass.new(Flex::YearQuarter.new(2023, 4), Flex::YearQuarter.new(2023, 1))
+        expect(invalid_range).not_to be_valid
+        expect(invalid_range.errors[:base]).to include("start cannot be after end")
+      end
+
+      it 'is valid when quarters are blank' do
+        range = klass.new(nil, nil)
+        expect(range).to be_valid
+      end
+    end
+
+    describe '#include?' do
+      it 'returns true for a quarter within the range' do
+        middle_quarter = Flex::YearQuarter.new(2023, 2)
+        expect(range.include?(middle_quarter)).to be true
+      end
+
+      it 'returns true for boundary quarters' do
+        expect(range.include?(start_value)).to be true
+        expect(range.include?(end_value)).to be true
+      end
+
+      it 'returns false for quarters outside the range' do
+        before_quarter = Flex::YearQuarter.new(2022, 4)
+        after_quarter = Flex::YearQuarter.new(2024, 1)
+        expect(range.include?(before_quarter)).to be false
+        expect(range.include?(after_quarter)).to be false
+      end
+    end
+
+    describe '#as_json' do
+      it 'converts the range to a serializable hash' do
+        hash = range.as_json
+        expect(hash).to eq({
+          start: { year: 2023, quarter: 1 },
+          end: { year: 2023, quarter: 4 }
+        })
+      end
+    end
+
+    describe '.from_hash' do
+      it 'deserializes from a serialized object' do
+        serialized = range.to_json
+        range = klass.from_hash(JSON.parse(serialized))
+        expect(range).to eq(klass.new(start_value, end_value))
+      end
+
+      it 'raises an error with nil' do
+        expect { klass.from_hash(nil) }.to raise_error(TypeError)
+      end
+
+      it 'raises an error if hash is missing start or end key' do
+        expect { klass.from_hash({ "end" => end_value.as_json }) }.to raise_error(ArgumentError)
+        expect { klass.from_hash({ "start" => start_value.as_json }) }.to raise_error(ArgumentError)
+      end
+    end
+
+    describe '#==' do
+      it 'returns true for ranges with same start and end values' do
+        other_range = klass.new(start_value, end_value)
+        expect(range).to eq(other_range)
+      end
+
+      it 'returns false for ranges with different values' do
+        expect(range).not_to eq(klass.new(start_value, Flex::YearQuarter.new(2023, 3)))
+        expect(range).not_to eq(klass.new(Flex::YearQuarter.new(2023, 2), end_value))
+      end
+    end
+
+    describe '#initialize' do
+      it 'raises TypeError when start value is of wrong type' do
+        expect { klass.new("2023Q1", end_value) }.to raise_error(TypeError, "Expected Flex::YearQuarter for start, got String")
+      end
+
+      it 'raises TypeError when end value is of wrong type' do
+        expect { klass.new(start_value, "2023Q4") }.to raise_error(TypeError, "Expected Flex::YearQuarter for end, got String")
+      end
+    end
+  end
+
   describe ".[]" do
     it 'memoizes the value range class for a given value class' do
       expect(Flex::DateRange).to be(described_class[Flex::USDate])

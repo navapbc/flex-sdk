@@ -9,14 +9,14 @@ RSpec.describe Flex::USDate do
     it "converts a Date object to USDate" do
       date = Date.new(2023, 12, 25)
       result = described_class.cast(date)
-      
+
       expect(result).to be_a(described_class)
       expect(result).to eq(date)
     end
 
     it "parses valid US date strings" do
       result = described_class.cast("12/25/2023")
-      
+
       expect(result).to be_a(Date)
       expect(result.year).to eq(2023)
       expect(result.month).to eq(12)
