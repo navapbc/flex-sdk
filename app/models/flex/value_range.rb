@@ -24,8 +24,8 @@ module Flex
 
     def as_json
       {
-        start: @start.respond_to?(:as_json) ? @start.as_json : @start,
-        end: @end.respond_to?(:as_json) ? @end.as_json : @end
+        start: @start.as_json,
+        end: @end.as_json
       }
     end
 
