@@ -1,3 +1,5 @@
+require "ostruct"
+
 module Flex
   # BusinessProcess is a class that allows you to define and execute business workflows with steps and event-driven transitions.
   #
@@ -164,10 +166,52 @@ module Flex
       @transitions.values.flat_map(&:keys).uniq | @start_events.keys
     end
 
-    def get_next_step(kase, event_name)
+    def get_next_step(kase, event_name, event_payload = nil)
       current_step = kase.business_process_current_step
-      next_step = @transitions&.dig(current_step, event_name)
-      next_step
+      transition_configs = @transitions&.dig(current_step, event_name)
+
+      return nil unless transition_configs
+
+      # Handle legacy single transition (not in array)
+      transition_configs = [ transition_configs ] unless transition_configs.is_a?(Array)
+
+      # Evaluate each transition in order
+      transition_configs.each do |transition_config|
+        # String transition (no condition)
+        if transition_config.is_a?(String)
+          return transition_config
+        end
+
+        # Hash transition (may have condition)
+        if transition_config.is_a?(Hash)
+          if transition_config[:condition_callable]
+            begin
+              condition_result = evaluate_condition(transition_config[:condition_callable], event_payload)
+              return transition_config[:to] if condition_result
+            rescue => e
+              Rails.logger.warn "Transition condition '#{transition_config[:condition_name]}' failed: #{e.message}"
+              # Continue to next transition
+            end
+          else
+            # Hash without condition (unconditional)
+            return transition_config[:to]
+          end
+        end
+      end
+
+      # No matching transition found
+      nil
+    end
+
+    def evaluate_condition(callable, payload)
+      # Get case from payload or fetch it using case_id
+      kase = payload&.dig(:kase)
+      if kase.nil? && payload&.dig(:case_id)
+        kase = @case_class.find(payload[:case_id])
+      end
+
+      event_obj = OpenStruct.new(payload: payload, kase: kase)
+      callable.call(event_obj)
     end
 
     def handle_event(event)
@@ -176,7 +220,7 @@ module Flex
         kase = create_case_from_event(event)
       else
         kase = get_case_from_event(event)
-        next_step = get_next_step(kase, event[:name])
+        next_step = get_next_step(kase, event[:name], event[:payload])
         return unless next_step
 
         Rails.logger.debug "Transitioning to step #{next_step} and executing the step"

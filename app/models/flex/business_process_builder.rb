@@ -67,9 +67,26 @@ module Flex
       step(name, Flex::ThirdPartyTask.new(name))
     end
 
-    def transition(from, event_name, to)
+    def transition(from, event_name, to, condition: nil)
       transitions[from] ||= {}
-      transitions[from][event_name] = to
+      transitions[from][event_name] ||= []
+
+      transition_config = if condition.present?
+        {
+          to: to,
+          condition_name: condition[0],
+          condition_callable: condition[1]
+        }
+      else
+        to
+      end
+
+      # Convert existing single transition to array if needed
+      if !transitions[from][event_name].is_a?(Array)
+        transitions[from][event_name] = [ transitions[from][event_name] ]
+      end
+
+      transitions[from][event_name] << transition_config
     end
 
     def build

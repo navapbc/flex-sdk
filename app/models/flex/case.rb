@@ -26,6 +26,8 @@ module Flex
     attribute :business_process_current_step, :string
     attribute :facts, :jsonb, default: {}
 
+    after_save :publish_case_updated_event, if: :saved_changes?
+
     # Closes the case, changing its status to 'closed'.
     #
     # @return [Boolean] True if the save was successful
@@ -40,6 +42,19 @@ module Flex
     def reopen
       self[:status] = :open
       save
+    end
+
+    private
+
+    def publish_case_updated_event
+      Flex::EventManager.publish(
+        "CaseUpdated",
+        {
+          case_id: id,
+          kase: self,
+          changed_attributes: saved_changes.keys
+        }
+      )
     end
   end
 end
