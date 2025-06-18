@@ -33,6 +33,19 @@
     <div class="grid-col-12 tablet:grid-col-3">
       <%= render partial: 'flex/tasks/due_date_filter' %>
     </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <% unassigned_tasks = Flex::Task.incomplete.where(assignee_id: nil) %>
+      <% if unassigned_tasks.any? %>
+        <%= button_to t("flex.tasks.actions.pick_next"), pick_next_task_tasks_path, 
+                      method: :post, 
+                      class: "usa-button" %>
+      <% else %>
+        <%= button_tag t("flex.tasks.actions.pick_next"), 
+                       class: "usa-button usa-button--disabled",
+                       disabled: true,
+                       title: t("flex.tasks.messages.no_tasks_available") %>
+      <% end %>
+    </div>
   </div>
   <% if tasks.any? %>
     <!-- Tasks -->

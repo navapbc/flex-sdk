@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   end
 
   resources :passport_application_forms, only: [ :index, :new, :show ]
-  resources :tasks, only: [ :index, :show, :update ]
+  resources :tasks, only: [ :index, :show, :update ] do
+    collection do
+      post :pick_next_task
+    end
+  end
 
   get "staff", to: "staff#index"
 end

@@ -49,6 +49,11 @@ en:
         start_label: "Start date"
         end_label: "End date"
     tasks:
+      actions:
+        pick_next: "Pick up next task"
+      messages:
+        task_picked_up: "Task assigned to you"
+        no_tasks_available: "No tasks available!"
       breadcrumbs:
         home: "Home"
         tasks: "Tasks"

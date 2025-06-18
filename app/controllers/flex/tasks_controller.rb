@@ -24,7 +24,24 @@ module Flex
       redirect_to task_path(@task)
     end
 
+    def pick_next_task
+      task = Flex::Task.incomplete.where(assignee_id: nil).order(due_on: :asc).first
+
+      if task
+        task.assign(current_user_id)
+        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
+        redirect_to task_path(task)
+      else
+        flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
+        redirect_to tasks_path
+      end
+    end
+
     private
+
+    def current_user_id
+      1
+    end
 
     def set_task
       @task = Flex::Task.find(params[:id]) if params[:id].present?
