@@ -13,6 +13,29 @@ module Flex
         @reasons = reasons
         @created_at = created_at
       end
+
+      def as_json(options = {})
+        {
+          name: name,
+          value: value,
+          reasons: reasons.map(&:as_json),
+          created_at: created_at.iso8601
+        }
+      end
+
+      def self.from_hash(hash)
+        return hash unless hash.is_a?(Hash) && hash.key?("name")
+
+        reasons = (hash["reasons"] || []).map { |reason_data| from_hash(reason_data) }
+        created_at = hash["created_at"] ? Time.parse(hash["created_at"]) : Time.now
+
+        new(
+          hash["name"].to_sym,
+          hash["value"],
+          reasons: reasons,
+          created_at: created_at
+        )
+      end
     end
 
     def initialize(rules)

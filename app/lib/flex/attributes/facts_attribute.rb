@@ -40,6 +40,9 @@ module Flex
 
       # Container for facts with hash-like interface
       class Facts
+        extend Forwardable
+        def_delegators :@facts, :each, :keys, :values, :empty?
+
         def initialize(facts_hash = {})
           @facts = {}
           facts_hash.each do |key, value|
@@ -55,57 +58,18 @@ module Flex
           @facts[key.to_sym] = value.is_a?(Flex::RulesEngine::Fact) ? value : convert_to_fact(key, value)
         end
 
-        def each(&block)
-          @facts.each(&block)
-        end
-
-        def keys
-          @facts.keys
-        end
-
-        def values
-          @facts.values
-        end
-
         def to_h
           @facts.dup
         end
 
-        def empty?
-          @facts.empty?
-        end
-
-        def to_json
-          serializable_hash = {}
-          @facts.each do |key, fact|
-            serializable_hash[key] = {
-              name: fact.name,
-              value: fact.value,
-              reasons: serialize_reasons(fact.reasons),
-              created_at: fact.created_at.iso8601
-            }
-          end
-          JSON.generate(serializable_hash)
+        def as_json(options = {})
+          @facts
         end
 
         def self.from_hash(hash)
-          facts = new
-          hash.each do |key, fact_data|
-            if fact_data.is_a?(Hash) && fact_data.key?("name")
-              reasons = deserialize_reasons(fact_data["reasons"] || [])
-              created_at = fact_data["created_at"] ? Time.parse(fact_data["created_at"]) : Time.now
-              fact = Flex::RulesEngine::Fact.new(
-                fact_data["name"].to_sym,
-                fact_data["value"],
-                reasons: reasons,
-                created_at: created_at
-              )
-              facts[key] = fact
-            else
-              facts[key] = fact_data
-            end
-          end
-          facts
+          new(hash.transform_values do |value|
+            Flex::RulesEngine::Fact.from_hash(value)
+          end)
         end
 
         private
@@ -117,38 +81,6 @@ module Flex
             Flex::RulesEngine::Fact.new(value[:name], value[:value], reasons: reasons, created_at: created_at)
           else
             Flex::RulesEngine::Fact.new(key, value, reasons: [], created_at: Time.now)
-          end
-        end
-
-        def serialize_reasons(reasons)
-          reasons.map do |reason|
-            if reason.is_a?(Flex::RulesEngine::Fact)
-              {
-                name: reason.name,
-                value: reason.value,
-                reasons: serialize_reasons(reason.reasons),
-                created_at: reason.created_at.iso8601
-              }
-            else
-              reason
-            end
-          end
-        end
-
-        def self.deserialize_reasons(reasons_data)
-          reasons_data.map do |reason_data|
-            if reason_data.is_a?(Hash) && reason_data.key?("name")
-              nested_reasons = deserialize_reasons(reason_data["reasons"] || [])
-              created_at = reason_data["created_at"] ? Time.parse(reason_data["created_at"]) : Time.now
-              Flex::RulesEngine::Fact.new(
-                reason_data["name"].to_sym,
-                reason_data["value"],
-                reasons: nested_reasons,
-                created_at: created_at
-              )
-            else
-              reason_data
-            end
           end
         end
       end
