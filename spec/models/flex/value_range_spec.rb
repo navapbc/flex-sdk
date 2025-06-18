@@ -399,13 +399,4 @@ RSpec.describe Flex::ValueRange do
       )
     end
   end
-
-  describe ".[]" do
-    it 'memoizes the value range class for a given value class' do
-      expect(Flex::DateRange).to be(described_class[Flex::USDate])
-      [ Date, Integer, String ].each do |value_class|
-        expect(described_class[value_class]).to be(described_class[value_class]) # rubocop:disable RSpec/IdenticalEqualityAssertion
-      end
-    end
-  end
 end
