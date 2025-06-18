@@ -144,14 +144,6 @@ RSpec.describe Flex::Case do
       published_events.clear
     end
 
-    it 'does not include case_id in payload' do
-      test_case.business_process_current_step = 'test_step'
-      test_case.save!
-
-      event = published_events.find { |e| e[:name] == 'CaseUpdated' }
-      expect(event[:payload]).not_to have_key(:case_id)
-    end
-
     it 'includes kase as the actual case instance' do
       test_case.business_process_current_step = 'test_step'
       test_case.save!

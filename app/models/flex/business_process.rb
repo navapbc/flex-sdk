@@ -166,6 +166,24 @@ module Flex
       @transitions.values.flat_map(&:keys).uniq | @start_events.keys
     end
 
+    # Determines the next step in the business process workflow based on the current case state and triggered event.
+    #
+    # This method evaluates all possible transitions from the current step for the given event name,
+    # processing them in order until a matching transition is found. It supports both simple string-based
+    # transitions and conditional transitions that must evaluate to true before executing.
+    #
+    # @param kase [Object] The case instance containing the current workflow state
+    # @param event_name [String, Symbol] The name of the event that was triggered
+    # @param event_payload [Hash, nil] Optional payload data from the event, used for condition evaluation
+    #
+    # @return [String, nil] The name of the next step to transition to, or nil if no valid transition found
+    #
+    # @example Simple string transition
+    #   get_next_step(case, 'submit_form', nil) #=> 'review_step'
+    #
+    # @example Conditional transition
+    #   get_next_step(case, 'review_complete', { approved: true }) #=> 'approved_step'
+    #   get_next_step(case, 'review_complete', { approved: false }) #=> nil
     def get_next_step(kase, event_name, event_payload = nil)
       current_step = kase.business_process_current_step
       transition_configs = @transitions&.dig(current_step, event_name)
@@ -188,7 +206,6 @@ module Flex
 
     def evaluate_single_transition(transition_config, event_payload)
       return transition_config if transition_config.is_a?(String)
-
       return nil unless transition_config.is_a?(Hash)
 
       if transition_config[:condition_callable]
