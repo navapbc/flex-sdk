@@ -43,4 +43,31 @@ RSpec.describe Flex::YearQuarter do
       end
     end
   end
+
+  describe "validations" do
+    it "is valid with quarters 1-4" do
+      (1..4).each do |quarter|
+        year_quarter = described_class.new(2023, quarter)
+        expect(year_quarter).to be_valid
+      end
+    end
+
+    it "is invalid with quarters less than 1" do
+      year_quarter = described_class.new(2023, 0)
+      expect(year_quarter).not_to be_valid
+      expect(year_quarter.errors[:quarter]).to include("must be in 1..4")
+    end
+
+    it "is invalid with quarters greater than 4" do
+      year_quarter = described_class.new(2023, 5)
+      expect(year_quarter).not_to be_valid
+      expect(year_quarter.errors[:quarter]).to include("must be in 1..4")
+    end
+
+    it "is invalid with non-integer quarters" do
+      year_quarter = described_class.new(2023, 1.5)
+      expect(year_quarter).not_to be_valid
+      expect(year_quarter.errors[:quarter]).to include("must be an integer")
+    end
+  end
 end

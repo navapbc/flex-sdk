@@ -20,6 +20,7 @@ module Flex
     #
     module RangeAttribute
       extend ActiveSupport::Concern
+      include Flex::Validations
 
       class_methods do
         # Defines an attribute representing a range using ValueRange.
@@ -59,22 +60,7 @@ module Flex
             end
           end
 
-          validate :"validate_#{name}"
-
-          # TODO(https://linear.app/nava-platform/issue/TSS-149/generalize-nested-object-validator)
-          # This looks like it could be generalized into a "nested object" validator
-          define_method "validate_#{name}" do
-            range = send(name)
-            if range && range.invalid?
-              range.errors.each do |error|
-                if error.attribute == :base
-                  errors.add(name, error.type)
-                else
-                  errors.add("#{name}_#{attribute}", error.type)
-                end
-              end
-            end
-          end
+          flex_validates_nested(name)
         end
       end
     end

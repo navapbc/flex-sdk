@@ -21,7 +21,7 @@ module Flex
 
     attr_reader :year, :quarter
 
-    validates :quarter, inclusion: { in: [ 1, 2, 3, 4 ] }
+    validates :quarter, numericality: { in: 1..4, only_integer: true }
 
     def initialize(year, quarter)
       @year = year
