@@ -49,6 +49,11 @@ es-US:
         start_label: "Fecha de inicio"
         end_label: "Fecha de fin"
     tasks:
+      actions:
+        pick_next: "Tomar siguiente tarea"
+      messages:
+        task_picked_up: "Tarea asignada a ti"
+        no_tasks_available: "¡No hay tareas disponibles!"
       breadcrumbs:
         home: "Inicio"
         tasks: "Tareas"

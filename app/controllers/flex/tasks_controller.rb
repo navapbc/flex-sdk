@@ -4,12 +4,13 @@ module Flex
   class TasksController < ::ApplicationController
     helper DateHelper
 
-    before_action :set_task, only: %i[ show update ]
+    before_action :set_task, only: %i[ show update assign ]
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
       @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
+      @unassigned_tasks = Flex::Task.incomplete.where(assignee_id: nil)
     end
 
     def show
@@ -24,13 +25,19 @@ module Flex
       redirect_to task_path(@task)
     end
 
-    def pick_next_task
+    def assign
+      user_id = params[:user_id]
+
+      @task.assign(user_id)
+      flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
+      redirect_to task_path(@task)
+    end
+
+    def pick_up_next_task
       task = Flex::Task.incomplete.where(assignee_id: nil).order(due_on: :asc).first
 
       if task
-        task.assign(current_user_id)
-        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
-        redirect_to task_path(task)
+        redirect_to assign_task_path(task, current_user_id), allow_other_host: false
       else
         flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
         redirect_to tasks_path
@@ -40,7 +47,7 @@ module Flex
     private
 
     def current_user_id
-      1
+      current_user&.id || raise("current_user does not exist. Please define it or overwrite the current_user_id method.")
     end
 
     def set_task
