@@ -54,6 +54,10 @@ module Flex
     end
 
     def self.[](value_class)
+      if value_class == Date
+        raise ArgumentError, "Use Flex::ValueRange[Flex::USDate] or Flex::DateRange instead of Flex::ValueRange[Date]"
+      end
+
       @value_range_classes ||= {}
       @value_range_classes[value_class] ||= Class.new(self) do
         define_singleton_method(:value_class) { value_class }
