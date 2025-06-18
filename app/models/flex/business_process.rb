@@ -172,9 +172,7 @@ module Flex
 
       return nil unless transition_configs
 
-      normalized_transition_configs = normalize_transition_configs(transition_configs)
-
-      normalized_transition_configs.each do |transition_config|
+      normalize_transition_configs(transition_configs).each do |transition_config|
         next_step = evaluate_single_transition(transition_config, event_payload)
         return next_step if next_step
       end
