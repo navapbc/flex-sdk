@@ -14,6 +14,7 @@ module Flex
     end
 
     def show
+      @assigned_user = @task.assignee_id.present? ? User.find(@task.assignee_id) : nil
     end
 
     def update
