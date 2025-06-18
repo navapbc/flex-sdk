@@ -11,6 +11,37 @@ RSpec.describe "Tasks", type: :request do
     # rubocop:enable RSpec/AnyInstance
   end
 
+  describe "Task scopes" do
+    [
+      [ "unassigned scope with unassigned tasks", :unassigned, false, 1 ],
+      [ "unassigned scope with assigned tasks", :unassigned, true, 0 ]
+    ].each do |description, scope_method, should_assign, expected|
+      it description do
+        task = Flex::Task.create!(case_id: test_case.id, description: "Test task")
+        task.assign(user.id) if should_assign
+
+        result = Flex::Task.send(scope_method)
+        expect(result.count).to eq(expected)
+      end
+    end
+
+    it "next_unassigned returns earliest due task" do
+      later_task = Flex::Task.create!(case_id: test_case.id, description: "Later task", due_on: Date.current + 1.day)
+      earliest_task = Flex::Task.create!(case_id: test_case.id, description: "Earlier task", due_on: Date.current)
+
+      result = Flex::Task.next_unassigned
+      expect(result).to eq(earliest_task)
+    end
+
+    it "next_unassigned returns nil when no unassigned tasks" do
+      task = Flex::Task.create!(case_id: test_case.id, description: "Assigned task")
+      task.assign(user.id)
+
+      result = Flex::Task.next_unassigned
+      expect(result).to be_nil
+    end
+  end
+
   describe "POST /tasks/pick_up_next_task" do
     context "when unassigned tasks exist" do
       let!(:task) { Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current) }

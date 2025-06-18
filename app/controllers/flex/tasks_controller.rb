@@ -10,7 +10,7 @@ module Flex
     def index
       @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
-      @unassigned_tasks = Flex::Task.incomplete.where(assignee_id: nil)
+      @unassigned_tasks = Flex::Task.incomplete.unassigned
     end
 
     def show
@@ -34,7 +34,7 @@ module Flex
     end
 
     def pick_up_next_task
-      task = Flex::Task.incomplete.where(assignee_id: nil).order(due_on: :asc).first
+      task = Flex::Task.next_unassigned
 
       if task
         redirect_to assign_task_path(task, current_user_id), allow_other_host: false
