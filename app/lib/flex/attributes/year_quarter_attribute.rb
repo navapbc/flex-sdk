@@ -28,8 +28,8 @@ module Flex
         # @return [void]
         def year_quarter_attribute(name, options = {})
           # Define the base attribute with its subfields
-          attribute "#{name}_year", :integer
-          attribute "#{name}_quarter", :integer
+          attribute :"#{name}_year", :integer
+          attribute :"#{name}_quarter", :integer
 
           # Add validation for quarter values
           # TODO DRY this up with validation defined in Flex::YearQuarter

@@ -13,15 +13,16 @@ Examples:
     bin/rails generate flex:migration AddPeriodicsToProfile leave_periods:array reporting_periods:array
 
 Supported Attribute Types:
-    address         - Creates columns: street_line_1, street_line_2, city, state, zip_code (all :string)
-    array           - Creates columns: single :jsonb column for storing arrays of objects
-    date_range      - Creates columns: start, end (both :date)
-    memorable_date  - Creates columns: single :date column
-    money           - Creates columns: single :integer column (stores cents)
-    name            - Creates columns: first, middle, last (all :string)
-    tax_id          - Creates columns: single :string column
-    us_date         - Creates columns: single :date column
-    year_quarter    - Creates columns: year (:integer), quarter (:integer)
+    address              - Creates columns: street_line_1, street_line_2, city, state, zip_code (all :string)
+    array                - Creates columns: single :jsonb column for storing arrays of objects
+    date_range           - Creates columns: start, end (both :date)
+    memorable_date       - Creates columns: single :date column
+    money                - Creates columns: single :integer column (stores cents)
+    name                 - Creates columns: first, middle, last (all :string)
+    tax_id               - Creates columns: single :string column
+    us_date              - Creates columns: single :date column
+    year_quarter         - Creates columns: year (:integer), quarter (:integer)
+    year_quarter_range   - Creates columns: start_year, start_quarter, end_year, end_quarter (all :integer)
     standard Rails types - Any additional standard Rails migration types can be specified as needed.
 
 This will create:

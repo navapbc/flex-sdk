@@ -3,12 +3,13 @@ es-US:
     tax_id: "Número de identificación fiscal"    
   errors:
     messages:
-      date_range_start_greater_than_end: "la fecha de inicio no puede ser posterior a la fecha de fin"
       integer_range_start_greater_than_end: "el valor inicial no puede ser mayor que el valor final"
       invalid_array: "contiene uno o más elementos inválidos"
       invalid_date: "Fecha inválida"
       invalid_tax_id: "no es un número de identificación fiscal válido. Use el formato: (XXX-XX-XXXX)"
       string_range_start_greater_than_end: "el texto inicial debe ir antes alfabéticamente que el texto final"
+      us_date_range_start_greater_than_end: "la fecha de inicio no puede ser posterior a la fecha de fin"
+      year_quarter_range_start_greater_than_end: "el período inicial no puede ser posterior al período final"
   flex:
     application_forms:
       index:
@@ -48,6 +49,8 @@ es-US:
       date_range:
         start_label: "Fecha de inicio"
         end_label: "Fecha de fin"
+        start_hint: "Ingrese la fecha de inicio"
+        end_hint: "Ingrese la fecha de finalización"
     tasks:
       breadcrumbs:
         home: "Inicio"
