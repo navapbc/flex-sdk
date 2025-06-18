@@ -44,11 +44,13 @@ module Flex
       end
     end
 
-    private
+    protected
 
     def current_user_id
       current_user&.id || raise("current_user does not exist. Please define it or overwrite the current_user_id method.")
     end
+
+    private
 
     def set_task
       @task = Flex::Task.find(params[:id]) if params[:id].present?
