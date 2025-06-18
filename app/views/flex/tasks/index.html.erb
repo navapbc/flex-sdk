@@ -35,7 +35,7 @@
       <%= render partial: 'flex/tasks/due_date_filter' %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
-      <% if unassigned_tasks.any? %>
+      <% if unassigned_tasks&.any? %>
         <%= button_to t("flex.tasks.actions.pick_next"), pick_up_next_task_tasks_path, 
                       method: :post, 
                       class: "usa-button" %>

@@ -12,17 +12,19 @@ RSpec.describe "Tasks", type: :request do
   end
 
   describe "Task scopes" do
-    [
-      [ "unassigned scope with unassigned tasks", :unassigned, false, 1 ],
-      [ "unassigned scope with assigned tasks", :unassigned, true, 0 ]
-    ].each do |description, scope_method, should_assign, expected|
-      it description do
-        task = Flex::Task.create!(case_id: test_case.id, description: "Test task")
-        task.assign(user.id) if should_assign
+    it "unassigned scope with unassigned tasks" do
+      Flex::Task.create!(case_id: test_case.id, description: "Test task")
 
-        result = Flex::Task.send(scope_method)
-        expect(result.count).to eq(expected)
-      end
+      result = Flex::Task.unassigned
+      expect(result.count).to eq(1)
+    end
+
+    it "unassigned scope with assigned tasks" do
+      task = Flex::Task.create!(case_id: test_case.id, description: "Test task")
+      task.assign(user.id)
+
+      result = Flex::Task.unassigned
+      expect(result.count).to eq(0)
     end
 
     it "next_unassigned returns earliest due task" do
