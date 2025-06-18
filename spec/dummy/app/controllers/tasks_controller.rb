@@ -11,7 +11,7 @@ class TasksController < Flex::TasksController
 
   protected
 
-  def current_user_id
-    User.all.sample&.id
+  def current_user
+    User.all.sample
   end
 end

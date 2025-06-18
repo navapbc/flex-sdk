@@ -39,11 +39,21 @@ module Flex
     scope :overdue, -> { where("due_on < ?", Date.today) }
     scope :completed, -> { where(status: :completed) }
     scope :incomplete, -> { where.not(status: :completed) }
-    scope :unassigned, -> { where(assignee_id: nil) }
+    scope :unassigned, -> { incomplete.where(assignee_id: nil) }
     scope :with_type, ->(type) { where(type: type) }
 
     def self.next_unassigned
       incomplete.unassigned.first
+    end
+
+    def self.assign_next_task_to(user_id)
+      transaction do
+        task = next_unassigned
+        return nil if !task
+
+        task.assign(user_id)
+        task
+      end
     end
 
     # Creates a new non-persisted task instance associated with the given case.

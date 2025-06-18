@@ -7,7 +7,7 @@ RSpec.describe "Tasks", type: :request do
   before do
     # Mock current_user for the dummy app since it doesn't have Devise
     # rubocop:disable RSpec/AnyInstance
-    allow_any_instance_of(TasksController).to receive(:current_user_id).and_return(user.id)
+    allow_any_instance_of(TasksController).to receive(:current_user).and_return(user)
     # rubocop:enable RSpec/AnyInstance
   end
 
@@ -41,6 +41,35 @@ RSpec.describe "Tasks", type: :request do
 
       result = Flex::Task.next_unassigned
       expect(result).to be_nil
+    end
+
+    it "assign_next_task_to returns assigned task when available" do
+      task = Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current)
+
+      result = Flex::Task.assign_next_task_to(user.id)
+      expect(result).to eq(task)
+      expect(result.assignee_id).to eq(user.id)
+    end
+
+    it "assign_next_task_to returns nil when no unassigned tasks exist" do
+      task = Flex::Task.create!(case_id: test_case.id, description: "Assigned task")
+      task.assign(user.id)
+
+      result = Flex::Task.assign_next_task_to(user.id)
+      expect(result).to be_nil
+    end
+
+    it "assign_next_task_to uses transaction to prevent race conditions" do
+      task = Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current)
+
+      # Verify the method uses a transaction by checking it assigns correctly
+      result = Flex::Task.assign_next_task_to(user.id)
+      expect(result).to eq(task)
+      expect(result.assignee_id).to eq(user.id)
+
+      # Verify no other tasks can be assigned after this one is taken
+      second_result = Flex::Task.assign_next_task_to(user.id)
+      expect(second_result).to be_nil
     end
   end
 

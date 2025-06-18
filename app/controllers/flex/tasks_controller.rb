@@ -10,11 +10,11 @@ module Flex
     def index
       @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
-      @unassigned_tasks = Flex::Task.incomplete.unassigned
+      @unassigned_tasks = Flex::Task.unassigned
     end
 
     def show
-      @assigned_user = @task.assignee_id.present? ? User.find(@task.assignee_id) : nil
+      @assignee = @task.assignee_id.present? ? User.find(@task.assignee_id) : nil
     end
 
     def update
@@ -27,22 +27,15 @@ module Flex
     end
 
     def pick_up_next_task
-      task = Flex::Task.next_unassigned
+      task = Flex::Task.assign_next_task_to(current_user.id)
 
       if task
-        task.assign(current_user_id)
         flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
         redirect_to task_path(task)
       else
         flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
         redirect_to tasks_path
       end
-    end
-
-    protected
-
-    def current_user_id
-      current_user&.id || raise("current_user does not exist. Please define it or overwrite the current_user_id method.")
     end
 
     private
