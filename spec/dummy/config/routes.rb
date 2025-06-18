@@ -11,9 +11,6 @@ Rails.application.routes.draw do
 
   resources :passport_application_forms, only: [ :index, :new, :show ]
   resources :tasks, only: [ :index, :show, :update ] do
-    member do
-      patch 'assign/:user_id', to: 'tasks#assign', as: 'assign'
-    end
     collection do
       post :pick_up_next_task
     end

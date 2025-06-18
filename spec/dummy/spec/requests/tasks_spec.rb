@@ -48,10 +48,15 @@ RSpec.describe "Tasks", type: :request do
     context "when unassigned tasks exist" do
       let!(:task) { Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current) }
 
-      it "redirects to assign task path" do
+      it "assigns task and redirects to task page" do
         post "/tasks/pick_up_next_task"
 
-        expect(response).to redirect_to(assign_task_path(task, user.id))
+        expect(response).to redirect_to(task_path(task))
+        follow_redirect!
+        expect(response.body).to include("Task assigned to you")
+
+        task.reload
+        expect(task.assignee_id).to eq(user.id)
       end
     end
 
@@ -75,32 +80,12 @@ RSpec.describe "Tasks", type: :request do
       it "picks up the task with the earliest due date" do
         post "/tasks/pick_up_next_task"
 
-        # Find which task should be picked (earliest due date)
-        earliest_task = Flex::Task.incomplete.where(assignee_id: nil).order(due_on: :asc).first
-        expect(response).to redirect_to(assign_task_path(earliest_task, user.id))
+        # Verify that a task was assigned to the user
+        assigned_task = Flex::Task.where(assignee_id: user.id).last
+        expect(assigned_task).to be_present
+        expect(assigned_task.due_on).to eq(Date.current) # Should be the earliest due date
+        expect(response).to redirect_to(task_path(assigned_task))
       end
-    end
-  end
-
-  describe "PATCH /tasks/:id/assign/:user_id" do
-    let!(:task) { Flex::Task.create!(case_id: test_case.id, description: "Test task") }
-
-    it "assigns the task to the specified user" do
-      patch "/tasks/#{task.id}/assign/#{user.id}"
-
-      expect(response).to redirect_to(task_path(task))
-      follow_redirect!
-      expect(response.body).to include("Task assigned to you")
-
-      task.reload
-      expect(task.assignee_id).to eq(user.id)
-    end
-
-    it "shows flash message after assignment" do
-      patch "/tasks/#{task.id}/assign/#{user.id}"
-
-      follow_redirect!
-      expect(flash["task-message"]).to eq("Task assigned to you")
     end
   end
 end

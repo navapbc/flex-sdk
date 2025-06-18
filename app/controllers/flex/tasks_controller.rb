@@ -4,7 +4,7 @@ module Flex
   class TasksController < ::ApplicationController
     helper DateHelper
 
-    before_action :set_task, only: %i[ show update assign ]
+    before_action :set_task, only: %i[ show update ]
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
@@ -25,19 +25,13 @@ module Flex
       redirect_to task_path(@task)
     end
 
-    def assign
-      user_id = params[:user_id]
-
-      @task.assign(user_id)
-      flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
-      redirect_to task_path(@task)
-    end
-
     def pick_up_next_task
       task = Flex::Task.next_unassigned
 
       if task
-        redirect_to assign_task_path(task, current_user_id), allow_other_host: false
+        task.assign(current_user_id)
+        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
+        redirect_to task_path(task)
       else
         flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
         redirect_to tasks_path
