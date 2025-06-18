@@ -50,7 +50,6 @@ module Flex
       Flex::EventManager.publish(
         "CaseUpdated",
         {
-          case_id: id,
           kase: self,
           changed_attributes: saved_changes.keys
         }

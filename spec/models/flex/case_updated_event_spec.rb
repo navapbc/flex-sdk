@@ -23,7 +23,6 @@ RSpec.describe Flex::Case do
           hash_including(
             name: 'CaseUpdated',
             payload: hash_including(
-              case_id: new_case.id,
               kase: new_case,
               changed_attributes: array_including('id', 'application_form_id', 'business_process_current_step')
             )
@@ -46,7 +45,6 @@ RSpec.describe Flex::Case do
           hash_including(
             name: 'CaseUpdated',
             payload: hash_including(
-              case_id: test_case.id,
               kase: test_case,
               changed_attributes: array_including('business_process_current_step')
             )
@@ -61,7 +59,6 @@ RSpec.describe Flex::Case do
           hash_including(
             name: 'CaseUpdated',
             payload: hash_including(
-              case_id: test_case.id,
               kase: test_case,
               changed_attributes: array_including('status')
             )
@@ -77,7 +74,6 @@ RSpec.describe Flex::Case do
           hash_including(
             name: 'CaseUpdated',
             payload: hash_including(
-              case_id: test_case.id,
               kase: test_case,
               changed_attributes: array_including('facts')
             )
@@ -94,7 +90,6 @@ RSpec.describe Flex::Case do
           hash_including(
             name: 'CaseUpdated',
             payload: hash_including(
-              case_id: test_case.id,
               kase: test_case,
               changed_attributes: array_including('business_process_current_step', 'facts')
             )
@@ -135,7 +130,6 @@ RSpec.describe Flex::Case do
         hash_including(
           name: 'CaseUpdated',
           payload: hash_including(
-            case_id: test_case.id,
             kase: test_case,
             changed_attributes: array_including('business_process_current_step')
           )
@@ -150,13 +144,12 @@ RSpec.describe Flex::Case do
       published_events.clear
     end
 
-    it 'includes case_id as integer' do
+    it 'does not include case_id in payload' do
       test_case.business_process_current_step = 'test_step'
       test_case.save!
 
       event = published_events.find { |e| e[:name] == 'CaseUpdated' }
-      expect(event[:payload][:case_id]).to be_a(Integer)
-      expect(event[:payload][:case_id]).to eq(test_case.id)
+      expect(event[:payload]).not_to have_key(:case_id)
     end
 
     it 'includes kase as the actual case instance' do

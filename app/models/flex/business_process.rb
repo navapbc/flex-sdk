@@ -172,44 +172,42 @@ module Flex
 
       return nil unless transition_configs
 
-      # Handle legacy single transition (not in array)
-      transition_configs = [ transition_configs ] unless transition_configs.is_a?(Array)
+      normalized_transition_configs = normalize_transition_configs(transition_configs)
 
-      # Evaluate each transition in order
-      transition_configs.each do |transition_config|
-        # String transition (no condition)
-        if transition_config.is_a?(String)
-          return transition_config
-        end
-
-        # Hash transition (may have condition)
-        if transition_config.is_a?(Hash)
-          if transition_config[:condition_callable]
-            begin
-              condition_result = evaluate_condition(transition_config[:condition_callable], event_payload)
-              return transition_config[:to] if condition_result
-            rescue => e
-              Rails.logger.warn "Transition condition '#{transition_config[:condition_name]}' failed: #{e.message}"
-              # Continue to next transition
-            end
-          else
-            # Hash without condition (unconditional)
-            return transition_config[:to]
-          end
-        end
+      normalized_transition_configs.each do |transition_config|
+        next_step = evaluate_single_transition(transition_config, event_payload)
+        return next_step if next_step
       end
 
-      # No matching transition found
+      nil
+    end
+
+    def normalize_transition_configs(transition_configs)
+      transition_configs.is_a?(Array) ? transition_configs : [ transition_configs ]
+    end
+
+    def evaluate_single_transition(transition_config, event_payload)
+      return transition_config if transition_config.is_a?(String)
+
+      return nil unless transition_config.is_a?(Hash)
+
+      if transition_config[:condition_callable]
+        evaluate_conditional_transition(transition_config, event_payload)
+      else
+        transition_config[:to]
+      end
+    end
+
+    def evaluate_conditional_transition(transition_config, event_payload)
+      condition_result = evaluate_condition(transition_config[:condition_callable], event_payload)
+      condition_result ? transition_config[:to] : nil
+    rescue => e
+      Rails.logger.warn "Transition condition '#{transition_config[:condition_name]}' failed: #{e.message}"
       nil
     end
 
     def evaluate_condition(callable, payload)
-      # Get case from payload or fetch it using case_id
       kase = payload&.dig(:kase)
-      if kase.nil? && payload&.dig(:case_id)
-        kase = @case_class.find(payload[:case_id])
-      end
-
       event_obj = OpenStruct.new(payload: payload, kase: kase)
       callable.call(event_obj)
     end
