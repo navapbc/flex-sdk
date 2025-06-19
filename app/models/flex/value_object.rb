@@ -10,5 +10,9 @@ module Flex
       return false if self.class != other.class
       attributes == other.attributes
     end
+
+    def persisted?
+      false
+    end
   end
 end

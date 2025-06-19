@@ -14,40 +14,23 @@ module Flex
   # - Provides comparison between name objects
   # - Formats full name with appropriate spacing
   #
-  class Name
-    include ActiveModel::Model
+  class Name < ValueObject
     include Comparable
 
-    attr_reader :first, :middle, :last
-
-    def initialize(first, middle, last)
-      @first = first
-      @middle = middle
-      @last = last
-    end
+    attribute :first, :string
+    attribute :middle, :string
+    attribute :last, :string
 
     def full_name
       [ first, middle, last ].compact.join(" ")
     end
 
     def <=>(other)
-      [ first, middle, last ] <=> [ other.first, other.middle, other.last ]
+      [ last, first, middle ] <=> [ other.last, other.first, other.middle ]
     end
 
     def persisted?
       false
-    end
-
-    def as_json
-      {
-        first: first,
-        middle: middle,
-        last: last
-      }
-    end
-
-    def self.from_hash(h)
-      new(*h.fetch_values("first", "middle", "last"))
     end
   end
 end

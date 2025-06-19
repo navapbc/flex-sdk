@@ -376,11 +376,11 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with an existing name value' do
-      let(:object) { TestRecord.new(name: Flex::Name.new("John", "A", "Doe")) }
+      let(:object) { TestRecord.new(name: Flex::Name.new(first: "John", middle: "Adams", last: "Doe")) }
 
       it 'pre-fills the name fields' do
         expect(result).to have_element(:input, name: 'object[name_first]', value: 'John')
-        expect(result).to have_element(:input, name: 'object[name_middle]', value: 'A')
+        expect(result).to have_element(:input, name: 'object[name_middle]', value: 'Adams')
         expect(result).to have_element(:input, name: 'object[name_last]', value: 'Doe')
       end
     end

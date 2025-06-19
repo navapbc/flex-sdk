@@ -105,8 +105,8 @@ RSpec.describe Flex::Attributes do
     describe "names array" do
       it "allows setting an array of names" do
         names = [
-          Flex::Name.new("John", nil, "Smith"),
-          Flex::Name.new("Jane", "Marie", "Doe")
+          Flex::Name.new(first: "John", last: "Smith"),
+          Flex::Name.new(first: "Jane", middle: "Marie", last: "Doe")
         ]
         object.names = names
 
@@ -311,36 +311,40 @@ RSpec.describe Flex::Attributes do
   end
 
   describe "name attribute" do
+    let(:first) { "Jane" }
+    let(:middle) { "Marie" }
+    let(:last) { "Doe" }
+
     it "allows setting name as a value object" do
-      name = Flex::Name.new("Jane", "Marie", "Doe")
+      name = Flex::Name.new(first:, middle:, last:)
       object.name = name
 
-      expect(object.name).to eq(Flex::Name.new("Jane", "Marie", "Doe"))
-      expect(object.name_first).to eq("Jane")
-      expect(object.name_middle).to eq("Marie")
-      expect(object.name_last).to eq("Doe")
+      expect(object.name).to eq(Flex::Name.new(first:, middle: , last:))
+      expect(object.name_first).to eq(first)
+      expect(object.name_middle).to eq(middle)
+      expect(object.name_last).to eq(last)
     end
 
     it "allows setting name as a hash" do
-      object.name = { first: "Alice", middle: "Beth", last: "Johnson" }
+      object.name = { first: first, middle: middle, last: last }
 
-      expect(object.name).to eq(Flex::Name.new("Alice", "Beth", "Johnson"))
-      expect(object.name_first).to eq("Alice")
-      expect(object.name_middle).to eq("Beth")
-      expect(object.name_last).to eq("Johnson")
+      expect(object.name).to eq(Flex::Name.new(first:, middle:, last:))
+      expect(object.name_first).to eq(first)
+      expect(object.name_middle).to eq(middle)
+      expect(object.name_last).to eq(last)
     end
 
     it "allows setting nested name attributes directly" do
-      object.name_first = "John"
-      object.name_middle = "Quincy"
-      object.name_last = "Adams"
-      expect(object.name).to eq(Flex::Name.new("John", "Quincy", "Adams"))
+      object.name_first = first
+      object.name_middle = middle
+      object.name_last = last
+      expect(object.name).to eq(Flex::Name.new(first:, middle:, last:))
     end
 
     it "preserves values exactly as entered without normalization" do
       object.name = { first: "jean-luc", middle: "von", last: "O'REILLY" }
 
-      expect(object.name).to eq(Flex::Name.new("jean-luc", "von", "O'REILLY"))
+      expect(object.name).to eq(Flex::Name.new(first: "jean-luc", middle: "von", last: "O'REILLY"))
       expect(object.name_first).to eq("jean-luc")
       expect(object.name_middle).to eq("von")
       expect(object.name_last).to eq("O'REILLY")
@@ -789,7 +793,7 @@ RSpec.describe Flex::Attributes do
     let(:record) { TestRecord.new }
 
     it "persists and loads name object correctly" do
-      name = Flex::Name.new("John", "Middle", "Doe")
+      name = Flex::Name.new(first: "John", middle: "Middle", last: "Doe")
       record.name = name
       record.save!
 
@@ -909,7 +913,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "preserves all attributes when saving and loading multiple value objects" do
-      record.name = Flex::Name.new("Jane", "Marie", "Smith")
+      record.name = Flex::Name.new(first: "Jane", middle: "Marie", last: "Smith")
       record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
       record.tax_id = Flex::TaxId.new("987-65-4321")
       record.weekly_wage = Flex::Money.new(5000)
@@ -920,7 +924,7 @@ RSpec.describe Flex::Attributes do
       loaded_record = TestRecord.find(record.id)
 
       # Verify name
-      expect(loaded_record.name).to eq(Flex::Name.new("Jane", "Marie", "Smith"))
+      expect(loaded_record.name).to eq(Flex::Name.new(first: "Jane", middle: "Marie", last: "Smith"))
       expect(loaded_record.name_first).to eq("Jane")
       expect(loaded_record.name_middle).to eq("Marie")
       expect(loaded_record.name_last).to eq("Smith")

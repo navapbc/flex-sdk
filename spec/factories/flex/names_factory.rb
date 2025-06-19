@@ -10,7 +10,5 @@ FactoryBot.define do
     trait :with_middle do
       middle { Faker::Name.middle_name }
     end
-
-    initialize_with { new(first, middle, last) }
   end
 end

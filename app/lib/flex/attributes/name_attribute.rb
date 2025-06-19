@@ -36,7 +36,7 @@ module Flex
             first = send("#{name}_first")
             middle = send("#{name}_middle")
             last = send("#{name}_last")
-            Flex::Name.new(first, middle, last)
+            Flex::Name.new(first:, middle:, last:)
           end
 
           # Define the setter method

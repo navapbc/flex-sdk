@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Flex::Name do
-  let(:name) { described_class.new("Jane", "Adams", "Doe") }
-  let(:same_name) { described_class.new("Jane", "Adams", "Doe") }
-  let(:different_name) { described_class.new("John", "Adams", "Doe") }
+  let(:first) { "Jane" }
+  let(:middle) { "Adams" }
+  let(:last) { "Doe" }
+  let(:name) { described_class.new(first:, middle:, last:) }
+  let(:same_name) { described_class.new(first:, middle:, last:) }
+  let(:different_name) { described_class.new(first: "John", middle:, last:) }
 
   describe '#initialize' do
     it 'sets first, middle, and last names' do
