@@ -267,8 +267,8 @@ RSpec.describe Flex::ValueRange do
       it 'converts the range to a serializable hash' do
         hash = range.as_json
         expect(hash).to eq({
-          "start" => { year: 2023, quarter: 1 },
-          "end" => { year: 2023, quarter: 4 }
+          "start" => { "year" => 2023, "quarter" => 1 },
+          "end" => { "year" => 2023, "quarter" => 4 }
         })
       end
     end
@@ -276,11 +276,7 @@ RSpec.describe Flex::ValueRange do
     describe 'deserialization' do
       it 'from a serialized object' do
         serialized = range.to_json
-        puts serialized
-        
         range = klass.new(JSON.parse(serialized))
-        puts JSON.parse(serialized)
-        puts range.to_json
         expect(range).to eq(klass.new(start: start_value, end: end_value))
       end
     end

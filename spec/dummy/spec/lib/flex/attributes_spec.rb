@@ -573,10 +573,10 @@ RSpec.describe Flex::Attributes do
     end
 
     [
-      [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31)) ],
-      [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(Flex::USDate.new(2023, 6, 15), Flex::USDate.new(2023, 6, 15)) ],
-      [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(nil, Flex::USDate.new(2023, 12, 31)) ],
-      [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), nil) ],
+      [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(start: Flex::USDate.new(2023, 6, 15), end: Flex::USDate.new(2023, 6, 15)) ],
+      [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1)) ],
       [ "sets nil if setting a nil..nil Range", nil, nil, nil ]
     ].each do |description, start_date, end_date, expected|
       it description do
