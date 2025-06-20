@@ -35,8 +35,6 @@ module Flex
         rescue ArgumentError
           raise ArgumentError, "String values must be valid integers representing cents"
         end
-      when Flex::Money
-        super(value.cents)
       else
         raise TypeError, "Expected Integer, String, or Flex::Money, got #{cents.class}"
       end
