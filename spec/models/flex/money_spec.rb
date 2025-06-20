@@ -20,8 +20,7 @@ RSpec.describe Flex::Money do
 
     describe "with invalid inputs" do
       [
-        # TODO(https://linear.app/nava-platform/issue/TSS-175/make-yearquarter-more-strict-about-types-rather-than-liberally-casting)
-        # [ "raises type error for non-integer floats", 12.5, TypeError ],
+        [ "raises type error for non-integer floats", 12.5, TypeError ],
         [ "raises type error for integer floats", 12.0, TypeError ],
         [ "raises type error for arrays", [], TypeError ],
         [ "raises type error for hashes", {}, TypeError ],
