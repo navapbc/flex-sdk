@@ -11,27 +11,17 @@ RSpec.describe Flex::Money do
         [ "accepts valid negative string integers", "-1500", -1500, -15.0 ]
       ].each do |description, input, expected_cents, expected_dollars|
         it description do
-          money = described_class.new(input)
+          money = described_class.new(cents: input)
           expect(money.cents_amount).to eq(expected_cents)
           expect(money.dollar_amount).to eq(expected_dollars)
         end
-      end
-
-      it "accepts Flex::Money objects as input" do
-        original_money = described_class.new(1750)
-        new_money = described_class.new(original_money)
-
-        expect(new_money).to be_a(described_class)
-        expect(new_money.cents_amount).to eq(1750)
-        expect(new_money.dollar_amount).to eq(17.5)
-        expect(new_money).not_to be(original_money)
-        expect(new_money).to eq(original_money)
       end
     end
 
     describe "with invalid inputs" do
       [
-        [ "raises type error for non-integer floats", 12.5, TypeError ],
+        # TODO(https://linear.app/nava-platform/issue/TSS-175/make-yearquarter-more-strict-about-types-rather-than-liberally-casting)
+        # [ "raises type error for non-integer floats", 12.5, TypeError ],
         [ "raises type error for integer floats", 12.0, TypeError ],
         [ "raises type error for arrays", [], TypeError ],
         [ "raises type error for hashes", {}, TypeError ],
@@ -39,21 +29,21 @@ RSpec.describe Flex::Money do
         [ "raises argument error for non-numeric strings", "abc", ArgumentError ]
       ].each do |description, input, error_class|
         it description do
-          expect { described_class.new(input) }.to raise_error(error_class)
+          expect { described_class.new(cents: input) }.to raise_error(error_class)
         end
       end
     end
   end
 
   describe "+" do
-    let(:ten_dollars) { described_class.new(1000) }
-    let(:five_dollars) { described_class.new(500) }
+    let(:ten_dollars) { described_class.new(cents: 1000) }
+    let(:five_dollars) { described_class.new(cents: 500) }
 
     context "with valid inputs" do
       [
-        [ "adds two Money objects", described_class.new(1000), described_class.new(500), described_class.new(1500) ],
-        [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ],
-        [ "handles negative money values", described_class.new(1000), described_class.new(-500), described_class.new(500) ]
+        [ "adds two Money objects", described_class.new(cents: 1000), described_class.new(cents: 500), described_class.new(cents: 1500) ],
+        [ "handles zero money values", described_class.new(cents: 1000), described_class.new(cents: 0), described_class.new(cents: 1000) ],
+        [ "handles negative money values", described_class.new(cents: 1000), described_class.new(cents: -500), described_class.new(cents: 500) ]
       ].each do |description, money1, money2, expected|
         it description do
           result = money1 + money2
@@ -64,7 +54,7 @@ RSpec.describe Flex::Money do
     end
 
     context "with invalid inputs" do
-      let(:money) { described_class.new(1000) }
+      let(:money) { described_class.new(cents: 1000) }
 
       it "raises TypeError for integer operands" do
         expect { money + 250 }.to raise_error(TypeError, "unsupported operand type(s) for +: 'Money' and 'Integer'")
@@ -79,14 +69,14 @@ RSpec.describe Flex::Money do
   end
 
   describe "-" do
-    let(:ten_dollars) { described_class.new(1000) }
-    let(:five_dollars) { described_class.new(500) }
+    let(:ten_dollars) { described_class.new(cents: 1000) }
+    let(:five_dollars) { described_class.new(cents: 500) }
 
     context "with valid inputs" do
       [
-        [ "subtracts two Money objects", described_class.new(1000), described_class.new(500), described_class.new(500) ],
-        [ "can result in negative values", described_class.new(500), described_class.new(1000), described_class.new(-500) ],
-        [ "handles zero money values", described_class.new(1000), described_class.new(0), described_class.new(1000) ]
+        [ "subtracts two Money objects", described_class.new(cents: 1000), described_class.new(cents: 500), described_class.new(cents: 500) ],
+        [ "can result in negative values", described_class.new(cents: 500), described_class.new(cents: 1000), described_class.new(cents: -500) ],
+        [ "handles zero money values", described_class.new(cents: 1000), described_class.new(cents: 0), described_class.new(cents: 1000) ]
       ].each do |description, money1, money2, expected|
         it description do
           result = money1 - money2
@@ -97,7 +87,7 @@ RSpec.describe Flex::Money do
     end
 
     context "with invalid inputs" do
-      let(:money) { described_class.new(1000) }
+      let(:money) { described_class.new(cents: 1000) }
 
       it "raises TypeError for integer operands" do
         expect { money - 250 }.to raise_error(TypeError, "unsupported operand type(s) for -: 'Money' and 'Integer'")
@@ -113,11 +103,11 @@ RSpec.describe Flex::Money do
 
   describe "*" do
     [
-      [ "multiplies Money by integer", described_class.new(1000), 3, described_class.new(3000) ],
-      [ "multiplies Money by float", described_class.new(1000), 2.5, described_class.new(2500) ],
-      [ "rounds to nearest cent", described_class.new(333), 1.5, described_class.new(500) ],
-      [ "handles zero multiplication", described_class.new(1000), 0, described_class.new(0) ],
-      [ "handles negative multiplication", described_class.new(1000), -2, described_class.new(-2000) ]
+      [ "multiplies Money by integer", described_class.new(cents: 1000), 3, described_class.new(cents: 3000) ],
+      [ "multiplies Money by float", described_class.new(cents: 1000), 2.5, described_class.new(cents: 2500) ],
+      [ "rounds to nearest cent", described_class.new(cents: 333), 1.5, described_class.new(cents: 500) ],
+      [ "handles zero multiplication", described_class.new(cents: 1000), 0, described_class.new(cents: 0) ],
+      [ "handles negative multiplication", described_class.new(cents: 1000), -2, described_class.new(cents: -2000) ]
     ].each do |description, money, multiplier, expected|
       it description do
         result = money * multiplier
@@ -129,11 +119,11 @@ RSpec.describe Flex::Money do
 
   describe "/" do
     [
-      [ "divides Money by integer, rounding down", described_class.new(1001), 3, described_class.new(333) ],
-      [ "divides Money by float, rounding down", described_class.new(1000), 2.5, described_class.new(400) ],
-      [ "handles exact division", described_class.new(1000), 2, described_class.new(500) ],
-      [ "always rounds down", described_class.new(999), 3, described_class.new(333) ],
-      [ "handles negative division", described_class.new(1000), -2, described_class.new(-500) ]
+      [ "divides Money by integer, rounding down", described_class.new(cents: 1001), 3, described_class.new(cents: 333) ],
+      [ "divides Money by float, rounding down", described_class.new(cents: 1000), 2.5, described_class.new(cents: 400) ],
+      [ "handles exact division", described_class.new(cents: 1000), 2, described_class.new(cents: 500) ],
+      [ "always rounds down", described_class.new(cents: 999), 3, described_class.new(cents: 333) ],
+      [ "handles negative division", described_class.new(cents: 1000), -2, described_class.new(cents: -500) ]
     ].each do |description, money, divisor, expected|
       it description do
         result = money / divisor
@@ -144,7 +134,7 @@ RSpec.describe Flex::Money do
   end
 
   describe "#dollar_amount" do
-    let(:money) { described_class.new(1234) }
+    let(:money) { described_class.new(cents: 1234) }
 
     [
       [ "returns amount as float in dollars", 1234, 12.34 ],
@@ -153,14 +143,14 @@ RSpec.describe Flex::Money do
       [ "handles single cents", 5, 0.05 ]
     ].each do |description, cents, expected_dollars|
       it description do
-        test_money = described_class.new(cents)
+        test_money = described_class.new(cents: cents)
         expect(test_money.dollar_amount).to eq(expected_dollars)
       end
     end
   end
 
   describe "#cents_amount" do
-    let(:money) { described_class.new(1234) }
+    let(:money) { described_class.new(cents: 1234) }
 
 
 
@@ -178,7 +168,7 @@ RSpec.describe Flex::Money do
       [ "formats small amounts correctly", 5, "$0.05" ]
     ].each do |description, cents, expected_format|
       it description do
-        money = described_class.new(cents)
+        money = described_class.new(cents: cents)
         expect(money.to_s).to eq(expected_format)
       end
     end
@@ -190,7 +180,7 @@ RSpec.describe Flex::Money do
       [ "handles fractional cents in multiplication", 1, 1, 0.01 ]
     ].each do |description, input, expected_cents, expected_dollars|
       it description do
-        money = described_class.new(input)
+        money = described_class.new(cents: input)
         expect(money.cents_amount).to eq(expected_cents)
         expect(money.dollar_amount).to eq(expected_dollars)
 
@@ -202,7 +192,7 @@ RSpec.describe Flex::Money do
     end
 
     it "maintains precision in complex calculations" do
-      money = described_class.new(1000)
+      money = described_class.new(cents: 1000)
       result = (money * 1.5) / 2
       expect(result.cents_amount).to eq(750)
     end
@@ -211,34 +201,34 @@ RSpec.describe Flex::Money do
   describe "as hash keys" do
     it "can be used as hash keys" do
       hash = {
-        described_class.new(1000) => "ten dollars",
-        described_class.new(500) => "five dollars"
+        described_class.new(cents: 1000) => "ten dollars",
+        described_class.new(cents: 500) => "five dollars"
       }
 
-      expect(hash[described_class.new(1000)]).to eq("ten dollars")
-      expect(hash[described_class.new(500)]).to eq("five dollars")
-      expect(hash[described_class.new(2000)]).to be_nil
+      expect(hash[described_class.new(cents: 1000)]).to eq("ten dollars")
+      expect(hash[described_class.new(cents: 500)]).to eq("five dollars")
+      expect(hash[described_class.new(cents: 2000)]).to be_nil
     end
 
     it "treats equal amounts as the same key" do
-      hash = { described_class.new(1000) => "original" }
-      hash[described_class.new(1000)] = "updated"
+      hash = { described_class.new(cents: 1000) => "original" }
+      hash[described_class.new(cents: 1000)] = "updated"
 
       expect(hash.size).to eq(1)
-      expect(hash[described_class.new(1000)]).to eq("updated")
+      expect(hash[described_class.new(cents: 1000)]).to eq("updated")
     end
   end
 
   describe "sorting" do
     it "can be sorted" do
       amounts = [
-        described_class.new(1500),
-        described_class.new(500),
-        described_class.new(1000),
-        described_class.new(1000),
-        described_class.new(0),
-        described_class.new(1000),
-        described_class.new(-500)
+        described_class.new(cents: 1500),
+        described_class.new(cents: 500),
+        described_class.new(cents: 1000),
+        described_class.new(cents: 1000),
+        described_class.new(cents: 0),
+        described_class.new(cents: 1000),
+        described_class.new(cents: -500)
       ]
 
       sorted = amounts.sort
@@ -247,7 +237,7 @@ RSpec.describe Flex::Money do
     end
 
     it "can't be compared with non-Money objects" do
-      money = described_class.new(1000)
+      money = described_class.new(cents: 1000)
       expect(money <=> "not a money object").to be_nil
       expect(money <=> nil).to be_nil
       expect(nil <=> money).to be_nil

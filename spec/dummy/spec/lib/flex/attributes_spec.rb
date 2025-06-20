@@ -253,7 +253,7 @@ RSpec.describe Flex::Attributes do
 
   describe "money attribute" do
     it "allows setting money as a Money object" do
-      money = Flex::Money.new(1250)
+      money = Flex::Money.new(cents: 1250)
       object.weekly_wage = money
 
       expect(object.weekly_wage).to be_a(Flex::Money)
@@ -840,7 +840,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "persists and loads money object correctly" do
-      money = Flex::Money.new(1250)
+      money = Flex::Money.new(cents: 1250)
       record.weekly_wage = money
       record.save!
 
@@ -926,7 +926,7 @@ RSpec.describe Flex::Attributes do
       record.name = name
       record.address = address
       record.tax_id = Flex::TaxId.new("987-65-4321")
-      record.weekly_wage = Flex::Money.new(5000)
+      record.weekly_wage = Flex::Money.new(cents: 5000)
       record.date_of_birth = Flex::USDate.new(1990, 3, 15)
       record.period = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31))
       record.save!
@@ -952,7 +952,7 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
 
       # Verify money
-      expect(loaded_record.weekly_wage).to eq(Flex::Money.new(5000))
+      expect(loaded_record.weekly_wage).to eq(Flex::Money.new(cents: 5000))
       expect(loaded_record.weekly_wage.cents_amount).to eq(5000)
       expect(loaded_record.weekly_wage.dollar_amount).to eq(50.0)
 

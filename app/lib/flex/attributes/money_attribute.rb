@@ -29,13 +29,13 @@ module Flex
 
           case value
           when Integer
-            Flex::Money.new(value)
+            Flex::Money.new(cents: value)
           when Hash
             hash = value.with_indifferent_access
             if hash.key?(:dollar_amount) || hash.key?("dollar_amount")
               dollar_value = hash[:dollar_amount] || hash["dollar_amount"]
               return nil if dollar_value.blank?
-              Flex::Money.new((dollar_value.to_f * 100).round)
+              Flex::Money.new(cents: (dollar_value.to_f * 100).round)
             else
               nil
             end
@@ -52,7 +52,7 @@ module Flex
 
         def deserialize(value)
           return nil if value.nil?
-          Flex::Money.new(value)
+          Flex::Money.new(cents: value)
         end
 
         def type

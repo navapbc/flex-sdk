@@ -19,27 +19,24 @@ module Flex
   # - Formats money using sprintf for currency display
   # - Supports conversion between cents and dollar amounts
   #
-  class Money
+  class Money < ValueObject
     include Comparable
     include ActiveSupport::NumberHelper
 
-    attr_reader :cents
+    attribute :cents, :integer
 
-    # Initialize a new Money object with the given cents amount
-    #
-    # @param [Integer, String, Flex::Money] cents The amount in cents
-    def initialize(cents)
-      case cents
+    def cents=(value)
+      case value
       when Integer
-        @cents = cents
+        super(value)
       when String
         begin
-          @cents = Integer(cents)
+          super(Integer(value))
         rescue ArgumentError
           raise ArgumentError, "String values must be valid integers representing cents"
         end
       when Flex::Money
-        @cents = cents.cents
+        super(value.cents)
       else
         raise TypeError, "Expected Integer, String, or Flex::Money, got #{cents.class}"
       end
@@ -52,7 +49,7 @@ module Flex
     # @raise [TypeError] if other is not a Money object
     def +(other)
       raise TypeError, "unsupported operand type(s) for +: 'Money' and '#{other.class}'" unless other.is_a?(Money)
-      Money.new(@cents + other.cents)
+      self.class.new(cents: cents + other.cents)
     end
 
     # Subtract another Money object
@@ -62,7 +59,7 @@ module Flex
     # @raise [TypeError] if other is not a Money object
     def -(other)
       raise TypeError, "unsupported operand type(s) for -: 'Money' and '#{other.class}'" unless other.is_a?(Money)
-      Money.new(@cents - other.cents)
+      self.class.new(cents: cents - other.cents)
     end
 
     # Multiply by a scalar value
@@ -70,7 +67,7 @@ module Flex
     # @param [Integer, Float] scalar The multiplier
     # @return [Money] A new Money object with the product
     def *(scalar)
-      Money.new((@cents * scalar.to_f).round)
+      self.class.new(cents: (cents * scalar.to_f).round)
     end
 
     # Divide by a scalar value, rounding down to nearest cent
@@ -78,21 +75,21 @@ module Flex
     # @param [Integer, Float] scalar The divisor
     # @return [Money] A new Money object with the quotient
     def /(scalar)
-      Money.new((@cents / scalar.to_f).floor)
+      self.class.new(cents: (cents / scalar.to_f).floor)
     end
 
     # Returns the amount as a Float in dollars
     #
     # @return [Float] The dollar amount
     def dollar_amount
-      @cents.to_f / 100
+      cents.to_f / 100
     end
 
     # Returns the amount as an Integer in cents
     #
     # @return [Integer] The cents amount
     def cents_amount
-      @cents
+      cents
     end
 
     # Returns a formatted currency string
@@ -108,7 +105,7 @@ module Flex
     # @return [Integer] -1, 0, or 1
     def <=>(other)
       return nil unless other.is_a?(Money)
-      @cents <=> other.cents
+      cents <=> other.cents
     end
 
     # Equality comparison for hash key functionality
@@ -123,7 +120,7 @@ module Flex
     #
     # @return [Integer] The hash code
     def hash
-      @cents.hash
+      cents.hash
     end
   end
 end
