@@ -6,15 +6,15 @@ RSpec.describe Flex::Validations do
   describe '#flex_validates_nested' do
     let(:valid_base_period) do
       Flex::YearQuarterRange.new(
-        Flex::YearQuarter.new(2025, 1),
-        Flex::YearQuarter.new(2025, 4)
+        start: Flex::YearQuarter.new(year: 2025, quarter: 1),
+        end: Flex::YearQuarter.new(year: 2025, quarter: 4)
       )
     end
 
     let(:valid_period) do
       Flex::DateRange.new(
-        Flex::USDate.new(2025, 6, 16),
-        Flex::USDate.new(2025, 6, 17)
+        start: Flex::USDate.new(2025, 6, 16),
+        end: Flex::USDate.new(2025, 6, 17)
       )
     end
 
@@ -48,8 +48,8 @@ RSpec.describe Flex::Validations do
     context 'when nested object has base errors' do
       before do
         object.period = Flex::DateRange.new(
-          Flex::USDate.new(2025, 1, 1),
-          Flex::USDate.new(2020, 1, 1)
+          start: Flex::USDate.new(2025, 1, 1),
+          end: Flex::USDate.new(2020, 1, 1)
         )
       end
 
@@ -62,8 +62,8 @@ RSpec.describe Flex::Validations do
     context 'when nested object has nested attribute errors' do
       before do
         object.base_period = Flex::YearQuarterRange.new(
-          Flex::YearQuarter.new(2025, 0),
-          Flex::YearQuarter.new(2025, 5)
+          start: Flex::YearQuarter.new(year: 2025, quarter: 0),
+          end: Flex::YearQuarter.new(year: 2025, quarter: 5)
         )
         object.period = {
           start: "1/35/2025",
