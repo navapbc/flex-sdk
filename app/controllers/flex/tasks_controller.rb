@@ -8,7 +8,7 @@ module Flex
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
-      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
+      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type) # Postgres does not support using `order` with `distinct`, thus we have to unscope `order` here.
       @tasks = filter_tasks
       @unassigned_tasks = Flex::Task.incomplete.unassigned
     end
