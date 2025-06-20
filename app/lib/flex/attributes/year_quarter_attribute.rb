@@ -46,8 +46,8 @@ module Flex
               send("#{name}_year=", value.year)
               send("#{name}_quarter=", value.quarter)
             when Hash
-              send("#{name}_year=", value[:year] || value['year'])
-              send("#{name}_quarter=", value[:quarter] || value['quarter'])
+              send("#{name}_year=", value[:year] || value["year"])
+              send("#{name}_quarter=", value[:quarter] || value["quarter"])
             end
           end
 

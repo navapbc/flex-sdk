@@ -5,7 +5,7 @@ module Flex
   class USDate < Date
     DATE_FORMATS = [
       "%m/%d/%Y",  # US format (when parsing from user)
-      "%Y-%m-%d",  # ISO format (when serializing to / deserializing from database)
+      "%Y-%m-%d"  # ISO format (when serializing to / deserializing from database)
     ]
 
     # Attempts to cast a value into a USDate

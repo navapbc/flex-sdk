@@ -2,7 +2,6 @@ module Flex
   # A generic range class that represents an inclusive range between two values of the same type.
   # It provides validation, comparison, and serialization functionality for ranges.
   class ValueRange < Flex::ValueObject
-
     # start and end attributes are defined dynamically based on the value_class
     # (see ValueRange.[] method)
 
@@ -17,7 +16,7 @@ module Flex
     def attributes
       {
         start: start,
-        end: self.end,
+        end: self.end
       }
     end
 
