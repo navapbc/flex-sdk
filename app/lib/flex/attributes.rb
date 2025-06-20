@@ -78,7 +78,8 @@ module Flex
         when :year_quarter
           year_quarter_attribute name, options
         else
-          raise ArgumentError, "Unsupported attribute type: #{type}"
+          # Fall back to ActiveModel::Attributes
+          attribute name, type, **options
         end
       end
     end
