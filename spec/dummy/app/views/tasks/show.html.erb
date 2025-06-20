@@ -1,5 +1,5 @@
 <%= render template: 'flex/tasks/show', locals: {
     task: @task,
-    assigned_user_display_text: @assigned_user&.full_name || "N/A",
+    assigned_user_display_text: @assignee&.full_name || "N/A",
     application_form: @application_form
 } %>
