@@ -18,15 +18,19 @@ module Flex
     def self.cast(value)
       return nil if value.nil?
       return new(value.year, value.month, value.day) if value.is_a?(Date)
+      return nil unless value.is_a?(String)
 
       DATE_FORMATS.each do |format|
         begin
           date = Date.strptime(value, format)
           return new(date.year, date.month, date.day)
-        rescue ArgumentError
+        rescue Date::Error
           next
         end
       end
+
+      # If no format matched, return nil
+      nil
     end
   end
 end
