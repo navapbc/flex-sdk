@@ -10,7 +10,7 @@ module Flex
     def index
       @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
       @tasks = filter_tasks
-      @unassigned_tasks = Flex::Task.unassigned
+      @unassigned_tasks = Flex::Task.incomplete.unassigned
     end
 
     def show

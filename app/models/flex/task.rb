@@ -39,7 +39,7 @@ module Flex
     scope :overdue, -> { where("due_on < ?", Date.today) }
     scope :completed, -> { where(status: :completed) }
     scope :incomplete, -> { where.not(status: :completed) }
-    scope :unassigned, -> { incomplete.where(assignee_id: nil) }
+    scope :unassigned, -> { where(assignee_id: nil) }
     scope :with_type, ->(type) { where(type: type) }
 
     def self.next_unassigned
