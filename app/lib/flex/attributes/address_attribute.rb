@@ -35,7 +35,7 @@ module Flex
             city = send("#{name}_city")
             state = send("#{name}_state")
             zip_code = send("#{name}_zip_code")
-            Flex::Address.new(street_line_1, street_line_2, city, state, zip_code)
+            Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
           end
 
           # Define the setter method

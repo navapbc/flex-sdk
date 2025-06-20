@@ -54,7 +54,12 @@ module Flex
 
       describe '#state_of_residence' do
         [
-          [ "returns state from residential address", Address.new("123 A St", "", "Anchorage", "AK", "12345"), "AK" ],
+          [ "returns state from residential address", Address.new({
+              street_line_1: "123 A St",
+              city: "Anchorage",
+              state: "AK",
+              zip_code: "12345"
+            }), "AK" ],
           [ "returns nil when address is nil", nil, nil ]
         ].each do |description, addr, expected|
           it description do

@@ -4,42 +4,48 @@ RSpec.describe Flex::Attributes do
   let(:object) { TestRecord.new }
 
   describe "address attribute" do
+    let(:street_line_1) { "456 Oak Ave" }
+    let(:street_line_2) { "Unit 7C" }
+    let(:city) { "San Francisco" }
+    let(:state) { "CA" }
+    let(:zip_code) { "94107" }
+
     it "allows setting address as a value object" do
-      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      address = Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
       object.address = address
 
-      expect(object.address).to eq(Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108"))
-      expect(object.address_street_line_1).to eq("123 Main St")
-      expect(object.address_street_line_2).to eq("Apt 4B")
-      expect(object.address_city).to eq("Boston")
-      expect(object.address_state).to eq("MA")
-      expect(object.address_zip_code).to eq("02108")
+      expect(object.address).to eq(Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:))
+      expect(object.address_street_line_1).to eq(street_line_1)
+      expect(object.address_street_line_2).to eq(street_line_2)
+      expect(object.address_city).to eq(city)
+      expect(object.address_state).to eq(state)
+      expect(object.address_zip_code).to eq(zip_code)
     end
 
     it "allows setting address as a hash" do
       object.address = {
-        street_line_1: "456 Oak Ave",
-        street_line_2: "Unit 7C",
-        city: "San Francisco",
-        state: "CA",
-        zip_code: "94107"
+        street_line_1:,
+        street_line_2:,
+        city:,
+        state:,
+        zip_code:,
       }
 
-      expect(object.address).to eq(Flex::Address.new("456 Oak Ave", "Unit 7C", "San Francisco", "CA", "94107"))
-      expect(object.address_street_line_1).to eq("456 Oak Ave")
-      expect(object.address_street_line_2).to eq("Unit 7C")
-      expect(object.address_city).to eq("San Francisco")
-      expect(object.address_state).to eq("CA")
-      expect(object.address_zip_code).to eq("94107")
+      expect(object.address).to eq(Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:))
+      expect(object.address_street_line_1).to eq(street_line_1)
+      expect(object.address_street_line_2).to eq(street_line_2)
+      expect(object.address_city).to eq(city)
+      expect(object.address_state).to eq(state)
+      expect(object.address_zip_code).to eq(zip_code)
     end
 
     it "allows setting nested address attributes directly" do
-      object.address_street_line_1 = "789 Broadway"
-      object.address_street_line_2 = "Suite 300"
-      object.address_city = "New York"
-      object.address_state = "NY"
-      object.address_zip_code = "10003"
-      expect(object.address).to eq(Flex::Address.new("789 Broadway", "Suite 300", "New York", "NY", "10003"))
+      object.address_street_line_1 = street_line_1
+      object.address_street_line_2 = street_line_2
+      object.address_city = city
+      object.address_state = state
+      object.address_zip_code = zip_code
+      expect(object.address).to eq(Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:))
     end
 
     it "preserves values exactly as entered without normalization" do
@@ -51,7 +57,7 @@ RSpec.describe Flex::Attributes do
         zip_code: "10003"
       }
 
-      expect(object.address).to eq(Flex::Address.new("789 BROADWAY", "", "new york", "NY", "10003"))
+      expect(object.address).to eq(Flex::Address.new(street_line_1: "789 BROADWAY", street_line_2: "", city: "new york", state: "NY", zip_code: "10003"))
       expect(object.address_street_line_1).to eq("789 BROADWAY")
       expect(object.address_street_line_2).to eq("")
       expect(object.address_city).to eq("new york")
@@ -66,8 +72,8 @@ RSpec.describe Flex::Attributes do
     describe "addresses array" do
       it "allows setting an array of addresses" do
         addresses = [
-          Flex::Address.new("123 Main St", "Apt 1", "Boston", "MA", "02108"),
-          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107")
+          build(:address, :base),
+          build(:address, :base)
         ]
         object.addresses = addresses
 
@@ -79,8 +85,8 @@ RSpec.describe Flex::Attributes do
 
       it "validates each address in the array" do
         object.addresses = [
-          Flex::Address.new("123 Main St", nil, nil, "MA", "02108"), # Invalid: missing city
-          Flex::Address.new("456 Oak Ave", nil, "San Francisco", "CA", "94107") # Valid
+          Flex::Address.new(street_line_1: "123 Main St", state: "MA", zip_code: "02108"), # Invalid: missing city
+          build(:address, :base) # Valid
         ]
 
         expect(object).not_to be_valid
@@ -806,7 +812,7 @@ RSpec.describe Flex::Attributes do
     end
 
     it "persists and loads address object correctly" do
-      address = Flex::Address.new("123 Main St", "Apt 4B", "Boston", "MA", "02108")
+      address = Flex::Address.new(street_line_1: "123 Main St", street_line_2: "Apt 4B", city: "Boston", state: "MA", zip_code: "02108")
       record.address = address
       record.save!
 
@@ -913,8 +919,10 @@ RSpec.describe Flex::Attributes do
     end
 
     it "preserves all attributes when saving and loading multiple value objects" do
-      record.name = Flex::Name.new(first: "Jane", middle: "Marie", last: "Smith")
-      record.address = Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601")
+      name = build(:name, :with_middle)
+      address = build(:address, :base, :with_street_line_2)
+      record.name = name
+      record.address = address
       record.tax_id = Flex::TaxId.new("987-65-4321")
       record.weekly_wage = Flex::Money.new(5000)
       record.date_of_birth = Flex::USDate.new(1990, 3, 15)
@@ -924,18 +932,18 @@ RSpec.describe Flex::Attributes do
       loaded_record = TestRecord.find(record.id)
 
       # Verify name
-      expect(loaded_record.name).to eq(Flex::Name.new(first: "Jane", middle: "Marie", last: "Smith"))
-      expect(loaded_record.name_first).to eq("Jane")
-      expect(loaded_record.name_middle).to eq("Marie")
-      expect(loaded_record.name_last).to eq("Smith")
+      expect(loaded_record.name).to eq(name)
+      expect(loaded_record.name_first).to eq(name.first)
+      expect(loaded_record.name_middle).to eq(name.middle)
+      expect(loaded_record.name_last).to eq(name.last)
 
       # Verify address
-      expect(loaded_record.address).to eq(Flex::Address.new("456 Oak St", "Unit 7", "Chicago", "IL", "60601"))
-      expect(loaded_record.address_street_line_1).to eq("456 Oak St")
-      expect(loaded_record.address_street_line_2).to eq("Unit 7")
-      expect(loaded_record.address_city).to eq("Chicago")
-      expect(loaded_record.address_state).to eq("IL")
-      expect(loaded_record.address_zip_code).to eq("60601")
+      expect(loaded_record.address).to eq(address)
+      expect(loaded_record.address_street_line_1).to eq(address.street_line_1)
+      expect(loaded_record.address_street_line_2).to eq(address.street_line_2)
+      expect(loaded_record.address_city).to eq(address.city)
+      expect(loaded_record.address_state).to eq(address.state)
+      expect(loaded_record.address_zip_code).to eq(address.zip_code)
 
       # Verify tax_id
       expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
