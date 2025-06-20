@@ -2,6 +2,60 @@
 
 This document describes how to create new Flex attributes
 
+## Naming Conventions
+
+When creating a new Flex attribute type, you must follow these naming conventions that were established in [PR #134](https://github.com/navapbc/flex-sdk/pull/134):
+
+### Module Naming
+- **Pattern**: `#{type.camelized}Attribute`
+- **Examples**: `NameAttribute`, `AddressAttribute`, `MoneyAttribute`, `MemorableDateAttribute`
+- **Location**: `app/lib/flex/attributes/#{type}_attribute.rb`
+
+### Method Naming  
+- **Pattern**: `#{type}_attribute`
+- **Examples**: `name_attribute`, `address_attribute`, `money_attribute`, `memorable_date_attribute`
+- **Signature**: The method must accept `name` and `options` parameters:
+  ```ruby
+  def #{type}_attribute(name, options = {})
+    # implementation
+  end
+  ```
+
+### Module Integration
+- **Include the module** in the main `Flex::Attributes` module in `app/lib/flex/attributes.rb`
+- **Example**: `include Flex::Attributes::NameAttribute`
+
+### Example Structure
+For a new attribute type called `phone_number`, you would create:
+
+```ruby
+# app/lib/flex/attributes/phone_number_attribute.rb
+module Flex
+  module Attributes
+    module PhoneNumberAttribute
+      extend ActiveSupport::Concern
+      
+      class_methods do
+        def phone_number_attribute(name, options = {})
+          # attribute implementation
+        end
+      end
+    end
+  end
+end
+```
+
+Then include it in the main module:
+```ruby
+# app/lib/flex/attributes.rb
+module Flex::Attributes
+  include Flex::Attributes::PhoneNumberAttribute
+  # ... other includes
+end
+```
+
+**Important**: The `flex_attribute` method in `app/lib/flex/attributes.rb` dynamically calls `#{type}_attribute`, so following this naming convention is required for the attribute to work properly.
+
 ## Design
 
 1. Decide whether or not to create a new value object in app/models/flex/
