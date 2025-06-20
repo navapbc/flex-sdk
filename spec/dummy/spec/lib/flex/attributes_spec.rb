@@ -99,14 +99,14 @@ RSpec.describe Flex::Attributes do
     describe "leave_periods array" do
       it "allows setting an array of date ranges" do
         periods = [
-          Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 1, 31)),
-          Flex::DateRange.new(Flex::USDate.new(2023, 2, 1), Flex::USDate.new(2023, 2, 28))
+          Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31)),
+          Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28))
         ]
         object.leave_periods = periods
         expect(object.leave_periods).to be_an(Array)
         expect(object.leave_periods.size).to eq(2)
-        expect(object.leave_periods[0]).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 1, 31)))
-        expect(object.leave_periods[1]).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 2, 1), Flex::USDate.new(2023, 2, 28)))
+        expect(object.leave_periods[0]).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31)))
+        expect(object.leave_periods[1]).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28)))
       end
     end
 
@@ -166,8 +166,8 @@ RSpec.describe Flex::Attributes do
         year_quarter_2 = build(:year_quarter)
         record.reporting_periods = [ year_quarter_1, year_quarter_2 ]
 
-        leave_period_1 = Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 1, 31))
-        leave_period_2 = Flex::DateRange.new(Flex::USDate.new(2023, 2, 1), Flex::USDate.new(2023, 2, 28))
+        leave_period_1 = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31))
+        leave_period_2 = Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28))
         record.leave_periods = [ leave_period_1, leave_period_2 ]
 
         record.save!
@@ -453,9 +453,9 @@ RSpec.describe Flex::Attributes do
 
   describe "us_date attribute with range option" do
     it "allows setting period as a Flex::DateRange object" do
-      object.period = Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31))
+      object.period = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31))
 
-      expect(object.period).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31)))
+      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)))
       expect(object.period_start).to eq(Flex::USDate.new(2023, 1, 1))
       expect(object.period_end).to eq(Flex::USDate.new(2023, 12, 31))
       expect(object.period.start).to eq(Flex::USDate.new(2023, 1, 1))
@@ -868,7 +868,7 @@ RSpec.describe Flex::Attributes do
       record.save!
 
       loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.period).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 1, 1), Flex::USDate.new(2023, 12, 31)))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
       expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
       expect(loaded_record.period.start).to eq(Date.new(2023, 1, 1))
@@ -879,7 +879,7 @@ RSpec.describe Flex::Attributes do
       record.save!
 
       loaded_record = TestRecord.find(record.id)
-      expect(loaded_record.period).to eq(Flex::DateRange.new(Flex::USDate.new(2023, 1, 5), Flex::USDate.new(2023, 6, 12)))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 5), end: Flex::USDate.new(2023, 6, 12)))
       expect(loaded_record.period_start).to eq(Date.new(2023, 1, 5))
       expect(loaded_record.period_end).to eq(Date.new(2023, 6, 12))
       expect(loaded_record.period.start).to eq(Date.new(2023, 1, 5))

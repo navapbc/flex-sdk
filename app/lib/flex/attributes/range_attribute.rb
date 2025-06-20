@@ -42,7 +42,7 @@ module Flex
             end_value = send("#{name}_end")
             return nil unless start_value.is_a?(value_class) || start_value.nil?
             return nil unless end_value.is_a?(value_class) || end_value.nil?
-            start_value || end_value ? ValueRange[value_class].new(start_value, end_value) : nil
+            start_value || end_value ? ValueRange[value_class].new(start: start_value, end: end_value) : nil
           end
 
           # Define the setter method
