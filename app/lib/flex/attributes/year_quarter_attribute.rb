@@ -36,7 +36,7 @@ module Flex
           define_method(name) do
             year = send("#{name}_year")
             quarter = send("#{name}_quarter")
-            year || quarter ? Flex::YearQuarter.new(year, quarter) : nil
+            year || quarter ? Flex::YearQuarter.new(year:, quarter:) : nil
           end
 
           # Define the setter method
@@ -46,8 +46,8 @@ module Flex
               send("#{name}_year=", value.year)
               send("#{name}_quarter=", value.quarter)
             when Hash
-              send("#{name}_year=", value[:year])
-              send("#{name}_quarter=", value[:quarter])
+              send("#{name}_year=", value[:year] || value['year'])
+              send("#{name}_quarter=", value[:quarter] || value['quarter'])
             end
           end
 

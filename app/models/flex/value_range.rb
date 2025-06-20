@@ -1,57 +1,24 @@
 module Flex
   # A generic range class that represents an inclusive range between two values of the same type.
   # It provides validation, comparison, and serialization functionality for ranges.
-  class ValueRange
-    include ActiveModel::Model
-    include Flex::Validations
+  class ValueRange < Flex::ValueObject
 
-    attr_reader :start, :end
+    # start and end attributes are defined dynamically based on the value_class
+    # (see ValueRange.[] method)
 
     flex_validates_nested :start
     flex_validates_nested :end
     validate :start_cannot_be_greater_than_end
 
-    def initialize(start_value, end_value)
-      raise TypeError, "Expected #{self.class.value_class.name} for start, got #{start_value.class.name}" unless start_value.is_a?(self.class.value_class) || start_value.nil?
-      raise TypeError, "Expected #{self.class.value_class.name} for end, got #{end_value.class.name}" unless end_value.is_a?(self.class.value_class) || end_value.nil?
-
-      @start = start_value
-      @end = end_value
-    end
-
     def include?(value)
-      value >= @start && value <= @end
+      value >= start && value <= self.end
     end
 
-    def as_json
+    def attributes
       {
-        start: @start.as_json,
-        end: @end.as_json
+        start: start,
+        end: self.end,
       }
-    end
-
-    def self.from_hash(hash)
-      raise TypeError unless hash.is_a?(Hash)
-      start_hash = hash[:start] || hash["start"]
-      end_hash = hash[:end] || hash["end"]
-      raise ArgumentError, "Missing start or end value" unless start_hash && end_hash
-      start_value = self.parse_nested_attribute(start_hash)
-      end_value = self.parse_nested_attribute(end_hash)
-      new(start_value, end_value)
-    end
-
-    def self.parse_nested_attribute(value)
-      if self.value_class.respond_to?(:from_hash)
-        self.value_class.from_hash(value)
-      elsif self.value_class.respond_to?(:parse)
-        self.value_class.parse(value)
-      else
-        value
-      end
-    end
-
-    def ==(other)
-      other.is_a?(ValueRange) && @start == other.start && @end == other.end
     end
 
     def self.[](value_class)
@@ -61,6 +28,10 @@ module Flex
 
       @value_range_classes ||= {}
       @value_range_classes[value_class] ||= Class.new(self) do
+        value_type = value_class.name.demodulize.underscore.to_sym
+        flex_attribute :start, value_type
+        flex_attribute :end, value_type
+
         define_singleton_method(:value_class) { value_class }
       end
     end

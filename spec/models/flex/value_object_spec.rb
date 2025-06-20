@@ -31,13 +31,13 @@ RSpec.describe Flex::ValueObject do
   describe "#==" do
     let(:object) { klass.new(x: 1, y: 2, foo: "hello") }
 
-    it "compares by attribute" do
-      [
+    [
         [ 1, 2, "hello", true ],
         [ 0, 2, "hello", false ],
         [ 1, 1, "hello", false ],
         [ 1, 2, "goodbye", false ]
-      ].each do |x, y, foo, expected|
+    ].each do |x, y, foo, expected|
+      it "compares by attribute [#{x}, #{y}, #{foo}]" do
         expect(object == klass.new(x:, y:, foo:)).to be expected
       end
     end

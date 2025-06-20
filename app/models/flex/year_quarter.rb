@@ -15,18 +15,13 @@ module Flex
   # - Provides date range functionality via to_date_range method
   # - Immutable value object
   #
-  class YearQuarter
-    include ActiveModel::Model
+  class YearQuarter < ValueObject
     include Comparable
 
-    attr_reader :year, :quarter
+    attribute :year, :integer
+    attribute :quarter, :integer
 
     validates :quarter, numericality: { in: 1..4, only_integer: true }
-
-    def initialize(year, quarter)
-      @year = year
-      @quarter = quarter
-    end
 
     def +(other)
       raise TypeError, "Integer expected, got #{other.class}" unless other.is_a?(Integer)
@@ -73,17 +68,6 @@ module Flex
 
     def persisted?
       false
-    end
-
-    def as_json
-      {
-        year: year,
-        quarter: quarter
-      }
-    end
-
-    def self.from_hash(h)
-      new(*h.fetch_values("year", "quarter"))
     end
   end
 end

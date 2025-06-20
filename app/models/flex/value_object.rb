@@ -20,10 +20,16 @@ module Flex
     include ActiveModel::AttributeAssignment
     include ActiveModel::Validations
     include ActiveModel::Serializers::JSON
+    include Flex::Attributes
+    include Flex::Validations
 
     def ==(other)
       return false if self.class != other.class
-      attributes == other.attributes
+
+      attributes.each do |name, value|
+        return false if public_send(name) != other.public_send(name)
+      end
+      true
     end
 
     def persisted?
