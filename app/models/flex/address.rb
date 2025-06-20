@@ -12,7 +12,7 @@ module Flex
   # - Stores address components (street lines, city, state, zip)
   # - Provides comparison between address objects
   #
-  class Address < Flex::ValueObject
+  class Address < ValueObject
     include Comparable
 
     attribute :street_line_1, :string
