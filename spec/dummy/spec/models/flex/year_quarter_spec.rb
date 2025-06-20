@@ -1,6 +1,20 @@
 require "rails_helper"
 
 RSpec.describe Flex::YearQuarter do
+  describe "initialization" do
+    it "accepts year and quarter as integers" do
+      year_quarter = described_class.new(year: 2023, quarter: 2)
+      expect(year_quarter.year).to eq(2023)
+      expect(year_quarter.quarter).to eq(2)
+    end
+
+    it "accepts year and quarter as strings" do
+      year_quarter = described_class.new(year: "2023", quarter: "2")
+      expect(year_quarter.year).to eq(2023)
+      expect(year_quarter.quarter).to eq(2)
+    end
+  end
+
   describe "+" do
     [
       [ "adds quarters correctly", described_class.new(year: 2023, quarter: 2), 1, described_class.new(year: 2023, quarter: 3) ],
@@ -64,9 +78,17 @@ RSpec.describe Flex::YearQuarter do
       expect(year_quarter.errors[:quarter]).to include("must be in 1..4")
     end
 
-    # TODO Don't know how to make this work
+    # TODO(https://linear.app/nava-platform/issue/TSS-175/make-yearquarter-more-strict-about-types-rather-than-liberally-casting)
+    # make YearQuarter more strict about types rather than liberally casting
+
     # it "is invalid with non-integer quarters" do
     #   year_quarter = described_class.new(year: 2023, quarter: 1.5)
+    #   expect(year_quarter).not_to be_valid
+    #   expect(year_quarter.errors[:quarter]).to include("must be an integer")
+    # end
+
+    # it "is invalid with strings representing non-integer quarters" do
+    #   year_quarter = described_class.new(year: "2023", quarter: "1.5")
     #   expect(year_quarter).not_to be_valid
     #   expect(year_quarter.errors[:quarter]).to include("must be an integer")
     # end
