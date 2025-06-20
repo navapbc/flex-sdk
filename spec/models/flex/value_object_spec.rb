@@ -20,7 +20,7 @@ RSpec.describe Flex::ValueObject do
     it "creates an object from a hash" do
       x = 1
       y = 2
-      foo = "hello, world"      
+      foo = "hello, world"
       object = klass.new(x:, y:, foo:)
       expect(object.x).to eq(x)
       expect(object.y).to eq(y)
@@ -33,10 +33,10 @@ RSpec.describe Flex::ValueObject do
 
     it "compares by attribute" do
       [
-        [1, 2, "hello", true],
-        [0, 2, "hello", false],
-        [1, 1, "hello", false],
-        [1, 2, "goodbye", false],
+        [ 1, 2, "hello", true ],
+        [ 0, 2, "hello", false ],
+        [ 1, 1, "hello", false ],
+        [ 1, 2, "goodbye", false ]
       ].each do |x, y, foo, expected|
         expect(object == klass.new(x:, y:, foo:)).to be expected
       end
@@ -45,6 +45,7 @@ RSpec.describe Flex::ValueObject do
 
   describe "serialization" do
     let(:object) { klass.new(x: 1, y: 2, foo: "hello") }
+
     it "serializes to json" do
       expect(object.to_json).to eq("{\"x\":1,\"y\":2,\"foo\":\"hello\"}")
     end

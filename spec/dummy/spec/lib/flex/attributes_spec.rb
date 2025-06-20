@@ -3,9 +3,10 @@ require "rails_helper"
 RSpec.describe Flex::Attributes do
   let(:object) { TestRecord.new }
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe "address attribute" do
-    let(:street_line_1) { "456 Oak Ave" }
-    let(:street_line_2) { "Unit 7C" }
+    let(:street_line_1) { "456 Oak Ave" } # rubocop:disable RSpec/IndexedLet
+    let(:street_line_2) { "Unit 7C" } # rubocop:disable RSpec/IndexedLet
     let(:city) { "San Francisco" }
     let(:state) { "CA" }
     let(:zip_code) { "94107" }
@@ -28,7 +29,7 @@ RSpec.describe Flex::Attributes do
         street_line_2:,
         city:,
         state:,
-        zip_code:,
+        zip_code:
       }
 
       expect(object.address).to eq(Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:))
@@ -65,6 +66,7 @@ RSpec.describe Flex::Attributes do
       expect(object.address_zip_code).to eq("10003")
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   describe "array attributes" do
     let(:object) { TestRecord.new }
@@ -325,7 +327,7 @@ RSpec.describe Flex::Attributes do
       name = Flex::Name.new(first:, middle:, last:)
       object.name = name
 
-      expect(object.name).to eq(Flex::Name.new(first:, middle: , last:))
+      expect(object.name).to eq(Flex::Name.new(first:, middle:, last:))
       expect(object.name_first).to eq(first)
       expect(object.name_middle).to eq(middle)
       expect(object.name_last).to eq(last)

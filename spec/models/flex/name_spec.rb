@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Flex::Name do
   let(:first) { "Jane" }
   let(:middle) { "Adams" }
@@ -42,3 +43,4 @@ RSpec.describe Flex::Name do
     end
   end
 end
+# rubocop:enable RSpec/TooManyMemoizedHelpers
