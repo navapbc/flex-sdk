@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Flex::YearQuarter do
+  let(:object) { TestRecord.new }
+
   describe "initialization" do
     it "accepts year and quarter as integers" do
       year_quarter = described_class.new(year: 2023, quarter: 2)
@@ -92,5 +94,113 @@ RSpec.describe Flex::YearQuarter do
     #   expect(year_quarter).not_to be_valid
     #   expect(year_quarter.errors[:quarter]).to include("must be an integer")
     # end
+  end
+
+  describe ".<=>" do
+    it "allows sorting year quarters" do
+      year_quarters = [
+        described_class.new(year: 2024, quarter: 3),
+        described_class.new(year: 2023, quarter: 1),
+        described_class.new(year: 2024, quarter: 1)
+      ]
+
+      sorted_year_quarters = year_quarters.sort
+      expect(sorted_year_quarters).to eq([
+        described_class.new(year: 2023, quarter: 1),
+        described_class.new(year: 2024, quarter: 1),
+        described_class.new(year: 2024, quarter: 3)
+      ])
+    end
+
+    it "compares year quarters by year first, then quarter" do
+      earlier = described_class.new(year: 2023, quarter: 4)
+      later = described_class.new(year: 2024, quarter: 1)
+
+      expect(earlier <=> later).to eq(-1)
+      expect(later <=> earlier).to eq(1)
+      expect(earlier <=> earlier).to eq(0)
+    end
+
+    it "compares quarters within the same year" do
+      q1 = described_class.new(year: 2024, quarter: 1)
+      q3 = described_class.new(year: 2024, quarter: 3)
+
+      expect(q1 <=> q3).to eq(-1)
+      expect(q3 <=> q1).to eq(1)
+    end
+  end
+
+  it "persists and loads year_quarter object correctly" do
+    year_quarter = described_class.new(year: 2023, quarter: 4)
+    object.reporting_period = year_quarter
+    object.save!
+
+    loaded_record = TestRecord.find(object.id)
+    expect(loaded_record.reporting_period).to be_a(described_class)
+    expect(loaded_record.reporting_period).to eq(year_quarter)
+    expect(loaded_record.reporting_period_year).to eq(2023)
+    expect(loaded_record.reporting_period_quarter).to eq(4)
+  end
+
+  it "persists and loads year_quarter_range object correctly" do
+    start_year = 2023
+    start_quarter = 1
+    end_year = 2023
+    end_quarter = 4
+    start_value = described_class.new(year: start_year, quarter: start_quarter)
+    end_value = described_class.new(year: end_year, quarter: end_quarter)
+    range = Flex::YearQuarterRange.new(start: start_value, end: end_value)
+    object.base_period = range
+    object.save!
+
+    loaded_record = TestRecord.find(object.id)
+
+    expect(loaded_record.base_period_start_year).to eq(start_year)
+    expect(loaded_record.base_period_start_quarter).to eq(start_quarter)
+    expect(loaded_record.base_period_end_year).to eq(end_year)
+    expect(loaded_record.base_period_end_quarter).to eq(end_quarter)
+    expect(loaded_record.base_period_start).to eq(start_value)
+    expect(loaded_record.base_period_end).to eq(end_value)
+    expect(loaded_record.base_period).to eq(range)
+  end
+
+  describe "array: true" do
+    let(:object) { TestRecord.new }
+
+    it "allows setting an array of year quarters" do
+      periods = [
+        described_class.new(year: 2023, quarter: 1),
+        described_class.new(year: 2023, quarter: 2)
+      ]
+      object.reporting_periods = periods
+
+      expect(object.reporting_periods).to be_an(Array)
+      expect(object.reporting_periods.size).to eq(2)
+      expect(object.reporting_periods[0]).to eq(periods[0])
+      expect(object.reporting_periods[1]).to eq(periods[1])
+    end
+
+    it "validates each year quarter in the array" do
+      object.reporting_periods = [
+        described_class.new(year: 2023, quarter: 5), # Invalid: quarter > 4
+        described_class.new(year: 2023, quarter: 2)  # Valid
+      ]
+
+      expect(object).not_to be_valid
+      expect(object.errors[:reporting_periods]).to include("contains one or more invalid items")
+    end
+
+    it "persists and loads arrays of value objects" do
+      year_quarter_1 = build(:year_quarter)
+      year_quarter_2 = build(:year_quarter)
+      object.reporting_periods = [ year_quarter_1, year_quarter_2 ]
+
+      object.save!
+      loaded_record = TestRecord.find(object.id)
+
+      expect(loaded_record.reporting_periods.size).to eq(2)
+      expect(loaded_record.reporting_periods[0]).to eq(year_quarter_1)
+      expect(loaded_record.reporting_periods[1]).to eq(year_quarter_2)
+    end
   end
 end
