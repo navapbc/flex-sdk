@@ -46,6 +46,18 @@ module Flex
       }
     end
 
+    def blank?
+      [ first, middle, last ].all?(&:blank?)
+    end
+
+    def empty?
+      [ first, middle, last ].all? { |component| component.nil? || component.empty? }
+    end
+
+    def present?
+      !blank?
+    end
+
     def self.from_hash(h)
       new(*h.fetch_values("first", "middle", "last"))
     end
