@@ -1,9 +1,13 @@
 require 'rails_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Flex::Name do
-  let(:name) { described_class.new("Jane", "Adams", "Doe") }
-  let(:same_name) { described_class.new("Jane", "Adams", "Doe") }
-  let(:different_name) { described_class.new("John", "Adams", "Doe") }
+  let(:first) { "Jane" }
+  let(:middle) { "Adams" }
+  let(:last) { "Doe" }
+  let(:name) { described_class.new(first:, middle:, last:) }
+  let(:same_name) { described_class.new(first:, middle:, last:) }
+  let(:different_name) { described_class.new(first: "John", middle:, last:) }
 
   describe '#initialize' do
     it 'sets first, middle, and last names' do
@@ -54,7 +58,7 @@ RSpec.describe Flex::Name do
       [ 'first name with whitespace only middle/last', 'John', '  ', '', false ]
     ].each do |description, first, middle, last, expected|
       it "returns #{expected} when #{description}" do
-        name = described_class.new(first, middle, last)
+        name = described_class.new(first:, middle:, last:)
         expect(name.blank?).to eq(expected)
       end
     end
@@ -73,7 +77,7 @@ RSpec.describe Flex::Name do
       [ 'whitespace components', '  ', '  ', '  ', false ]
     ].each do |description, first, middle, last, expected|
       it "returns #{expected} when #{description}" do
-        name = described_class.new(first, middle, last)
+        name = described_class.new(first:, middle:, last:)
         expect(name.empty?).to eq(expected)
       end
     end
@@ -94,9 +98,10 @@ RSpec.describe Flex::Name do
       [ 'first name with whitespace only middle/last', 'John', '  ', '', true ]
     ].each do |description, first, middle, last, expected|
       it "returns #{expected} when #{description}" do
-        name = described_class.new(first, middle, last)
+        name = described_class.new(first:, middle:, last:)
         expect(name.present?).to eq(expected)
       end
     end
   end
 end
+# rubocop:enable RSpec/TooManyMemoizedHelpers

@@ -55,7 +55,7 @@ module Flex
         def deserialize(value)
           return [] if value.nil?
           JSON.parse(value).map do |item_hash|
-            item_class.from_hash(item_hash)
+            item_class.new(item_hash)
           end
         end
       end

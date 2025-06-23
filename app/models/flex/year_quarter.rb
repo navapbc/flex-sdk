@@ -15,27 +15,22 @@ module Flex
   # - Provides date range functionality via to_date_range method
   # - Immutable value object
   #
-  class YearQuarter
-    include ActiveModel::Model
+  class YearQuarter < ValueObject
     include Comparable
 
-    attr_reader :year, :quarter
+    attribute :year, :integer
+    attribute :quarter, :integer
 
-    validates :quarter, numericality: { in: 1..4, only_integer: true }
-
-    def initialize(year, quarter)
-      @year = year
-      @quarter = quarter
-    end
+    validates :quarter, numericality: { in: 1..4 }
 
     def +(other)
       raise TypeError, "Integer expected, got #{other.class}" unless other.is_a?(Integer)
 
-      total_quarters = (@year * 4 + (@quarter - 1)) + other
+      total_quarters = (year * 4 + (quarter - 1)) + other
       new_year = total_quarters / 4
       new_quarter = (total_quarters % 4) + 1
 
-      self.class.new(new_year, new_quarter)
+      self.class.new(year: new_year, quarter: new_quarter)
     end
 
     def -(other)
@@ -51,15 +46,15 @@ module Flex
     end
 
     def to_date_range
-      case @quarter
+      case quarter
       when 1
-        DateRange.new(USDate.new(@year, 1, 1), USDate.new(@year, 3, 31))
+        DateRange.new(start: USDate.new(year, 1, 1), end: USDate.new(year, 3, 31))
       when 2
-        DateRange.new(USDate.new(@year, 4, 1), USDate.new(@year, 6, 30))
+        DateRange.new(start: USDate.new(year, 4, 1), end: USDate.new(year, 6, 30))
       when 3
-        DateRange.new(USDate.new(@year, 7, 1), USDate.new(@year, 9, 30))
+        DateRange.new(start: USDate.new(year, 7, 1), end: USDate.new(year, 9, 30))
       when 4
-        DateRange.new(USDate.new(@year, 10, 1), USDate.new(@year, 12, 31))
+        DateRange.new(start: USDate.new(year, 10, 1), end: USDate.new(year, 12, 31))
       else
         raise ArgumentError, "Quarter must be 1, 2, 3, or 4"
       end
@@ -73,17 +68,6 @@ module Flex
 
     def persisted?
       false
-    end
-
-    def as_json
-      {
-        year: year,
-        quarter: quarter
-      }
-    end
-
-    def self.from_hash(h)
-      new(*h.fetch_values("year", "quarter"))
     end
   end
 end

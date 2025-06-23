@@ -11,7 +11,5 @@ FactoryBot.define do
     trait :with_street_line_2 do
       street_line_2 { Faker::Address.secondary_address }
     end
-
-    initialize_with { new(street_line_1, street_line_2, city, state, zip_code) }
   end
 end

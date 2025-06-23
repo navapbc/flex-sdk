@@ -29,7 +29,7 @@ module Flex
           # Create a validation method that checks if the value is a valid date
           define_method "validate_#{name}" do
             value = send(name)
-            raw_value = read_attribute_before_type_cast(name)
+            raw_value = @attributes[name.to_s]&.value_before_type_cast
 
             # If model.<attribute> is nil, but model.<attribute>_before_type_cast is not nil,
             # that means the application failed to cast the value to the appropriate type in

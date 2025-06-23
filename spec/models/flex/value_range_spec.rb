@@ -6,7 +6,7 @@ RSpec.describe Flex::ValueRange do
     klass.define_singleton_method(:name) { "#{value_class.name}Range" }
     klass
   end
-  let(:range) { klass.new(start_value, end_value) }
+  let(:range) { klass.new(start: start_value, end: end_value) }
 
   describe "ValueRange[USDate]" do
     let(:value_class) { Flex::USDate }
@@ -19,13 +19,13 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start date is after end date' do
-        invalid_range = klass.new(end_value, start_value)
+        invalid_range = klass.new(start: end_value, end: start_value)
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start date cannot be after end date")
       end
 
       it 'is valid when dates are blank' do
-        range = klass.new(nil, nil)
+        range = klass.new
         expect(range).to be_valid
       end
     end
@@ -53,52 +53,30 @@ RSpec.describe Flex::ValueRange do
       it 'converts the range to a serializable hash' do
         hash = range.as_json
         expect(hash).to eq({
-          start: start_value.strftime('%Y-%m-%d'),
-          end: end_value.strftime('%Y-%m-%d')
+          "start" => start_value.strftime('%Y-%m-%d'),
+          "end" => end_value.strftime('%Y-%m-%d')
         })
         expect(hash.to_json).to eq("{\"start\":\"2023-01-01\",\"end\":\"2023-12-31\"}")
       end
     end
 
-    describe '.from_hash' do
-      it 'deserializes from a serialized object' do
+    describe 'deserialization' do
+      it 'from a serialized object' do
         serialized = range.to_json
-        range = klass.from_hash(JSON.parse(serialized))
-        expect(range).to eq(klass.new(start_value, end_value))
-      end
-
-      it 'raises an error with nil' do
-        expect { klass.from_hash(nil) }.to raise_error(TypeError)
-      end
-
-      it 'raises an error if hash is missing start key' do
-        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
-      end
-
-      it 'raises an error if hash is missing end key' do
-        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
+        range = klass.new(JSON.parse(serialized))
+        expect(range).to eq(klass.new(start: start_value, end: end_value))
       end
     end
 
     describe '#==' do
       it 'returns true for ranges with same start and end values' do
-        other_range = klass.new(start_value, end_value)
+        other_range = klass.new(start: start_value, end: end_value)
         expect(range).to eq(other_range)
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start_value, Flex::USDate.new(2023, 6, 1)))
-        expect(range).not_to eq(klass.new(Flex::USDate.new(2023, 1, 2), end_value))
-      end
-    end
-
-    describe '#initialize' do
-      it 'raises TypeError when start value is of wrong type' do
-        expect { klass.new("2023-01-01", end_value) }.to raise_error(TypeError, "Expected Flex::USDate for start, got String")
-      end
-
-      it 'raises TypeError when end value is of wrong type' do
-        expect { klass.new(start_value, "2023-12-31") }.to raise_error(TypeError, "Expected Flex::USDate for end, got String")
+        expect(range).not_to eq(klass.new(start: start_value, end: Flex::USDate.new(2023, 6, 1)))
+        expect(range).not_to eq(klass.new(start: Flex::USDate.new(2023, 1, 2), end: end_value))
       end
     end
   end
@@ -107,7 +85,6 @@ RSpec.describe Flex::ValueRange do
     let(:value_class) { Integer }
     let(:start_value) { Faker::Number.within(range: -100..100) }
     let(:end_value) { start_value + Faker::Number.within(range: 1..100) }
-    let(:range) { klass.new(start_value, end_value) }
 
     describe 'validations' do
       it 'is valid with valid start and end dates' do
@@ -115,13 +92,13 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start is greater than end' do
-        invalid_range = klass.new(start_value, start_value - 1)
+        invalid_range = klass.new(start: start_value, end: start_value - 1)
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start cannot be greater than end")
       end
 
       it 'is valid when start and end is blank' do
-        range = klass.new(nil, nil)
+        range = klass.new
         expect(range).to be_valid
       end
     end
@@ -147,54 +124,30 @@ RSpec.describe Flex::ValueRange do
       it 'converts the range to a serializable hash' do
         hash = range.as_json
         expect(hash).to eq({
-          start: start_value,
-          end: end_value
+          "start" => start_value,
+          "end" => end_value
         })
         expect(hash.to_json).to eq("{\"start\":#{start_value},\"end\":#{end_value}}")
       end
     end
 
-    describe '.from_hash' do
-      it 'deserializes from a serialized object' do
+    describe 'deserialization' do
+      it 'from a serialized object' do
         serialized = range.to_json
-        range = klass.from_hash(JSON.parse(serialized))
-        expect(range).to eq(klass.new(start_value, end_value))
-      end
-
-      it 'raises an error with nil' do
-        expect { klass.from_hash(nil) }.to raise_error(TypeError)
-      end
-
-      it 'raises an error if hash is missing start or end key' do
-        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
-        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
-      end
-
-      it 'does not raise an error if start or end is 0' do
-        expect { klass.from_hash({ "start" => 0, "end" => end_value }) }.not_to raise_error
-        expect { klass.from_hash({ "start" => start_value, "end" => 0 }) }.not_to raise_error
+        range = klass.new(JSON.parse(serialized))
+        expect(range).to eq(klass.new(start: start_value, end: end_value))
       end
     end
 
     describe '#==' do
       it 'returns true for ranges with same start and end values' do
-        other_range = klass.new(start_value, end_value)
+        other_range = klass.new(start: start_value, end: end_value)
         expect(range).to eq(other_range)
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start_value, end_value + 1))
-        expect(range).not_to eq(klass.new(start_value + 1, end_value))
-      end
-    end
-
-    describe '#initialize' do
-      it 'raises TypeError when start value is of wrong type' do
-        expect { klass.new("123", end_value) }.to raise_error(TypeError, "Expected Integer for start, got String")
-      end
-
-      it 'raises TypeError when end value is of wrong type' do
-        expect { klass.new(start_value, "456") }.to raise_error(TypeError, "Expected Integer for end, got String")
+        expect(range).not_to eq(klass.new(start: start_value, end: end_value + 1))
+        expect(range).not_to eq(klass.new(start: start_value + 1, end: end_value))
       end
     end
   end
@@ -210,13 +163,13 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start is greater than end' do
-        invalid_range = klass.new("banana", "apple")
+        invalid_range = klass.new(start: "banana", end: "apple")
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start must come before end alphabetically")
       end
 
       it 'is valid when start and end is blank' do
-        range = klass.new(nil, nil)
+        range = klass.new
         expect(range).to be_valid
       end
     end
@@ -241,62 +194,38 @@ RSpec.describe Flex::ValueRange do
       it 'converts the range to a serializable hash' do
         hash = range.as_json
         expect(hash).to eq({
-          start: start_value,
-          end: end_value
+          "start" => start_value,
+          "end" => end_value
         })
         expect(hash.to_json).to eq("{\"start\":\"#{start_value}\",\"end\":\"#{end_value}\"}")
       end
     end
 
-    describe '.from_hash' do
-      it 'deserializes from a serialized object' do
+    describe 'deserialization' do
+      it 'from a serialized object' do
         serialized = range.to_json
-        range = klass.from_hash(JSON.parse(serialized))
-        expect(range).to eq(klass.new(start_value, end_value))
-      end
-
-      it 'raises an error with nil' do
-        expect { klass.from_hash(nil) }.to raise_error(TypeError)
-      end
-
-      it 'raises an error if hash is missing start or end key' do
-        expect { klass.from_hash({ "end" => end_value }) }.to raise_error(ArgumentError)
-        expect { klass.from_hash({ "start" => start_value }) }.to raise_error(ArgumentError)
-      end
-
-      it 'does not raise an error if start or end is an empty string' do
-        expect { klass.from_hash({ "start" => "", "end" => end_value }) }.not_to raise_error
-        expect { klass.from_hash({ "start" => start_value, "end" => "" }) }.not_to raise_error
+        range = klass.new(JSON.parse(serialized))
+        expect(range).to eq(klass.new(start: start_value, end: end_value))
       end
     end
 
     describe '#==' do
       it 'returns true for ranges with same start and end values' do
-        other_range = klass.new(start_value, end_value)
+        other_range = klass.new(start: start_value, end: end_value)
         expect(range).to eq(other_range)
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start_value, "orange"))
-        expect(range).not_to eq(klass.new("apple", end_value))
-      end
-    end
-
-    describe '#initialize' do
-      it 'raises TypeError when start value is of wrong type' do
-        expect { klass.new(123, end_value) }.to raise_error(TypeError, "Expected String for start, got Integer")
-      end
-
-      it 'raises TypeError when end value is of wrong type' do
-        expect { klass.new(start_value, 456) }.to raise_error(TypeError, "Expected String for end, got Integer")
+        expect(range).not_to eq(klass.new(start: start_value, end: "orange"))
+        expect(range).not_to eq(klass.new(start: "apple", end: end_value))
       end
     end
   end
 
   describe "ValueRange[YearQuarter]" do
     let(:value_class) { Flex::YearQuarter }
-    let(:start_value) { Flex::YearQuarter.new(2023, 1) }
-    let(:end_value) { Flex::YearQuarter.new(2023, 4) }
+    let(:start_value) { Flex::YearQuarter.new(year: 2023, quarter: 1) }
+    let(:end_value) { Flex::YearQuarter.new(year: 2023, quarter: 4) }
 
     describe 'validations' do
       it 'is valid with valid start and end quarters' do
@@ -304,20 +233,20 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start quarter is after end quarter' do
-        invalid_range = klass.new(Flex::YearQuarter.new(2023, 4), Flex::YearQuarter.new(2023, 1))
+        invalid_range = klass.new(start: Flex::YearQuarter.new(year: 2023, quarter: 4), end: Flex::YearQuarter.new(year: 2023, quarter: 1))
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start cannot be after end")
       end
 
       it 'is valid when quarters are blank' do
-        range = klass.new(nil, nil)
+        range = klass.new
         expect(range).to be_valid
       end
     end
 
     describe '#include?' do
       it 'returns true for a quarter within the range' do
-        middle_quarter = Flex::YearQuarter.new(2023, 2)
+        middle_quarter = Flex::YearQuarter.new(year: 2023, quarter: 2)
         expect(range.include?(middle_quarter)).to be true
       end
 
@@ -327,8 +256,8 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for quarters outside the range' do
-        before_quarter = Flex::YearQuarter.new(2022, 4)
-        after_quarter = Flex::YearQuarter.new(2024, 1)
+        before_quarter = Flex::YearQuarter.new(year: 2022, quarter: 4)
+        after_quarter = Flex::YearQuarter.new(year: 2024, quarter: 1)
         expect(range.include?(before_quarter)).to be false
         expect(range.include?(after_quarter)).to be false
       end
@@ -338,48 +267,29 @@ RSpec.describe Flex::ValueRange do
       it 'converts the range to a serializable hash' do
         hash = range.as_json
         expect(hash).to eq({
-          start: { year: 2023, quarter: 1 },
-          end: { year: 2023, quarter: 4 }
+          "start" => { "year" => 2023, "quarter" => 1 },
+          "end" => { "year" => 2023, "quarter" => 4 }
         })
       end
     end
 
-    describe '.from_hash' do
-      it 'deserializes from a serialized object' do
+    describe 'deserialization' do
+      it 'from a serialized object' do
         serialized = range.to_json
-        range = klass.from_hash(JSON.parse(serialized))
-        expect(range).to eq(klass.new(start_value, end_value))
-      end
-
-      it 'raises an error with nil' do
-        expect { klass.from_hash(nil) }.to raise_error(TypeError)
-      end
-
-      it 'raises an error if hash is missing start or end key' do
-        expect { klass.from_hash({ "end" => end_value.as_json }) }.to raise_error(ArgumentError)
-        expect { klass.from_hash({ "start" => start_value.as_json }) }.to raise_error(ArgumentError)
+        range = klass.new(JSON.parse(serialized))
+        expect(range).to eq(klass.new(start: start_value, end: end_value))
       end
     end
 
     describe '#==' do
       it 'returns true for ranges with same start and end values' do
-        other_range = klass.new(start_value, end_value)
+        other_range = klass.new(start: start_value, end: end_value)
         expect(range).to eq(other_range)
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start_value, Flex::YearQuarter.new(2023, 3)))
-        expect(range).not_to eq(klass.new(Flex::YearQuarter.new(2023, 2), end_value))
-      end
-    end
-
-    describe '#initialize' do
-      it 'raises TypeError when start value is of wrong type' do
-        expect { klass.new("2023Q1", end_value) }.to raise_error(TypeError, "Expected Flex::YearQuarter for start, got String")
-      end
-
-      it 'raises TypeError when end value is of wrong type' do
-        expect { klass.new(start_value, "2023Q4") }.to raise_error(TypeError, "Expected Flex::YearQuarter for end, got String")
+        expect(range).not_to eq(klass.new(start: start_value, end: Flex::YearQuarter.new(year: 2023, quarter: 3)))
+        expect(range).not_to eq(klass.new(start: Flex::YearQuarter.new(year: 2023, quarter: 2), end: end_value))
       end
     end
   end

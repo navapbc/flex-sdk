@@ -62,9 +62,12 @@ module Flex
           return
         end
 
-        raise ArgumentError, "Unsupported attribute type: #{type}" unless respond_to?("#{type}_attribute")
-
-        send("#{type}_attribute", name, options)
+        if respond_to?("#{type}_attribute")
+          send("#{type}_attribute", name, options)
+        else
+          # Fall back to ActiveModel::Attributes
+          attribute name, type, **options
+        end
       end
     end
   end
