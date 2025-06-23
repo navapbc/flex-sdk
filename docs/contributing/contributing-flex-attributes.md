@@ -2,60 +2,6 @@
 
 This document describes how to create new Flex attributes
 
-## Naming Conventions
-
-When creating a new Flex attribute type, you must follow these naming conventions that were established in [PR #134](https://github.com/navapbc/flex-sdk/pull/134):
-
-### Module Naming
-- **Pattern**: `#{type.camelized}Attribute`
-- **Examples**: `NameAttribute`, `AddressAttribute`, `MoneyAttribute`, `MemorableDateAttribute`
-- **Location**: `app/lib/flex/attributes/#{type}_attribute.rb`
-
-### Method Naming  
-- **Pattern**: `#{type}_attribute`
-- **Examples**: `name_attribute`, `address_attribute`, `money_attribute`, `memorable_date_attribute`
-- **Signature**: The method must accept `name` and `options` parameters:
-  ```ruby
-  def #{type}_attribute(name, options = {})
-    # implementation
-  end
-  ```
-
-### Module Integration
-- **Include the module** in the main `Flex::Attributes` module in `app/lib/flex/attributes.rb`
-- **Example**: `include Flex::Attributes::NameAttribute`
-
-### Example Structure
-For a new attribute type called `phone_number`, you would create:
-
-```ruby
-# app/lib/flex/attributes/phone_number_attribute.rb
-module Flex
-  module Attributes
-    module PhoneNumberAttribute
-      extend ActiveSupport::Concern
-      
-      class_methods do
-        def phone_number_attribute(name, options = {})
-          # attribute implementation
-        end
-      end
-    end
-  end
-end
-```
-
-Then include it in the main module:
-```ruby
-# app/lib/flex/attributes.rb
-module Flex::Attributes
-  include Flex::Attributes::PhoneNumberAttribute
-  # ... other includes
-end
-```
-
-**Important**: The `flex_attribute` method in `app/lib/flex/attributes.rb` dynamically calls `#{type}_attribute`, so following this naming convention is required for the attribute to work properly.
-
 ## Design
 
 1. Decide whether or not to create a new value object in app/models/flex/
@@ -126,7 +72,8 @@ end
 ## Implementation
 
 1. Create the value object
-2. Create a module in app/lib/flex/attributes/ defining the new flex_attribute type and include the module in Flex::Attributes in app/lib/flex/attributes.rb
+2. Create a Concern `{FlexAttributeType}Attribute` in `app/lib/flex/attributes/` with a class method `{flex_attribute_type}_attribute` that takes the attribute `name` and an `options` hash and defines the new flex_attribute type on the including class, then include the module in Flex::Attributes in `app/lib/flex/attributes.rb`
+   1. **Important**: The `flex_attribute` method in `app/lib/flex/attributes.rb` dynamically calls `#{type}_attribute`, so following the naming convention for the class method is required for the attribute to work properly.
 3. Extend the `flex:migration` generator in `migration_generator.rb` to include the new Flex attribute.
 4. For testing, add the new flex attribute to TestRecord in `spec/dummy/app/models/test_record.rb`. Try using the flex migration generator to generate this migration by running `cd spec/dummy && bin/rails generate flex:migration Add<AttributeName>ToTestRecords <attribute_name>:<flex_attribute_type>` and then run the migration with `bin/rails db:migrate`
 5. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:
