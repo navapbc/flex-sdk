@@ -1,6 +1,7 @@
 <%# Index view for displaying a list of tasks
   Required locals:
   - tasks: Flex::Task[] - Array of tasks to display
+  - unassigned_tasks: Flex::Task[] - Array of unassigned tasks for button state
  %>
 <!-- Main content -->
 <main class="usa-section">
@@ -33,8 +34,17 @@
     <div class="grid-col-12 tablet:grid-col-3">
       <%= render partial: 'flex/tasks/due_date_filter' %>
     </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
+      <%= button_to t("flex.tasks.actions.pick_next"), pick_up_next_task_tasks_path, 
+                      id: "next-task-button",
+                      disabled: !unassigned_tasks&.any?,
+                      method: :post, 
+                      title: unassigned_tasks&.any? ? t("flex.tasks.messages.no_tasks_available") : nil,
+                      class: "usa-button" %>
+    </div>
   </div>
-  <% if tasks.any? %>
+  <% if tasks&.any? %>
     <!-- Tasks -->
     <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
       <thead>

@@ -52,6 +52,11 @@ es-US:
         start_hint: "Ingrese la fecha de inicio"
         end_hint: "Ingrese la fecha de finalización"
     tasks:
+      actions:
+        pick_next: "Tomar siguiente tarea"
+      messages:
+        task_picked_up: "Tarea asignada a ti"
+        no_tasks_available: "¡No hay tareas disponibles!"
       breadcrumbs:
         home: "Inicio"
         tasks: "Tareas"
