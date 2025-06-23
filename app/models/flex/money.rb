@@ -78,9 +78,9 @@ module Flex
 
     # Returns the amount as a Float in dollars
     #
-    # @return [Float] The dollar amount
+    # @return [BigDecimal] The dollar amount
     def dollar_amount
-      cents.to_f / 100
+      BigDecimal(cents.to_f, 0) / 100
     end
 
     # Returns the amount as an Integer in cents

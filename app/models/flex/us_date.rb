@@ -16,21 +16,24 @@ module Flex
     # @example Cast from Date
     #   USDate.cast(Date.new(2023, 12, 25)) #=> #<Flex::USDate: 2023-12-25>
     def self.cast(value)
-      return nil if value.nil?
-      return new(value.year, value.month, value.day) if value.is_a?(Date)
-      return nil unless value.is_a?(String)
-
-      DATE_FORMATS.each do |format|
-        begin
-          date = Date.strptime(value, format)
-          return new(date.year, date.month, date.day)
-        rescue Date::Error
-          next
+      case value
+      when nil
+        nil
+      when Date
+        new(value.year, value.month, value.day)
+      when String
+        DATE_FORMATS.each do |format|
+          begin
+            date = Date.strptime(value, format)
+            return new(date.year, date.month, date.day)
+          rescue Date::Error
+            next
+          end
         end
+        nil  # If all formats fail, return nil
+      else
+        nil
       end
-
-      # If no format matched, return nil
-      nil
     end
   end
 end
