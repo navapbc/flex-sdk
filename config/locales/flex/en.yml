@@ -52,6 +52,11 @@ en:
         start_hint: "Enter the start date"
         end_hint: "Enter the end date"
     tasks:
+      actions:
+        pick_next: "Pick up next task"
+      messages:
+        task_picked_up: "Task assigned to you"
+        no_tasks_available: "No tasks available!"
       breadcrumbs:
         home: "Home"
         tasks: "Tasks"

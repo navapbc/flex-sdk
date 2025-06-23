@@ -8,11 +8,13 @@ module Flex
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
-      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type)
+      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type) # Postgres does not support using `order` with `distinct`, thus we have to unscope `order` here.
       @tasks = filter_tasks
+      @unassigned_tasks = Flex::Task.incomplete.unassigned
     end
 
     def show
+      @assignee = @task.assignee_id.present? ? User.find(@task.assignee_id) : nil
     end
 
     def update
@@ -22,6 +24,18 @@ module Flex
       end
 
       redirect_to task_path(@task)
+    end
+
+    def pick_up_next_task
+      task = Flex::Task.assign_next_task_to(current_user.id)
+
+      if task
+        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
+        redirect_to task_path(task)
+      else
+        flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
+        redirect_to tasks_path
+      end
     end
 
     private

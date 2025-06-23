@@ -39,6 +39,18 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     expect(object).to be_valid
   end
 
+  it "persists and loads year_quarter object correctly" do
+    year_quarter = Flex::YearQuarter.new(year: 2023, quarter: 4)
+    object.reporting_period = year_quarter
+    object.save!
+
+    loaded_record = TestRecord.find(object.id)
+    expect(loaded_record.reporting_period).to be_a(described_class)
+    expect(loaded_record.reporting_period).to eq(year_quarter)
+    expect(loaded_record.reporting_period_year).to eq(2023)
+    expect(loaded_record.reporting_period_quarter).to eq(4)
+  end
+
   # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe "range: true" do
     let(:start_year) { 2023 }
@@ -149,10 +161,55 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       object.base_period_end = Flex::YearQuarter.new(year: 2023, quarter: 4)
       expect(object).to be_valid
     end
+
+    it "persists and loads year_quarter_range object correctly" do
+      start_year = 2023
+      start_quarter = 1
+      end_year = 2023
+      end_quarter = 4
+      start_value = Flex::YearQuarter.new(year: start_year, quarter: start_quarter)
+      end_value = Flex::YearQuarter.new(year: end_year, quarter: end_quarter)
+      range = Flex::YearQuarterRange.new(start: start_value, end: end_value)
+      object.base_period = range
+      object.save!
+
+      loaded_record = TestRecord.find(object.id)
+
+      expect(loaded_record.base_period_start_year).to eq(start_year)
+      expect(loaded_record.base_period_start_quarter).to eq(start_quarter)
+      expect(loaded_record.base_period_end_year).to eq(end_year)
+      expect(loaded_record.base_period_end_quarter).to eq(end_quarter)
+      expect(loaded_record.base_period_start).to eq(start_value)
+      expect(loaded_record.base_period_end).to eq(end_value)
+      expect(loaded_record.base_period).to eq(range)
+    end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   describe "array: true" do
+    it "allows setting an array of year quarters" do
+      periods = [
+        Flex::YearQuarter.new(year: 2023, quarter: 1),
+        Flex::YearQuarter.new(year: 2023, quarter: 2)
+      ]
+      object.reporting_periods = periods
+
+      expect(object.reporting_periods).to be_an(Array)
+      expect(object.reporting_periods.size).to eq(2)
+      expect(object.reporting_periods[0]).to eq(periods[0])
+      expect(object.reporting_periods[1]).to eq(periods[1])
+    end
+
+    it "validates each year quarter in the array" do
+      object.reporting_periods = [
+        Flex::YearQuarter.new(year: 2023, quarter: 5), # Invalid: quarter > 4
+        Flex::YearQuarter.new(year: 2023, quarter: 2)  # Valid
+      ]
+
+      expect(object).not_to be_valid
+      expect(object.errors[:reporting_periods]).to include("contains one or more invalid items")
+    end
+
     it "persists and loads arrays of value objects" do
       year_quarter_1 = build(:year_quarter)
       year_quarter_2 = build(:year_quarter)

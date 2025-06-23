@@ -32,14 +32,29 @@ module Flex
 
     validates :case_id, presence: true
 
-    default_scope -> { order(due_on: :desc) }
+    default_scope -> { order(due_on: :asc) }
     scope :due_today, -> { where(due_on: Date.today) }
     scope :due_tomorrow, -> { where(due_on: Date.tomorrow) }
     scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
     scope :overdue, -> { where("due_on < ?", Date.today) }
     scope :completed, -> { where(status: :completed) }
     scope :incomplete, -> { where.not(status: :completed) }
+    scope :unassigned, -> { where(assignee_id: nil) }
     scope :with_type, ->(type) { where(type: type) }
+
+    def self.next_unassigned
+      incomplete.unassigned.first
+    end
+
+    def self.assign_next_task_to(user_id)
+      transaction do
+        task = next_unassigned
+        return nil if !task
+
+        task.assign(user_id)
+        task
+      end
+    end
 
     # Creates a new non-persisted task instance associated with the given case.
     # @param kase [Flex::Case] The case to associate the task with.

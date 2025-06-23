@@ -26,6 +26,7 @@ module Flex
     enum :status, in_progress: 0, submitted: 1
 
     attribute :user_id, :string
+    attribute :submitted_at, :datetime
 
     after_create :publish_created
     before_update :prevent_changes_if_submitted, if: :was_submitted?

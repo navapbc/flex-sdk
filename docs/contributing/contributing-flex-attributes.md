@@ -72,7 +72,8 @@ This document describes how to create new Flex attributes
 ## Implementation
 
 1. Create the value object
-2. Create a module in app/lib/flex/attributes/ defining the new flex_attribute type and include the module in Flex::Attributes in app/lib/flex/attributes.rb
+2. Create a Concern `{FlexAttributeType}Attribute` in `app/lib/flex/attributes/` with a class method `{flex_attribute_type}_attribute` that takes the attribute `name` and an `options` hash and defines the new flex_attribute type on the including class, then include the module in Flex::Attributes in `app/lib/flex/attributes.rb`
+   1. **Important**: The `flex_attribute` method in `app/lib/flex/attributes.rb` dynamically calls `#{type}_attribute`, so following the naming convention for the class method is required for the attribute to work properly.
 3. Extend the `flex:migration` generator in `migration_generator.rb` to include the new Flex attribute.
 4. For testing, add the new flex attribute to TestRecord in `spec/dummy/app/models/test_record.rb`. Try using the flex migration generator to generate this migration by running `cd spec/dummy && bin/rails generate flex:migration Add<AttributeName>ToTestRecords <attribute_name>:<flex_attribute_type>` and then run the migration with `bin/rails db:migrate`
 5. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:

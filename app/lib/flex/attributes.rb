@@ -62,21 +62,8 @@ module Flex
           return
         end
 
-        case type
-        when :address
-          address_attribute name, options
-        when :memorable_date
-          memorable_date_attribute name, options
-        when :money
-          money_attribute name, options
-        when :name
-          name_attribute name, options
-        when :tax_id
-          tax_id_attribute name, options
-        when :us_date
-          us_date_attribute name, options
-        when :year_quarter
-          year_quarter_attribute name, options
+        if respond_to?("#{type}_attribute")
+          send("#{type}_attribute", name, options)
         else
           # Fall back to ActiveModel::Attributes
           attribute name, type, **options
