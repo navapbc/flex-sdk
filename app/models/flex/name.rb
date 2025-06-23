@@ -21,16 +21,28 @@ module Flex
     attribute :middle, :string
     attribute :last, :string
 
+    def blank?
+      [ first, middle, last ].all?(&:blank?)
+    end
+
+    def empty?
+      [ first, middle, last ].all? { |component| component.nil? || component.empty? }
+    end
+
     def full_name
       [ first, middle, last ].compact.join(" ")
     end
 
-    def <=>(other)
-      [ last, first, middle ] <=> [ other.last, other.first, other.middle ]
-    end
-
     def persisted?
       false
+    end
+
+    def present?
+      !blank?
+    end
+
+    def <=>(other)
+      [ last, first, middle ] <=> [ other.last, other.first, other.middle ]
     end
   end
 end
