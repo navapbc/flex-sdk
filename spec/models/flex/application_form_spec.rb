@@ -42,6 +42,14 @@ RSpec.describe Flex::ApplicationForm do
         expected_payload = { application_form_id: application_form.id }
         expect { application_form.submit_application }.to publish_event_with_payload("TestApplicationFormSubmitted", expected_payload)
       end
+
+      it "sets submitted_at timestamp" do
+        expect(application_form.submitted_at).to be_nil
+
+        application_form.submit_application
+
+        expect(application_form.submitted_at).to be_within(1.second).of(Time.current)
+      end
     end
 
     context "when form is already submitted" do
