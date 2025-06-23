@@ -36,7 +36,7 @@
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
-      <%= button_to t("flex.tasks.actions.pick_next"), pick_up_next_task_tasks_path, 
+      <%= button_to t("flex.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task), 
                       id: "next-task-button",
                       disabled: !unassigned_tasks&.any?,
                       method: :post, 
