@@ -45,6 +45,23 @@ RSpec.describe Flex::Validations do
       end
     end
 
+    context 'when nested object is blank' do
+      before do
+        object.base_period = Flex::YearQuarterRange.new(
+          start: Flex::YearQuarter.new(year: nil, quarter: nil),
+          end: Flex::YearQuarter.new(year: nil, quarter: nil)
+        )
+        object.period = Flex::DateRange.new(
+          start: nil,
+          end: nil
+        )
+      end
+
+      it 'is valid' do
+        expect(object).to be_valid
+      end
+    end
+
     context 'when nested object has base errors' do
       before do
         object.period = Flex::DateRange.new(
