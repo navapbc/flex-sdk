@@ -18,6 +18,7 @@ module Flex
     #
     module NameAttribute
       extend ActiveSupport::Concern
+      include BasicValueObjectAttribute
 
       class_methods do
         # Defines a name attribute with first, middle, and last components.
@@ -26,32 +27,11 @@ module Flex
         # @param [Hash] options Options for the attribute
         # @return [void]
         def name_attribute(name, options = {})
-          # Define the base attribute with its subfields
-          attribute "#{name}_first", :string
-          attribute "#{name}_middle", :string
-          attribute "#{name}_last", :string
-
-          # Define the getter method
-          define_method(name) do
-            first = send("#{name}_first")
-            middle = send("#{name}_middle")
-            last = send("#{name}_last")
-            Flex::Name.new(first:, middle:, last:)
-          end
-
-          # Define the setter method
-          define_method("#{name}=") do |value|
-            case value
-            when Flex::Name
-              send("#{name}_first=", value.first)
-              send("#{name}_middle=", value.middle)
-              send("#{name}_last=", value.last)
-            when Hash
-              send("#{name}_first=", value[:first])
-              send("#{name}_middle=", value[:middle])
-              send("#{name}_last=", value[:last])
-            end
-          end
+          basic_value_object_attribute(name, Flex::Name, {
+            "first" => :string,
+            "middle" => :string,
+            "last" => :string
+          }, options)
         end
       end
     end

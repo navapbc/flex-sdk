@@ -18,43 +18,17 @@ module Flex
     #
     module AddressAttribute
       extend ActiveSupport::Concern
+      include BasicValueObjectAttribute
 
       class_methods do
         def address_attribute(name, options = {})
-          # Define the base attribute with its subfields
-          attribute "#{name}_street_line_1", :string
-          attribute "#{name}_street_line_2", :string
-          attribute "#{name}_city", :string
-          attribute "#{name}_state", :string
-          attribute "#{name}_zip_code", :string
-
-          # Define the getter method
-          define_method(name) do
-            street_line_1 = send("#{name}_street_line_1")
-            street_line_2 = send("#{name}_street_line_2")
-            city = send("#{name}_city")
-            state = send("#{name}_state")
-            zip_code = send("#{name}_zip_code")
-            Flex::Address.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
-          end
-
-          # Define the setter method
-          define_method("#{name}=") do |value|
-            case value
-            when Flex::Address
-              send("#{name}_street_line_1=", value.street_line_1)
-              send("#{name}_street_line_2=", value.street_line_2)
-              send("#{name}_city=", value.city)
-              send("#{name}_state=", value.state)
-              send("#{name}_zip_code=", value.zip_code)
-            when Hash
-              send("#{name}_street_line_1=", value[:street_line_1])
-              send("#{name}_street_line_2=", value[:street_line_2])
-              send("#{name}_city=", value[:city])
-              send("#{name}_state=", value[:state])
-              send("#{name}_zip_code=", value[:zip_code])
-            end
-          end
+          basic_value_object_attribute(name, Flex::Address, {
+            "street_line_1" => :string,
+            "street_line_2" => :string,
+            "city" => :string,
+            "state" => :string,
+            "zip_code" => :string
+          }, options)
         end
       end
     end
