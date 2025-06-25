@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_13_234034) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_25_021958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "flex_business_processes", force: :cascade do |t|
+    t.string "type"
+    t.uuid "case_id"
+    t.string "case_type"
+    t.string "current_step"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["case_id"], name: "index_flex_business_processes_on_case_id"
+    t.index ["type"], name: "index_flex_business_processes_on_type"
+  end
 
   create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
