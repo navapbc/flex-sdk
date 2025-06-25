@@ -217,7 +217,7 @@ module Flex
       end
 
       def from_event(event)
-        # TODO Put in transaction
+          # TODO Put in transaction
           kase = create_case_from_event(event)
           new(case_id: kase.id, case_type: kase.class.name)
         # End transaction

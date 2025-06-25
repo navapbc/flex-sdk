@@ -1,5 +1,4 @@
 class PassportBusinessProcess < Flex::BusinessProcess
-
   # Define steps
   applicant_task('submit_application')
 
