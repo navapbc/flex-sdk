@@ -5,7 +5,7 @@ module Flex
     let(:test_form) { build(:passport_application_form) }
 
     before do
-      PassportBusinessProcess.start_listening_for_events
+      described_class.start_listening_for_events
     end
 
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
@@ -14,7 +14,7 @@ module Flex
 
       # check case created and open with correct current step
       kase = PassportCase.find_by_application_form_id(test_form.id)
-      business_process_instance = PassportBusinessProcess.for_case(kase.id).first!
+      business_process_instance = described_class.for_case(kase.id).first!
       expect(kase).not_to be_nil
       expect(kase.status).to eq ("open")
       expect(business_process_instance.current_step).to eq ("submit_application")
@@ -39,7 +39,7 @@ module Flex
 
       # notify user
       Flex::EventManager.publish("notification_completed", { case_id: kase.id })
-      expect(PassportBusinessProcess.for_case(kase.id).exists?).to be_falsey
+      expect(described_class.for_case(kase.id).exists?).to be_falsey
 
       # check case status
       kase.reload
