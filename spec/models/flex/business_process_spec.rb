@@ -40,7 +40,7 @@ RSpec.describe Flex::BusinessProcess do
       # system_process_2 automatically publishes event6
       kase.reload
       expect(kase).to be_closed
-      expect(TestBusinessProcess.for_case(kase.id).exists?).to be_falsey
+      expect(TestBusinessProcess.for_case(kase.id)).not_to exist
     end
 
     context 'when no transition is defined for the event' do

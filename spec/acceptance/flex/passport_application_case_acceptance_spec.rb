@@ -39,7 +39,7 @@ module Flex
 
       # notify user
       Flex::EventManager.publish("notification_completed", { case_id: kase.id })
-      expect(described_class.for_case(kase.id).exists?).to be_falsey
+      expect(described_class.for_case(kase.id)).not_to exist
 
       # check case status
       kase.reload
