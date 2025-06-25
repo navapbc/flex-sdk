@@ -21,36 +21,29 @@ module Flex
   module BusinessProcessBuilder
     extend ActiveSupport::Concern
 
-    # TODO Remove
-    # attr_reader :name, :steps, :start, :transitions, :case_class
-    #
-    # def initialize(name, case_class)
-    #   @name = name
-    #   @case_class = case_class
-    #   @start = nil
-    #   @steps = {}
-    #   @transitions = {}
-    # end
-
     class_methods do
       def steps
-        @@steps ||= {}
+        @steps ||= {}
       end
 
       def transitions
-        @@transitions ||= {}
+        @transitions ||= {}
       end
 
       def start_events
-        @@start_events ||= {}
+        @start_events ||= {}
       end
 
       def start_step_name
-        @@start_step_name
+        @start_step_name
+      end
+
+      def start_step_name=(value)
+        @start_step_name = value
       end
 
       def start(step_name, on: nil, &handler)
-        @@start_step_name = step_name
+        self.start_step_name = step_name
         if on.present?
           start_events[on] = handler
         else
@@ -90,19 +83,6 @@ module Flex
         transitions[from] ||= {}
         transitions[from][event_name] = to
       end
-
-      # TODO Remove
-      # def build
-      #   BusinessProcess.new(
-      #     name: @@name,
-      #     case_class: case_class,
-      #     description: "",
-      #     steps: @@steps,
-      #     start_step_name: @@start_step_name,
-      #     transitions: @@transitions,
-      #     start_events: @@start_events
-      #   )
-      # end
     end
   end
 end

@@ -83,33 +83,6 @@ module Flex
       self.name.sub("BusinessProcess", "Case").constantize
     end
 
-    @@listening = false
-    @@subscriptions = {}
-    def self.start_listening_for_events
-      if @@listening
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} already listening for events"
-        return
-      end
-
-      get_event_names.each do |event_name|
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
-        @@subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
-      end
-
-      @@listening = true
-    end
-
-    def self.stop_listening_for_events
-      Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"
-
-      @@subscriptions.each do |event_name, subscription|
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
-        Flex::EventManager.unsubscribe(subscription)
-      end
-      @@subscriptions.clear
-      @@listening = false
-    end
-
     def self.to_mermaid
       diagram = "flowchart TD\n"
 
@@ -137,6 +110,38 @@ module Flex
       ].join("\n")
 
       diagram
+    end
+
+    class << self
+      def subscriptions
+        @subscriptions ||= {}
+      end
+
+      def start_listening_for_events
+        @listening ||= false
+        if @listening
+          Rails.logger.debug "Flex::BusinessProcess with name #{name} already listening for events"
+          return
+        end
+
+        get_event_names.each do |event_name|
+          Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
+          subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
+        end
+
+        @listening = true
+      end
+
+      def stop_listening_for_events
+        Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"
+
+        subscriptions.each do |event_name, subscription|
+          Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
+          Flex::EventManager.unsubscribe(subscription)
+        end
+        subscriptions.clear
+        @listening = false
+      end
     end
 
     private
@@ -186,15 +191,15 @@ module Flex
         Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
         if event[:payload].key?(:application_form_id)
           Rails.logger.debug "Getting case from event payload with application_form_id"
-          @@case_class.find_by(application_form_id: event[:payload][:application_form_id])
+          case_class.find_by(application_form_id: event[:payload][:application_form_id])
         else
           Rails.logger.debug "Getting case from event payload with case_id"
-          @@case_class.find(event[:payload][:case_id])
+          case_class.find(event[:payload][:case_id])
         end
       end
 
       def get_event_names
-        @@transitions.values.flat_map(&:keys).uniq | start_events.keys
+        transitions.values.flat_map(&:keys).uniq | start_events.keys
       end
 
       def handle_event(event)
@@ -219,7 +224,7 @@ module Flex
       end
 
       def start_event?(event_name)
-        @@start_events.key?(event_name)
+        start_events.key?(event_name)
       end
     end
   end
