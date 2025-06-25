@@ -55,52 +55,65 @@ module Flex
   # @method stop_listening_for_events
   #   Stops listening for events and cleans up subscriptions. Useful for cleanup in tests.
   #
-  class BusinessProcess
-    include Step
+  class BusinessProcess < ApplicationRecord
+    include BusinessProcessBuilder
 
-    attr_accessor :name, :description, :steps, :transitions, :case_class
+    attribute :case_id, :string
+    attribute :case_type, :string
+    attribute :current_step, :string
 
-    def initialize(name:, case_class:, description: "", steps: {}, start_step_name: "", transitions: {}, start_events: {})
-      @subscriptions = {}
-      @name = name
-      @case_class = case_class
-      @description = description
-      @steps = steps
-      @start_step_name = start_step_name
-      @transitions = transitions
-      @start_events = start_events
-      @listening = false
+    def start_from_event(event)
+      Rails.logger.debug "Starting business process from event: #{event[:name]} with payload: #{event[:payload]}"
+      self.current_step = self.class.start_step_name
+      save!
+      execute_current_step
     end
 
-    def start_listening_for_events
-      if @listening
+    def transition_to_next_step(event)
+      next_step = get_next_step(event[:name])
+      return unless next_step
+
+      Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
+      self.current_step = next_step
+      save!
+      execute_current_step
+    end
+
+    def self.case_class
+      self.name.sub("BusinessProcess", "Case").constantize
+    end
+
+    @@listening = false
+    @@subscriptions = {}
+    def self.start_listening_for_events
+      if @@listening
         Rails.logger.debug "Flex::BusinessProcess with name #{name} already listening for events"
         return
       end
 
       get_event_names.each do |event_name|
         Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
-        @subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
+        @@subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
       end
 
-      @listening = true
+      @@listening = true
     end
 
-    def stop_listening_for_events
+    def self.stop_listening_for_events
       Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"
 
-      @subscriptions.each do |event_name, subscription|
+      @@subscriptions.each do |event_name, subscription|
         Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
         Flex::EventManager.unsubscribe(subscription)
       end
-      @subscriptions.clear
-      @listening = false
+      @@subscriptions.clear
+      @@listening = false
     end
 
-    def to_mermaid
+    def self.to_mermaid
       diagram = "flowchart TD\n"
 
-      @steps.each do |name, step|
+      steps.each do |name, step|
         node_name = name.gsub(" ", "_")
         node_class = step.class.name.demodulize
         diagram += "  #{node_name}:::#{node_class}\n"
@@ -108,7 +121,7 @@ module Flex
 
       diagram += "  END((End))\n"
 
-      @transitions.each do |from, events|
+      transitions.each do |from, events|
         events.each do |event, to|
           # Capitalize the "END" node since Mermaid breaks if one of the nodes is named "end" https://github.com/mermaid-js/mermaid/issues/1444
           to = "END" if to == "end"
@@ -128,76 +141,74 @@ module Flex
 
     private
 
-    def create_case_from_event(event)
-      Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
-      handler = @start_events[event[:name]]
-      raise RuntimeError, "No handler defined for start event '#{event[:name]}'" unless handler
+    # TODO question: what about event[:payload][:application_form_id])?
+    scope :for_case, ->(case_id) { where(case_id:) }
+    scope :for_event, ->(event) { for_case(event[:payload][:case_id]) }
 
-      kase = handler.call(event)
-      kase.business_process_current_step = @start_step_name
-      kase.save!
-      kase
-    end
-
-    def execute_current_step(kase)
-      step_name = kase.business_process_current_step
-      Rails.logger.debug "Executing current step: #{step_name} for case ID: #{kase.id}"
-      if step_name == "end"
+    def execute_current_step
+      kase = self.class.case_class.find(case_id)
+      Rails.logger.debug "Executing current step: #{current_step} for case ID: #{kase.id}"
+      if current_step == "end"
         kase.close
+        destroy!
       else
-        @steps[step_name].execute(kase)
+        self.class.steps[current_step].execute(kase)
       end
     end
 
-    def get_case_from_event(event)
-      Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
-      if event[:payload].key?(:application_form_id)
-        Rails.logger.debug "Getting case from event payload with application_form_id"
-        @case_class.find_by(application_form_id: event[:payload][:application_form_id])
-      else
-        Rails.logger.debug "Getting case from event payload with case_id"
-        @case_class.find(event[:payload][:case_id])
-      end
-    end
-
-    def get_event_names
-      @transitions.values.flat_map(&:keys).uniq | @start_events.keys
-    end
-
-    def get_next_step(kase, event_name)
-      current_step = kase.business_process_current_step
-      next_step = @transitions&.dig(current_step, event_name)
-      next_step
-    end
-
-    def handle_event(event)
-      Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
-      if start_event?(event[:name])
-        kase = create_case_from_event(event)
-      else
-        kase = get_case_from_event(event)
-        next_step = get_next_step(kase, event[:name])
-        return unless next_step
-
-        Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
-        kase.business_process_current_step = next_step
-        kase.save!
-      end
-
-      execute_current_step(kase)
-    end
-
-    def start_event?(event_name)
-      @start_events.key?(event_name)
+    def get_next_step(event_name)
+      self.class.transitions&.dig(current_step, event_name)
     end
 
     class << self
-      def define(name, case_class)
-        business_process_builder = BusinessProcessBuilder.new(name, case_class)
-        yield business_process_builder
-        business_process = business_process_builder.build
-        business_process.start_listening_for_events
-        business_process
+      def create_case_from_event(event)
+        Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
+        handler = start_events[event[:name]]
+        raise RuntimeError, "No handler defined for start event '#{event[:name]}'" unless handler
+
+        kase = handler.call(event)
+        kase.save!
+        kase
+      end
+
+      def get_case_from_event(event)
+        Rails.logger.debug "Getting case from event: #{event[:name]} with payload: #{event[:payload]}"
+        if event[:payload].key?(:application_form_id)
+          Rails.logger.debug "Getting case from event payload with application_form_id"
+          @@case_class.find_by(application_form_id: event[:payload][:application_form_id])
+        else
+          Rails.logger.debug "Getting case from event payload with case_id"
+          @@case_class.find(event[:payload][:case_id])
+        end
+      end
+
+      def get_event_names
+        @@transitions.values.flat_map(&:keys).uniq | start_events.keys
+      end
+
+      def handle_event(event)
+        Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
+
+        if start_event?(event[:name])
+          business_process_instance = from_event(event)
+          business_process_instance.start_from_event(event)
+        else
+          business_process_instances = for_event(event)
+          business_process_instances.each do |business_process_instance|
+            business_process_instance.transition_to_next_step(event)
+          end
+        end
+      end
+
+      def from_event(event)
+        # TODO Put in transaction
+          kase = create_case_from_event(event)
+          new(case_id: kase.id, case_type: kase.class.name)
+        # End transaction
+      end
+
+      def start_event?(event_name)
+        @@start_events.key?(event_name)
       end
     end
   end

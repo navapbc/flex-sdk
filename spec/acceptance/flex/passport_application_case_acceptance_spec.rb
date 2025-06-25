@@ -4,6 +4,10 @@ module Flex
   RSpec.describe PassportBusinessProcess, type: :model do
     let(:test_form) { build(:passport_application_form) }
 
+    before do
+      PassportBusinessProcess.start_listening_for_events
+    end
+
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
       test_form.save!
