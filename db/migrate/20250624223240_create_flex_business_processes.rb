@@ -1,6 +1,6 @@
 class CreateFlexBusinessProcesses < ActiveRecord::Migration[8.0]
   def change
-    create_table :flex_business_processes do |t|
+    create_table :flex_business_processes, id: :uuid do |t|
       t.string :type, index: true
       t.uuid :case_id, index: true
       t.string :case_type
