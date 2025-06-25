@@ -142,8 +142,19 @@ module Flex
     private
 
     # TODO question: what about event[:payload][:application_form_id])?
+    scope :for_application_form, ->(application_form_id) do
+      joins("INNER JOIN #{case_class.table_name} cases ON cases.id = #{table_name}.case_id").where(cases: { application_form_id: })
+    end
     scope :for_case, ->(case_id) { where(case_id:) }
-    scope :for_event, ->(event) { for_case(event[:payload][:case_id]) }
+    scope :for_event, ->(event) do
+      if event[:payload].key?(:application_form_id)
+        Rails.logger.debug "Finding business processes for event with application_form_id: #{event[:payload][:application_form_id]}"
+        for_application_form(event[:payload][:application_form_id])
+      else
+        Rails.logger.debug "Finding business processes for event with case_id: #{event[:payload][:case_id]}"
+        for_case(event[:payload][:case_id])
+      end
+    end
 
     def execute_current_step
       kase = self.class.case_class.find(case_id)
