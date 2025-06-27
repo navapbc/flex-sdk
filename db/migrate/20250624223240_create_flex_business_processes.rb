@@ -15,7 +15,7 @@ class CreateFlexBusinessProcesses < ActiveRecord::Migration[8.0]
     # You'll want to do this for each case type you have in your application.
     # Replace "MyBusinessProcess" and "MyCase" with your actual business process
     # and case model names.
-    # 
+    #
     # values = MyCase.open.map do |kase|
     #   "('MyBusinessProcess', '#{kase.id}', 'MyCase', '#{kase.business_process_current_step}', NOW(), NOW())"
     # end
