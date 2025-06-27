@@ -47,7 +47,7 @@ An example migration, based on the PassportApplicationForm example from above:
 # db/migrate/migration_file_name_here.rb
 class CreateFlexPassportApplicationForms < ActiveRecord::Migration[8.0]
   def change
-    create_table :flex_passport_application_forms do |t|
+    create_table :flex_passport_application_forms, id: :uuid do |t|
       t.string :first_name
       t.string :last_namen
       t.date :date_of_birth
