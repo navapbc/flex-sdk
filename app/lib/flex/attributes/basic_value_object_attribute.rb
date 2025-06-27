@@ -27,7 +27,7 @@ module Flex
           end
 
           # Define the setter method
-          define_method("#{name}=") do |value|
+          define_method(:"#{name}=") do |value|
             case value
             when value_class
               nested_attribute_types.keys.each do |nested_attribute_name|

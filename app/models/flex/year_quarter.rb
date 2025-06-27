@@ -21,7 +21,8 @@ module Flex
     attribute :year, :integer
     attribute :quarter, :integer
 
-    validates :quarter, numericality: { in: 1..4 }
+    validates :year, presence: true
+    validates :quarter, presence: true, numericality: { in: 1..4 }
 
     def +(other)
       raise TypeError, "Integer expected, got #{other.class}" unless other.is_a?(Integer)
