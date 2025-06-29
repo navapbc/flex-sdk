@@ -107,15 +107,15 @@ RSpec.describe Flex::YearQuarter do
         nil
       ],
       [
-        "returns nil when both years are nil",
+        "returns nil when both years are nil and quarters differ",
         described_class.new(year: nil, quarter: 1),
         described_class.new(year: nil, quarter: 2),
         nil
       ],
       [
-        "returns nil when both quarters are nil",
+        "returns nil when both quarters are nil and years differ",
         described_class.new(year: 2023, quarter: nil),
-        described_class.new(year: 2023, quarter: nil),
+        described_class.new(year: 2024, quarter: nil),
         nil
       ],
       [

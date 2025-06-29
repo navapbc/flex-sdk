@@ -63,6 +63,8 @@ module Flex
 
     def <=>(other)
       return nil unless other.is_a?(YearQuarter)
+      return 0 if [ year, quarter ] == [ other.year, other.quarter ]
+      return nil if year.nil? || quarter.nil? || other.year.nil? || other.quarter.nil?
 
       [ year, quarter ] <=> [ other.year, other.quarter ]
     end
