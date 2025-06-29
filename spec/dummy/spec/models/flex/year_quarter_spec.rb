@@ -135,7 +135,7 @@ RSpec.describe Flex::YearQuarter do
         described_class.new(year: 2023, quarter: nil),
         described_class.new(year: 2023, quarter: nil),
         0
-      ],
+      ]
     ].each do |description, a, b, expected|
       it description do
         expect(a <=> b).to eq(expected)

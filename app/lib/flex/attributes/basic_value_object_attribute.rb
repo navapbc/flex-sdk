@@ -12,6 +12,7 @@ module Flex
         # @param [Class] value_class the subclass of Flex::ValueObject
         # @param [Hash] options Options for the attribute
         # @return [void]
+        # @param [Object] nested_attribute_types
         def basic_value_object_attribute(name, value_class, nested_attribute_types, options = {})
           # Define the base attribute with its subfields
           nested_attribute_types.each do |nested_attribute_name, nested_attribute_type|
@@ -21,7 +22,7 @@ module Flex
           # Define the getter method
           define_method(name) do
             value_hash = nested_attribute_types.keys.map do |nested_attribute_name|
-              [nested_attribute_name, send("#{name}_#{nested_attribute_name}")]
+              [ nested_attribute_name, send("#{name}_#{nested_attribute_name}") ]
             end.to_h
             value_class.new(value_hash)
           end
