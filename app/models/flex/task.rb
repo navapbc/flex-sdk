@@ -23,7 +23,7 @@ module Flex
     attr_readonly :case_id
     attr_readonly :type
 
-    attribute :assignee_id, :string
+    attribute :assignee_id, :uuid
     protected attr_writer :assignee_id
 
     attribute :status, :integer, default: 0

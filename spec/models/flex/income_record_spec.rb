@@ -26,7 +26,7 @@ module Flex
 
       describe '#create' do
         it 'creates an instance of an IncomeRecord with a YearQuarter period' do
-          person_id = Faker::Number.number(digits: 3).to_s
+          person_id = SecureRandom.uuid
           amount = build(:money)
           period = build(:year_quarter)
 
@@ -63,7 +63,7 @@ module Flex
 
       describe '#create' do
         it 'creates an instance of an IncomeRecord with a DateRange period' do
-          person_id = Faker::Number.number(digits: 3).to_s
+          person_id = SecureRandom.uuid
           amount = build(:money)
           period = build(:date_range)
           record = WeeklyWage.create(person_id:, amount:, period:)

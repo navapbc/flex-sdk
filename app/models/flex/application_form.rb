@@ -25,7 +25,7 @@ module Flex
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
-    attribute :user_id, :string
+    attribute :user_id, :uuid
     attribute :submitted_at, :datetime
 
     after_create :publish_created
