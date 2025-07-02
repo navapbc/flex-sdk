@@ -56,18 +56,11 @@
       </thead>
       <tbody>
         <% application_forms.each do |application_form| %>
-          <tr>
-            <td>
-              <% # TODO show in local time %>
-              <%= link_to application_form[:created_at], application_form[:path] %>
-            </td>
-            <td>
-              <%= t("flex.application_forms.statuses.#{application_form[:status]}") %>
-            </td>
-            <td>
-              TODO
-            </td>
-          </tr>
+          <% if local_assigns.key?(:row_view) %>
+            <%= render partial: row_view, locals: { application_form: } %>
+          <% else %>
+            <%= render partial: "flex/application_forms/row", locals: { application_form: } %>
+          <% end %>
         <% end %>
       </tbody>
     </table>
