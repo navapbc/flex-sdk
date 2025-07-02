@@ -57,23 +57,6 @@ module Flex
       payload
     end
 
-    protected
-
-    # Creates a case associated with this application form.
-    #
-    # @return [Flex::Case] The created case
-    def create_case
-      kase = case_class.create!
-      self[:case_id] = kase.id
-    end
-
-    # Determines the case class corresponding to this application form class.
-    #
-    # @return [Class] The case class (ApplicationForm -> Case)
-    def case_class
-      self.class.name.sub("ApplicationForm", "Case").constantize
-    end
-
     private
 
     def was_submitted?
