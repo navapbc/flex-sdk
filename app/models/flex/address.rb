@@ -25,7 +25,7 @@ module Flex
     validates :zip_code, presence: true, format: { with: /\A\d{5}(-\d{4})?\z/, message: "must be a valid US zip code" }
 
     def to_s
-      [ street_line_1, street_line_2, "#{city}, #{state} #{zip_code}" ].reject(&:blank?).join(", ")
+      [ street_line_1, street_line_2, city, "#{state} #{zip_code}" ].reject(&:blank?).join(", ")
     end
   end
 end

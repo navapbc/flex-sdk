@@ -55,21 +55,12 @@ RSpec.describe Flex::Address do
     }
 
     [
-      [ "formats complete address",
-        base_params,
-        "123 Main St, Apt 4B, Anytown, CA 12345" ],
-      [ "handles nil street_line_2",
-        base_params.merge(street_line_2: nil),
-        "123 Main St, Anytown, CA 12345" ],
-      [ "handles empty street_line_2",
-        base_params.merge(street_line_2: ""),
-        "123 Main St, Anytown, CA 12345" ],
-      [ "handles whitespace-only street_line_2",
-        base_params.merge(street_line_2: "  "),
-        "123 Main St, Anytown, CA 12345" ],
-      [ "formats address with zip+4",
-        base_params.merge(zip_code: "12345-1234"),
-        "123 Main St, Apt 4B, Anytown, CA 12345-1234" ]
+      [ "renders empty address as empty string", {}, "" ],
+      [ "formats complete address", base_params, "123 Main St, Apt 4B, Anytown, CA 12345" ],
+      [ "handles nil street_line_2", base_params.merge(street_line_2: nil), "123 Main St, Anytown, CA 12345" ],
+      [ "handles empty street_line_2", base_params.merge(street_line_2: ""), "123 Main St, Anytown, CA 12345" ],
+      [ "handles whitespace-only street_line_2", base_params.merge(street_line_2: "  "), "123 Main St, Anytown, CA 12345" ],
+      [ "formats address with zip+4", base_params.merge(zip_code: "12345-1234"), "123 Main St, Apt 4B, Anytown, CA 12345-1234" ]
     ].each do |description, params, expected_string|
       it description do
         address = described_class.new(params)
