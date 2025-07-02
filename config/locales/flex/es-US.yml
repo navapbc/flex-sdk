@@ -20,7 +20,7 @@ es-US:
         in_progress: "En progreso"
         submitted: "Enviado"
       steps:
-        in_progress: "Enviado"
+        in_progress: "En progreso"
         submitted: "En revisión"
         decision_made: "Determinación realizada"
     form_builder:
