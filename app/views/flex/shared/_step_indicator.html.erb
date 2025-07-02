@@ -3,6 +3,7 @@
 #
 # @param steps [Array<String, Symbol>] An array of step identifiers that will be displayed in order
 # @param current_step [String, Symbol] The identifier of the current active step
+# @param translation_scope [String] - I18n scope prefix, defaulting to 'flex.application_forms.steps'
 #
 # Each step's display name is fetched from the i18n translations under flex.application_forms.steps
 # Steps before and including the current step are marked as complete.
@@ -10,9 +11,10 @@
 steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
+translation_scope ||= "flex.application_forms.steps"
 step_indicators = steps.map.with_index do |step, index|
   {
-    name: t("flex.application_forms.steps.#{ step }"),
+    name: t(".#{ step }", scope: translation_scope, default: step.to_s.humanize),
     complete: index <= current_step_index,
     current: step == current_step
   }
