@@ -77,6 +77,7 @@ module Flex
     def mark_completed
       self[:status] = :completed
       save!
+      Flex::EventManager.publish("#{self.class.name}Completed", { task_id: id })
     end
 
     def mark_pending
