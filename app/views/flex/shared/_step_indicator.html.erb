@@ -14,7 +14,7 @@ current_step_index = steps.index(current_step) || -1
 translation_scope ||= "flex.application_forms.steps"
 step_indicators = steps.map.with_index do |step, index|
   {
-    name: t(".#{ step }", scope: translation_scope, default: step.to_s.humanize),
+    name: t("#{ step }", scope: translation_scope, default: step.to_s.humanize),
     complete: index <= current_step_index,
     current: step == current_step
   }
