@@ -19,10 +19,12 @@ step_indicators = steps.map.with_index do |step, index|
     current: step == current_step
   }
 end
+step_indicator_class = ""
+step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] == :counters
 %>
 
 <div
-  class="usa-step-indicator usa-step-indicator--counters"
+  class="usa-step-indicator <%= step_indicator_class %>"
   aria-label="progress"
 >
   <ol class="usa-step-indicator__segments">
