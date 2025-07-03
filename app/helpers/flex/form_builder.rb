@@ -389,7 +389,7 @@ module Flex
     def address_fields(attribute, options = {})
       legend_text = options.delete(:legend) || I18n.t("flex.form_builder.address.legend")
 
-      fieldset(legend_text, large_legend: true) do
+      fieldset(legend_text) do
         @template.content_tag(:div) do
           # Street address line 1
           @template.content_tag(:div, class: "usa-form-group") do
