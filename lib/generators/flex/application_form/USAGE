@@ -1,0 +1,20 @@
+Description:
+    Generates a Flex application form model that extends Flex::ApplicationForm.
+    Automatically appends "ApplicationForm" to the name if not already present.
+
+Usage:
+    bin/rails generate flex:application_form NAME [attribute:type attribute:type] [options]
+
+Examples:
+    bin/rails generate flex:application_form Kitty
+    bin/rails generate flex:application_form KittyApplicationForm
+    bin/rails generate flex:application_form Passport name:name address:address
+    bin/rails generate flex:application_form Benefits --parent CustomApplicationForm
+
+Options:
+    --parent CLASS_NAME: Custom parent class name (optional)
+        Default: Flex::ApplicationForm
+        Example: --parent CustomApplicationForm
+
+This will create:
+    A Rails model file that extends Flex::ApplicationForm (or the specified parent class) with the name automatically transformed to include "ApplicationForm" suffix if not already present.
