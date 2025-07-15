@@ -13,7 +13,7 @@ module Flex
         form_name = name.end_with?("ApplicationForm") ? name : "#{name}ApplicationForm"
 
         # Set parent option default
-        parent = options[:parent] || "Flex::ApplicationForm"
+        parent = options[:parent].blank? ? "Flex::ApplicationForm" : options[:parent]
 
         # Build arguments for the Rails model generator
         model_args = [ form_name, "--parent", parent ]
