@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/business_process/business_process_generator'
+require 'generators/flex/business_process/business_process_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe BusinessProcessGenerator do
+RSpec.describe Flex::Generators::BusinessProcessGenerator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ 'TestProcess' ], { case: case_option, application_form: app_form_option }, destination_root: destination_root) }
   let(:case_option) { nil }
