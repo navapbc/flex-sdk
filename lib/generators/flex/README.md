@@ -72,7 +72,6 @@ Where:
 - `{NAME}` is the CamelCase business process name
 - `{name}` is the snake_case version for the symbol
 - `{Case}` is the case class name (default or custom)
-- `{ApplicationForm}` is the application form name (default or custom)
 
 ### Application Configuration
 
@@ -99,11 +98,3 @@ The generated business process files integrate with the Flex SDK's business proc
 - Follows the event-driven architecture with `start_listening_for_events`
 - Integrates with the case management system through the specified case class
 - Works with application form lifecycle events
-
-### Testing
-
-The generator includes comprehensive test coverage. Run the generator tests with:
-
-```bash
-bundle exec rspec spec/generators/business_process_generator_spec.rb
-```
