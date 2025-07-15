@@ -33,6 +33,10 @@ module Flex
       [ first, middle, last ].compact.join(" ")
     end
 
+    def to_s
+      full_name
+    end
+
     def persisted?
       false
     end
