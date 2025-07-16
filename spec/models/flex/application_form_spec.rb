@@ -171,6 +171,29 @@ RSpec.describe Flex::ApplicationForm do
       end
     end
 
+    describe "submit_application return value" do
+      it "returns true when submission is successful" do
+        TestApplicationForm.set_callback(:submit, :before) { Rails.logger.debug "Before callback executed" }
+        TestApplicationForm.set_callback(:submit, :after) { Rails.logger.debug "After callback executed" }
+
+        result = application_form.submit_application
+
+        expect(result).to be true
+        expect(application_form.status).to eq("submitted")
+        expect(application_form.submitted_at).to be_present
+      end
+
+      it "returns false when before_submit callback aborts submission" do
+        TestApplicationForm.set_callback(:submit, :before) { throw :abort }
+
+        result = application_form.submit_application
+
+        expect(result).to be false
+        expect(application_form.status).to eq("in_progress")
+        expect(application_form.submitted_at).to be_nil
+      end
+    end
+
     describe "after_submit callback" do
       it "executes after_submit callback" do
         callback_executed = false

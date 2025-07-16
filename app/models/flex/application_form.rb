@@ -48,7 +48,7 @@ module Flex
         save!
         publish_submitted
       end
-      success ? true : false
+      success != false
     end
 
     protected
