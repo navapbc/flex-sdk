@@ -103,4 +103,71 @@ RSpec.describe Flex::Address do
       expect(address.city).to eq("  Anytown  ")
     end
   end
+
+  describe '#blank?' do
+    [
+      [ 'all nil components', nil, nil, nil, nil, nil, true ],
+      [ 'all empty string components', '', '', '', '', '', true ],
+      [ 'all whitespace components', '  ', '  ', '  ', '  ', '  ', true ],
+      [ 'mixed nil and empty', nil, '', nil, '', nil, true ],
+      [ 'mixed nil and whitespace', nil, '  ', '', '  ', '', true ],
+      [ 'street_line_1 only', '123 Main St', nil, nil, nil, nil, false ],
+      [ 'street_line_2 only', nil, 'Apt 4B', nil, nil, nil, false ],
+      [ 'city only', nil, nil, 'Anytown', nil, nil, false ],
+      [ 'state only', nil, nil, nil, 'CA', nil, false ],
+      [ 'zip_code only', nil, nil, nil, nil, '12345', false ],
+      [ 'street_line_1 and city', '123 Main St', nil, 'Anytown', nil, nil, false ],
+      [ 'all components present', '123 Main St', 'Apt 4B', 'Anytown', 'CA', '12345', false ],
+      [ 'street_line_1 with whitespace only other components', '123 Main St', '  ', '', '  ', '', false ]
+    ].each do |description, street_line_1, street_line_2, city, state, zip_code, expected|
+      it "returns #{expected} when #{description}" do
+        address = described_class.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
+        expect(address.blank?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#empty?' do
+    [
+      [ 'all nil components', nil, nil, nil, nil, nil, true ],
+      [ 'all empty string components', '', '', '', '', '', true ],
+      [ 'mixed nil and empty', nil, '', nil, '', nil, true ],
+      [ 'street_line_1 only', '123 Main St', nil, nil, nil, nil, false ],
+      [ 'street_line_2 only', nil, 'Apt 4B', nil, nil, nil, false ],
+      [ 'city only', nil, nil, 'Anytown', nil, nil, false ],
+      [ 'state only', nil, nil, nil, 'CA', nil, false ],
+      [ 'zip_code only', nil, nil, nil, nil, '12345', false ],
+      [ 'street_line_1 and city', '123 Main St', nil, 'Anytown', nil, nil, false ],
+      [ 'all components present', '123 Main St', 'Apt 4B', 'Anytown', 'CA', '12345', false ],
+      [ 'whitespace components', '  ', '  ', '  ', '  ', '  ', false ]
+    ].each do |description, street_line_1, street_line_2, city, state, zip_code, expected|
+      it "returns #{expected} when #{description}" do
+        address = described_class.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
+        expect(address.empty?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#present?' do
+    [
+      [ 'all nil components', nil, nil, nil, nil, nil, false ],
+      [ 'all empty string components', '', '', '', '', '', false ],
+      [ 'all whitespace components', '  ', '  ', '  ', '  ', '  ', false ],
+      [ 'mixed nil and empty', nil, '', nil, '', nil, false ],
+      [ 'mixed nil and whitespace', nil, '  ', '', '  ', '', false ],
+      [ 'street_line_1 only', '123 Main St', nil, nil, nil, nil, true ],
+      [ 'street_line_2 only', nil, 'Apt 4B', nil, nil, nil, true ],
+      [ 'city only', nil, nil, 'Anytown', nil, nil, true ],
+      [ 'state only', nil, nil, nil, 'CA', nil, true ],
+      [ 'zip_code only', nil, nil, nil, nil, '12345', true ],
+      [ 'street_line_1 and city', '123 Main St', nil, 'Anytown', nil, nil, true ],
+      [ 'all components present', '123 Main St', 'Apt 4B', 'Anytown', 'CA', '12345', true ],
+      [ 'street_line_1 with whitespace only other components', '123 Main St', '  ', '', '  ', '', true ]
+    ].each do |description, street_line_1, street_line_2, city, state, zip_code, expected|
+      it "returns #{expected} when #{description}" do
+        address = described_class.new(street_line_1:, street_line_2:, city:, state:, zip_code:)
+        expect(address.present?).to eq(expected)
+      end
+    end
+  end
 end
