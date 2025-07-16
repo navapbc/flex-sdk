@@ -106,6 +106,10 @@ _Note: The database is already generated for you after running `make setup`, how
 1. Make sure a `.env` file exists at `./spec/dummy/.env`. If it doesn't, run `make spec/dummy/.env`.
 2. Run `make init-db` to setup the database container for local development.
 
+## Documentation
+
+- [Flex Attributes](./app/lib/flex/attributes.md) - Documentation for custom attribute types
+
 ## Contributing
 
 Contribution directions go here.
