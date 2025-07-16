@@ -109,9 +109,17 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
         expect(generator).to have_received(:say).with("Warning: flex_tasks table does not exist.", :yellow)
       end
 
-      it "prompts to run migrations" do
+      it "prompts to install and run migrations" do
         generator.invoke_all
-        expect(generator).to have_received(:yes?).with("Would you like to run migrations now? (y/n)")
+        expect(generator).to have_received(:yes?).with("Would you like to install and run Flex migrations now? (y/n)")
+      end
+
+      it "runs flex:install:migrations first, then db:migrate when user agrees" do
+        allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:rails_command)
+        generator.invoke_all
+        expect(generator).to have_received(:rails_command).with("flex:install:migrations").ordered
+        expect(generator).to have_received(:rails_command).with("db:migrate").ordered
       end
     end
 

@@ -29,10 +29,11 @@ module Flex
 
         unless ActiveRecord::Base.connection.table_exists?(:flex_tasks)
           say "Warning: flex_tasks table does not exist.", :yellow
-          if yes?("Would you like to run migrations now? (y/n)")
+          if yes?("Would you like to install and run Flex migrations now? (y/n)")
+            rails_command "flex:install:migrations"
             rails_command "db:migrate"
           else
-            say "You may need to run 'bin/rails db:migrate' before using your task class.", :yellow
+            say "You may need to run 'bin/rails flex:install:migrations' and 'bin/rails db:migrate' before using your task class.", :yellow
           end
         end
       end

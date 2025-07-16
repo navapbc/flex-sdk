@@ -21,4 +21,4 @@ Options:
 This will create:
     A task class file at app/models/{name}_task.rb inheriting from the specified parent class (default: Flex::Task)
     A corresponding RSpec test file at spec/models/{name}_task_spec.rb
-    Automatically checks for flex_tasks table existence and prompts to run migrations if needed (unless --skip-migration-check is used)
+    Automatically checks for flex_tasks table existence and prompts to install and run Flex migrations if needed (unless --skip-migration-check is used)
