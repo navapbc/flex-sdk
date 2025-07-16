@@ -58,8 +58,6 @@ module Flex
         @parsed_attributes = attributes.map do |attribute|
           name, type = attribute.split(":")
           type ||= "string"
-          # Map common type aliases
-          type = "integer" if type == "number"
           { name: name, type: type.to_sym }
         end
       end

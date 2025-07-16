@@ -68,9 +68,9 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
   end
 
   describe "attribute parsing" do
-    let(:args) { [ "Test", "name:name", "count:number", "email:string" ] }
+    let(:args) { [ "Test", "name:name", "count:integer", "email:string" ] }
 
-    it "maps number to integer" do
+    it "handles regular Rails attributes correctly" do
       generator.create_migration_file
       expect(generator).to have_received(:generate).with("active_record:migration", "CreateTests", "count:integer", "email:string")
     end

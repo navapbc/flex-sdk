@@ -1,3 +1,5 @@
+require "json"
+
 module Flex
   module Types
     # Custom ActiveRecord type for Flex name attributes
@@ -24,6 +26,23 @@ module Flex
         return nil unless value
         return value if value.is_a?(String)
         value.to_s
+      end
+
+      def deserialize(value)
+        return nil unless value
+
+        # Try to parse as JSON first (for database storage)
+        if value.is_a?(String) && value.start_with?("{")
+          begin
+            parsed = JSON.parse(value)
+            return cast(parsed) if parsed.is_a?(Hash)
+          rescue JSON::ParserError
+            # Fall through to treat as plain string
+          end
+        end
+
+        # Treat as plain string and create Name with first name only
+        cast(value)
       end
     end
   end
