@@ -23,7 +23,7 @@ module Flex
       end
 
       def create_migration_file
-        return unless options.fetch(:migration, true) && options[:parent] != "false"
+        return unless options.fetch(:migration, true)
 
         # Use flex:migration for all attributes since it supports both Flex and Rails types
         all_attrs = @parsed_attributes.map { |attr| "#{attr[:name]}:#{attr[:type]}" }
@@ -74,14 +74,6 @@ module Flex
         else
           "ApplicationRecord"
         end
-      end
-
-      def migration_number
-        @migration_number ||= Time.now.utc.strftime("%Y%m%d%H%M%S")
-      end
-
-      def db_migrate_path
-        "db/migrate"
       end
 
       def table_name
