@@ -41,13 +41,14 @@ module Flex
     #
     # @return [Boolean] True if the submission was successful
     def submit_application
-      run_callbacks :submit do
+      success = run_callbacks :submit do
         Rails.logger.debug "Submitting application with ID: #{id}"
         self[:status] = :submitted
         self[:submitted_at] = Time.current
         save!
         publish_submitted
       end
+      success ? true : false
     end
 
     protected
