@@ -110,7 +110,6 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       end
 
       it "prompts to run migrations" do
-        allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
         expect(generator).to have_received(:yes?).with("Would you like to run migrations now? (y/n)")
       end
