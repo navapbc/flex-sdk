@@ -24,6 +24,18 @@ module Flex
     validates :state, presence: true, length: { is: 2 }
     validates :zip_code, presence: true, format: { with: /\A\d{5}(-\d{4})?\z/, message: "must be a valid US zip code" }
 
+    def blank?
+      [ street_line_1, street_line_2, city, state, zip_code ].all?(&:blank?)
+    end
+
+    def empty?
+      [ street_line_1, street_line_2, city, state, zip_code ].all? { |component| component.nil? || component.empty? }
+    end
+
+    def present?
+      !blank?
+    end
+
     def to_s
       [ street_line_1, street_line_2, city, "#{state} #{zip_code}" ].reject(&:blank?).join(", ")
     end
