@@ -79,6 +79,11 @@ RSpec.describe Flex::ApplicationForm do
       application_form.save!
     end
 
+    after do
+      TestApplicationForm.reset_callbacks(:submit)
+      PassportApplicationForm.reset_callbacks(:submit)
+    end
+
     describe "before_submit callback" do
       it "executes before_submit callback" do
         callback_executed = false
@@ -149,7 +154,7 @@ RSpec.describe Flex::ApplicationForm do
 
         application_form.submit_application
 
-        expect(execution_order).to eq(["first", "second"])
+        expect(execution_order).to eq([ "first", "second" ])
       end
 
       it "stops execution when callback throws abort" do
@@ -161,7 +166,7 @@ RSpec.describe Flex::ApplicationForm do
         result = application_form.submit_application
 
         expect(result).to be false
-        expect(execution_order).to eq(["first", "second"])
+        expect(execution_order).to eq([ "first", "second" ])
         expect(application_form.status).to eq("in_progress")
       end
     end
@@ -214,7 +219,7 @@ RSpec.describe Flex::ApplicationForm do
 
         application_form.submit_application
 
-        expect(execution_order).to eq(["second", "first"])
+        expect(execution_order).to eq([ "second", "first" ])
       end
 
       it "does not execute when before_submit callback aborts" do
@@ -247,7 +252,7 @@ RSpec.describe Flex::ApplicationForm do
 
       it "maintains parent class callback functionality in child classes" do
         callback_executed = false
-        Flex::ApplicationForm.set_callback(:submit, :before) { callback_executed = true }
+        described_class.set_callback(:submit, :before) { callback_executed = true }
 
         passport_form = PassportApplicationForm.new
         passport_form.name_first = "John"
@@ -276,11 +281,6 @@ RSpec.describe Flex::ApplicationForm do
         expect { application_form.submit_application }.to raise_error(StandardError, "Test error")
         expect(application_form.status).to eq("submitted")
       end
-    end
-
-    after do
-      TestApplicationForm.reset_callbacks(:submit)
-      PassportApplicationForm.reset_callbacks(:submit)
     end
   end
 end

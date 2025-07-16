@@ -21,7 +21,7 @@ module Flex
 
     include Flex::Attributes
 
-    define_model_callbacks :submit, only: [:before, :after]
+    define_model_callbacks :submit, only: [ :before, :after ]
 
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
