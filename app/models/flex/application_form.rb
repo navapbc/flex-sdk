@@ -21,6 +21,8 @@ module Flex
 
     include Flex::Attributes
 
+    define_model_callbacks :submit, only: [ :before, :after ]
+
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
@@ -39,11 +41,14 @@ module Flex
     #
     # @return [Boolean] True if the submission was successful
     def submit_application
-      Rails.logger.debug "Submitting application with ID: #{id}"
-      self[:status] = :submitted
-      self[:submitted_at] = Time.current
-      save!
-      publish_submitted
+      success = run_callbacks :submit do
+        Rails.logger.debug "Submitting application with ID: #{id}"
+        self[:status] = :submitted
+        self[:submitted_at] = Time.current
+        save!
+        publish_submitted
+      end
+      success != false
     end
 
     protected
