@@ -7,5 +7,11 @@ class <%= class_name %> < <%= parent_class_name.classify %>
   flex_attribute :<%= attribute[:name] %>, :<%= attribute[:type] %>
 <% end -%>
 <% end -%>
+<% if has_rails_attributes? -%>
+
+<% rails_attributes.each do |attribute| -%>
+  # Rails attribute: <%= attribute[:name] %> (<%= attribute[:type] %>)
+<% end -%>
+<% end -%>
 end
 <% end -%>

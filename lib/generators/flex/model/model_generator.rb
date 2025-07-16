@@ -25,26 +25,12 @@ module Flex
       def create_migration_file
         return unless options.fetch(:migration, true) && options[:parent] != "false"
 
-        flex_attrs = []
-        rails_attrs = []
+        # Use flex:migration for all attributes since it supports both Flex and Rails types
+        all_attrs = @parsed_attributes.map { |attr| "#{attr[:name]}:#{attr[:type]}" }
 
-        @parsed_attributes.each do |attr|
-          if flex_attribute_type?(attr[:type])
-            flex_attrs << "#{attr[:name]}:#{attr[:type]}"
-          else
-            rails_attrs << "#{attr[:name]}:#{attr[:type]}"
-          end
-        end
-
-        # Generate Flex migration for Flex attributes
-        if flex_attrs.any?
+        if all_attrs.any?
           migration_name = "Create#{table_name.camelize}"
-          generate("flex:migration", migration_name, *flex_attrs)
-        end
-
-        # Generate standard Rails migration for regular attributes using the standard generator
-        if rails_attrs.any?
-          generate("active_record:migration", "Create#{table_name.camelize}", *rails_attrs)
+          generate("flex:migration", migration_name, *all_attrs)
         end
       end
 
@@ -72,6 +58,14 @@ module Flex
 
       def flex_attributes
         @parsed_attributes.select { |attr| flex_attribute_type?(attr[:type]) }
+      end
+
+      def rails_attributes
+        @parsed_attributes.reject { |attr| flex_attribute_type?(attr[:type]) }
+      end
+
+      def has_rails_attributes?
+        rails_attributes.any?
       end
 
       def parent_class_name

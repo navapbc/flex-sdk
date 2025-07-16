@@ -23,14 +23,14 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
   describe "generating a model with Flex attributes" do
     let(:args) { [ "Dog", "name:name", "owner:name", "age:integer" ] }
 
-    it "calls flex:migration generator for Flex attributes" do
+    it "calls flex:migration generator for all attributes" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreateDogs", "name:name", "owner:name")
+      expect(generator).to have_received(:generate).with("flex:migration", "CreateDogs", "name:name", "owner:name", "age:integer")
     end
 
-    it "calls active_record:migration generator for regular attributes" do
+    it "does not call active_record:migration generator" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("active_record:migration", "CreateDogs", "age:integer")
+      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
     end
 
     it "creates model file with Flex::Attributes" do
@@ -46,33 +46,37 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
   describe "generating a model with only regular Rails attributes" do
     let(:args) { [ "Cat", "name:string", "age:integer" ] }
 
-    it "does not call flex:migration generator" do
+    it "calls flex:migration generator for all attributes" do
       generator.create_migration_file
-      expect(generator).not_to have_received(:generate).with(anything, anything, /name:name/)
+      expect(generator).to have_received(:generate).with("flex:migration", "CreateCats", "name:string", "age:integer")
     end
 
-    it "calls active_record:migration generator for all attributes" do
+    it "does not call active_record:migration generator" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("active_record:migration", "CreateCats", "name:string", "age:integer")
+      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
     end
   end
 
   describe "generating a model with mixed attributes" do
     let(:args) { [ "Person", "full_name:name", "email:string", "birth_date:date" ] }
 
-    it "separates Flex and Rails attributes correctly" do
+    it "calls flex:migration generator for all attributes" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreatePeople", "full_name:name")
-      expect(generator).to have_received(:generate).with("active_record:migration", "CreatePeople", "email:string", "birth_date:date")
+      expect(generator).to have_received(:generate).with("flex:migration", "CreatePeople", "full_name:name", "email:string", "birth_date:date")
+    end
+
+    it "does not call active_record:migration generator" do
+      generator.create_migration_file
+      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
     end
   end
 
   describe "attribute parsing" do
     let(:args) { [ "Test", "name:name", "count:integer", "email:string" ] }
 
-    it "handles regular Rails attributes correctly" do
+    it "handles all attributes correctly" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("active_record:migration", "CreateTests", "count:integer", "email:string")
+      expect(generator).to have_received(:generate).with("flex:migration", "CreateTests", "name:name", "count:integer", "email:string")
     end
   end
 end
