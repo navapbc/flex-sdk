@@ -71,4 +71,216 @@ RSpec.describe Flex::ApplicationForm do
       end
     end
   end
+
+  describe "submit callbacks" do
+    let(:application_form) { TestApplicationForm.new }
+
+    before do
+      application_form.save!
+    end
+
+    describe "before_submit callback" do
+      it "executes before_submit callback" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before) { callback_executed = true }
+
+        application_form.submit_application
+
+        expect(callback_executed).to be true
+        expect(application_form.status).to eq("submitted")
+      end
+
+      it "supports conditional callbacks with if option" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before, if: -> { test_string == "execute" }) { callback_executed = true }
+
+        application_form.test_string = "execute"
+        application_form.submit_application
+
+        expect(callback_executed).to be true
+      end
+
+      it "skips conditional callbacks when condition is false" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before, if: -> { test_string == "execute" }) { callback_executed = true }
+
+        application_form.test_string = "skip"
+        application_form.submit_application
+
+        expect(callback_executed).to be false
+        expect(application_form.status).to eq("submitted")
+      end
+
+      it "supports conditional callbacks with unless option" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before, unless: -> { test_string == "skip" }) { callback_executed = true }
+
+        application_form.test_string = "execute"
+        application_form.submit_application
+
+        expect(callback_executed).to be true
+      end
+
+      it "skips conditional callbacks when unless condition is true" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before, unless: -> { test_string == "skip" }) { callback_executed = true }
+
+        application_form.test_string = "skip"
+        application_form.submit_application
+
+        expect(callback_executed).to be false
+        expect(application_form.status).to eq("submitted")
+      end
+
+      it "can abort submission using throw :abort" do
+        TestApplicationForm.set_callback(:submit, :before) { throw :abort }
+
+        result = application_form.submit_application
+
+        expect(result).to be false
+        expect(application_form.status).to eq("in_progress")
+        expect(application_form.submitted_at).to be_nil
+      end
+
+      it "handles multiple before_submit callbacks in order" do
+        execution_order = []
+        TestApplicationForm.set_callback(:submit, :before) { execution_order << "first" }
+        TestApplicationForm.set_callback(:submit, :before) { execution_order << "second" }
+
+        application_form.submit_application
+
+        expect(execution_order).to eq(["first", "second"])
+      end
+
+      it "stops execution when callback throws abort" do
+        execution_order = []
+        TestApplicationForm.set_callback(:submit, :before) { execution_order << "first" }
+        TestApplicationForm.set_callback(:submit, :before) { execution_order << "second"; throw :abort }
+        TestApplicationForm.set_callback(:submit, :before) { execution_order << "third" }
+
+        result = application_form.submit_application
+
+        expect(result).to be false
+        expect(execution_order).to eq(["first", "second"])
+        expect(application_form.status).to eq("in_progress")
+      end
+    end
+
+    describe "after_submit callback" do
+      it "executes after_submit callback" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :after) { callback_executed = true }
+
+        application_form.submit_application
+
+        expect(callback_executed).to be true
+        expect(application_form.status).to eq("submitted")
+      end
+
+      it "executes after submission is complete" do
+        callback_status = nil
+        TestApplicationForm.set_callback(:submit, :after) { callback_status = status }
+
+        application_form.submit_application
+
+        expect(callback_status).to eq("submitted")
+      end
+
+      it "supports conditional callbacks with if option" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :after, if: -> { test_string == "execute" }) { callback_executed = true }
+
+        application_form.test_string = "execute"
+        application_form.submit_application
+
+        expect(callback_executed).to be true
+      end
+
+      it "skips conditional callbacks when condition is false" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :after, if: -> { test_string == "execute" }) { callback_executed = true }
+
+        application_form.test_string = "skip"
+        application_form.submit_application
+
+        expect(callback_executed).to be false
+        expect(application_form.status).to eq("submitted")
+      end
+
+      it "handles multiple after_submit callbacks in reverse order" do
+        execution_order = []
+        TestApplicationForm.set_callback(:submit, :after) { execution_order << "first" }
+        TestApplicationForm.set_callback(:submit, :after) { execution_order << "second" }
+
+        application_form.submit_application
+
+        expect(execution_order).to eq(["second", "first"])
+      end
+
+      it "does not execute when before_submit callback aborts" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before) { throw :abort }
+        TestApplicationForm.set_callback(:submit, :after) { callback_executed = true }
+
+        application_form.submit_application
+
+        expect(callback_executed).to be false
+      end
+    end
+
+    describe "callback inheritance" do
+      it "allows child classes to define their own callbacks" do
+        callback_executed = false
+        PassportApplicationForm.set_callback(:submit, :before) { callback_executed = true }
+
+        passport_form = PassportApplicationForm.new
+        passport_form.name_first = "John"
+        passport_form.name_last = "Doe"
+        passport_form.date_of_birth = Date.new(1990, 1, 1)
+        passport_form.save!
+
+        passport_form.submit_application
+
+        expect(callback_executed).to be true
+        expect(passport_form.status).to eq("submitted")
+      end
+
+      it "maintains parent class callback functionality in child classes" do
+        callback_executed = false
+        Flex::ApplicationForm.set_callback(:submit, :before) { callback_executed = true }
+
+        passport_form = PassportApplicationForm.new
+        passport_form.name_first = "John"
+        passport_form.name_last = "Doe"
+        passport_form.date_of_birth = Date.new(1990, 1, 1)
+        passport_form.save!
+
+        passport_form.submit_application
+
+        expect(callback_executed).to be true
+        expect(passport_form.status).to eq("submitted")
+      end
+    end
+
+    describe "error handling in callbacks" do
+      it "handles exceptions in before_submit callbacks" do
+        TestApplicationForm.set_callback(:submit, :before) { raise StandardError, "Test error" }
+
+        expect { application_form.submit_application }.to raise_error(StandardError, "Test error")
+        expect(application_form.status).to eq("in_progress")
+      end
+
+      it "handles exceptions in after_submit callbacks" do
+        TestApplicationForm.set_callback(:submit, :after) { raise StandardError, "Test error" }
+
+        expect { application_form.submit_application }.to raise_error(StandardError, "Test error")
+        expect(application_form.status).to eq("submitted")
+      end
+    end
+
+    after do
+      TestApplicationForm.reset_callbacks(:submit)
+      PassportApplicationForm.reset_callbacks(:submit)
+    end
+  end
 end
