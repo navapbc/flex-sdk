@@ -10,7 +10,7 @@ class <%= class_name %> < <%= parent_class_name.classify %>
 <% if has_rails_attributes? -%>
 
 <% rails_attributes.each do |attribute| -%>
-  # Rails attribute: <%= attribute[:name] %> (<%= attribute[:type] %>)
+  attribute :<%= attribute[:name] %>, :<%= attribute[:type] %>
 <% end -%>
 <% end -%>
 end
