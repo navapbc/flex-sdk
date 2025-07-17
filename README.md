@@ -63,7 +63,9 @@ end
 
 At this point you should be able to use your newly created model to implement a form. If you used the `scaffold` command, you will likely need to update references, views, etc. that were auto-generated with the scaffold command.
 
-### Models
+### Generators
+
+Generators provide you with extra functionality to generate files from the command line. This aims to speed up development by generating files for you.
 
 #### Flex Model Generator
 
