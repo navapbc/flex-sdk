@@ -111,8 +111,6 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "when config.after_initialize already exists" do
-    let(:generator_with_existing_config) { described_class.new([ 'Test' ], {}, destination_root: destination_root) }
-
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
@@ -132,6 +130,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      generator_with_existing_config = described_class.new([ 'Test' ], {}, destination_root: destination_root)
       allow(generator_with_existing_config).to receive(:generate).and_call_original
       allow(generator_with_existing_config).to receive(:yes?).and_return(false)
       generator_with_existing_config.invoke_all
@@ -146,8 +145,6 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "when start_listening_for_events already exists" do
-    let(:generator_with_duplicate) { described_class.new([ 'Test' ], {}, destination_root: destination_root) }
-
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
@@ -167,6 +164,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      generator_with_duplicate = described_class.new([ 'Test' ], {}, destination_root: destination_root)
       allow(generator_with_duplicate).to receive(:generate).and_call_original
       allow(generator_with_duplicate).to receive(:yes?).and_return(false)
       generator_with_duplicate.invoke_all
