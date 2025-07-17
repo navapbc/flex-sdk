@@ -87,7 +87,7 @@ bin/rails generate flex:model NAME [attribute:type attribute:type] [options]
 #### Examples
 
 ```shell
-bin/rails generate flex:model Dog name:name owner:name rabies_id:number --parent Wolf
+bin/rails generate flex:model Dog name:name owner:name rabies_id:integer --parent Wolf
 bin/rails generate flex:model Person name:name address:address salary:money
 bin/rails generate flex:model User email:string profile:name birth_date:memorable_date
 ```
