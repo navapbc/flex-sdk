@@ -10,7 +10,7 @@ module Flex
 
       argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
-      class_option :migration, type: :boolean
+      class_option :no_migration, type: :boolean, desc: "Skip migration file generation"
       class_option :timestamps, type: :boolean
       class_option :parent, type: :string, desc: "The parent class for the generated model"
       class_option :indexes, type: :boolean, default: true, desc: "Add indexes for references and belongs_to columns"
@@ -23,7 +23,7 @@ module Flex
       end
 
       def create_migration_file
-        return unless options.fetch(:migration, true)
+        return if options[:no_migration]
 
         # Use flex:migration for all attributes since it supports both Flex and Rails types
         all_attrs = @parsed_attributes.map { |attr| "#{attr[:name]}:#{attr[:type]}" }

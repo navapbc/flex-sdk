@@ -23,14 +23,25 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
   describe "generating a model with Flex attributes" do
     let(:args) { [ "Dog", "name:name", "owner:name", "age:integer" ] }
 
-    it "calls flex:migration generator for all attributes" do
-      generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreateDogs", "name:name", "owner:name", "age:integer")
+    context "with default options" do
+      it "calls flex:migration generator for all attributes" do
+        generator.create_migration_file
+        expect(generator).to have_received(:generate).with("flex:migration", "CreateDogs", "name:name", "owner:name", "age:integer")
+      end
+
+      it "does not call active_record:migration generator" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+      end
     end
 
-    it "does not call active_record:migration generator" do
-      generator.create_migration_file
-      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+    context "with --no-migration option" do
+      let(:options) { { no_migration: true } }
+
+      it "does not generate any migration" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate)
+      end
     end
 
     it "creates model file with Flex::Attributes" do
@@ -46,28 +57,50 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
   describe "generating a model with only regular Rails attributes" do
     let(:args) { [ "Cat", "name:string", "age:integer" ] }
 
-    it "calls flex:migration generator for all attributes" do
-      generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreateCats", "name:string", "age:integer")
+    context "with default options" do
+      it "calls flex:migration generator for all attributes" do
+        generator.create_migration_file
+        expect(generator).to have_received(:generate).with("flex:migration", "CreateCats", "name:string", "age:integer")
+      end
+
+      it "does not call active_record:migration generator" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+      end
     end
 
-    it "does not call active_record:migration generator" do
-      generator.create_migration_file
-      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+    context "with --no-migration option" do
+      let(:options) { { no_migration: true } }
+
+      it "does not generate any migration" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate)
+      end
     end
   end
 
   describe "generating a model with mixed attributes" do
     let(:args) { [ "Person", "full_name:name", "email:string", "birth_date:date" ] }
 
-    it "calls flex:migration generator for all attributes" do
-      generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreatePeople", "full_name:name", "email:string", "birth_date:date")
+    context "with default options" do
+      it "calls flex:migration generator for all attributes" do
+        generator.create_migration_file
+        expect(generator).to have_received(:generate).with("flex:migration", "CreatePeople", "full_name:name", "email:string", "birth_date:date")
+      end
+
+      it "does not call active_record:migration generator" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+      end
     end
 
-    it "does not call active_record:migration generator" do
-      generator.create_migration_file
-      expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
+    context "with --no-migration option" do
+      let(:options) { { no_migration: true } }
+
+      it "does not generate any migration" do
+        generator.create_migration_file
+        expect(generator).not_to have_received(:generate)
+      end
     end
   end
 
