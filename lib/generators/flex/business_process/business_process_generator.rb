@@ -9,6 +9,23 @@ module Flex
 
       class_option :case, type: :string, desc: "(optional) Case class name. Ex: MedicaidCase"
       class_option :application_form, type: :string, desc: "(optional) Application form name. Ex: MedicaidApplicationForm"
+      class_option :skip_generating_application_form, type: :boolean, default: false, desc: "Skip application form generation check"
+      class_option :force_generating_application_form, type: :boolean, default: false, desc: "Generate application form without prompting"
+
+      def check_application_form_exists
+        return if options[:skip_generating_application_form]
+        return if @application_form_checked
+
+        @application_form_checked = true
+        app_form_class = application_form_name
+        begin
+          app_form_class.constantize
+        rescue NameError
+          if options[:force_generating_application_form] || yes?("Application form #{app_form_class} does not exist. Generate it? (y/n)")
+            generate("flex:application_form", app_form_class.gsub(/ApplicationForm$/, ""))
+          end
+        end
+      end
 
       def create_business_process_file
         full_file_path = File.join(destination_root, business_process_file_path)
@@ -16,6 +33,7 @@ module Flex
           raise "Business process file already exists at #{business_process_file_path}"
         end
 
+        check_application_form_exists
         template "business_process.rb.tt", business_process_file_path
       end
 

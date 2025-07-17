@@ -107,6 +107,47 @@ The generator will create:
 - A Rails model file that includes `Flex::Attributes` with the appropriate flex_attribute declarations
 - A migration file with the correct database columns for each Flex attribute type
 
+#### Flex Business Process Generator
+
+Generates a business process file with standardized templates and automatically configures your Rails application to start listening for events. Optionally checks for and generates associated application forms.
+
+##### Usage
+
+```shell
+bin/rails generate flex:business_process NAME [options]
+```
+
+##### Examples
+
+```shell
+bin/rails generate flex:business_process Alien
+bin/rails generate flex:business_process Sunny --case Moon
+bin/rails generate flex:business_process Kitty --case Doggy --application_form Rabbit
+bin/rails generate flex:business_process Passport --force-generating-application-form
+bin/rails generate flex:business_process Benefits --skip-generating-application-form
+```
+
+##### Options
+
+- `--case CLASS_NAME`: Custom case class name (optional)
+  - Default: {NAME}Case (e.g., "AlienCase")
+  - Example: `--case MoonCase`
+
+- `--application_form FORM_NAME`: Custom application form name (optional)
+  - Default: {NAME}ApplicationForm (e.g., "AlienApplicationForm")
+  - Example: `--application_form RabbitApplicationForm`
+
+- `--skip-generating-application-form`: Skip application form generation check (optional)
+  - Use this flag to bypass checking if the application form exists
+
+- `--force-generating-application-form`: Generate application form without prompting (optional)
+  - Use this flag to automatically generate the application form if it doesn't exist
+
+This will create:
+- A business process file at `app/business_processes/{name}_business_process.rb` using the BusinessProcess.define DSL pattern
+- Automatically update `config/application.rb` to call `{NAME}BusinessProcess.start_listening_for_events` in a `config.after_initialize` block
+- Optionally check for and generate the associated application form if it doesn't exist
+
 ## Installation
 
 Add this line to your application's Gemfile:

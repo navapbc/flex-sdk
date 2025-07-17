@@ -5,7 +5,8 @@ require 'tmpdir'
 
 RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ 'TestProcess' ], { case: case_option, application_form: app_form_option }, destination_root: destination_root) }
+  let(:generator) { described_class.new([ 'TestProcess' ], options, destination_root: destination_root) }
+  let(:options) { { case: case_option, application_form: app_form_option } }
   let(:case_option) { nil }
   let(:app_form_option) { nil }
 
@@ -38,6 +39,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
 
   describe "with basic name only" do
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -62,6 +65,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     let(:case_option) { 'Moon' }
 
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -78,6 +83,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     let(:app_form_option) { 'Rabbit' }
 
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -92,6 +99,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   describe "when business process file already exists" do
     before do
       File.write("#{destination_root}/app/business_processes/test_process_business_process.rb", "# existing file")
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
     end
 
     it "raises an error" do
@@ -123,6 +132,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      allow(generator_with_existing_config).to receive(:generate).and_call_original
+      allow(generator_with_existing_config).to receive(:yes?).and_return(false)
       generator_with_existing_config.invoke_all
     end
 
@@ -156,6 +167,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      allow(generator_with_duplicate).to receive(:generate).and_call_original
+      allow(generator_with_duplicate).to receive(:yes?).and_return(false)
       generator_with_duplicate.invoke_all
     end
 
@@ -163,6 +176,42 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       content = File.read("#{destination_root}/config/application.rb")
       occurrences = content.scan(/TestBusinessProcess\.start_listening_for_events/).length
       expect(occurrences).to eq(1)
+    end
+  end
+
+  describe "application form generation" do
+    [
+      [ "when application form exists", { stub_const: "TestProcessApplicationForm" }, false, false, 0, 0 ],
+      [ "when application form does not exist and user declines", {}, false, false, 1, 0 ],
+      [ "when application form does not exist and user agrees", {}, true, false, 1, 1 ],
+      [ "with skip_generating_application_form option", { skip_generating_application_form: true }, false, false, 0, 0 ],
+      [ "with force_generating_application_form option", { force_generating_application_form: true }, false, false, 0, 1 ]
+    ].each do |description, test_options, user_response, _expected_prompt, expected_yes_calls, expected_generate_calls|
+      it description do
+        test_generator_options = options.merge(test_options.except(:stub_const))
+        test_generator = described_class.new([ 'TestProcess' ], test_generator_options, destination_root: destination_root)
+
+        if test_options[:stub_const]
+          stub_const(test_options[:stub_const], Class.new)
+        end
+
+        allow(test_generator).to receive(:generate)
+        allow(test_generator).to receive(:yes?).and_return(user_response)
+
+        test_generator.invoke_all
+
+        if expected_yes_calls > 0
+          expect(test_generator).to have_received(:yes?).exactly(expected_yes_calls).times
+        else
+          expect(test_generator).not_to have_received(:yes?)
+        end
+
+        if expected_generate_calls > 0
+          expect(test_generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(expected_generate_calls).times
+        else
+          expect(test_generator).not_to have_received(:generate).with("flex:application_form", anything)
+        end
+      end
     end
   end
 end
