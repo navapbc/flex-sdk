@@ -63,15 +63,7 @@ module Flex
       end
 
       def parent_class_name
-        if options[:parent]
-          options[:parent]
-        else
-          "ApplicationRecord"
-        end
-      end
-
-      def table_name
-        @table_name ||= class_name.underscore.pluralize
+        options[:parent] || "ApplicationRecord"
       end
     end
   end
