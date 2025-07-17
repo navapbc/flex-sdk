@@ -35,15 +35,6 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
       end
     end
 
-    context "with --no-migration option" do
-      let(:options) { { no_migration: true } }
-
-      it "does not generate any migration" do
-        generator.create_migration_file
-        expect(generator).not_to have_received(:generate)
-      end
-    end
-
     it "creates model file with Flex::Attributes" do
       allow(generator).to receive(:generate).and_call_original
       allow(File).to receive(:join).and_call_original
@@ -68,15 +59,6 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
         expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
       end
     end
-
-    context "with --no-migration option" do
-      let(:options) { { no_migration: true } }
-
-      it "does not generate any migration" do
-        generator.create_migration_file
-        expect(generator).not_to have_received(:generate)
-      end
-    end
   end
 
   describe "generating a model with mixed attributes" do
@@ -91,15 +73,6 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
       it "does not call active_record:migration generator" do
         generator.create_migration_file
         expect(generator).not_to have_received(:generate).with("active_record:migration", anything, anything)
-      end
-    end
-
-    context "with --no-migration option" do
-      let(:options) { { no_migration: true } }
-
-      it "does not generate any migration" do
-        generator.create_migration_file
-        expect(generator).not_to have_received(:generate)
       end
     end
   end
