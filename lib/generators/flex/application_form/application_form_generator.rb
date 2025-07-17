@@ -16,13 +16,14 @@ module Flex
         parent = options[:parent].blank? ? "Flex::ApplicationForm" : options[:parent]
 
         # Build arguments for the Rails model generator
-        model_args = [ form_name, "--parent", parent ]
+        model_args = [ form_name ]
 
         # Pass through any additional arguments (attributes)
         model_args.concat(args) if args.any?
+        model_args.concat([ "--parent", parent ])
 
         # Call the Rails model generator with transformed args
-        generate("model", *model_args)
+        generate("flex:model", *model_args)
       end
     end
   end
