@@ -81,7 +81,7 @@ bin/rails generate flex:model NAME [attribute:type attribute:type] [options]
 
 ##### Options
 
-- parent: Allows you to specify the parent class of the model. If not supplied, the parent class will default to `ApplicationModel`.
+- parent: Allows you to specify the parent class of the model. If not supplied, the parent class will default to `ApplicationRecord`.
   - Example: `bin/rails generate flex:model MedicaidUser name:name --parent User`
 
 #### Examples
