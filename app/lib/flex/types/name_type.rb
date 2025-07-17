@@ -5,6 +5,10 @@ module Flex
     # Custom ActiveRecord type for Flex name attributes
     # Handles casting and serialization of Flex::Name objects
     class NameType < ActiveRecord::Type::Value
+      def type
+        :name
+      end
+
       def cast(value)
         case value
         when Flex::Name

@@ -14,6 +14,13 @@ module Flex
       end
     end
 
+    initializer "flex.types" do
+      ActiveSupport.on_load :active_record do
+        ActiveRecord::Type.register(:name, Flex::Types::NameType)
+        ActiveModel::Type.register(:name, Flex::Types::NameType)
+      end
+    end
+
     config.generators do |g|
       g.test_framework :rspec
     end
