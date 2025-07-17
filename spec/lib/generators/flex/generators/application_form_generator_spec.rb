@@ -74,7 +74,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
     context "with additional attributes" do
       it "passes through additional arguments to model generator" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "--parent", "Flex::ApplicationForm", "name:string", "email:string")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "name:string", "email:string", "--parent", "Flex::ApplicationForm")
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "passes through both parent and attributes" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "--parent", "CustomForm", "name:string", "email:string")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "name:string", "email:string", "--parent", "CustomForm")
       end
     end
   end
@@ -130,7 +130,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "passes all options correctly to Rails generator" do
         generator.invoke_all
-        expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "--parent", "CustomParent", "name:string")
+        expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "name:string", "--parent", "CustomParent")
       end
     end
 
