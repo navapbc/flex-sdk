@@ -63,6 +63,48 @@ end
 
 At this point you should be able to use your newly created model to implement a form. If you used the `scaffold` command, you will likely need to update references, views, etc. that were auto-generated with the scaffold command.
 
+### Models
+
+#### Flex Model Generator
+
+Flex provides a custom model generator that supports special attribute types like names, addresses, money values, and dates. The generator automatically includes `Flex::Attributes` and creates the appropriate database migrations with the correct column structure for each Flex attribute type.
+
+#### Using the Generator
+
+To generate a new model with Flex attributes, use the following command:
+
+```shell
+bin/rails generate flex:model NAME [attribute:type attribute:type] [options]
+```
+
+##### Options
+
+- parent: Allows you to specify the parent class of the model. If not supplied, the parent class will default to `ApplicationModel`.
+  - Example: `bin/rails generate flex:model MedicaidUser name:name --parent User`
+
+#### Examples
+
+```shell
+bin/rails generate flex:model Dog name:name owner:name rabies_id:number --parent Wolf
+bin/rails generate flex:model Person name:name address:address salary:money
+bin/rails generate flex:model User email:string profile:name birth_date:memorable_date
+```
+
+#### Supported Flex Attribute Types
+
+- `name` - Creates columns: name_first, name_middle, name_last (all :string)
+- `address` - Creates columns: address_street_line_1, address_street_line_2, address_city, address_state, address_zip_code (all :string)
+- `money` - Creates column: money (:integer)
+- `memorable_date` - Creates column: memorable_date (:date)
+- `us_date` - Creates column: us_date (:date)
+- `tax_id` - Creates column: tax_id (:string)
+- `year_quarter` - Creates columns: year_quarter_year (:integer), year_quarter_quarter (:integer)
+
+The generator will create:
+
+- A Rails model file that includes `Flex::Attributes` with the appropriate flex_attribute declarations
+- A migration file with the correct database columns for each Flex attribute type
+
 ## Installation
 
 Add this line to your application's Gemfile:
