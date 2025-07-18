@@ -28,9 +28,9 @@ In your controller, ensure you have the following instance variables set:
 
 ```ruby
 def index
-  @tasks = Flex::Task.for_current_user # or your task retrieval logic
-  @task_types = Flex::Task.available_types # or your task types
-  @unassigned_tasks = Flex::Task.unassigned # or your unassigned tasks logic
+  @tasks = Flex::Task.where(assignee_id: current_user.id) # or your task retrieval logic
+  @task_types = ["MyCustomTask", "OtherTask", Flex::Task.name]
+  @unassigned_tasks = Flex::Task.where(assignee_id: nil) # or your unassigned tasks logic
 end
 ```
 
