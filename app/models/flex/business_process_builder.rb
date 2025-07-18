@@ -22,6 +22,8 @@ module Flex
     extend ActiveSupport::Concern
 
     class_methods do
+      attr_accessor :start_step_name
+
       def steps
         @steps ||= {}
       end
@@ -32,14 +34,6 @@ module Flex
 
       def start_events
         @start_events ||= {}
-      end
-
-      def start_step_name
-        @start_step_name
-      end
-
-      def start_step_name=(value)
-        @start_step_name = value
       end
 
       def start(step_name, on: nil, &handler)
