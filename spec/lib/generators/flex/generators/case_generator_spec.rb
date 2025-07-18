@@ -198,7 +198,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when business process does not exist and user declines" do
       before do
-        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
+        hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
       end
@@ -214,7 +214,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when business process does not exist and user agrees" do
       before do
-        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
+        hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
@@ -279,7 +279,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when application form does not exist and user declines" do
       before do
-        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
+        hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
       end
@@ -295,7 +295,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when application form does not exist and user agrees" do
       before do
-        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
+        hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
@@ -344,8 +344,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
   describe "combined scenarios" do
     context "with both business process and application form missing, user agrees to both" do
       before do
-        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
-        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
+        hide_const("TestBusinessProcess")
+        hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
