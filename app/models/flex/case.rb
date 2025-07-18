@@ -28,12 +28,15 @@ module Flex
 
     scope :for_application_form, ->(application_form_id) { where(application_form_id:) }
     scope :for_event, ->(event) do
-      if event[:payload].key?(:application_form_id)
+      if event[:payload].key?(:case_id)
+        Rails.logger.debug "Finding business processes for event with case_id: #{event[:payload][:case_id]}"
+        where(id: event[:payload][:case_id])
+      elsif event[:payload].key?(:application_form_id)
         Rails.logger.debug "Finding business processes for event with application_form_id: #{event[:payload][:application_form_id]}"
         for_application_form(event[:payload][:application_form_id])
       else
-        Rails.logger.debug "Finding business processes for event with case_id: #{event[:payload][:case_id]}"
-        where(id: event[:payload][:case_id])
+        Rails.logger.debug "No matching case or application form IDs found in event payload"
+        none
       end
     end
 
