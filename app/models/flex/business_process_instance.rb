@@ -1,4 +1,25 @@
 module Flex
+  # BusinessProcessInstance represents the runtime state and behavior of a business process
+  # for a specific case. It manages the current step in the process flow and handles transitions
+  # between steps based on events.
+  #
+  # This class acts as a bridge between the business process definition (BusinessProcess)
+  # and the case it operates on. It maintains the current state and executes steps as
+  # the process moves forward.
+  #
+  # @example Transitioning to the next step based on an event
+  #   instance = case.business_process_instance
+  #   instance.transition_to_next_step({ name: 'form_submitted', payload: { case_id: case.id } })
+  #
+  # Key features:
+  # - Manages the current step in the business process for a specific case
+  # - Handles transitions between steps based on events
+  # - Executes the current step's logic (staff tasks, system processes, etc.)
+  # - Closes the case when reaching the end step
+  #
+  # @see Flex::BusinessProcess
+  # @see Flex::Case
+  #
   class BusinessProcessInstance
     attr_reader :case
 
