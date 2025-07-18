@@ -262,5 +262,33 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         expect(generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(1).times
       end
     end
+
+    describe "when application form name does not end with ApplicationForm" do
+      let(:options) { { case: case_option, application_form: "CustomForm", force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "uses the full name as base name" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "CustomForm").exactly(1).times
+      end
+    end
+
+    describe "when application form is namespaced" do
+      let(:options) { { case: case_option, application_form: "MyModule::TestProcessApplicationForm", force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "correctly extracts base name from namespaced class" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "MyModule::TestProcess").exactly(1).times
+      end
+    end
   end
 end

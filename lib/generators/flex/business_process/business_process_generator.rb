@@ -18,9 +18,10 @@ module Flex
 
         @application_form_checked = true
         app_form_class = application_form_name
-        unless Object.const_defined?(app_form_class)
+        unless app_form_class.safe_constantize.present?
           if options[:force_generating_application_form] || yes?("Application form #{app_form_class} does not exist. Generate it? (y/n)")
-            generate("flex:application_form", app_form_class.gsub(/ApplicationForm$/, ""))
+            base_name = app_form_class.end_with?("ApplicationForm") ? app_form_class[0...-15] : app_form_class
+            generate("flex:application_form", base_name)
           end
         end
       end
