@@ -87,8 +87,8 @@ bin/rails generate flex:model NAME [attribute:type attribute:type] [options]
 #### Examples
 
 ```shell
-bin/rails generate flex:model Dog name:name owner:name rabies_id:integer --parent Wolf
-bin/rails generate flex:model Person name:name address:address salary:money
+bin/rails generate flex:model MedicaidUser name:name location:address ssn:tax_id --parent User
+bin/rails generate flex:model MedicareUser name:name address:address salary:money
 bin/rails generate flex:model User email:string profile:name birth_date:memorable_date
 ```
 
@@ -120,9 +120,9 @@ bin/rails generate flex:business_process NAME [options]
 ##### Examples
 
 ```shell
-bin/rails generate flex:business_process Alien
-bin/rails generate flex:business_process Sunny --case Moon
-bin/rails generate flex:business_process Kitty --case Doggy --application_form Rabbit
+bin/rails generate flex:business_process FirePermitApplication
+bin/rails generate flex:business_process FirePermitApplication --case PermitApplication
+bin/rails generate flex:business_process LiquorLicenseApplication --case PermitApplication --application_form AlcoholLicense
 bin/rails generate flex:business_process Passport --force-generating-application-form
 bin/rails generate flex:business_process Benefits --skip-generating-application-form
 ```
@@ -130,20 +130,24 @@ bin/rails generate flex:business_process Benefits --skip-generating-application-
 ##### Options
 
 - `--case CLASS_NAME`: Custom case class name (optional)
-  - Default: {NAME}Case (e.g., "AlienCase")
-  - Example: `--case MoonCase`
+
+  - Default: {NAME}Case (e.g., "MedicaidCase")
+  - Example: `--case MedicareCase`
 
 - `--application_form FORM_NAME`: Custom application form name (optional)
-  - Default: {NAME}ApplicationForm (e.g., "AlienApplicationForm")
-  - Example: `--application_form RabbitApplicationForm`
+
+  - Default: {NAME}ApplicationForm (e.g., "PermitApplicationForm")
+  - Example: `--application_form FirePermitApplicationForm`
 
 - `--skip-generating-application-form`: Skip application form generation check (optional)
+
   - Use this flag to bypass checking if the application form exists
 
 - `--force-generating-application-form`: Generate application form without prompting (optional)
   - Use this flag to automatically generate the application form if it doesn't exist
 
 This will create:
+
 - A business process file at `app/business_processes/{name}_business_process.rb` using the BusinessProcess.define DSL pattern
 - Automatically update `config/application.rb` to call `{NAME}BusinessProcess.start_listening_for_events` in a `config.after_initialize` block
 - Optionally check for and generate the associated application form if it doesn't exist
