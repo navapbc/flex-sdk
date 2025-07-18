@@ -24,7 +24,7 @@ module Flex
     define_model_callbacks :submit, only: [ :before, :after ]
 
     attribute :status, :integer, default: 0
-    protected attr_writer :status, :integer
+    protected attr_writer :status
     enum :status, in_progress: 0, submitted: 1
 
     attribute :user_id, :uuid
@@ -52,7 +52,7 @@ module Flex
         Rails.logger.debug "Submitting application with ID: #{id}"
         self[:status] = :submitted
         self[:submitted_at] = Time.current
-        save!(context: :submit)
+        save!
         publish_submitted
       end
       success != false
