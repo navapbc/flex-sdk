@@ -39,13 +39,20 @@ module Flex
     # This method should be called when a user submits the form.
     # After submission, the form can no longer be modified.
     #
+    # Validates the form with the :submit context before proceeding.
+    # If validation fails, the submission is aborted and returns false.
+    #
     # @return [Boolean] True if the submission was successful
     def submit_application
+      # First run validations with submit context
+      return false unless valid?(:submit)
+      
+      # Then proceed with callbacks as before
       success = run_callbacks :submit do
         Rails.logger.debug "Submitting application with ID: #{id}"
         self[:status] = :submitted
         self[:submitted_at] = Time.current
-        save!
+        save!(context: :submit)
         publish_submitted
       end
       success != false

@@ -50,6 +50,58 @@ RSpec.describe Flex::ApplicationForm do
 
         expect(application_form.submitted_at).to be_within(1.second).of(Time.current)
       end
+
+      context "with validation contexts" do
+        before do
+          TestApplicationForm.validates :test_string, presence: true, on: :submit
+        end
+
+        after do
+          TestApplicationForm.clear_validators!
+        end
+
+        it "validates with submit context before proceeding" do
+          application_form.test_string = nil
+
+          result = application_form.submit_application
+
+          expect(result).to be false
+          expect(application_form.status).to eq("in_progress")
+          expect(application_form.submitted_at).to be_nil
+          expect(application_form.errors[:test_string]).to include("can't be blank")
+        end
+
+        it "proceeds with submission when submit context validations pass" do
+          application_form.test_string = "valid value"
+
+          result = application_form.submit_application
+
+          expect(result).to be true
+          expect(application_form.status).to eq("submitted")
+          expect(application_form.submitted_at).to be_present
+          expect(application_form.errors).to be_empty
+        end
+
+        it "runs both submit context and default validations during submission" do
+          TestApplicationForm.validates :test_string, length: { minimum: 10 }
+          application_form.test_string = "short"
+
+          result = application_form.submit_application
+
+          expect(result).to be false
+          expect(application_form.status).to eq("in_progress")
+          expect(application_form.errors[:test_string]).to include("is too short (minimum is 10 characters)")
+        end
+
+        it "does not run submit context validations during regular save" do
+          application_form.test_string = nil
+
+          result = application_form.save
+
+          expect(result).to be true
+          expect(application_form.errors).to be_empty
+        end
+      end
     end
 
     context "when form is already submitted" do
