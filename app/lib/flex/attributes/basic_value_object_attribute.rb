@@ -1,5 +1,19 @@
 module Flex
   module Attributes
+    # Internal module used by other Flex attribute modules to implement attributes
+    # whose type is a subclass of Flex::ValueObject. This module is not intended to be
+    # used directly by clients of Flex.
+    #
+    # The module provides functionality to create attributes that represent complex values
+    # as value objects, with nested attributes that are automatically mapped to and from
+    # the value object's properties. For each value object attribute, it creates:
+    #
+    # - Individual attributes for each nested field (e.g., address_street, address_city)
+    # - A getter method that constructs a value object from the nested attributes
+    # - A setter method that accepts either a value object or a hash of values
+    # - Automatic validation handling for the nested structure
+    #
+    # This module is used internally to implement higher-level attribute modules in Flex.
     module BasicValueObjectAttribute
       extend ActiveSupport::Concern
       include Validations
