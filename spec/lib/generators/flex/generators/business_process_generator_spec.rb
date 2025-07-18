@@ -178,37 +178,88 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "application form generation" do
-    [
-      [ "when application form exists", { stub_const: "TestProcessApplicationForm" }, false, false, 0, 0 ],
-      [ "when application form does not exist and user declines", {}, false, false, 1, 0 ],
-      [ "when application form does not exist and user agrees", {}, true, false, 1, 1 ],
-      [ "with skip_generating_application_form option", { skip_generating_application_form: true }, false, false, 0, 0 ],
-      [ "with force_generating_application_form option", { force_generating_application_form: true }, false, false, 0, 1 ]
-    ].each do |description, test_options, user_response, _expected_prompt, expected_yes_calls, expected_generate_calls|
-      it description do
-        test_generator_options = options.merge(test_options.except(:stub_const))
-        test_generator = described_class.new([ 'TestProcess' ], test_generator_options, destination_root: destination_root)
+    describe "when application form exists" do
+      before do
+        stub_const("TestProcessApplicationForm", Class.new)
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
 
-        if test_options[:stub_const]
-          stub_const(test_options[:stub_const], Class.new)
-        end
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
 
-        allow(test_generator).to receive(:generate)
-        allow(test_generator).to receive(:yes?).and_return(user_response)
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
 
-        test_generator.invoke_all
+    describe "when application form does not exist and user declines" do
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
 
-        if expected_yes_calls > 0
-          expect(test_generator).to have_received(:yes?).exactly(expected_yes_calls).times
-        else
-          expect(test_generator).not_to have_received(:yes?)
-        end
+      it "prompts user once" do
+        expect(generator).to have_received(:yes?).exactly(1).times
+      end
 
-        if expected_generate_calls > 0
-          expect(test_generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(expected_generate_calls).times
-        else
-          expect(test_generator).not_to have_received(:generate).with("flex:application_form", anything)
-        end
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
+
+    describe "when application form does not exist and user agrees" do
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?).and_return(true)
+        generator.invoke_all
+      end
+
+      it "prompts user once" do
+        expect(generator).to have_received(:yes?).exactly(1).times
+      end
+
+      it "generates application form" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(1).times
+      end
+    end
+
+    describe "with skip_generating_application_form option" do
+      let(:options) { { case: case_option, application_form: app_form_option, skip_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
+
+    describe "with force_generating_application_form option" do
+      let(:options) { { case: case_option, application_form: app_form_option, force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "generates application form" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(1).times
       end
     end
   end
