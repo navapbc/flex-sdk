@@ -5,7 +5,7 @@ require 'tmpdir'
 
 RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ task_name ], options, destination_root: destination_root) }
+  let(:generator) { described_class.new([ task_name ], options.merge(quiet: true), destination_root: destination_root) }
   let(:task_name) { 'TestTask' }
   let(:options) { {} }
 
