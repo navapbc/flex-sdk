@@ -3,6 +3,7 @@
   back_link_text: t(".back"),
   index_path: passport_application_forms_path,
   created_at: @passport_application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+  submitted_at: @passport_application_form&.submitted_at&.strftime("%B %d, %Y at %I:%M %p"),
   current_status: @passport_application_form.status,
   next_step: t(".next_step.status.#{@passport_application_form.status}"),
   submitted_on_text: t(".submitted_on")

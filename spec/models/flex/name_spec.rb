@@ -103,5 +103,19 @@ RSpec.describe Flex::Name do
       end
     end
   end
+
+  describe '#to_s' do
+    [
+      [ 'returns full name with all components', 'John', 'A', 'Smith', 'John A Smith' ],
+      [ 'handles missing middle name', 'John', nil, 'Smith', 'John Smith' ],
+      [ 'handles missing components', nil, 'A', 'Smith', 'A Smith' ],
+      [ 'returns empty string for all nil components', nil, nil, nil, '' ]
+    ].each do |description, first, middle, last, expected|
+      it description do
+        name = described_class.new(first:, middle:, last:)
+        expect(name.to_s).to eq(expected)
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/TooManyMemoizedHelpers

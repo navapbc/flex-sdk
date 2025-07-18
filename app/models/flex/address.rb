@@ -13,8 +13,6 @@ module Flex
   # - Provides comparison between address objects
   #
   class Address < ValueObject
-    include Comparable
-
     attribute :street_line_1, :string
     attribute :street_line_2, :string
     attribute :city, :string
@@ -26,8 +24,20 @@ module Flex
     validates :state, presence: true, length: { is: 2 }
     validates :zip_code, presence: true, format: { with: /\A\d{5}(-\d{4})?\z/, message: "must be a valid US zip code" }
 
-    def <=>(other)
-      [ street_line_1, street_line_2, city, state, zip_code ] <=> [ other.street_line_1, other.street_line_2, other.city, other.state, other.zip_code ]
+    def blank?
+      [ street_line_1, street_line_2, city, state, zip_code ].all?(&:blank?)
+    end
+
+    def empty?
+      [ street_line_1, street_line_2, city, state, zip_code ].all? { |component| component.nil? || component.empty? }
+    end
+
+    def present?
+      !blank?
+    end
+
+    def to_s
+      [ street_line_1, street_line_2, city, "#{state} #{zip_code}" ].reject(&:blank?).join(", ")
     end
   end
 end
