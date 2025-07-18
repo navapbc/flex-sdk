@@ -36,6 +36,13 @@ module Flex
         @start_events ||= {}
       end
 
+      # Sets the starting step for the business process and optionally configures when it should start
+      #
+      # @param step_name [String] The name of the step that should be the starting point of the process
+      # @param on [String, nil] The event name that triggers the start of the process. If nil,
+      #   defaults to starting on application form creation via start_on_application_form_created
+      # @param handler [Proc] An optional block that handles the start event. The block receives
+      #   the event as a parameter and should return a new case instance
       def start(step_name, on: nil, &handler)
         self.start_step_name = step_name
         if on.present?
