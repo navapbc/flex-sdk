@@ -5,7 +5,8 @@ require 'tmpdir'
 
 RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ 'TestProcess' ], { case: case_option, application_form: app_form_option }, destination_root: destination_root) }
+  let(:generator) { described_class.new([ 'TestProcess' ], options, destination_root: destination_root) }
+  let(:options) { { case: case_option, application_form: app_form_option } }
   let(:case_option) { nil }
   let(:app_form_option) { nil }
 
@@ -38,6 +39,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
 
   describe "with basic name only" do
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -62,6 +65,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     let(:case_option) { 'Moon' }
 
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -78,6 +83,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     let(:app_form_option) { 'Rabbit' }
 
     before do
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
       generator.invoke_all
     end
 
@@ -92,6 +99,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   describe "when business process file already exists" do
     before do
       File.write("#{destination_root}/app/business_processes/test_process_business_process.rb", "# existing file")
+      allow(generator).to receive(:generate).and_call_original
+      allow(generator).to receive(:yes?).and_return(false)
     end
 
     it "raises an error" do
@@ -102,8 +111,6 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "when config.after_initialize already exists" do
-    let(:generator_with_existing_config) { described_class.new([ 'Test' ], {}, destination_root: destination_root) }
-
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
@@ -123,6 +130,9 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      generator_with_existing_config = described_class.new([ 'Test' ], {}, destination_root: destination_root)
+      allow(generator_with_existing_config).to receive(:generate).and_call_original
+      allow(generator_with_existing_config).to receive(:yes?).and_return(false)
       generator_with_existing_config.invoke_all
     end
 
@@ -135,8 +145,6 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "when start_listening_for_events already exists" do
-    let(:generator_with_duplicate) { described_class.new([ 'Test' ], {}, destination_root: destination_root) }
-
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
@@ -156,6 +164,9 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
+      generator_with_duplicate = described_class.new([ 'Test' ], {}, destination_root: destination_root)
+      allow(generator_with_duplicate).to receive(:generate).and_call_original
+      allow(generator_with_duplicate).to receive(:yes?).and_return(false)
       generator_with_duplicate.invoke_all
     end
 
@@ -163,6 +174,121 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       content = File.read("#{destination_root}/config/application.rb")
       occurrences = content.scan(/TestBusinessProcess\.start_listening_for_events/).length
       expect(occurrences).to eq(1)
+    end
+  end
+
+  describe "application form generation" do
+    describe "when application form exists" do
+      before do
+        stub_const("TestProcessApplicationForm", Class.new)
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
+
+    describe "when application form does not exist and user declines" do
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "prompts user once" do
+        expect(generator).to have_received(:yes?).exactly(1).times
+      end
+
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
+
+    describe "when application form does not exist and user agrees" do
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?).and_return(true)
+        generator.invoke_all
+      end
+
+      it "prompts user once" do
+        expect(generator).to have_received(:yes?).exactly(1).times
+      end
+
+      it "generates application form" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(1).times
+      end
+    end
+
+    describe "with skip_generating_application_form option" do
+      let(:options) { { case: case_option, application_form: app_form_option, skip_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "does not generate application form" do
+        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+      end
+    end
+
+    describe "with force_generating_application_form option" do
+      let(:options) { { case: case_option, application_form: app_form_option, force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "generates application form" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "TestProcess").exactly(1).times
+      end
+    end
+
+    describe "when application form name does not end with ApplicationForm" do
+      let(:options) { { case: case_option, application_form: "CustomForm", force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "uses the full name as base name" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "CustomForm").exactly(1).times
+      end
+    end
+
+    describe "when application form is namespaced" do
+      let(:options) { { case: case_option, application_form: "MyModule::TestProcessApplicationForm", force_generating_application_form: true } }
+
+      before do
+        allow(generator).to receive(:generate)
+        allow(generator).to receive(:yes?)
+        generator.invoke_all
+      end
+
+      it "correctly extracts base name from namespaced class" do
+        expect(generator).to have_received(:generate).with("flex:application_form", "MyModule::TestProcess").exactly(1).times
+      end
     end
   end
 end
