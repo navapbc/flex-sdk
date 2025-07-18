@@ -152,6 +152,12 @@ This will create:
 - Automatically update `config/application.rb` to call `{NAME}BusinessProcess.start_listening_for_events` in a `config.after_initialize` block
 - Optionally check for and generate the associated application form if it doesn't exist
 
+### Views
+
+For more information on implementing prebuilt views from Flex, please see:
+
+- [Tasks](app/views/flex/tasks/README.md)
+
 ## Installation
 
 Add this line to your application's Gemfile:
