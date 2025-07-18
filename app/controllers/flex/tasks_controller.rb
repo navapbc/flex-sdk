@@ -23,7 +23,7 @@ module Flex
         flash["task-message"] = I18n.t("tasks.messages.task_marked_completed")
       end
 
-      redirect_to task_path(@task)
+      redirect_to url_for(action: :show, id: @task.id)
     end
 
     def pick_up_next_task
@@ -31,10 +31,10 @@ module Flex
 
       if task
         flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
-        redirect_to task_path(task)
+        redirect_to url_for(action: :show, id: task.id)
       else
         flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
-        redirect_to tasks_path
+        redirect_to url_for(action: :index)
       end
     end
 

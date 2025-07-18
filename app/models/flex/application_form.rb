@@ -21,11 +21,13 @@ module Flex
 
     include Flex::Attributes
 
+    define_model_callbacks :submit, only: [ :before, :after ]
+
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer
     enum :status, in_progress: 0, submitted: 1
 
-    attribute :user_id, :string
+    attribute :user_id, :uuid
     attribute :submitted_at, :datetime
 
     after_create :publish_created
@@ -39,11 +41,14 @@ module Flex
     #
     # @return [Boolean] True if the submission was successful
     def submit_application
-      Rails.logger.debug "Submitting application with ID: #{id}"
-      self[:status] = :submitted
-      self[:submitted_at] = Time.current
-      save!
-      publish_submitted
+      success = run_callbacks :submit do
+        Rails.logger.debug "Submitting application with ID: #{id}"
+        self[:status] = :submitted
+        self[:submitted_at] = Time.current
+        save!
+        publish_submitted
+      end
+      success != false
     end
 
     protected
@@ -55,23 +60,6 @@ module Flex
       payload = { application_form_id: id }
       payload[:submitted_at] = submitted_at if submitted_at.present?
       payload
-    end
-
-    protected
-
-    # Creates a case associated with this application form.
-    #
-    # @return [Flex::Case] The created case
-    def create_case
-      kase = case_class.create!
-      self[:case_id] = kase.id
-    end
-
-    # Determines the case class corresponding to this application form class.
-    #
-    # @return [Class] The case class (ApplicationForm -> Case)
-    def case_class
-      self.class.name.sub("ApplicationForm", "Case").constantize
     end
 
     private

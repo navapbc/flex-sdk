@@ -63,6 +63,95 @@ end
 
 At this point you should be able to use your newly created model to implement a form. If you used the `scaffold` command, you will likely need to update references, views, etc. that were auto-generated with the scaffold command.
 
+### Generators
+
+Generators provide you with extra functionality to generate files from the command line. This aims to speed up development by generating files for you.
+
+#### Flex Model Generator
+
+Flex provides a custom model generator that supports special attribute types like names, addresses, money values, and dates. The generator automatically includes `Flex::Attributes` and creates the appropriate database migrations with the correct column structure for each Flex attribute type.
+
+#### Using the Generator
+
+To generate a new model with Flex attributes, use the following command:
+
+```shell
+bin/rails generate flex:model NAME [attribute:type attribute:type] [options]
+```
+
+##### Options
+
+- parent: Allows you to specify the parent class of the model. If not supplied, the parent class will default to `ApplicationRecord`.
+  - Example: `bin/rails generate flex:model MedicaidUser name:name --parent User`
+
+#### Examples
+
+```shell
+bin/rails generate flex:model MedicaidUser name:name location:address ssn:tax_id --parent User
+bin/rails generate flex:model MedicareUser name:name address:address salary:money
+bin/rails generate flex:model User email:string profile:name birth_date:memorable_date
+```
+
+#### Supported Flex Attribute Types
+
+- `name` - Creates columns: name_first, name_middle, name_last (all :string)
+- `address` - Creates columns: address_street_line_1, address_street_line_2, address_city, address_state, address_zip_code (all :string)
+- `money` - Creates column: money (:integer)
+- `memorable_date` - Creates column: memorable_date (:date)
+- `us_date` - Creates column: us_date (:date)
+- `tax_id` - Creates column: tax_id (:string)
+- `year_quarter` - Creates columns: year_quarter_year (:integer), year_quarter_quarter (:integer)
+
+The generator will create:
+
+- A Rails model file that includes `Flex::Attributes` with the appropriate flex_attribute declarations
+- A migration file with the correct database columns for each Flex attribute type
+
+#### Flex Business Process Generator
+
+Generates a business process file with standardized templates and automatically configures your Rails application to start listening for events. Optionally checks for and generates associated application forms.
+
+##### Usage
+
+```shell
+bin/rails generate flex:business_process NAME [options]
+```
+
+##### Examples
+
+```shell
+bin/rails generate flex:business_process FirePermitApplication
+bin/rails generate flex:business_process FirePermitApplication --case PermitApplication
+bin/rails generate flex:business_process LiquorLicenseApplication --case PermitApplication --application_form AlcoholLicense
+bin/rails generate flex:business_process Passport --force-generating-application-form
+bin/rails generate flex:business_process Benefits --skip-generating-application-form
+```
+
+##### Options
+
+- `--case CLASS_NAME`: Custom case class name (optional)
+
+  - Default: {NAME}Case (e.g., "MedicaidCase")
+  - Example: `--case MedicareCase`
+
+- `--application_form FORM_NAME`: Custom application form name (optional)
+
+  - Default: {NAME}ApplicationForm (e.g., "PermitApplicationForm")
+  - Example: `--application_form FirePermitApplicationForm`
+
+- `--skip-generating-application-form`: Skip application form generation check (optional)
+
+  - Use this flag to bypass checking if the application form exists
+
+- `--force-generating-application-form`: Generate application form without prompting (optional)
+  - Use this flag to automatically generate the application form if it doesn't exist
+
+This will create:
+
+- A business process file at `app/business_processes/{name}_business_process.rb` using the BusinessProcess.define DSL pattern
+- Automatically update `config/application.rb` to call `{NAME}BusinessProcess.start_listening_for_events` in a `config.after_initialize` block
+- Optionally check for and generate the associated application form if it doesn't exist
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -105,6 +194,10 @@ _Note: The database is already generated for you after running `make setup`, how
 
 1. Make sure a `.env` file exists at `./spec/dummy/.env`. If it doesn't, run `make spec/dummy/.env`.
 2. Run `make init-db` to setup the database container for local development.
+
+## Documentation
+
+- [Flex Attributes](./app/lib/flex/attributes.md) - Documentation for custom attribute types
 
 ## Contributing
 

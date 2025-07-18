@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Flex::YearQuarter do
+  let(:object) { TestRecord.new }
+
   describe "initialization" do
     it "accepts year and quarter as integers" do
       year_quarter = described_class.new(year: 2023, quarter: 2)
@@ -55,6 +57,40 @@ RSpec.describe Flex::YearQuarter do
       it description do
         expect(year_quarter.to_date_range).to eq(expected)
       end
+    end
+  end
+
+  describe ".<=>" do
+    it "allows sorting year quarters" do
+      year_quarters = [
+        described_class.new(year: 2024, quarter: 3),
+        described_class.new(year: 2023, quarter: 1),
+        described_class.new(year: 2024, quarter: 1)
+      ]
+
+      sorted_year_quarters = year_quarters.sort
+      expect(sorted_year_quarters).to eq([
+        described_class.new(year: 2023, quarter: 1),
+        described_class.new(year: 2024, quarter: 1),
+        described_class.new(year: 2024, quarter: 3)
+      ])
+    end
+
+    it "compares year quarters by year first, then quarter" do
+      earlier = described_class.new(year: 2023, quarter: 4)
+      later = described_class.new(year: 2024, quarter: 1)
+
+      expect(earlier <=> later).to eq(-1)
+      expect(later <=> earlier).to eq(1)
+      expect(earlier <=> earlier).to eq(0)
+    end
+
+    it "compares quarters within the same year" do
+      q1 = described_class.new(year: 2024, quarter: 1)
+      q3 = described_class.new(year: 2024, quarter: 3)
+
+      expect(q1 <=> q3).to eq(-1)
+      expect(q3 <=> q1).to eq(1)
     end
   end
 

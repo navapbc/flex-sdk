@@ -19,6 +19,7 @@ AllCops:
     - "spec/dummy/log/**/*"
     - "spec/dummy/storage/**/*"
     - "spec/dummy/db/schema.rb"
+    - "lib/generators/**/templates/**/*"
 
 # YARD documentation configuration
 YARD:

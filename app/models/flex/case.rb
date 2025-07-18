@@ -17,7 +17,7 @@ module Flex
   class Case < ApplicationRecord
     self.abstract_class = true
 
-    attribute :application_form_id, :string
+    attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0
     protected attr_writer :status, :integer

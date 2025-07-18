@@ -23,7 +23,7 @@ module Flex
     attr_readonly :case_id
     attr_readonly :type
 
-    attribute :assignee_id, :string
+    attribute :assignee_id, :uuid
     protected attr_writer :assignee_id
 
     attribute :status, :integer, default: 0
@@ -77,6 +77,7 @@ module Flex
     def mark_completed
       self[:status] = :completed
       save!
+      Flex::EventManager.publish("#{self.class.name}Completed", { task_id: id, case_id: case_id })
     end
 
     def mark_pending

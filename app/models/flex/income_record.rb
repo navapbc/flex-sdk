@@ -24,7 +24,7 @@ module Flex
 
     self.abstract_class = true
 
-    attribute :person_id, :string
+    attribute :person_id, :uuid
     flex_attribute :amount, :money
 
     def self.[](period_type)

@@ -14,6 +14,7 @@
       back_link_text: t(".back"),
       index_path: application_forms_path,
       created_at: application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+      submitted_at: pplication_form&.submitted_at&.strftime("%B %d, %Y at %I:%M %p"),
       current_status: application_form.status,
       next_step: t(".next_step.status.#{application_form.status}"),
       submitted_on_text: t(".submitted_on")
@@ -27,6 +28,7 @@
 <h1><%= title %></h1>
 
 <%= render partial: "flex/shared/step_indicator", locals: {
+  type: :counters,
   steps: [:in_progress, :submitted, :decision_made],
   current_step: current_status
 } %>
@@ -35,6 +37,8 @@
   <%= next_step %>
 </p>
 
-<p>
-  <%= submitted_on_text %>: <%= created_at %>
-</p>
+<% if current_status == "submitted" && local_assigns.key?(:submitted_at) %>
+  <p>
+    <%= submitted_on_text %>: <%= submitted_at %>
+  </p>
+<% end %>
