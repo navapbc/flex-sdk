@@ -46,7 +46,7 @@ module Flex
     def submit_application
       # First run validations with submit context
       return false unless valid?(:submit)
-      
+
       # Then proceed with callbacks as before
       success = run_callbacks :submit do
         Rails.logger.debug "Submitting application with ID: #{id}"
