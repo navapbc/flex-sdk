@@ -104,6 +104,34 @@ RSpec.describe Flex::ApplicationForm do
         expect(result).to be true
         expect(application_form.errors).to be_empty
       end
+
+      it "does not publish event or set submitted_at when validations fail" do
+        application_form.test_string = nil
+
+        expect { application_form.submit_application }.not_to publish_event_with_payload("TestApplicationFormSubmitted", anything)
+        expect(application_form.submitted_at).to be_nil
+      end
+
+      it "validates submit context before running callbacks" do
+        callback_executed = false
+        TestApplicationForm.set_callback(:submit, :before) { callback_executed = true }
+        application_form.test_string = nil
+
+        application_form.submit_application
+
+        expect(callback_executed).to be false
+      end
+
+      it "passes when both regular and submit context validations succeed" do
+        TestApplicationForm.validates :test_string, length: { minimum: 3 }
+        application_form.test_string = "valid value"
+
+        result = application_form.submit_application
+
+        expect(result).to be true
+        expect(application_form.errors).to be_empty
+        expect(application_form.status).to eq("submitted")
+      end
     end
 
     context "when form is already submitted" do
