@@ -5,7 +5,7 @@ require 'tmpdir'
 
 RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ 'TestProcess' ], options, destination_root: destination_root) }
+  let(:generator) { described_class.new([ 'TestProcess' ], options.merge(quiet: true), destination_root: destination_root) }
   let(:options) { { case: case_option, application_form: app_form_option } }
   let(:case_option) { nil }
   let(:app_form_option) { nil }
