@@ -72,10 +72,15 @@ RSpec.describe Flex::TaxId do
   describe 'String method inheritance' do
     let(:tax_id) { described_class.new('123456789') }
     let(:empty_tax_id) { described_class.new('') }
+    let(:whitespace_tax_id) { described_class.new('   ') }
 
     describe '#blank?' do
       it 'returns true for an empty tax ID' do
         expect(empty_tax_id.blank?).to be true
+      end
+
+      it 'returns true for a whitespace-only tax ID' do
+        expect(whitespace_tax_id.blank?).to be true
       end
 
       it 'returns false for a non-empty tax ID' do
@@ -88,6 +93,10 @@ RSpec.describe Flex::TaxId do
         expect(empty_tax_id.empty?).to be true
       end
 
+      it 'returns true for a whitespace-only tax ID' do
+        expect(whitespace_tax_id.empty?).to be true
+      end
+
       it 'returns false for a non-empty tax ID' do
         expect(tax_id.empty?).to be false
       end
@@ -96,6 +105,10 @@ RSpec.describe Flex::TaxId do
     describe '#present?' do
       it 'returns false for an empty tax ID' do
         expect(empty_tax_id.present?).to be false
+      end
+
+      it 'returns false for a whitespace-only tax ID' do
+        expect(whitespace_tax_id.present?).to be false
       end
 
       it 'returns true for a non-empty tax ID' do
