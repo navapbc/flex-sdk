@@ -39,5 +39,9 @@ module Flex
     def persisted?
       false
     end
+
+    def present?
+      !blank?
+    end
   end
 end
