@@ -24,7 +24,7 @@ module Flex
     define_model_callbacks :submit, only: [ :before, :after ]
 
     attribute :status, :integer, default: 0
-    protected attr_writer :status, :integer
+    protected attr_writer :status
     enum :status, in_progress: 0, submitted: 1
 
     attribute :user_id, :uuid
@@ -39,8 +39,15 @@ module Flex
     # This method should be called when a user submits the form.
     # After submission, the form can no longer be modified.
     #
+    # Validates the form with the :submit context before proceeding.
+    # If validation fails, the submission is aborted and returns false.
+    #
     # @return [Boolean] True if the submission was successful
     def submit_application
+      # First run validations with submit context
+      return false unless valid?(:submit)
+
+      # Then proceed with callbacks as before
       success = run_callbacks :submit do
         Rails.logger.debug "Submitting application with ID: #{id}"
         self[:status] = :submitted
