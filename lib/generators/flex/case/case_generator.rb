@@ -4,8 +4,6 @@ module Flex
   module Generators
     # Generator for creating Flex::Case models with optional business process and application form integration
     class CaseGenerator < Rails::Generators::NamedBase
-      source_root File.expand_path("templates", __dir__)
-
       argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
       class_option :business_process_name, type: :string, desc: "Business process class name (optional)"
@@ -14,15 +12,15 @@ module Flex
       class_option :skip_application_form, type: :boolean, default: false, desc: "Skip application form generation check"
       class_option :sti, type: :boolean, default: false, desc: "Add type column for single-table inheritance"
 
-      def initialize(*args, &block)
+      def initialize(*args)
         super
         @case_name = format_case_name(name)
         @parsed_attributes = parse_attributes!
       end
 
       def create_case_model
-        check_business_process_exists unless options[:skip_business_process]
-        check_application_form_exists unless options[:skip_application_form]
+        handle_business_process_generation unless options[:skip_business_process]
+        handle_application_form_generation unless options[:skip_application_form]
 
         model_args = [ @case_name ]
         model_args.concat(all_attributes)
@@ -33,7 +31,7 @@ module Flex
 
       private
 
-      def check_business_process_exists
+      def handle_business_process_generation
         bp_class = business_process_name
         unless bp_class.safe_constantize.present?
           if should_generate_business_process?(bp_class)
@@ -43,7 +41,7 @@ module Flex
         end
       end
 
-      def check_application_form_exists
+      def handle_application_form_generation
         app_form_class = application_form_name
         unless app_form_class.safe_constantize.present?
           if should_generate_application_form?(app_form_class)

@@ -21,24 +21,68 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
   end
 
   describe "name transformation" do
-    [
-      [ "basic name", "Passport", "PassportCase" ],
-      [ "name with Case suffix", "PassportCase", "PassportCase" ],
-      [ "mixed case name", "BenefitsApplication", "BenefitsApplicationCase" ],
-      [ "single word", "Review", "ReviewCase" ],
-      [ "lowercase name", "document", "DocumentCase" ]
-    ].each do |description, input_name, expected_name|
-      context "with #{description}" do
-        let(:name) { input_name }
+    context "with basic name" do
+      let(:name) { "Passport" }
 
-        before do
-          allow(generator).to receive(:yes?).and_return(false)
-          generator.invoke_all
-        end
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
 
-        it "transforms '#{input_name}' to '#{expected_name}'" do
-          expect(generator).to have_received(:generate).with("flex:model", expected_name, "--parent", "Flex::Case")
-        end
+      it "transforms 'Passport' to 'PassportCase'" do
+        expect(generator).to have_received(:generate).with("flex:model", "PassportCase", "--parent", "Flex::Case")
+      end
+    end
+
+    context "with name already having Case suffix" do
+      let(:name) { "PassportCase" }
+
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "keeps 'PassportCase' as 'PassportCase'" do
+        expect(generator).to have_received(:generate).with("flex:model", "PassportCase", "--parent", "Flex::Case")
+      end
+    end
+
+    context "with mixed case name" do
+      let(:name) { "BenefitsApplication" }
+
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "transforms 'BenefitsApplication' to 'BenefitsApplicationCase'" do
+        expect(generator).to have_received(:generate).with("flex:model", "BenefitsApplicationCase", "--parent", "Flex::Case")
+      end
+    end
+
+    context "with single word" do
+      let(:name) { "Review" }
+
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "transforms 'Review' to 'ReviewCase'" do
+        expect(generator).to have_received(:generate).with("flex:model", "ReviewCase", "--parent", "Flex::Case")
+      end
+    end
+
+    context "with lowercase name" do
+      let(:name) { "document" }
+
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "transforms 'document' to 'DocumentCase'" do
+        expect(generator).to have_received(:generate).with("flex:model", "DocumentCase", "--parent", "Flex::Case")
       end
     end
   end
@@ -154,6 +198,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when business process does not exist and user declines" do
       before do
+        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
         allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
       end
@@ -169,6 +214,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when business process does not exist and user agrees" do
       before do
+        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
@@ -233,6 +279,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when application form does not exist and user declines" do
       before do
+        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
         allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
       end
@@ -248,6 +295,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
     describe "when application form does not exist and user agrees" do
       before do
+        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
@@ -296,6 +344,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
   describe "combined scenarios" do
     context "with both business process and application form missing, user agrees to both" do
       before do
+        hide_const("TestBusinessProcess") if defined?(TestBusinessProcess)
+        hide_const("TestApplicationForm") if defined?(TestApplicationForm)
         allow(generator).to receive(:yes?).and_return(true)
         generator.invoke_all
       end
