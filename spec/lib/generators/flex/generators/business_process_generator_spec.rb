@@ -62,7 +62,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "with custom case option" do
-    let(:case_option) { 'Moon' }
+    let(:case_option) { Faker::Name.first_name }
 
     before do
       allow(generator).to receive(:generate).and_call_original
@@ -73,14 +73,14 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     it "uses custom case name" do
       business_process_file = "#{destination_root}/app/business_processes/test_process_business_process.rb"
       content = File.read(business_process_file)
-      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, Moon)")
+      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, #{case_option})")
       expect(content).to include("bp.transition('submit_application', 'TestProcessApplicationFormSubmitted', 'example_1')")
     end
   end
 
   describe "with custom case and application_form options" do
-    let(:case_option) { 'Doggy' }
-    let(:app_form_option) { 'Rabbit' }
+    let(:case_option) { Faker::Name.first_name }
+    let(:app_form_option) { Faker::Name.first_name }
 
     before do
       allow(generator).to receive(:generate).and_call_original
@@ -91,8 +91,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     it "uses custom case and application form names" do
       business_process_file = "#{destination_root}/app/business_processes/test_process_business_process.rb"
       content = File.read(business_process_file)
-      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, Doggy)")
-      expect(content).to include("bp.transition('submit_application', 'RabbitSubmitted', 'example_1')")
+      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, #{case_option})")
+      expect(content).to include("bp.transition('submit_application', '#{app_form_option}Submitted', 'example_1')")
     end
   end
 
@@ -130,7 +130,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
-      generator_with_existing_config = described_class.new([ 'Test' ], {}, destination_root: destination_root)
+      generator_with_existing_config = described_class.new([ 'Test' ], { quiet: true }, destination_root: destination_root)
       allow(generator_with_existing_config).to receive(:generate).and_call_original
       allow(generator_with_existing_config).to receive(:yes?).and_return(false)
       generator_with_existing_config.invoke_all
@@ -164,7 +164,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
-      generator_with_duplicate = described_class.new([ 'Test' ], {}, destination_root: destination_root)
+      generator_with_duplicate = described_class.new([ 'Test' ], { quiet: true }, destination_root: destination_root)
       allow(generator_with_duplicate).to receive(:generate).and_call_original
       allow(generator_with_duplicate).to receive(:yes?).and_return(false)
       generator_with_duplicate.invoke_all
