@@ -49,7 +49,7 @@ RSpec.describe Flex::Attributes::USDateAttribute do
 
     it "handles nil values gracefully" do
       object.period = nil
-      expect(object.period).to be_nil
+      expect(object.period).to eq(Flex::DateRange.new)
       expect(object.period_start).to be_nil
       expect(object.period_end).to be_nil
     end
@@ -140,7 +140,7 @@ RSpec.describe Flex::Attributes::USDateAttribute do
       [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(start: Flex::USDate.new(2023, 6, 15), end: Flex::USDate.new(2023, 6, 15)) ],
       [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31)) ],
       [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1)) ],
-      [ "sets nil if setting a nil..nil Range", nil, nil, nil ]
+      [ "allows setting period as nil..nil", nil, nil, Flex::DateRange.new ]
     ].each do |description, start_date, end_date, expected|
       it description do
         object.period = start_date..end_date
@@ -153,7 +153,7 @@ RSpec.describe Flex::Attributes::USDateAttribute do
 
     it "ignores Range objects that don't contain dates" do
       object.period = 1..10
-      expect(object.period).to be_nil
+      expect(object.period).to eq(Flex::DateRange.new)
       expect(object.period_start).to be_nil
       expect(object.period_end).to be_nil
     end

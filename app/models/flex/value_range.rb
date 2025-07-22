@@ -38,7 +38,17 @@ module Flex
     private
 
     def start_cannot_be_greater_than_end
-      if start && self.end && start > self.end
+      return unless start && self.end
+
+      # Don't try to validate whether start > end if the start or end are
+      # themselves already invalid, since that may throw objects not
+      # comparable errors.
+
+      # TODO it seems inefficient to run nested validations again here
+      return if start.respond_to?(:invalid?) && start.invalid?
+      return if self.end.respond_to?(:invalid?) && self.end.invalid?
+
+      if start > self.end
         errors.add(:base, start_greater_than_end_error_type)
       end
     end

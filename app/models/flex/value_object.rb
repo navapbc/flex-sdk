@@ -32,8 +32,16 @@ module Flex
       true
     end
 
+    def blank?
+      attributes.values.all?(&:blank?)
+    end
+
     def persisted?
       false
+    end
+
+    def present?
+      !blank?
     end
   end
 end

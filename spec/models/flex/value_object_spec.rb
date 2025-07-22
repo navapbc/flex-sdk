@@ -50,4 +50,56 @@ RSpec.describe Flex::ValueObject do
       expect(object.to_json).to eq("{\"x\":1,\"y\":2,\"foo\":\"hello\"}")
     end
   end
+
+  describe '#blank?' do
+    let(:blank_klass) do
+      Class.new(described_class) do
+        attribute :a, :string
+        attribute :b, :string
+        attribute :c, :string
+      end
+    end
+
+    [
+      [ 'all nil components', { a: nil, b: nil, c: nil }, true ],
+      [ 'all empty string components', { a: '', b: '', c: '' }, true ],
+      [ 'all whitespace components', { a: '  ', b: '  ', c: '  ' }, true ],
+      [ 'mixed nil and empty', { a: nil, b: '', c: nil }, true ],
+      [ 'mixed nil and whitespace', { a: nil, b: '  ', c: '' }, true ],
+      [ 'one non-blank component', { a: 'value', b: nil, c: nil }, false ],
+      [ 'mixed blank and non-blank', { a: 'value', b: '  ', c: '' }, false ],
+      [ 'all components present', { a: 'one', b: 'two', c: 'three' }, false ]
+    ].each do |description, attributes, expected|
+      it "returns #{expected} when #{description}" do
+        object = blank_klass.new(attributes)
+        expect(object.blank?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#present?' do
+    let(:present_klass) do
+      Class.new(described_class) do
+        attribute :a, :string
+        attribute :b, :string
+        attribute :c, :string
+      end
+    end
+
+    [
+      [ 'all nil components', { a: nil, b: nil, c: nil }, false ],
+      [ 'all empty string components', { a: '', b: '', c: '' }, false ],
+      [ 'all whitespace components', { a: '  ', b: '  ', c: '  ' }, false ],
+      [ 'mixed nil and empty', { a: nil, b: '', c: nil }, false ],
+      [ 'mixed nil and whitespace', { a: nil, b: '  ', c: '' }, false ],
+      [ 'one non-blank component', { a: 'value', b: nil, c: nil }, true ],
+      [ 'mixed blank and non-blank', { a: 'value', b: '  ', c: '' }, true ],
+      [ 'all components present', { a: 'one', b: 'two', c: 'three' }, true ]
+    ].each do |description, attributes, expected|
+      it "returns #{expected} when #{description}" do
+        object = present_klass.new(attributes)
+        expect(object.present?).to eq(expected)
+      end
+    end
+  end
 end

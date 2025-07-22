@@ -19,7 +19,7 @@ module Flex
     #
     module YearQuarterAttribute
       extend ActiveSupport::Concern
-      include Flex::Validations
+      include BasicValueObjectAttribute
 
       class_methods do
         # Defines a year quarter attribute with year and quarter components.
@@ -31,27 +31,10 @@ module Flex
           # Define the base attribute with its subfields
           attribute :"#{name}_year", :integer
           attribute :"#{name}_quarter", :integer
-
-          # Define the getter method
-          define_method(name) do
-            year = send("#{name}_year")
-            quarter = send("#{name}_quarter")
-            year || quarter ? Flex::YearQuarter.new(year:, quarter:) : nil
-          end
-
-          # Define the setter method
-          define_method("#{name}=") do |value|
-            case value
-            when Flex::YearQuarter
-              send("#{name}_year=", value.year)
-              send("#{name}_quarter=", value.quarter)
-            when Hash
-              send("#{name}_year=", value[:year] || value["year"])
-              send("#{name}_quarter=", value[:quarter] || value["quarter"])
-            end
-          end
-
-          flex_validates_nested(name)
+          basic_value_object_attribute(name, Flex::YearQuarter, {
+            "year" => :integer,
+            "quarter" => :integer
+          }, options)
         end
       end
     end

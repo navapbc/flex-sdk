@@ -92,6 +92,55 @@ RSpec.describe Flex::YearQuarter do
       expect(q1 <=> q3).to eq(-1)
       expect(q3 <=> q1).to eq(1)
     end
+
+    [
+      [
+        "returns nil when comparing with nil year",
+        described_class.new(year: nil, quarter: 1),
+        described_class.new(year: 2023, quarter: 1),
+        nil
+      ],
+      [
+        "returns nil when comparing with nil quarter",
+        described_class.new(year: 2023, quarter: nil),
+        described_class.new(year: 2023, quarter: 1),
+        nil
+      ],
+      [
+        "returns nil when both years are nil and quarters differ",
+        described_class.new(year: nil, quarter: 1),
+        described_class.new(year: nil, quarter: 2),
+        nil
+      ],
+      [
+        "returns nil when both quarters are nil and years differ",
+        described_class.new(year: 2023, quarter: nil),
+        described_class.new(year: 2024, quarter: nil),
+        nil
+      ],
+      [
+        "returns 0 when both year and quarter are nil",
+        described_class.new(year: nil, quarter: nil),
+        described_class.new(year: nil, quarter: nil),
+        0
+      ],
+      [
+        "returns 0 when both have nil year and same quarter",
+        described_class.new(year: nil, quarter: 1),
+        described_class.new(year: nil, quarter: 1),
+        0
+      ],
+      [
+        "returns 0 when both have nil quarter and same year",
+        described_class.new(year: 2023, quarter: nil),
+        described_class.new(year: 2023, quarter: nil),
+        0
+      ]
+    ].each do |description, a, b, expected|
+      it description do
+        expect(a <=> b).to eq(expected)
+      end
+    end
   end
 
   describe "validations" do

@@ -21,7 +21,8 @@ module Flex
     attribute :year, :integer
     attribute :quarter, :integer
 
-    validates :quarter, numericality: { in: 1..4 }
+    validates :year, presence: true
+    validates :quarter, presence: true, numericality: { in: 1..4 }
 
     def +(other)
       raise TypeError, "Integer expected, got #{other.class}" unless other.is_a?(Integer)
@@ -60,8 +61,21 @@ module Flex
       end
     end
 
+    # Compares year quarters by time order. Returns:
+    # - 0 if self and other are at the same year/quarter
+    # - -1 if self is earlier than other
+    # - 1 if self is later than other
+    # - nil if year quarters aren't comparable (different types or nil values
+    # for year or quarter)
     def <=>(other)
       return nil unless other.is_a?(YearQuarter)
+
+      # Return equal (0) if year/quarter arrays match, even if they contain nils.
+      # This preserves consistency with ValueObject's == method.
+      return 0 if [ year, quarter ] == [ other.year, other.quarter ]
+
+      # Otherwise, nil values make year quarters incomparable
+      return nil if year.nil? || quarter.nil? || other.year.nil? || other.quarter.nil?
 
       [ year, quarter ] <=> [ other.year, other.quarter ]
     end

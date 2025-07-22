@@ -27,6 +27,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
   end
 
   it "validates quarter values are between 1 and 4" do
+    object.reporting_period_year = 2025
     object.reporting_period_quarter = 5
     expect(object).not_to be_valid
     expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
@@ -115,9 +116,9 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
 
     it "handles nil values gracefully" do
       object.base_period = nil
-      expect(object.base_period).to be_nil
-      expect(object.base_period_start).to be_nil
-      expect(object.base_period_end).to be_nil
+      expect(object.base_period).to eq(Flex::YearQuarterRange.new)
+      expect(object.base_period_start).to eq(Flex::YearQuarter.new)
+      expect(object.base_period_end).to eq(Flex::YearQuarter.new)
       expect(object.base_period_start_year).to be_nil
       expect(object.base_period_start_quarter).to be_nil
       expect(object.base_period_end_year).to be_nil
@@ -125,6 +126,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     end
 
     it "validates quarter values are between 1 and 4" do
+      object.reporting_period_year = 2025
       object.reporting_period_quarter = 5
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")

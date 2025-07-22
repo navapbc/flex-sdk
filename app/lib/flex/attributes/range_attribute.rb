@@ -32,31 +32,20 @@ module Flex
         def range_attribute(name, value_type, options = {})
           value_class = Flex::Attributes.resolve_class(value_type)
 
-          # Define individual columns for start and end dates
-          flex_attribute :"#{name}_start", value_type
-          flex_attribute :"#{name}_end", value_type
+          basic_value_object_attribute(name, ValueRange[value_class], {
+            "start" => value_type,
+            "end" => value_type
+          }, options)
 
-          # Define the getter method
-          define_method(name) do
-            start_value = send("#{name}_start")
-            end_value = send("#{name}_end")
-            return nil unless start_value.is_a?(value_class) || start_value.nil?
-            return nil unless end_value.is_a?(value_class) || end_value.nil?
-            start_value || end_value ? ValueRange[value_class].new(start: start_value, end: end_value) : nil
-          end
+          alias_method :"set_basic_value_object_#{name}=", :"#{name}="
 
-          # Define the setter method
-          define_method("#{name}=") do |value|
+          define_method(:"#{name}=") do |value|
             case value
-            when ValueRange[value_class]
-              send("#{name}_start=", value.start)
-              send("#{name}_end=", value.end)
             when Range
               send("#{name}_start=", value.begin)
               send("#{name}_end=", value.end)
-            when Hash
-              send("#{name}_start=", value[:start] || value["start"])
-              send("#{name}_end=", value[:end] || value["end"])
+            else
+              send("set_basic_value_object_#{name}=", value)
             end
           end
 
