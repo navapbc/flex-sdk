@@ -85,4 +85,19 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
       expect(generator).to have_received(:generate).with("flex:migration", "CreateTests", "name:name", "count:integer", "email:string")
     end
   end
+
+  describe "when model file already exists" do
+    let(:args) { [ "TestModel" ] }
+
+    before do
+      File.write("#{destination_root}/app/models/test_model.rb", "# existing file")
+      allow(generator).to receive(:generate).and_call_original
+    end
+
+    it "raises an error" do
+      expect {
+        generator.create_model_file
+      }.to raise_error(/Model file already exists/)
+    end
+  end
 end
