@@ -8,7 +8,7 @@ module Flex
       source_root File.expand_path("templates", __dir__)
 
       class_option :parent, type: :string, desc: "The parent class for the generated task"
-      class_option :skip_migration_check, type: :boolean, default: false, desc: "Skip checking if flex_tasks table exists"
+      class_option :"skip-migration-check", type: :boolean, default: false, desc: "Skip checking if flex_tasks table exists"
 
       def initialize(*args, &block)
         super
@@ -25,7 +25,7 @@ module Flex
       end
 
       def check_flex_tasks_table
-        return if options[:skip_migration_check]
+        return if options[:"skip-migration-check"]
 
         unless ActiveRecord::Base.connection.table_exists?(:flex_tasks)
           say "Warning: flex_tasks table does not exist.", :yellow

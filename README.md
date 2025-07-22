@@ -122,9 +122,9 @@ bin/rails generate flex:business_process NAME [options]
 ```shell
 bin/rails generate flex:business_process FirePermitApplication
 bin/rails generate flex:business_process FirePermitApplication --case PermitApplication
-bin/rails generate flex:business_process LiquorLicenseApplication --case PermitApplication --application_form AlcoholLicense
-bin/rails generate flex:business_process Passport --force-generating-application-form
-bin/rails generate flex:business_process Benefits --skip-generating-application-form
+bin/rails generate flex:business_process LiquorLicenseApplication --case PermitApplication --application-form AlcoholLicense
+bin/rails generate flex:business_process Passport --force-application-form
+bin/rails generate flex:business_process Benefits --skip-application-form
 ```
 
 ##### Options
@@ -134,16 +134,16 @@ bin/rails generate flex:business_process Benefits --skip-generating-application-
   - Default: {NAME}Case (e.g., "MedicaidCase")
   - Example: `--case MedicareCase`
 
-- `--application_form FORM_NAME`: Custom application form name (optional)
+- `--application-form FORM_NAME`: Custom application form name (optional)
 
   - Default: {NAME}ApplicationForm (e.g., "PermitApplicationForm")
-  - Example: `--application_form FirePermitApplicationForm`
+  - Example: `--application-form FirePermitApplicationForm`
 
-- `--skip-generating-application-form`: Skip application form generation check (optional)
+- `--skip-application-form`: Skip application form generation check (optional)
 
   - Use this flag to bypass checking if the application form exists
 
-- `--force-generating-application-form`: Generate application form without prompting (optional)
+- `--force-application-form`: Generate application form without prompting (optional)
   - Use this flag to automatically generate the application form if it doesn't exist
 
 This will create:
@@ -168,29 +168,29 @@ bin/rails generate flex:case NAME [attributes] [options]
 bin/rails generate flex:case Passport
 bin/rails generate flex:case PassportCase
 bin/rails generate flex:case Benefits name:name address:address
-bin/rails generate flex:case Medicaid --business_process_name MedicaidReviewProcess
-bin/rails generate flex:case Application --application_form_name CustomApplicationForm
+bin/rails generate flex:case Medicaid --business-process-name MedicaidReviewProcess
+bin/rails generate flex:case Application --application-form-name CustomApplicationForm
 bin/rails generate flex:case Document --sti
-bin/rails generate flex:case Review --skip_business_process --skip_application_form
+bin/rails generate flex:case Review --skip-business-process --skip-application-form
 ```
 
 ##### Options
 
-- `--business_process_name CLASS_NAME`: Custom business process class name (optional)
+- `--business-process-name CLASS_NAME`: Custom business process class name (optional)
 
   - Default: {NAME}BusinessProcess (e.g., "PassportBusinessProcess")
-  - Example: `--business_process_name CustomBusinessProcess`
+  - Example: `--business-process-name CustomBusinessProcess`
 
-- `--application_form_name FORM_NAME`: Custom application form class name (optional)
+- `--application-form-name FORM_NAME`: Custom application form class name (optional)
 
   - Default: {NAME}ApplicationForm (e.g., "PassportApplicationForm")
-  - Example: `--application_form_name CustomApplicationForm`
+  - Example: `--application-form-name CustomApplicationForm`
 
-- `--skip_business_process`: Skip business process generation check (optional)
+- `--skip-business-process`: Skip business process generation check (optional)
 
   - Use this flag to bypass checking if the business process exists
 
-- `--skip_application_form`: Skip application form generation check (optional)
+- `--skip-application-form`: Skip application form generation check (optional)
 
   - Use this flag to bypass checking if the application form exists
 

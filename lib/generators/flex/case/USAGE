@@ -9,24 +9,24 @@ Examples:
     bin/rails generate flex:case Passport
     bin/rails generate flex:case PassportCase
     bin/rails generate flex:case Benefits name:name address:address
-    bin/rails generate flex:case Medicaid --business_process_name MedicaidReviewProcess
-    bin/rails generate flex:case Application --application_form_name CustomApplicationForm
+    bin/rails generate flex:case Medicaid --business-process-name MedicaidReviewProcess
+    bin/rails generate flex:case Application --application-form-name CustomApplicationForm
     bin/rails generate flex:case Document --sti
-    bin/rails generate flex:case Review --skip_business_process --skip_application_form
+    bin/rails generate flex:case Review --skip-business-process --skip-application-form
 
 Options:
-    --business_process_name CLASS_NAME: Custom business process class name (optional)
+    --business-process-name CLASS_NAME: Custom business process class name (optional)
         Default: {NAME}BusinessProcess (e.g., "PassportBusinessProcess")
-        Example: --business_process_name CustomBusinessProcess
+        Example: --business-process-name CustomBusinessProcess
 
-    --application_form_name FORM_NAME: Custom application form class name (optional)
+    --application-form-name FORM_NAME: Custom application form class name (optional)
         Default: {NAME}ApplicationForm (e.g., "PassportApplicationForm")
-        Example: --application_form_name CustomApplicationForm
+        Example: --application-form-name CustomApplicationForm
 
-    --skip_business_process: Skip business process generation check (optional)
+    --skip-business-process: Skip business process generation check (optional)
         Use this flag to bypass checking if the business process exists
 
-    --skip_application_form: Skip application form generation check (optional)
+    --skip-application-form: Skip application form generation check (optional)
         Use this flag to bypass checking if the application form exists
 
     --sti: Add type column for single-table inheritance (optional)

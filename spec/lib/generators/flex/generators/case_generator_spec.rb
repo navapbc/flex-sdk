@@ -224,12 +224,12 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates business process" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip_generating_application_form").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip-application-form").once
       end
     end
 
     describe "with custom business process name" do
-      let(:options) { { business_process_name: "CustomBusinessProcess" } }
+      let(:options) { { "business-process-name": "CustomBusinessProcess" } }
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
@@ -238,12 +238,12 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "uses custom business process name" do
         expect(generator).to have_received(:yes?).with("Business process CustomBusinessProcess does not exist. Generate it? (y/n)")
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip_generating_application_form")
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip-application-form")
       end
     end
 
-    describe "with --skip_business_process flag" do
-      let(:options) { { skip_business_process: true } }
+    describe "with --skip-business-process flag" do
+      let(:options) { { "skip-business-process": true } }
 
       before do
         allow(generator).to receive(:yes?)
@@ -310,7 +310,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
     end
 
     describe "with custom application form name" do
-      let(:options) { { application_form_name: "CustomApplicationForm" } }
+      let(:options) { { "application-form-name": "CustomApplicationForm" } }
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
@@ -323,8 +323,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with --skip_application_form flag" do
-      let(:options) { { skip_application_form: true } }
+    describe "with --skip-application-form flag" do
+      let(:options) { { "skip-application-form": true } }
 
       before do
         allow(generator).to receive(:yes?)
@@ -351,14 +351,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates both business process and application form" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip_generating_application_form").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip-application-form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "Test").once
         expect(generator).to have_received(:generate).with("flex:model", "TestCase", "--parent", "Flex::Case").once
       end
     end
 
     context "with custom names for both business process and application form" do
-      let(:options) { { business_process_name: "CustomBP", application_form_name: "CustomAF" } }
+      let(:options) { { "business-process-name": "CustomBP", "application-form-name": "CustomAF" } }
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
@@ -366,14 +366,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "uses custom names for both" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip_generating_application_form").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip-application-form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
       end
     end
 
     context "with all options combined" do
       let(:attributes) { [ "name:string", "address:address" ] }
-      let(:options) { { sti: true, business_process_name: "CustomBP", application_form_name: "CustomAF" } }
+      let(:options) { { sti: true, "business-process-name": "CustomBP", "application-form-name": "CustomAF" } }
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
@@ -381,7 +381,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "handles all options correctly" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip_generating_application_form").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip-application-form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
         expect(generator).to have_received(:generate).with("flex:model", "TestCase", "name:string", "address:address", "type:string", "--parent", "Flex::Case").once
       end
