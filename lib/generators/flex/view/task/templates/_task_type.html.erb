@@ -1,0 +1,20 @@
+<!-- Task type partial for <%= name.underscore.humanize.downcase %> details -->
+<!-- This partial should contain the specific details and form elements for this <%= name.underscore.humanize.downcase %> type. -->
+<!--
+  Available locals:
+  - <%= name.underscore.singularize %>: Flex::Task - The <%= name.underscore.humanize.downcase %> object
+  - assigned_user_display_text: String - The name of the user assigned to this <%= name.underscore.humanize.downcase %>
+  
+  Example implementation:
+  <div class="<%= name.underscore.singularize %>-details">
+    <p><strong>Case ID:</strong> <%%= <%= name.underscore.singularize %>.case_id %></p>
+    <p><strong>Description:</strong> <%%= <%= name.underscore.singularize %>.description %></p>
+    
+    Add your custom <%= name.underscore.humanize.downcase %>-specific fields and actions here
+    
+    <%%= form_with model: <%= name.underscore.singularize %>, local: true do |form| %>
+      Add your form fields here
+      <%%= form.submit "Complete <%= name.underscore.humanize %>", class: "usa-button" %>
+    <%% end %>
+  </div>
+-->

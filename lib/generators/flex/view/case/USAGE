@@ -1,0 +1,43 @@
+Description:
+    Generates view templates for Flex Cases with standardized layouts and commented variable replacement instructions.
+    Creates index and/or show views based on specified view types.
+
+Usage:
+    bin/rails generate flex:view:case NAME [view_types] [options]
+
+Examples:
+    bin/rails generate flex:view:case PassportApplication
+    bin/rails generate flex:view:case PassportApplication index
+    bin/rails generate flex:view:case PassportApplication show
+    bin/rails generate flex:view:case PassportApplication index show
+    bin/rails generate flex:view:case BenefitsCase index show
+
+Parameters:
+    NAME: Required. The name for the case views (string with no whitespaces)
+        Will be used to create the view directory at app/views/[name_underscored]
+        Example: "PassportApplication" creates app/views/passport_application/
+
+    view_types: Optional array of view types to generate
+        Available options: "index", "show"
+        Default: [] (no views generated)
+        Example: index show
+
+View Types:
+    index: Creates an index view template for displaying lists of cases
+        - Based on existing Flex case index patterns
+        - Includes commented instructions for variable replacement
+        - Creates app/views/[name_underscored]/index.html.erb
+
+    show: Creates a show view template for displaying individual cases
+        - Based on existing Flex case show patterns
+        - Includes commented instructions for variable replacement
+        - Creates app/views/[name_underscored]/show.html.erb
+
+File Collision:
+    The generator will check for existing files and abort with an error message if any target files already exist.
+    This prevents accidental overwriting of existing view templates.
+
+This will create:
+    - View directory at app/views/[name_underscored]/
+    - Index template (if "index" specified) with commented variable replacement instructions
+    - Show template (if "show" specified) with commented variable replacement instructions

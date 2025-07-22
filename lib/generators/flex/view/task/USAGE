@@ -1,0 +1,45 @@
+Description:
+    Generates view templates for Flex Tasks with standardized layouts and commented variable replacement instructions.
+    Creates index and/or show views based on specified view types.
+
+Usage:
+    bin/rails generate flex:view:task NAME [view_types] [options]
+
+Examples:
+    bin/rails generate flex:view:task ReviewApplication
+    bin/rails generate flex:view:task ReviewApplication index
+    bin/rails generate flex:view:task ReviewApplication show
+    bin/rails generate flex:view:task ReviewApplication index show
+    bin/rails generate flex:view:task ProcessPayment index show
+
+Parameters:
+    NAME: Required. The name for the task views (string with no whitespaces)
+        Will be used to create the view directory at app/views/[name_underscored]
+        Example: "ReviewApplication" creates app/views/review_application/
+
+    view_types: Optional array of view types to generate
+        Available options: "index", "show"
+        Default: [] (no views generated)
+        Example: index show
+
+View Types:
+    index: Creates an index view template for displaying lists of tasks
+        - Based on existing Flex task index patterns
+        - Includes commented instructions for variable replacement
+        - Creates app/views/[name_underscored]/index.html.erb
+
+    show: Creates a show view template for displaying individual tasks
+        - Based on existing Flex task show patterns
+        - Includes commented instructions for variable replacement
+        - Creates app/views/[name_underscored]/show.html.erb
+        - Also creates details directory with task type partial
+
+File Collision:
+    The generator will check for existing files and abort with an error message if any target files already exist.
+    This prevents accidental overwriting of existing view templates.
+
+This will create:
+    - View directory at app/views/[name_underscored]/
+    - Index template (if "index" specified) with commented variable replacement instructions
+    - Show template (if "show" specified) with commented variable replacement instructions
+    - Details directory and task type partial (if "show" specified) with commented instructions

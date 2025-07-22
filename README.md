@@ -203,6 +203,59 @@ This will create:
 - The generator will check for the existence of associated business process and application form classes, prompting to generate them if they don't exist (unless skip flags are used)
 - All specified attributes and Rails model generator options are passed through to the underlying flex:model generator
 
+#### Flex View Generators
+
+Generates view templates for Flex Tasks and Cases with standardized layouts and commented variable replacement instructions. Creates index and/or show views based on specified view types.
+
+##### Usage
+
+```shell
+bin/rails generate flex:view:task NAME [view_types]
+bin/rails generate flex:view:case NAME [view_types]
+```
+
+##### Examples
+
+```shell
+bin/rails generate flex:view:task ReviewApplication index show
+bin/rails generate flex:view:task ProcessPayment index
+bin/rails generate flex:view:case PassportApplication index show
+bin/rails generate flex:view:case BenefitsCase show
+```
+
+##### Parameters
+
+- `NAME`: Required. The name for the views (string with no whitespaces)
+  - Will be used to create the view directory at `app/views/[name_underscored]`
+  - Example: "ReviewApplication" creates `app/views/review_application/`
+
+- `view_types`: Optional array of view types to generate
+  - Available options: "index", "show"
+  - Default: [] (no views generated)
+  - Example: `index show`
+
+##### View Types
+
+- `index`: Creates an index view template for displaying lists
+  - Based on existing Flex patterns with commented variable replacement instructions
+  - Creates `app/views/[name_underscored]/index.html.erb`
+
+- `show`: Creates a show view template for displaying individual items
+  - Based on existing Flex patterns with commented variable replacement instructions
+  - Creates `app/views/[name_underscored]/show.html.erb`
+  - For task views, also creates `details/` directory with task type partial
+
+##### File Collision
+
+The generators will check for existing files and abort with an error message if any target files already exist. This prevents accidental overwriting of existing view templates.
+
+This will create:
+
+- View directory at `app/views/[name_underscored]/`
+- Index template (if "index" specified) with commented variable replacement instructions
+- Show template (if "show" specified) with commented variable replacement instructions
+- Details directory and task type partial (if task "show" specified) with commented instructions
+
 ### Views
 
 For more information on implementing prebuilt views from Flex, please see:

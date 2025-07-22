@@ -1,0 +1,54 @@
+<%# Index view for displaying a list of <%= name.underscore.humanize.downcase.pluralize %>
+  Required locals:
+  - @<%= name.underscore.pluralize %>: Array of <%= name.underscore.humanize.downcase.pluralize %> to display
+  - model_class: Class - The model class for polymorphic routing (e.g., PassportCase)
+  
+  Example usage:
+    @<%= name.underscore.pluralize %> = <%= name.classify %>.all
+    model_class = <%= name.classify %>
+%>
+<%%%= content_for :title, model_class.name.titleize %>
+
+<main class="usa-section">
+  <div class="grid-container">
+    <h1 class="usa-heading-xl"><%%%= model_class.name.titleize.sub('Case', ' Cases') %></h1>
+
+    <%% tabs = [
+      { name: "Open", path: polymorphic_path(model_class), active: action_name == "index" },
+      { name: "Closed", path: polymorphic_path(model_class, action: "closed"), active: action_name == "closed" }
+    ] %>
+
+    <nav class="display-flex border-bottom-1px border-base-light">
+      <%% tabs.each do |tab| %>
+        <%%%= render partial: "flex/cases/nav_tab", locals: tab %>
+      <%% end %>
+    </nav>
+
+    <table class="usa-table usa-table--borderless usa-table--striped">
+      <thead>
+        <tr>
+          <th scope="col">Case ID</th>
+          <th scope="col">Created</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%% if @<%= name.underscore.pluralize %>.any? %>
+          <%% @<%= name.underscore.pluralize %>.each do |<%= name.underscore.singularize %>| %>
+            <tr>
+              <td><%%%= <%= name.underscore.singularize %>.id %></td>
+              <td><%%%= <%= name.underscore.singularize %>.created_at.strftime('%m/%d/%Y') %></td>
+              <td>
+                <%%%= link_to "View", polymorphic_path(<%= name.underscore.singularize %>), class: "usa-button usa-button--outline" %>
+              </td>
+            </tr>
+          <%% end %>
+        <%% else %>
+          <tr>
+            <td colspan="3" class="text-center">No <%= name.underscore.humanize.downcase.pluralize %></td>
+          </tr>
+        <%% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
