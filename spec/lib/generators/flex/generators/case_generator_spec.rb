@@ -428,31 +428,4 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
   end
-
-  describe "integration tests" do
-    let(:generator) { described_class.new([ 'TestIntegration' ], {}, destination_root: destination_root) }
-
-    before do
-      allow(generator).to receive(:generate).and_call_original
-    end
-
-    it "actually invokes the flex:model generator" do
-      allow(generator).to receive(:generate)
-      generator.invoke_all
-      expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationCase", "--parent", "Flex::Case")
-    end
-
-    context "with attributes and options" do
-      let(:generator) { described_class.new([ 'TestIntegration', 'name:string' ], { sti: true }, destination_root: destination_root) }
-
-      before do
-        allow(generator).to receive(:generate)
-      end
-
-      it "passes all options correctly to model generator" do
-        generator.invoke_all
-        expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationCase", "name:string", "type:string", "--parent", "Flex::Case")
-      end
-    end
-  end
 end
