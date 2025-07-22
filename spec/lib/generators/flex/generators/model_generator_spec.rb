@@ -97,7 +97,7 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
     it "raises an error" do
       expect {
         generator.create_model_file
-      }.to raise_error(/Model file already exists/)
+      }.to raise_error(Thor::Error, /Model file already exists/)
     end
   end
 end
