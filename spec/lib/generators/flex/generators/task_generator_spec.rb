@@ -123,8 +123,8 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       end
     end
 
-    context "with skip_migration_check option" do
-      let(:options) { { skip_migration_check: true } }
+    context "with skip-migration-check option" do
+      let(:options) { { "skip-migration-check": true } }
 
       before do
         allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(false)
