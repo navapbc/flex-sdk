@@ -10,6 +10,14 @@ module Flex
 
         argument :view_types, type: :array, default: [], desc: "View types to generate (index, show)"
 
+        def validate_view_types
+          if view_types.empty?
+            say "Error: You must provide at least one view type (index, show)", :red
+            say "Example: bin/rails generate flex:view:task #{name} index show", :yellow
+            exit(1)
+          end
+        end
+
         def check_files_exist
           target_files = []
           target_files << "app/views/#{name.underscore}/index.html.erb" if view_types.include?("index")

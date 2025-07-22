@@ -51,9 +51,9 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
           if types.include?("index")
             expect(File.exist?(index_file)).to be true
             content = File.read(index_file)
-            expect(content).to include("review_applications")
-            expect(content).to include("review_application")
-            expect(content).to include("flex.review_applications.index.title")
+            expect(content).to include("render template: 'flex/tasks/index'")
+            expect(content).to include("@review_applications")
+            expect(content).to include("Replace @review_applications with your array of tasks")
           else
             expect(File.exist?(index_file)).to be false
           end
@@ -64,8 +64,8 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
             expect(File.exist?(partial_file)).to be true
 
             show_content = File.read(show_file)
-            expect(show_content).to include("review_application")
-            expect(show_content).to include("flex.review_applications.show.details")
+            expect(show_content).to include("render template: 'flex/tasks/show'")
+            expect(show_content).to include("@review_application")
 
             partial_content = File.read(partial_file)
             expect(partial_content).to include("review_application")
