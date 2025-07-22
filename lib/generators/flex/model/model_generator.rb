@@ -29,6 +29,11 @@ module Flex
       end
 
       def create_model_file
+        full_file_path = File.join(destination_root, "app/models", *Array(class_path), "#{file_name}.rb")
+        if File.exist?(full_file_path)
+          raise Thor::Error, "Model file already exists at app/models/#{Array(class_path).join('/')}/#{file_name}.rb"
+        end
+
         template "model.rb.tt", File.join("app/models", class_path, "#{file_name}.rb")
       end
 
