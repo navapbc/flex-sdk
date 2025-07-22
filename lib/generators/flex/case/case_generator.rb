@@ -19,15 +19,15 @@ module Flex
       end
 
       def create_case_model
-        handle_business_process_generation unless options[:skip_business_process]
-        handle_application_form_generation unless options[:skip_application_form]
-
         model_args = [ @case_name ]
         model_args.concat(all_attributes)
         model_args.concat([ "--parent", "Flex::Case" ])
 
         Rails.logger.debug "Creating case model with arguments: #{model_args.join(' ')}"
         generate("flex:model", *model_args)
+
+        handle_business_process_generation unless options[:skip_business_process]
+        handle_application_form_generation unless options[:skip_application_form]
       end
 
       private
@@ -40,7 +40,8 @@ module Flex
           if should_generate_business_process?(bp_class)
             base_name = extract_base_name_from_business_process(bp_class)
             Rails.logger.debug "User requested to generate business process. Generating business process class: #{bp_class} utilizing base name: #{base_name}"
-            generate("flex:business_process", base_name)
+
+            generate("flex:business_process", base_name, "--skip_generating_application_form")
           end
         end
       end
