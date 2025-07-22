@@ -6,8 +6,8 @@ module Flex
     class CaseGenerator < Rails::Generators::NamedBase
       argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
-      class_option :"business-process-name", type: :string, desc: "Business process class name (optional)"
-      class_option :"application-form-name", type: :string, desc: "Application form class name (optional)"
+      class_option :"business-process", type: :string, desc: "Business process class name (optional)"
+      class_option :"application-form", type: :string, desc: "Application form class name (optional)"
       class_option :"skip-business-process", type: :boolean, default: false, desc: "Skip business process generation check"
       class_option :"skip-application-form", type: :boolean, default: false, desc: "Skip application form generation check"
       class_option :sti, type: :boolean, default: false, desc: "Add type column for single-table inheritance"
@@ -73,23 +73,23 @@ module Flex
       end
 
       def business_process_name
-        options[:"business-process-name"] || "#{@case_name.gsub(/Case$/, "")}BusinessProcess"
+        options[:"business-process"] || "#{@case_name.gsub(/Case$/, "")}BusinessProcess"
       end
 
       def application_form_name
-        options[:"application-form-name"] || "#{@case_name.gsub(/Case$/, "")}ApplicationForm"
+        options[:"application-form"] || "#{@case_name.gsub(/Case$/, "")}ApplicationForm"
       end
 
       def should_generate_business_process?(bp_class)
-        yes?("Business process #{bp_class} does not exist. Generate it? (y/n)")
+        options[:"business-process"].present? || yes?("Business process #{bp_class} does not exist. Generate it? (y/n)")
       end
 
       def should_generate_application_form?(app_form_class)
-        yes?("Application form #{app_form_class} does not exist. Generate it? (y/n)")
+        options[:"application-form"].present? || yes?("Application form #{app_form_class} does not exist. Generate it? (y/n)")
       end
 
       def extract_base_name_from_business_process(bp_class)
-        if options[:"business-process-name"]
+        if options[:"business-process"]
           # If custom name provided, use it as-is (the generators expect the full class name)
           bp_class
         else
@@ -99,7 +99,7 @@ module Flex
       end
 
       def extract_base_name_from_application_form(app_form_class)
-        if options[:"application-form-name"]
+        if options[:"application-form"]
           # If custom name provided, use it as-is (the generators expect the full class name)
           app_form_class
         else
