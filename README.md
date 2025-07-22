@@ -203,6 +203,12 @@ This will create:
 - The generator will check for the existence of associated business process and application form classes, prompting to generate them if they don't exist (unless skip flags are used)
 - All specified attributes and Rails model generator options are passed through to the underlying flex:model generator
 
+### Views
+
+For more information on implementing prebuilt views from Flex, please see:
+
+- [Tasks](app/views/flex/tasks/README.md)
+
 ## Installation
 
 Add this line to your application's Gemfile:
