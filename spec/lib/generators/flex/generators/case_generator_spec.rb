@@ -224,7 +224,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates business process" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip_generating_application_form").once
       end
     end
 
@@ -238,7 +238,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "uses custom business process name" do
         expect(generator).to have_received(:yes?).with("Business process CustomBusinessProcess does not exist. Generate it? (y/n)")
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess")
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip_generating_application_form")
       end
     end
 
@@ -351,7 +351,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates both business process and application form" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip_generating_application_form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "Test").once
         expect(generator).to have_received(:generate).with("flex:model", "TestCase", "--parent", "Flex::Case").once
       end
@@ -366,7 +366,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "uses custom names for both" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip_generating_application_form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
       end
     end
@@ -381,7 +381,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "handles all options correctly" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP").once
+        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip_generating_application_form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
         expect(generator).to have_received(:generate).with("flex:model", "TestCase", "name:string", "address:address", "type:string", "--parent", "Flex::Case").once
       end
