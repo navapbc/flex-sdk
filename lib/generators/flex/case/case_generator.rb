@@ -26,6 +26,7 @@ module Flex
         model_args.concat(all_attributes)
         model_args.concat([ "--parent", "Flex::Case" ])
 
+        Rails.logger.debug "Creating case model with arguments: #{model_args.join(' ')}"
         generate("flex:model", *model_args)
       end
 
@@ -33,9 +34,12 @@ module Flex
 
       def handle_business_process_generation
         bp_class = business_process_name
+        Rails.logger.debug "Checking for business process class: #{bp_class}"
         unless bp_class.safe_constantize.present?
+          Rails.logger.debug "Business process class #{bp_class} does not exist."
           if should_generate_business_process?(bp_class)
             base_name = extract_base_name_from_business_process(bp_class)
+            Rails.logger.debug "User requested to generate business process. Generating business process class: #{bp_class} utilizing base name: #{base_name}"
             generate("flex:business_process", base_name)
           end
         end
@@ -43,9 +47,12 @@ module Flex
 
       def handle_application_form_generation
         app_form_class = application_form_name
+        Rails.logger.debug "Checking for application form class: #{app_form_class}"
         unless app_form_class.safe_constantize.present?
+          Rails.logger.debug "Application form class #{app_form_class} does not exist."
           if should_generate_application_form?(app_form_class)
             base_name = extract_base_name_from_application_form(app_form_class)
+            Rails.logger.debug "User requested to generate application form. Generating application form class: #{app_form_class} utilizing base name: #{base_name}"
             generate("flex:application_form", base_name)
           end
         end
