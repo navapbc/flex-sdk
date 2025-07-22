@@ -152,6 +152,57 @@ This will create:
 - Automatically update `config/application.rb` to call `{NAME}BusinessProcess.start_listening_for_events` in a `config.after_initialize` block
 - Optionally check for and generate the associated application form if it doesn't exist
 
+#### Flex Case Generator
+
+Generates a Flex::Case model with optional business process and application form integration. Automatically appends "Case" to the name if not already present and can coordinate with other generators to create associated components.
+
+##### Usage
+
+```shell
+bin/rails generate flex:case NAME [attributes] [options]
+```
+
+##### Examples
+
+```shell
+bin/rails generate flex:case Passport
+bin/rails generate flex:case PassportCase
+bin/rails generate flex:case Benefits name:name address:address
+bin/rails generate flex:case Medicaid --business_process_name MedicaidReviewProcess
+bin/rails generate flex:case Application --application_form_name CustomApplicationForm
+bin/rails generate flex:case Document --sti
+bin/rails generate flex:case Review --skip_business_process --skip_application_form
+```
+
+##### Options
+
+- `--business_process_name CLASS_NAME`: Custom business process class name (optional)
+
+  - Default: {NAME}BusinessProcess (e.g., "PassportBusinessProcess")
+  - Example: `--business_process_name CustomBusinessProcess`
+
+- `--application_form_name FORM_NAME`: Custom application form class name (optional)
+
+  - Default: {NAME}ApplicationForm (e.g., "PassportApplicationForm")
+  - Example: `--application_form_name CustomApplicationForm`
+
+- `--skip_business_process`: Skip business process generation check (optional)
+
+  - Use this flag to bypass checking if the business process exists
+
+- `--skip_application_form`: Skip application form generation check (optional)
+
+  - Use this flag to bypass checking if the application form exists
+
+- `--sti`: Add type column for single-table inheritance (optional)
+  - Adds a type:string attribute to support STI patterns
+
+This will create:
+
+- A Rails model file that extends Flex::Case with the name automatically transformed to include "Case" suffix if not already present
+- The generator will check for the existence of associated business process and application form classes, prompting to generate them if they don't exist (unless skip flags are used)
+- All specified attributes and Rails model generator options are passed through to the underlying flex:model generator
+
 ### Views
 
 For more information on implementing prebuilt views from Flex, please see:
