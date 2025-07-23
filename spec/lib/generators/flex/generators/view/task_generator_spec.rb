@@ -19,7 +19,7 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
   end
 
   describe "view directory creation" do
-    let(:view_types) { ["index"] }
+    let(:view_types) { [ "index" ] }
 
     before do
       generator.invoke_all
@@ -40,7 +40,7 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
     end
 
     context "when only index view type is specified" do
-      let(:view_types) { ["index"] }
+      let(:view_types) { [ "index" ] }
 
       before do
         generator.invoke_all
@@ -65,7 +65,7 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
     end
 
     context "when only show view type is specified" do
-      let(:view_types) { ["show"] }
+      let(:view_types) { [ "show" ] }
 
       before do
         generator.invoke_all
@@ -92,7 +92,7 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
     end
 
     context "when both index and show view types are specified" do
-      let(:view_types) { ["index", "show"] }
+      let(:view_types) { [ "index", "show" ] }
 
       before do
         generator.invoke_all
