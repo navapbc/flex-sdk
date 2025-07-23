@@ -1,30 +1,14 @@
 require "rails_helper"
+require_relative "value_object_attribute_shared_examples"
 
 RSpec.describe Flex::Attributes::YearQuarterAttribute do
-  let(:object) { TestRecord.new }
-
-  it "allows setting year_quarter as a value object" do
-    year_quarter = Flex::YearQuarter.new(year: 2023, quarter: 2)
-    object.reporting_period = year_quarter
-
-    expect(object.reporting_period).to eq(Flex::YearQuarter.new(year: 2023, quarter: 2))
-    expect(object.reporting_period_year).to eq(2023)
-    expect(object.reporting_period_quarter).to eq(2)
-  end
-
-  it "allows setting year_quarter as a hash" do
-    object.reporting_period = { year: 2024, quarter: 3 }
-
-    expect(object.reporting_period).to eq(Flex::YearQuarter.new(year: 2024, quarter: 3))
-    expect(object.reporting_period_year).to eq(2024)
-    expect(object.reporting_period_quarter).to eq(3)
-  end
-
-  it "allows setting nested year_quarter attributes directly" do
-    object.reporting_period_year = 2025
-    object.reporting_period_quarter = 1
-    expect(object.reporting_period).to eq(Flex::YearQuarter.new(year: 2025, quarter: 1))
-  end
+  include_examples "value object shared examples", Flex::YearQuarter, :reporting_period,
+    valid_nested_attributes: FactoryBot.attributes_for(:year_quarter),
+    array_values: [
+      FactoryBot.build(:year_quarter),
+      FactoryBot.build(:year_quarter)
+    ],
+    invalid_value: FactoryBot.build(:year_quarter, :invalid)
 
   it "validates quarter values are between 1 and 4" do
     object.reporting_period_year = 2025
@@ -38,18 +22,6 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
 
     object.reporting_period_quarter = 2
     expect(object).to be_valid
-  end
-
-  it "persists and loads year_quarter object correctly" do
-    year_quarter = Flex::YearQuarter.new(year: 2023, quarter: 4)
-    object.reporting_period = year_quarter
-    object.save!
-
-    loaded_record = TestRecord.find(object.id)
-    expect(loaded_record.reporting_period).to be_a(described_class)
-    expect(loaded_record.reporting_period).to eq(year_quarter)
-    expect(loaded_record.reporting_period_year).to eq(2023)
-    expect(loaded_record.reporting_period_quarter).to eq(4)
   end
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers
@@ -187,42 +159,4 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
-
-  describe "array: true" do
-    it "allows setting an array of year quarters" do
-      periods = [
-        Flex::YearQuarter.new(year: 2023, quarter: 1),
-        Flex::YearQuarter.new(year: 2023, quarter: 2)
-      ]
-      object.reporting_periods = periods
-
-      expect(object.reporting_periods).to be_an(Array)
-      expect(object.reporting_periods.size).to eq(2)
-      expect(object.reporting_periods[0]).to eq(periods[0])
-      expect(object.reporting_periods[1]).to eq(periods[1])
-    end
-
-    it "validates each year quarter in the array" do
-      object.reporting_periods = [
-        Flex::YearQuarter.new(year: 2023, quarter: 5), # Invalid: quarter > 4
-        Flex::YearQuarter.new(year: 2023, quarter: 2)  # Valid
-      ]
-
-      expect(object).not_to be_valid
-      expect(object.errors[:reporting_periods]).to include("contains one or more invalid items")
-    end
-
-    it "persists and loads arrays of value objects" do
-      year_quarter_1 = build(:year_quarter)
-      year_quarter_2 = build(:year_quarter)
-      object.reporting_periods = [ year_quarter_1, year_quarter_2 ]
-
-      object.save!
-      loaded_record = TestRecord.find(object.id)
-
-      expect(loaded_record.reporting_periods.size).to eq(2)
-      expect(loaded_record.reporting_periods[0]).to eq(year_quarter_1)
-      expect(loaded_record.reporting_periods[1]).to eq(year_quarter_2)
-    end
-  end
 end
