@@ -19,6 +19,8 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
   end
 
   describe "view directory creation" do
+    let(:view_types) { ["index"] }
+
     before do
       generator.invoke_all
     end
@@ -29,52 +31,94 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
   end
 
   describe "view type generation" do
-    [
-      [ [], "generates no files when no view types specified" ],
-      [ [ "index" ], "generates only index view when index specified" ],
-      [ [ "show" ], "generates only show view and details when show specified" ],
-      [ [ "index", "show" ], "generates both index and show views when both specified" ]
-    ].each do |types, description|
-      context "with view_types #{types}" do
-        let(:view_types) { types }
+    context "when no view types are specified" do
+      let(:view_types) { [] }
 
-        before do
-          generator.invoke_all
-        end
+      it "raises an error" do
+        expect { generator.invoke_all }.to raise_error("You must provide at least one view type (index, show)")
+      end
+    end
 
-        it description do
-          index_file = "#{destination_root}/app/views/review_application/index.html.erb"
-          show_file = "#{destination_root}/app/views/review_application/show.html.erb"
-          details_dir = "#{destination_root}/app/views/review_application/details"
-          partial_file = "#{destination_root}/app/views/review_application/details/_review_application_type.html.erb"
+    context "when only index view type is specified" do
+      let(:view_types) { ["index"] }
 
-          if types.include?("index")
-            expect(File.exist?(index_file)).to be true
-            content = File.read(index_file)
-            expect(content).to include("render template: 'flex/tasks/index'")
-            expect(content).to include("@review_applications")
-            expect(content).to include("Replace @review_applications with your array of tasks")
-          else
-            expect(File.exist?(index_file)).to be false
-          end
+      before do
+        generator.invoke_all
+      end
 
-          if types.include?("show")
-            expect(File.exist?(show_file)).to be true
-            expect(Dir.exist?(details_dir)).to be true
-            expect(File.exist?(partial_file)).to be true
+      it "generates only index view" do
+        index_file = "#{destination_root}/app/views/review_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/review_application/show.html.erb"
+        details_dir = "#{destination_root}/app/views/review_application/details"
+        partial_file = "#{destination_root}/app/views/review_application/details/_review_application_type.html.erb"
 
-            show_content = File.read(show_file)
-            expect(show_content).to include("render template: 'flex/tasks/show'")
-            expect(show_content).to include("@review_application")
+        expect(File.exist?(index_file)).to be true
+        expect(File.exist?(show_file)).to be false
+        expect(Dir.exist?(details_dir)).to be false
+        expect(File.exist?(partial_file)).to be false
 
-            partial_content = File.read(partial_file)
-            expect(partial_content).to include("review_application")
-          else
-            expect(File.exist?(show_file)).to be false
-            expect(Dir.exist?(details_dir)).to be false
-            expect(File.exist?(partial_file)).to be false
-          end
-        end
+        content = File.read(index_file)
+        expect(content).to include("render template: 'flex/tasks/index'")
+        expect(content).to include("@review_applications")
+        expect(content).to include("Replace @review_applications with your array of tasks")
+      end
+    end
+
+    context "when only show view type is specified" do
+      let(:view_types) { ["show"] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "generates only show view and details" do
+        index_file = "#{destination_root}/app/views/review_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/review_application/show.html.erb"
+        details_dir = "#{destination_root}/app/views/review_application/details"
+        partial_file = "#{destination_root}/app/views/review_application/details/_review_application_type.html.erb"
+
+        expect(File.exist?(index_file)).to be false
+        expect(File.exist?(show_file)).to be true
+        expect(Dir.exist?(details_dir)).to be true
+        expect(File.exist?(partial_file)).to be true
+
+        show_content = File.read(show_file)
+        expect(show_content).to include("render template: 'flex/tasks/show'")
+        expect(show_content).to include("@review_application")
+
+        partial_content = File.read(partial_file)
+        expect(partial_content).to include("review_application")
+      end
+    end
+
+    context "when both index and show view types are specified" do
+      let(:view_types) { ["index", "show"] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "generates both index and show views" do
+        index_file = "#{destination_root}/app/views/review_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/review_application/show.html.erb"
+        details_dir = "#{destination_root}/app/views/review_application/details"
+        partial_file = "#{destination_root}/app/views/review_application/details/_review_application_type.html.erb"
+
+        expect(File.exist?(index_file)).to be true
+        expect(File.exist?(show_file)).to be true
+        expect(Dir.exist?(details_dir)).to be true
+        expect(File.exist?(partial_file)).to be true
+
+        index_content = File.read(index_file)
+        expect(index_content).to include("render template: 'flex/tasks/index'")
+        expect(index_content).to include("@review_applications")
+
+        show_content = File.read(show_file)
+        expect(show_content).to include("render template: 'flex/tasks/show'")
+        expect(show_content).to include("@review_application")
+
+        partial_content = File.read(partial_file)
+        expect(partial_content).to include("review_application")
       end
     end
   end
@@ -125,19 +169,19 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
       index_file = "#{destination_root}/app/views/review_application/index.html.erb"
       content = File.read(index_file)
 
-      expect(content).to include("review_applications")
-      expect(content).to include("unassigned_review_applications")
-      expect(content).to include("flex.review_applications.index.title")
-      expect(content).to include("review_application.due_on")
+      expect(content).to include("render template: 'flex/tasks/index'")
+      expect(content).to include("@review_applications")
+      expect(content).to include("@unassigned_review_applications")
+      expect(content).to include("Replace @review_applications with your array of tasks")
     end
 
     it "generates show template with correct variable names" do
       show_file = "#{destination_root}/app/views/review_application/show.html.erb"
       content = File.read(show_file)
 
-      expect(content).to include("review_application:")
-      expect(content).to include("flex.review_applications.show.details")
-      expect(content).to include("review_application.status")
+      expect(content).to include("render template: 'flex/tasks/show'")
+      expect(content).to include("@review_application")
+      expect(content).to include("Replace @review_application with your Flex task to use")
     end
 
     it "generates task type partial with instructions" do

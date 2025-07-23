@@ -19,6 +19,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
   end
 
   describe "view directory creation" do
+    let(:view_types) { ["index"] }
+
     before do
       generator.invoke_all
     end
@@ -29,45 +31,80 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
   end
 
   describe "view type generation" do
-    [
-      [ [], "generates no files when no view types specified" ],
-      [ [ "index" ], "generates only index view when index specified" ],
-      [ [ "show" ], "generates only show view when show specified" ],
-      [ [ "index", "show" ], "generates both index and show views when both specified" ]
-    ].each do |types, description|
-      context "with view_types #{types}" do
-        let(:view_types) { types }
+    context "when no view types are specified" do
+      let(:view_types) { [] }
 
-        before do
-          generator.invoke_all
-        end
+      it "raises an error" do
+        expect { generator.invoke_all }.to raise_error("You must provide at least one view type (index, show)")
+      end
+    end
 
-        it description do
-          index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
-          show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+    context "when only index view type is specified" do
+      let(:view_types) { ["index"] }
 
-          if types.include?("index")
-            expect(File.exist?(index_file)).to be true
-            content = File.read(index_file)
-            expect(content).to include("render template: 'flex/cases/index'")
-            expect(content).to include("PassportApplication")
-            expect(content).to include("Replace `PassportApplication` with the name of the model class")
-          else
-            expect(File.exist?(index_file)).to be false
-          end
+      before do
+        generator.invoke_all
+      end
 
-          if types.include?("show")
-            expect(File.exist?(show_file)).to be true
+      it "generates only index view" do
+        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
 
-            show_content = File.read(show_file)
-            expect(show_content).to include("render template: 'flex/cases/show'")
-            expect(show_content).to include("PassportApplication")
-            expect(show_content).to include("content_for :case_summary")
-            expect(show_content).to include("content_for :case_details")
-          else
-            expect(File.exist?(show_file)).to be false
-          end
-        end
+        expect(File.exist?(index_file)).to be true
+        expect(File.exist?(show_file)).to be false
+
+        content = File.read(index_file)
+        expect(content).to include("render template: 'flex/cases/index'")
+        expect(content).to include("PassportApplication")
+        expect(content).to include("Replace `PassportApplication` with the name of the model class")
+      end
+    end
+
+    context "when only show view type is specified" do
+      let(:view_types) { ["show"] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "generates only show view" do
+        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+
+        expect(File.exist?(index_file)).to be false
+        expect(File.exist?(show_file)).to be true
+
+        show_content = File.read(show_file)
+        expect(show_content).to include("render template: 'flex/cases/show'")
+        expect(show_content).to include("PassportApplication")
+        expect(show_content).to include("content_for :case_summary")
+        expect(show_content).to include("content_for :case_details")
+      end
+    end
+
+    context "when both index and show view types are specified" do
+      let(:view_types) { ["index", "show"] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "generates both index and show views" do
+        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
+        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+
+        expect(File.exist?(index_file)).to be true
+        expect(File.exist?(show_file)).to be true
+
+        index_content = File.read(index_file)
+        expect(index_content).to include("render template: 'flex/cases/index'")
+        expect(index_content).to include("PassportApplication")
+
+        show_content = File.read(show_file)
+        expect(show_content).to include("render template: 'flex/cases/show'")
+        expect(show_content).to include("PassportApplication")
+        expect(show_content).to include("content_for :case_summary")
+        expect(show_content).to include("content_for :case_details")
       end
     end
   end

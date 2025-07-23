@@ -14,7 +14,7 @@ module Flex
           if view_types.empty?
             say "Error: You must provide at least one view type (index, show)", :red
             say "Example: bin/rails generate flex:view:case #{name} index show", :yellow
-            exit(1)
+            raise "You must provide at least one view type (index, show)"
           end
         end
 
