@@ -5,17 +5,17 @@ require 'tmpdir'
 
 RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
+  let(:case_name) { Faker::Company.unique.name.gsub(/[^a-zA-Z]/, '') }
   let(:generator) { described_class.new([ case_name ] + view_types, options.merge(quiet: true), destination_root: destination_root) }
-  let(:case_name) { 'PassportApplication' }
   let(:view_types) { [] }
   let(:options) { {} }
 
   def view_path(type)
-    "#{destination_root}/app/views/passport_application/#{type}.html.erb"
+    "#{destination_root}/app/views/#{case_name.underscore}/#{type}.html.erb"
   end
 
   def view_dir
-    "#{destination_root}/app/views/passport_application"
+    "#{destination_root}/app/views/#{case_name.underscore}"
   end
 
   before do
@@ -34,7 +34,7 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
     end
 
     it "creates the view directory" do
-      expect(Dir.exist?("#{destination_root}/app/views/passport_application")).to be true
+      expect(Dir.exist?("#{destination_root}/app/views/#{case_name.underscore}")).to be true
     end
   end
 
@@ -63,8 +63,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
 
         content = File.read(index_file)
         expect(content).to include("render template: 'flex/cases/index'")
-        expect(content).to include("PassportApplication")
-        expect(content).to include("Replace `PassportApplication` with the name of the model class")
+        expect(content).to include(case_name.classify)
+        expect(content).to include("Replace `#{case_name.classify}` with the name of the model class")
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
 
         show_content = File.read(show_file)
         expect(show_content).to include("render template: 'flex/cases/show'")
-        expect(show_content).to include("PassportApplication")
+        expect(show_content).to include(case_name.classify)
         expect(show_content).to include("content_for :case_summary")
         expect(show_content).to include("content_for :case_details")
       end
@@ -106,11 +106,11 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
 
         index_content = File.read(index_file)
         expect(index_content).to include("render template: 'flex/cases/index'")
-        expect(index_content).to include("PassportApplication")
+        expect(index_content).to include(case_name.classify)
 
         show_content = File.read(show_file)
         expect(show_content).to include("render template: 'flex/cases/show'")
-        expect(show_content).to include("PassportApplication")
+        expect(show_content).to include(case_name.classify)
         expect(show_content).to include("content_for :case_summary")
         expect(show_content).to include("content_for :case_details")
       end
@@ -143,12 +143,12 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
     let(:view_types) { [ "index", "show" ] }
 
     before do
-      FileUtils.mkdir_p("#{destination_root}/app/views/passport_application")
-      File.write("#{destination_root}/app/views/passport_application/show.html.erb", "existing content")
+      FileUtils.mkdir_p("#{destination_root}/app/views/#{case_name.underscore}")
+      File.write("#{destination_root}/app/views/#{case_name.underscore}/show.html.erb", "existing content")
     end
 
     it "raises error when files already exist" do
-      expect { generator.invoke_all }.to raise_error(/File already exists at app\/views\/passport_application\/show\.html\.erb/)
+      expect { generator.invoke_all }.to raise_error(/File already exists at app\/views\/#{case_name.underscore}\/show\.html\.erb/)
     end
   end
 
@@ -164,8 +164,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
       content = File.read(index_file)
 
       expect(content).to include("render template: 'flex/cases/index'")
-      expect(content).to include("PassportApplication")
-      expect(content).to include("Replace `PassportApplication` with the name of the model class")
+      expect(content).to include(case_name.classify)
+      expect(content).to include("Replace `#{case_name.classify}` with the name of the model class")
     end
 
     it "generates show template with correct variable names" do
@@ -173,7 +173,7 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
       content = File.read(show_file)
 
       expect(content).to include("render template: 'flex/cases/show'")
-      expect(content).to include("PassportApplication")
+      expect(content).to include(case_name.classify)
       expect(content).to include("content_for :case_summary")
       expect(content).to include("content_for :case_details")
     end
@@ -195,24 +195,6 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
         content = File.read("#{destination_root}/app/views/document/index.html.erb")
         expect(content).to include("render template: 'flex/cases/index'")
         expect(content).to include("Document")
-      end
-    end
-
-    context "with compound name" do
-      let(:case_name) { "LiquorLicenseApplication" }
-      let(:view_types) { [ "show" ] }
-
-      before do
-        generator.invoke_all
-      end
-
-      it "creates correct directory and files" do
-        expect(Dir.exist?("#{destination_root}/app/views/liquor_license_application")).to be true
-        expect(File.exist?("#{destination_root}/app/views/liquor_license_application/show.html.erb")).to be true
-
-        content = File.read("#{destination_root}/app/views/liquor_license_application/show.html.erb")
-        expect(content).to include("render template: 'flex/cases/show'")
-        expect(content).to include("LiquorLicenseApplication")
       end
     end
   end
