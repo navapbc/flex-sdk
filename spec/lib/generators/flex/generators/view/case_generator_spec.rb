@@ -10,6 +10,14 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
   let(:view_types) { [] }
   let(:options) { {} }
 
+  def view_path(type)
+    "#{destination_root}/app/views/passport_application/#{type}.html.erb"
+  end
+
+  def view_dir
+    "#{destination_root}/app/views/passport_application"
+  end
+
   before do
     FileUtils.mkdir_p("#{destination_root}/app/views")
   end
@@ -47,8 +55,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
       end
 
       it "generates only index view" do
-        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
-        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+        index_file = view_path("index")
+        show_file = view_path("show")
 
         expect(File.exist?(index_file)).to be true
         expect(File.exist?(show_file)).to be false
@@ -68,8 +76,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
       end
 
       it "generates only show view" do
-        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
-        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+        index_file = view_path("index")
+        show_file = view_path("show")
 
         expect(File.exist?(index_file)).to be false
         expect(File.exist?(show_file)).to be true
@@ -90,8 +98,8 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
       end
 
       it "generates both index and show views" do
-        index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
-        show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+        index_file = view_path("index")
+        show_file = view_path("show")
 
         expect(File.exist?(index_file)).to be true
         expect(File.exist?(show_file)).to be true
@@ -152,7 +160,7 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
     end
 
     it "generates index template with correct variable names" do
-      index_file = "#{destination_root}/app/views/passport_application/index.html.erb"
+      index_file = view_path("index")
       content = File.read(index_file)
 
       expect(content).to include("render template: 'flex/cases/index'")
@@ -161,7 +169,7 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
     end
 
     it "generates show template with correct variable names" do
-      show_file = "#{destination_root}/app/views/passport_application/show.html.erb"
+      show_file = view_path("show")
       content = File.read(show_file)
 
       expect(content).to include("render template: 'flex/cases/show'")
