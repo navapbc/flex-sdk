@@ -8,6 +8,10 @@ module Flex
       described_class.start_listening_for_events
     end
 
+    after do
+      described_class.stop_listening_for_events
+    end
+
     it "creates a passport case upon starting a passport application form and properly progresses through steps" do
       # create new application
       test_form.save!
