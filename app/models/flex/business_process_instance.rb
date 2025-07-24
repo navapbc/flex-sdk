@@ -27,10 +27,18 @@ module Flex
       @case = kase
     end
 
+    # BusinessProcessInstance is conceptually a value object associated with a Case.
+    # Rather than having a separate table for business process instances, the data
+    # (like current_step) is stored directly on the case table itself. This design
+    # choice trades off logical separation for query performance by avoiding table joins.
+    # An alternative implementation could store business process instance data in a
+    # separate table, which would be logically cleaner but require joins during DB queries.
     def current_step
       self.case.business_process_current_step
     end
 
+    # Sets the current step on the underlying case record.
+    # See the comment above current_step for explanation of this implementation approach.
     def current_step=(step)
       self.case.business_process_current_step = step
     end
