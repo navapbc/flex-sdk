@@ -1,37 +1,37 @@
-PassportBusinessProcess = Flex::BusinessProcess.define(:passport, PassportCase) do |bp|
+class PassportBusinessProcess < Flex::BusinessProcess
   # Define steps
-  bp.applicant_task('submit_application')
+  applicant_task('submit_application')
 
-  bp.system_process('verify_identity', ->(kase) {
+  system_process('verify_identity', ->(kase) {
     IdentityVerificationService.new(kase).verify_identity
   })
 
-  bp.staff_task('manual_adjudicator_review', PassportTask)
+  staff_task('manual_adjudicator_review', PassportTask)
 
-  bp.system_process('review_passport_photo', ->(kase) {
+  system_process('review_passport_photo', ->(kase) {
     PhotoVerificationService.new(kase).verify_photo
   })
 
-  bp.system_process('notify_user_passport_approved', ->(kase) {
+  system_process('notify_user_passport_approved', ->(kase) {
     UserNotificationService.new(kase).send_notification("approval")
   })
 
-  bp.system_process('notify_user_passport_rejected', ->(kase) {
+  system_process('notify_user_passport_rejected', ->(kase) {
     UserNotificationService.new(kase).send_notification("rejection")
   })
 
   # Define start step
-  bp.start_on_application_form_created('submit_application')
+  start_on_application_form_created('submit_application')
 
   # Define transitions
-  bp.transition('submit_application', 'PassportApplicationFormSubmitted', 'verify_identity')
-  bp.transition('submit_application', 'application_cancelled', 'end')
-  bp.transition('verify_identity', 'identity_verified', 'review_passport_photo')
-  bp.transition('verify_identity', 'identity_warning', 'manual_adjudicator_review')
-  bp.transition('manual_adjudicator_review', 'identity_verified', 'review_passport_photo')
-  bp.transition('manual_adjudicator_review', 'identity_rejected', 'application_rejected')
-  bp.transition('review_passport_photo', 'passport_photo_approved', 'notify_user_passport_approved')
-  bp.transition('review_passport_photo', 'passport_photo_rejected', 'review_passport_photo')
-  bp.transition('notify_user_passport_approved', 'notification_completed', 'end')
-  bp.transition('notify_user_passport_rejected', 'notification_completed', 'end')
+  transition('submit_application', 'PassportApplicationFormSubmitted', 'verify_identity')
+  transition('submit_application', 'application_cancelled', 'end')
+  transition('verify_identity', 'identity_verified', 'review_passport_photo')
+  transition('verify_identity', 'identity_warning', 'manual_adjudicator_review')
+  transition('manual_adjudicator_review', 'identity_verified', 'review_passport_photo')
+  transition('manual_adjudicator_review', 'identity_rejected', 'application_rejected')
+  transition('review_passport_photo', 'passport_photo_approved', 'notify_user_passport_approved')
+  transition('review_passport_photo', 'passport_photo_rejected', 'review_passport_photo')
+  transition('notify_user_passport_approved', 'notification_completed', 'end')
+  transition('notify_user_passport_rejected', 'notification_completed', 'end')
 end

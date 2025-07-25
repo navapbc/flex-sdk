@@ -18,6 +18,7 @@ module Flex
     include Step
 
     def initialize(task_class, task_management_service)
+      raise ArgumentError, "`task_class` must be a Flex::Task or a subclass of Flex::Task" unless task_class.present? && task_class <= (Flex::Task)
       @task_class = task_class
       @task_management_service = task_management_service
     end

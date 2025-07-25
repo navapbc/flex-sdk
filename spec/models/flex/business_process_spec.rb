@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Flex::BusinessProcess do
-  let(:application_form) { TestApplicationForm.create!() }
+  let(:application_form) { TestApplicationForm.new }
   let(:kase) { TestCase.find_by(application_form_id: application_form.id) }
+  let(:business_process_instance) { kase.business_process_instance }
   let(:business_process) { TestBusinessProcess }
 
   before do
@@ -16,29 +17,30 @@ RSpec.describe Flex::BusinessProcess do
 
   describe '#handle_event' do
     before do
-      kase.business_process_current_step = 'staff_task'
-      kase.save!
+      application_form.save!
     end
 
     it 'executes the complete process chain' do
+      expect(kase.business_process_instance.current_step).to eq('staff_task')
+
       Flex::EventManager.publish('event1', { case_id: kase.id })
       # system_process automatically publishes event2
       kase.reload
-      expect(kase.business_process_current_step).to eq('staff_task_2')
+      expect(kase.business_process_instance.current_step).to eq('staff_task_2')
 
       Flex::EventManager.publish('event3', { case_id: kase.id })
       kase.reload
-      expect(kase.business_process_current_step).to eq('applicant_task')
+      expect(kase.business_process_instance.current_step).to eq('applicant_task')
 
       Flex::EventManager.publish('event4', { case_id: kase.id })
       kase.reload
-      expect(kase.business_process_current_step).to eq('third_party_task')
+      expect(kase.business_process_instance.current_step).to eq('third_party_task')
 
       Flex::EventManager.publish('event5', { case_id: kase.id })
       # system_process_2 automatically publishes event6
       kase.reload
-      expect(kase.business_process_current_step).to eq('end')
       expect(kase).to be_closed
+      expect(kase.business_process_instance.current_step).to eq('end')
     end
 
     context 'when no transition is defined for the event' do
@@ -46,7 +48,7 @@ RSpec.describe Flex::BusinessProcess do
         [ 'event2', 'event3', 'event4' ].each do |event|
           Flex::EventManager.publish(event, { case_id: kase.id })
         end
-        expect(kase.business_process_current_step).to eq('staff_task')
+        expect(kase.business_process_instance.current_step).to eq('staff_task')
       end
 
       it 'does not re-execute the current step' do
@@ -61,28 +63,27 @@ RSpec.describe Flex::BusinessProcess do
 
   describe '#stop_listening_for_events' do
     before do
-      business_process.start_listening_for_events
-      kase.save!
+      application_form.save!
     end
 
     it 'unsubscribes from all events' do
       business_process.stop_listening_for_events
 
+      expect(kase.business_process_instance.current_step).to eq('staff_task')
+
       # Try publishing various events
-      kase.business_process_current_step = 'staff_task'
-      kase.save!
 
       Flex::EventManager.publish('event1', { case_id: kase.id })
       kase.reload
-      expect(kase.business_process_current_step).to eq('staff_task') # Should not change
+      expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
 
       Flex::EventManager.publish('event2', { case_id: kase.id })
       kase.reload
-      expect(kase.business_process_current_step).to eq('staff_task') # Should not change
+      expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
 
       Flex::EventManager.publish('event3', { case_id: kase.id })
       kase.reload
-      expect(kase.business_process_current_step).to eq('staff_task') # Should not change
+      expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
     end
   end
 end

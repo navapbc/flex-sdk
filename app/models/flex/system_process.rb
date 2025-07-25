@@ -21,6 +21,7 @@ module Flex
     attr_accessor :callback
 
     def initialize(name, callback)
+      raise ArgumentError, "`callback` must respond to :call" unless callback.respond_to?(:call)
       @name = name
       @callback = callback
     end

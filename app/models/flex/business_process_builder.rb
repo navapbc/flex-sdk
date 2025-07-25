@@ -5,7 +5,7 @@ module Flex
   #
   # This class is used by BusinessProcess.define to create new process definitions.
   #
-  # @example Creating a business process definition
+  # @@example Creating a business process definition
   #   MyBusinessProcess = Flex::BusinessProcess.define(:my_process, MyCase) do |bp|
   #     bp.step('collect_info', Flex::StaffTask.new(...))
   #     bp.step('process_data', Flex::SystemProcess.new(...))
@@ -18,70 +18,71 @@ module Flex
   # - start: Sets the starting step
   # - transition: Defines transitions between steps based on events
   #
-  class BusinessProcessBuilder
-    attr_reader :name, :steps, :start, :transitions, :case_class
+  module BusinessProcessBuilder
+    extend ActiveSupport::Concern
 
-    def initialize(name, case_class)
-      @name = name
-      @case_class = case_class
-      @start = nil
-      @steps = {}
-      @transitions = {}
-    end
+    class_methods do
+      attr_accessor :start_step_name
 
-    def start(step_name, on: nil, &handler)
-      @start_step_name = step_name
-      @start_events ||= {}
-      if on.present?
-        @start_events[on] = handler
-      else
-        start_on_application_form_created(step_name)
+      def steps
+        @steps ||= {}
       end
-    end
 
-    def start_on_application_form_created(step_name)
-      event_name = @case_class.name.sub("Case", "ApplicationFormCreated")
-      start(step_name, on: event_name) do |event|
-        @case_class.new(application_form_id: event[:payload][:application_form_id])
+      def transitions
+        @transitions ||= {}
       end
-    end
 
-    def step(name, step)
-      steps[name] = step
-    end
+      def start_events
+        @start_events ||= {}
+      end
 
-    def staff_task(name, task_class)
-      raise ArgumentError, "`task_class` must be a Flex::Task or a subclass of Flex::Task" unless task_class.present? && task_class <= (Flex::Task)
-      step(name, Flex::StaffTask.new(task_class, Flex::TaskService.get))
-    end
+      # Sets the starting step for the business process and optionally configures when it should start
+      #
+      # @param step_name [String] The name of the step that should be the starting point of the process
+      # @param on [String, nil] The event name that triggers the start of the process. If nil,
+      #   defaults to starting on application form creation via start_on_application_form_created
+      # @param handler [Proc] An optional block that handles the start event. The block receives
+      #   the event as a parameter and should return a new case instance
+      def start(step_name, on: nil, &handler)
+        self.start_step_name = step_name
+        if on.present?
+          start_events[on] = handler
+        else
+          start_on_application_form_created(step_name)
+        end
+      end
 
-    def system_process(name, callable)
-      step(name, Flex::SystemProcess.new(name, callable))
-    end
+      def start_on_application_form_created(step_name)
+        event_name = case_class.name.sub("Case", "ApplicationFormCreated")
+        start(step_name, on: event_name) do |event|
+          case_class.new(application_form_id: event[:payload][:application_form_id])
+        end
+      end
 
-    def applicant_task(name)
-      step(name, Flex::ApplicantTask.new(name))
-    end
+      def step(name, step)
+        steps[name] = step
+      end
 
-    def third_party_task(name)
-      step(name, Flex::ThirdPartyTask.new(name))
-    end
+      def staff_task(name, task_class)
+        step(name, Flex::StaffTask.new(task_class, Flex::TaskService.get))
+      end
 
-    def transition(from, event_name, to)
-      transitions[from] ||= {}
-      transitions[from][event_name] = to
-    end
+      def system_process(name, callable)
+        step(name, Flex::SystemProcess.new(name, callable))
+      end
 
-    def build
-      BusinessProcess.new(
-        name: @name,
-        case_class: @case_class,
-        description: "",
-        steps: @steps,
-        start_step_name: @start_step_name,
-        transitions: @transitions,
-        start_events: @start_events
-      )
+      def applicant_task(name)
+        step(name, Flex::ApplicantTask.new(name))
+      end
+
+      def third_party_task(name)
+        step(name, Flex::ThirdPartyTask.new(name))
+      end
+
+      def transition(from, event_name, to)
+        transitions[from] ||= {}
+        transitions[from][event_name] = to
+      end
     end
   end
 end
