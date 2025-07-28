@@ -9,7 +9,7 @@ Examples:
     bin/rails generate flex:case Passport
     bin/rails generate flex:case PassportCase
     bin/rails generate flex:case Benefits name:name address:address
-    bin/rails generate flex:case Medicaid --business-process MedicaidReviewProcess
+    bin/rails generate flex:case Medicaid --business-process MedicaidBusinessProcess
     bin/rails generate flex:case Application --application-form CustomApplicationForm
     bin/rails generate flex:case Document --sti
     bin/rails generate flex:case Review --skip-business-process --skip-application-form
