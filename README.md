@@ -168,23 +168,23 @@ bin/rails generate flex:case NAME [attributes] [options]
 bin/rails generate flex:case Passport
 bin/rails generate flex:case PassportCase
 bin/rails generate flex:case Benefits name:name address:address
-bin/rails generate flex:case Medicaid --business-process-name MedicaidReviewProcess
-bin/rails generate flex:case Application --application-form-name CustomApplicationForm
+bin/rails generate flex:case Medicaid --business-process MedicaidBusinessProcess
+bin/rails generate flex:case Application --application-form CustomApplicationForm
 bin/rails generate flex:case Document --sti
 bin/rails generate flex:case Review --skip-business-process --skip-application-form
 ```
 
 ##### Options
 
-- `--business-process-name CLASS_NAME`: Custom business process class name (optional)
+- `--business-process CLASS_NAME`: Custom business process class name (optional)
 
   - Default: {NAME}BusinessProcess (e.g., "PassportBusinessProcess")
-  - Example: `--business-process-name CustomBusinessProcess`
+  - Example: `--business-process CustomBusinessProcess`
 
-- `--application-form-name FORM_NAME`: Custom application form class name (optional)
+- `--application-form FORM_NAME`: Custom application form class name (optional)
 
   - Default: {NAME}ApplicationForm (e.g., "PassportApplicationForm")
-  - Example: `--application-form-name CustomApplicationForm`
+  - Example: `--application-form CustomApplicationForm`
 
 - `--skip-business-process`: Skip business process generation check (optional)
 
