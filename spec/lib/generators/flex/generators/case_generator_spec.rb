@@ -228,16 +228,16 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with custom business process name" do
+    context "with custom business process name" do
       let(:options) { { "business-process": "CustomBusinessProcess" } }
 
       before do
-        allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:yes?)
         generator.create_case_model
       end
 
       it "uses custom business process name" do
-        expect(generator).to have_received(:yes?).with("Business process CustomBusinessProcess does not exist. Generate it? (y/n)")
+        expect(generator).not_to have_received(:yes?)
         expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip-application-form")
       end
     end
@@ -313,27 +313,11 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       let(:options) { { "application-form": "CustomApplicationForm" } }
 
       before do
-        hide_const("CustomApplicationForm")
         allow(generator).to receive(:yes?)
         generator.create_case_model
       end
 
-      it "automatically skips prompt and generates application form when custom name is provided" do
-        expect(generator).not_to have_received(:yes?)
-        expect(generator).to have_received(:generate).with("flex:application_form", "CustomApplicationForm")
-      end
-    end
-
-    context "with custom application form name (auto-skip behavior)" do
-      let(:options) { { "application-form": "CustomApplicationForm" } }
-
-      before do
-        hide_const("CustomApplicationForm")
-        allow(generator).to receive(:yes?)
-        generator.create_case_model
-      end
-
-      it "automatically skips prompt when custom name is provided" do
+      it "uses custom application form name" do
         expect(generator).not_to have_received(:yes?)
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomApplicationForm")
       end
