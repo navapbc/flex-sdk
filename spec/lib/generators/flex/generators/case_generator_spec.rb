@@ -180,7 +180,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
   end
 
   describe "business process integration" do
-    describe "when business process exists" do
+    context "when business process exists" do
       before do
         stub_const("TestBusinessProcess", Class.new)
         allow(generator).to receive(:yes?)
@@ -196,7 +196,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "when business process does not exist and user declines" do
+    context "when business process does not exist and user declines" do
       before do
         hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(false)
@@ -212,7 +212,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "when business process does not exist and user agrees" do
+    context "when business process does not exist and user agrees" do
       before do
         hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(true)
@@ -228,7 +228,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with custom business process name" do
+    context "with custom business process name" do
       let(:options) { { "business-process": "CustomBusinessProcess" } }
 
       before do
@@ -243,7 +243,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with custom business process name (auto-skip behavior)" do
+    context "with custom business process name (auto-skip behavior)" do
       let(:options) { { "business-process": "CustomBusinessProcess" } }
 
       before do
@@ -258,7 +258,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with --skip-business-process flag" do
+    context "with --skip-business-process flag" do
       let(:options) { { "skip-business-process": true } }
 
       before do
@@ -277,7 +277,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
   end
 
   describe "application form integration" do
-    describe "when application form exists" do
+    context "when application form exists" do
       before do
         stub_const("TestApplicationForm", Class.new)
         allow(generator).to receive(:yes?)
@@ -293,7 +293,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "when application form does not exist and user declines" do
+    context "when application form does not exist and user declines" do
       before do
         hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(false)
@@ -309,7 +309,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "when application form does not exist and user agrees" do
+    context "when application form does not exist and user agrees" do
       before do
         hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(true)
@@ -325,7 +325,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with custom application form name" do
+    context "with custom application form name" do
       let(:options) { { "application-form": "CustomApplicationForm" } }
 
       before do
@@ -340,7 +340,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with custom application form name (auto-skip behavior)" do
+    context "with custom application form name (auto-skip behavior)" do
       let(:options) { { "application-form": "CustomApplicationForm" } }
 
       before do
@@ -355,7 +355,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    describe "with --skip-application-form flag" do
+    context "with --skip-application-form flag" do
       let(:options) { { "skip-application-form": true } }
 
       before do
