@@ -228,32 +228,16 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    context "with custom business process name" do
+    describe "with custom business process name" do
       let(:options) { { "business-process": "CustomBusinessProcess" } }
 
       before do
-        hide_const("CustomBusinessProcess")
-        allow(generator).to receive(:yes?)
+        allow(generator).to receive(:yes?).and_return(true)
         generator.create_case_model
       end
 
-      it "automatically skips prompt and generates business process when custom name is provided" do
-        expect(generator).not_to have_received(:yes?)
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip-application-form")
-      end
-    end
-
-    context "with custom business process name (auto-skip behavior)" do
-      let(:options) { { "business-process": "CustomBusinessProcess" } }
-
-      before do
-        hide_const("CustomBusinessProcess")
-        allow(generator).to receive(:yes?)
-        generator.create_case_model
-      end
-
-      it "automatically skips prompt when custom name is provided" do
-        expect(generator).not_to have_received(:yes?)
+      it "uses custom business process name" do
+        expect(generator).to have_received(:yes?).with("Business process CustomBusinessProcess does not exist. Generate it? (y/n)")
         expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip-application-form")
       end
     end
