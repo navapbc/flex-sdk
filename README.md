@@ -210,17 +210,17 @@ Generates view templates for Flex Tasks and Cases with standardized layouts and 
 ##### Usage
 
 ```shell
-bin/rails generate flex:view:task NAME [view_types]
-bin/rails generate flex:view:case NAME [view_types]
+bin/rails generate flex:task:views NAME [view_types]
+bin/rails generate flex:case:views NAME [view_types]
 ```
 
 ##### Examples
 
 ```shell
-bin/rails generate flex:view:task ReviewApplication index show
-bin/rails generate flex:view:task ProcessPayment index
-bin/rails generate flex:view:case PassportApplication index show
-bin/rails generate flex:view:case BenefitsCase show
+bin/rails generate flex:task:views ReviewApplication index show
+bin/rails generate flex:task:views ProcessPayment index
+bin/rails generate flex:case:views PassportApplication index show
+bin/rails generate flex:case:views BenefitsCase show
 ```
 
 ##### Parameters

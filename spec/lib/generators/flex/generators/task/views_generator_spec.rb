@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/view/task/task_generator'
+require 'generators/flex/task/views/views_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
+RSpec.describe Flex::Generators::Task::ViewsGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ task_name ] + view_types, options.merge(quiet: true), destination_root: destination_root) }
   let(:task_name) { 'ReviewApplication' }
@@ -124,23 +124,45 @@ RSpec.describe Flex::Generators::View::TaskGenerator, type: :generator do
   end
 
   describe "name formatting" do
-    [
-      [ 'ProcessPayment', 'process_payment' ],
-      [ 'ReviewTask', 'review_task' ],
-      [ 'VALIDATE_APPLICATION', 'validate_application' ]
-    ].each do |input, expected_underscore|
-      context "when name is '#{input}'" do
-        let(:task_name) { input }
-        let(:view_types) { [ "index" ] }
+    context "when name is 'ProcessPayment'" do
+      let(:task_name) { 'ProcessPayment' }
+      let(:view_types) { [ "index" ] }
 
-        before do
-          generator.invoke_all
-        end
+      before do
+        generator.invoke_all
+      end
 
-        it "creates directory with underscored name '#{expected_underscore}'" do
-          expect(Dir.exist?("#{destination_root}/app/views/#{expected_underscore}")).to be true
-          expect(File.exist?("#{destination_root}/app/views/#{expected_underscore}/index.html.erb")).to be true
-        end
+      it "creates directory with underscored name 'process_payment'" do
+        expect(Dir.exist?("#{destination_root}/app/views/process_payment")).to be true
+        expect(File.exist?("#{destination_root}/app/views/process_payment/index.html.erb")).to be true
+      end
+    end
+
+    context "when name is 'ReviewTask'" do
+      let(:task_name) { 'ReviewTask' }
+      let(:view_types) { [ "index" ] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "creates directory with underscored name 'review_task'" do
+        expect(Dir.exist?("#{destination_root}/app/views/review_task")).to be true
+        expect(File.exist?("#{destination_root}/app/views/review_task/index.html.erb")).to be true
+      end
+    end
+
+    context "when name is 'VALIDATE_APPLICATION'" do
+      let(:task_name) { 'VALIDATE_APPLICATION' }
+      let(:view_types) { [ "index" ] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "creates directory with underscored name 'validate_application'" do
+        expect(Dir.exist?("#{destination_root}/app/views/validate_application")).to be true
+        expect(File.exist?("#{destination_root}/app/views/validate_application/index.html.erb")).to be true
       end
     end
   end

@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/view/case/case_generator'
+require 'generators/flex/case/views/views_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
+RSpec.describe Flex::Generators::Case::ViewsGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:case_name) { Faker::Company.unique.name.gsub(/[^a-zA-Z]/, '') }
   let(:generator) { described_class.new([ case_name ] + view_types, options.merge(quiet: true), destination_root: destination_root) }
@@ -118,23 +118,45 @@ RSpec.describe Flex::Generators::View::CaseGenerator, type: :generator do
   end
 
   describe "name formatting" do
-    [
-      [ 'BenefitsCase', 'benefits_case' ],
-      [ 'MedicaidApplication', 'medicaid_application' ],
-      [ 'PASSPORT_RENEWAL', 'passport_renewal' ]
-    ].each do |input, expected_underscore|
-      context "when name is '#{input}'" do
-        let(:case_name) { input }
-        let(:view_types) { [ "index" ] }
+    context "when name is 'BenefitsCase'" do
+      let(:case_name) { 'BenefitsCase' }
+      let(:view_types) { [ "index" ] }
 
-        before do
-          generator.invoke_all
-        end
+      before do
+        generator.invoke_all
+      end
 
-        it "creates directory with underscored name '#{expected_underscore}'" do
-          expect(Dir.exist?("#{destination_root}/app/views/#{expected_underscore}")).to be true
-          expect(File.exist?("#{destination_root}/app/views/#{expected_underscore}/index.html.erb")).to be true
-        end
+      it "creates directory with underscored name 'benefits_case'" do
+        expect(Dir.exist?("#{destination_root}/app/views/benefits_case")).to be true
+        expect(File.exist?("#{destination_root}/app/views/benefits_case/index.html.erb")).to be true
+      end
+    end
+
+    context "when name is 'MedicaidApplication'" do
+      let(:case_name) { 'MedicaidApplication' }
+      let(:view_types) { [ "index" ] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "creates directory with underscored name 'medicaid_application'" do
+        expect(Dir.exist?("#{destination_root}/app/views/medicaid_application")).to be true
+        expect(File.exist?("#{destination_root}/app/views/medicaid_application/index.html.erb")).to be true
+      end
+    end
+
+    context "when name is 'PASSPORT_RENEWAL'" do
+      let(:case_name) { 'PASSPORT_RENEWAL' }
+      let(:view_types) { [ "index" ] }
+
+      before do
+        generator.invoke_all
+      end
+
+      it "creates directory with underscored name 'passport_renewal'" do
+        expect(Dir.exist?("#{destination_root}/app/views/passport_renewal")).to be true
+        expect(File.exist?("#{destination_root}/app/views/passport_renewal/index.html.erb")).to be true
       end
     end
   end
