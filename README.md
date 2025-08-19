@@ -220,37 +220,14 @@ gem "flex", path: "engines/flex"
 And then execute:
 
 ```bash
-$ bundle
+bundle install
 ```
 
 Or install it yourself as:
 
 ```bash
-$ gem install flex
+gem install flex
 ```
-
-## Working locally in the flex-sdk repository
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/)
-- [NodeJS](https://nodejs.org)
-- Ruby version matching [`.ruby-version`](./.ruby-version)
-
-### Run Setup
-
-Run `make setup`, which wil:
-
-1. Install dependencies
-2. Create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`
-3. Create the database for working locally with Flex
-
-### Generate the local database
-
-_Note: The database is already generated for you after running `make setup`, however if you'd like to generate it separately follow the below instructions._
-
-1. Make sure a `.env` file exists at `./spec/dummy/.env`. If it doesn't, run `make spec/dummy/.env`.
-2. Run `make init-db` to setup the database container for local development.
 
 ## Documentation
 
@@ -258,8 +235,4 @@ _Note: The database is already generated for you after running `make setup`, how
 
 ## Contributing
 
-Contribution directions go here.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute to the Flex SDK.
