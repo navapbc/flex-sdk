@@ -6,17 +6,6 @@ The Flex Data Modeler simplifies the process of defining data models for your ap
 
 Flex Attributes extend ActiveRecord with custom attribute types, providing a consistent interface for defining specialized attributes like memorable dates, names, addresses, tax IDs, and money amounts.
 
-### Supported Attribute Types
-
-- `address`: Includes columns for street_line_1, street_line_2, city, state, and zip_code.
-- `date_range`: Includes columns for start and end dates.
-- `memorable_date`: Includes a single date column.
-- `money`: Includes a single integer column to store cents.
-- `name`: Includes columns for first, middle, and last names.
-- `tax_id`: Includes a single string column.
-- `us_date`: Includes a single date column.
-- `year_quarter`: Includes columns for year and quarter.
-
 ### Example Usage
 
 To use Flex Attributes in a model:
@@ -32,6 +21,10 @@ end
 ```
 
 This allows you to define attributes with specialized behavior and column mappings, simplifying the process of working with complex data types.
+
+## Supported Attribute Types
+
+See the [Flex Attributes](./flex-attributes.md) documentation for a complete list of supported attribute types and their column mappings.
 
 ## Flex Migration Generator
 
