@@ -50,18 +50,12 @@ end
 A single `address` attribute creates **5 database columns** using the attribute name as a prefix:
 
 For an attribute named `mailing_address`:
+
 - `mailing_address_street_line_1` (string)
 - `mailing_address_street_line_2` (string)
 - `mailing_address_city` (string)
 - `mailing_address_state` (string)
 - `mailing_address_zip_code` (string)
-
-For an attribute named `home_address`:
-- `home_address_street_line_1` (string)
-- `home_address_street_line_2` (string)
-- `home_address_city` (string)
-- `home_address_state` (string)
-- `home_address_zip_code` (string)
 
 ### Available Methods
 

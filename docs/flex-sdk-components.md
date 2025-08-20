@@ -41,6 +41,8 @@ flex_attribute :residential_address, :address
 flex_attribute :mailing_address, :address
 ```
 
+See [Flex Data Modeler](./flex-data-modeler.md) for more information on how to define your data model.
+
 ## Multi-Page Form Builder
 
 Use Flex Form Builder to create multi-page forms with ease. The Form Builder leverages the [task list design pattern](https://navasage.atlassian.net/wiki/spaces/PL/pages/445382671/Task+list) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).

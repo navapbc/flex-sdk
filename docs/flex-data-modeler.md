@@ -33,7 +33,7 @@ The Flex SDK provides a Rails generator to automatically create database migrati
 ### Usage
 
 ```shell
-bin/rails generate flex:migration AddAttributesToModel attribute_name:attribute_type
+bin/rails generate flex:migration AddAttributesToTableName attribute_name:attribute_type
 ```
 
 ### Example
@@ -57,5 +57,3 @@ For a complete list of supported attribute types and their column mappings, run:
 ```shell
 bin/rails generate flex:migration --help
 ```
-
-Learn more about how to use the Flex migration generator by running `rails generate flex:migration --help`.
