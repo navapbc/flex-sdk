@@ -64,7 +64,7 @@ RSpec.describe Flex::YearMonth do
       ym2 = described_class.new(year: 2023, month: 6)
       ym3 = described_class.new(year: 2024, month: 1)
 
-      expect([ym2, ym3, ym1].sort).to eq([ym1, ym2, ym3])
+      expect([ ym2, ym3, ym1 ].sort).to eq([ ym1, ym2, ym3 ])
     end
 
     it "compares year months by year first, then month" do

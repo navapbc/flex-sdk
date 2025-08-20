@@ -48,17 +48,17 @@ module Flex
     def to_date_range
       first_day = USDate.new(year, month, 1)
       last_day = case month
-                 when 4, 6, 9, 11
+      when 4, 6, 9, 11
                    USDate.new(year, month, 30)
-                 when 2
+      when 2
                    if Date.leap?(year)
                      USDate.new(year, month, 29)
                    else
                      USDate.new(year, month, 28)
                    end
-                 else
+      else
                    USDate.new(year, month, 31)
-                 end
+      end
       DateRange.new(start: first_day, end: last_day)
     end
 
