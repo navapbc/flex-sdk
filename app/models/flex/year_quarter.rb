@@ -5,7 +5,7 @@ module Flex
   # handling in form models.
   #
   # @example Creating a year quarter
-  #   yq = Flex::YearQuarter.new(2023, 2)
+  #   yq = Flex::YearQuarter.new(year: 2023, quarter:2)
   #   puts "#{yq.year} Q#{yq.quarter}"  # => "2023 Q2"
   #
   # Key features:
@@ -13,7 +13,6 @@ module Flex
   # - Provides comparison between year quarter objects
   # - Supports arithmetic operations for quarter manipulation
   # - Provides date range functionality via to_date_range method
-  # - Immutable value object
   #
   class YearQuarter < ValueObject
     include Comparable
@@ -78,10 +77,6 @@ module Flex
       return nil if year.nil? || quarter.nil? || other.year.nil? || other.quarter.nil?
 
       [ year, quarter ] <=> [ other.year, other.quarter ]
-    end
-
-    def persisted?
-      false
     end
   end
 end
