@@ -13,6 +13,7 @@ This document provides comprehensive documentation for all Flex Attributes avail
 - [Range Attribute](#range-attribute)
 - [Tax ID Attribute](#tax-id-attribute)
 - [US Date Attribute](#us-date-attribute)
+- [Year Month Attribute](#year-month-attribute)
 - [Year Quarter Attribute](#year-quarter-attribute)
 
 ## Overview
@@ -481,6 +482,69 @@ puts application.submitted_on.year # => 2023
 ### Validation
 
 US date attributes include automatic validation to ensure the date is valid. Invalid dates will add an `:invalid_date` error to the model.
+
+## Year Month Attribute
+
+The Year Month Attribute provides handling of year and month combinations with arithmetic operations and date range conversion capabilities.
+
+### Usage in Model
+
+```ruby
+class Report < ApplicationRecord
+  include Flex::Attributes
+
+  flex_attribute :activity_reporting_period, :year_month
+  flex_attribute :billing_period, :year_month
+end
+```
+
+### Database Mapping
+
+A year month attribute creates **2 integer columns**:
+
+- `activity_reporting_period_year` (integer)
+- `activity_reporting_period_month` (integer)
+
+### Available Methods
+
+The `Flex::YearMonth` value object provides:
+
+- `year`, `month` - Component accessors
+- `+`, `-` - Arithmetic operations for month math
+- `to_date_range` - Converts to a date range covering the month
+- Comparison operators for sorting
+- `to_s` - String representation
+
+### Usage Examples
+
+```ruby
+# Setting a year month with a hash
+report.activity_reporting_period = { year: 2023, month: 6 }
+
+# Setting with a Flex::YearMonth object
+report.activity_reporting_period = Flex::YearMonth.new(year: 2023, month: 6)
+
+# Accessing components
+puts report.activity_reporting_period.year # => 2023
+puts report.activity_reporting_period.month # => 6
+
+# Arithmetic operations
+next_month = report.activity_reporting_period + 1 # 2023-07
+previous_year_same_month = report.activity_reporting_period - 12 # 2022-06
+
+# Convert to date range
+date_range = report.activity_reporting_period.to_date_range
+puts date_range.start # => 2023-06-01
+puts date_range.end # => 2023-06-30
+
+# Comparison and sorting
+months = [june_2023, march_2023, december_2022]
+sorted_months = months.sort # Chronological order
+```
+
+### Validation
+
+Year Month attributes include validation to ensure the month value is between 1 and 12. Invalid months will add validation errors to the model.
 
 ## Year Quarter Attribute
 
