@@ -25,6 +25,7 @@ module Flex
     include Flex::Attributes::RangeAttribute
     include Flex::Attributes::TaxIdAttribute
     include Flex::Attributes::USDateAttribute
+    include Flex::Attributes::YearMonthAttribute
     include Flex::Attributes::YearQuarterAttribute
 
     # Helper method. Given a type, return the corresponding class in the Flex module.

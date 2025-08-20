@@ -9,6 +9,7 @@ en:
       invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
       string_range_start_greater_than_end: "start must come before end alphabetically"
       us_date_range_start_greater_than_end: "start date cannot be after end date"
+      year_month_range_start_greater_than_end: "start cannot be after end"
       year_quarter_range_start_greater_than_end: "start cannot be after end"
   flex:
     application_forms:
