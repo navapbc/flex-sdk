@@ -11,6 +11,7 @@ Welcome to the Flex SDK documentation. This index provides an organized overview
 - [Flex SDK components](./flex-sdk-components.md) - Overview of available SDK components
 - [Flex Data Modeler](./flex-data-modeler.md) - Learn how to define data models using Flex Attributes and generate migrations using the Flex Migration Generator.
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
+- [Flex Rules Engine](./flex-rules-engine.md) - Introduction to the rules engine for business logic
 
 ## Implementation guides
 
