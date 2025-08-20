@@ -82,6 +82,7 @@ RSpec.describe Flex::Validations do
           start: Flex::YearQuarter.new(year: 2025, quarter: 0),
           end: Flex::YearQuarter.new(year: 2025, quarter: 5)
         )
+        object.activity_reporting_period = Flex::YearMonth.new(year: 2025, month: 13)
         object.period = {
           start: "1/35/2025",
           end: "2/30/2025"
@@ -92,6 +93,7 @@ RSpec.describe Flex::Validations do
         expect(object).not_to be_valid
         expect(object.errors[:base_period_start_quarter]).to include("must be in 1..4")
         expect(object.errors[:base_period_end_quarter]).to include("must be in 1..4")
+        expect(object.errors[:activity_reporting_period_month]).to include("must be in 1..12")
         expect(object.errors[:period_start]).to include("is an invalid date")
         expect(object.errors[:period_start]).to include("is an invalid date")
       end
