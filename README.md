@@ -28,19 +28,7 @@ See [Getting Started](./docs/getting-started.md) for a guide on how to create yo
 
 ## Documentation
 
-### Flex Data Modeler
-
-See [Flex Data Modeler](./docs/flex-data-modeler.md) for details on how to define data models using Flex Attributes and the Flex Migration Generator.
-
-### Generators
-
-Generators provide you with extra functionality to generate files from the command line. This aims to speed up development by generating files for you. See the [Flex Generators](./docs/generators.md) documentation for more information on how to use the generators.
-
-### Views
-
-For more information on implementing prebuilt views from Flex, please see:
-
-- [Tasks](app/views/flex/tasks/README.md)
+See [Flex SDK Documentation](./docs/README.md) for an organized overview of all available documentation.
 
 ## Contributing
 
