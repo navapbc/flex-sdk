@@ -21,6 +21,7 @@ Supported Attribute Types:
     name                 - Creates columns: first, middle, last (all :string)
     tax_id               - Creates columns: single :string column
     us_date              - Creates columns: single :date column
+    year_month           - Creates columns: year (:integer), month (:integer)
     year_quarter         - Creates columns: year (:integer), quarter (:integer)
     year_quarter_range   - Creates columns: start_year, start_quarter, end_year, end_quarter (all :integer)
     standard Rails types - Any additional standard Rails migration types can be specified as needed.

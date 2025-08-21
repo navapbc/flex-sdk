@@ -56,6 +56,11 @@ module Flex
           [ "#{name}:string" ]
         when :us_date
           [ "#{name}:date" ]
+        when :year_month
+          [
+            "#{name}_year:integer",
+            "#{name}_month:integer"
+          ]
         when :year_quarter
           [
             "#{name}_year:integer",
