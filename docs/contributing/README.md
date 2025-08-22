@@ -21,16 +21,17 @@ This template requires the use of the [Rails template](https://github.com/navapb
    - Then click "Add Permissions" and select "Contents"
    - File ticket with IT to approve the PAT
 
-2. Add the following to your `Gemfile` using the PAT you created in step 1:
+1. Add the following to your `Gemfile` using the PAT you created in step 1:
 
     ```ruby
     # Flex Government Digital Services SDK Rails engine
     gem "flex", git: "https://<PERSONAL_ACCESS_TOKEN>:x-oauth-basic@github.com/navapbc/flex-sdk.git"
     ```
-  
-  You can then `bundle install` or `gem install flex` (after the PAT has been approved by IT).
 
-3. If using the infrastructure template, this token will trigger a vulnerability scan error in Trivy. You'll want to update trivy-secret.yml and add the following entry to ignore this token.
+1. You can then `bundle install` or `gem install flex` (after the PAT has been
+   approved by IT).
+
+1. If using the infrastructure template, this token will trigger a vulnerability scan error in Trivy. You'll want to update trivy-secret.yml and add the following entry to ignore this token.
 
     ```yml
     - id: flex-sdk-pat
