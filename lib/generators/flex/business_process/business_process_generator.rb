@@ -76,6 +76,9 @@ module Flex
             lines.each_with_index do |line, index|
               if line.strip.start_with?("class Application")
                 indent_level = 1
+              elsif line.strip.match?(/\bdo(\s*\|[^|]*\|)?\s*$/) && indent_level > 0
+                # Line ends with 'do' or 'do |param|' - increment indent level
+                indent_level += 1
               elsif line.strip == "end" && indent_level > 0
                 indent_level -= 1
                 if indent_level == 0

@@ -177,6 +177,77 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     end
   end
 
+  describe "when config.generators block exists" do
+    before do
+      File.write("#{destination_root}/config/application.rb", <<~RUBY)
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+
+            config.generators do |g|
+              g.factory_bot suffix: "factory"
+            end
+          end
+        end
+      RUBY
+
+      generator_with_generators = described_class.new([ 'Test' ], { quiet: true }, destination_root: destination_root)
+      allow(generator_with_generators).to receive(:generate).and_call_original
+      allow(generator_with_generators).to receive(:yes?).and_return(false)
+      generator_with_generators.invoke_all
+    end
+
+    it "inserts config.after_initialize at the same level as config.generators" do
+      content = File.read("#{destination_root}/config/application.rb")
+      expect(content).to include("config.after_initialize do")
+      expect(content).to include("TestBusinessProcess.start_listening_for_events")
+
+      # Verify the structure is correct - config.after_initialize should be outside config.generators
+      lines = content.split("\n")
+      generators_start = lines.find_index { |line| line.include?("config.generators do") }
+
+      # Find the end of the generators block by looking for the first 'end' after generators_start
+      # that has the same indentation as the generators line
+      generators_line_indent = lines[generators_start].index('c') # Find indent of 'config.generators'
+      generators_end = nil
+      (generators_start + 1...lines.length).each do |i|
+        line = lines[i]
+        if line.strip == "end" && line.index('e') == generators_line_indent
+          generators_end = i
+          break
+        end
+      end
+
+      after_init_start = lines.find_index { |line| line.include?("config.after_initialize do") }
+
+      expect(generators_start).to be_present
+      expect(generators_end).to be_present
+      expect(after_init_start).to be_present
+      expect(generators_start).to be < generators_end
+      expect(after_init_start).to be > generators_end
+    end
+
+    it "produces syntactically correct Ruby code" do
+      content = File.read("#{destination_root}/config/application.rb")
+
+      # Write to a temp file and try to parse it
+      temp_file = "#{destination_root}/temp_application.rb"
+      File.write(temp_file, content)
+
+      expect {
+        RubyVM::InstructionSequence.compile_file(temp_file)
+      }.not_to raise_error
+
+      FileUtils.rm_f(temp_file)
+    end
+  end
+
   describe "application form generation" do
     describe "when application form exists" do
       before do
