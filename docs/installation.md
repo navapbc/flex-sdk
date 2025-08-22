@@ -6,15 +6,32 @@ This template requires the use of the [Rails template](https://github.com/navapb
 
 ## Instructions
 
-1. Since Flex SDK is a private gem, for use by non-Nava developers you'll need to create a personal access token (PAT) with read access to the contents of the `navapbc/flex-sdk` repository. Log into the `nava-platform-readonly` bot account and generate a fine-grained PAT for the project with read-only access to the `navapbc/flex-sdk` repository.
-2. Add the following to your `Gemfile` using the PAT you created in step 1:
+1. Since Flex SDK is a private gem, for use by non-Nava developers you'll need
+   to create a personal access token (PAT) with read access to the contents of
+   the `navapbc/flex-sdk` repository. To generate this PAT:
+   - Log into the `nava-platform-readonly` bot account (password in Platform vault in 1password)
+   - Go to https://github.com/settings/personal-access-tokens/new
+   - Name it `<repo name>-flex-sdk-readonly`
+     - Note GitHub tokens names can only be 40 characters long, so tweak
+       accordingly if the repo has a long name. The exact format doesn't matter,
+       but make it obvious what it's for.
+   - For "Resource owner" select `navapbc`
+   - Expiration set as far as you can, note the expiration date to comment later
+   - Choose "Only select repositories" and choose `navapbc/flex-sdk`
+   - Then click "Add Permissions" and select "Contents"
+   - File ticket with IT to approve the PAT
+
+1. Add the following to your `Gemfile` using the PAT you created in step 1:
 
     ```ruby
     # Flex Government Digital Services SDK Rails engine
     gem "flex", git: "https://<PERSONAL_ACCESS_TOKEN>:x-oauth-basic@github.com/navapbc/flex-sdk.git"
     ```
 
-3. If using the infrastructure template, this token will trigger a vulnerability scan error in Trivy. You'll want to update trivy-secret.yml and add the following entry to ignore this token.
+1. You can then `bundle install` or `gem install flex` (after the PAT has been
+   approved by IT).
+
+1. If using the infrastructure template, this token will trigger a vulnerability scan error in Trivy. You'll want to update trivy-secret.yml and add the following entry to ignore this token.
 
     ```yml
     - id: flex-sdk-pat
