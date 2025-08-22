@@ -4,23 +4,8 @@ Use the Flex SDK to create intuitive, accessible, and effective digital-native g
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem "flex", path: "engines/flex"
-```
-
-And then execute:
-
-```bash
-bundle install
-```
-
-Or install it yourself as:
-
-```bash
-gem install flex
-```
+See [Installation](./docs/contributing/README.md#Installation) for instructions
+on getting the Flex SDK installed for your project.
 
 ## Get started using Flex
 
