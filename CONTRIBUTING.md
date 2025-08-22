@@ -35,7 +35,7 @@ make test-watch
 
 ## Writing Tests
 
-Please see [our testing contribution guide](./CONTRIBUTING-testing.md).
+Please see [our testing contribution guide](/docs/contributing/testing.md).
 
 ## Regenerate the local database
 
