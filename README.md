@@ -4,7 +4,7 @@ Use the Flex SDK to create intuitive, accessible, and effective digital-native g
 
 ## Installation
 
-See [Installation](./docs/contributing/README.md#Installation) for instructions
+See [Installation](./docs/installation.md) for instructions
 on getting the Flex SDK installed for your project.
 
 ## Get started using Flex
