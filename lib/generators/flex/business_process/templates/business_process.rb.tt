@@ -1,8 +1,15 @@
-<%= business_process_name %>BusinessProcess = Flex::BusinessProcess.define(:<%= file_name %>, <%= case_name %>) do |bp|
-  bp.applicant_task('submit_application')
+class <%= business_process_name %>BusinessProcess < Flex::BusinessProcess
 
-  bp.start_on_application_form_created('submit_application')
+  <% if case_name != business_process_name %>
+  def self.case_class
+    "<%= case_name %>"
+  end
+  <% end %>
 
-  bp.transition('submit_application', '<%= application_form_name %>Submitted', 'example_1')
-  bp.transition('example_1', 'a_different_event', 'end')
+  applicant_task('submit_application')
+
+  start_on_application_form_created('submit_application')
+
+  transition('submit_application', '<%= application_form_name %>Submitted', 'example_1')
+  transition('example_1', 'a_different_event', 'end')
 end
