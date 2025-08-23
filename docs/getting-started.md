@@ -1,60 +1,21 @@
-# Getting started
+# Getting Started with Flex SDK
 
-Get started with the Flex SDK by creating an application form, case model, and business process. This guide will walk you through the initial steps to set up your Flex application.
+Welcome to the Flex SDK! This toolkit helps you build government digital services by providing a robust framework for creating application forms, managing cases, and implementing business processes.
 
-#### ApplicationForm
+## Your First Steps
 
-[ApplicationForm](./app/models/flex/application_form.rb) is an abstract parent class that should be used when creating new Flex forms within your application.
+When building a government digital service, the first thing you'll typically do is create an application form to implement the intake process. The Flex SDK provides all the tools you need to:
 
-Out-of-the-box, [ApplicationForm](./app/models/flex/application_form.rb) provides a `status` attribute that comes with 2 options: "in_progress" or "submitted". The default option is "in_progress". Whenever a form is submitted, its status will change to "submitted". Any attempts to change any attributes on this form after the status is changed to "submitted" will result in error.
+- Create user-friendly application forms
+- Implement data validation and business rules
+- Manage the application lifecycle from submission to processing
 
-#### Creating a new form
+Ready to begin? Proceed to [Create an application form](./intake-application-forms.md) to start building your first form.
 
-Creating a new Flex form using ApplicationForm is relatively simple and can be completed similar to how a model is typically generated in rails, except that you will change your new model to extend from ApplicationForm.
+## Next Steps
 
-#### Example using the Rails CLI
+After creating your application form, you can:
 
-Let's pretend that I'm creating a new form to process passport applications.
-
-##### Step 1: Run the Rails CLI
-
-```shell
-bin/rails generate flex:application_form PassportApplicationForm first_name:string last_name:string date_of_birth:date # Add whatever other attributes you'd like
-```
-
-_**Alternatively**, you can choose to use the `bin/rails generate scaffold` command to generate additional files, such as views, to use with your form._
-
-##### Step 2: Change your model to extend from ApplicationForm
-
-```ruby
-# models/flex/passport_application_form.rb
-class PassportApplicationForm < ApplicationForm # <-- ensure that you're extending from ApplicationForm, not ApplicationRecord
-  # Attributes and methods here
-end
-```
-
-##### Step 3: Double-Check your migration
-
-Since ApplicationForm is an abstract class it does not generate any tables or migrations on its own. The migration will be implemented by any children that implement ApplicationForm.
-
-An example migration, based on the PassportApplicationForm example from above:
-
-```ruby
-# db/migrate/migration_file_name_here.rb
-class CreateFlexPassportApplicationForms < ActiveRecord::Migration[8.0]
-  def change
-    create_table :flex_passport_application_forms, id: :uuid do |t|
-      t.string :first_name
-      t.string :last_namen
-      t.date :date_of_birth
-      t.integer :status, default: 0 # This ensures that the status column, which is present on ApplicationForm, gets created and defaults to "in_progress"
-
-      t.timestamps # if you want your table and model to have auto-generated created_at and updated_at fields, add this
-    end
-  end
-end
-```
-
-##### Step 4: Start using your form
-
-At this point you should be able to use your newly created model to implement a form. If you used the `scaffold` command, you will likely need to update references, views, etc. that were auto-generated with the scaffold command.
+1. [Learn about the Flex attributes you can add to your form](./flex-attributes.md)
+2. [Explore the Form Builder for rendering the form](./multi-page-form-builder.md)
+3. [Create a case management business process](./docs/case-management-business-process.md)
