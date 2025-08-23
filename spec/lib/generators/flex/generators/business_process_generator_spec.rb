@@ -1,4 +1,5 @@
 require "rails_helper"
+require "generators/flex/business_process/business_process_generator"
 
 RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
