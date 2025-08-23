@@ -57,7 +57,7 @@ module Flex
             if existing_content.strip.empty?
               "#{opening}#{start_listening_call}#{closing}"
             else
-              "#{opening}#{existing_content}\n#{start_listening_call}#{closing}"
+              "#{opening}#{existing_content}\n  #{start_listening_call}#{closing}"
             end
           end
         else
@@ -96,7 +96,7 @@ module Flex
               after_initialize_lines = [
                 "",
                 "    config.after_initialize do",
-                "#{start_listening_call}",
+                "  #{start_listening_call}",
                 "    end"
               ]
 
