@@ -99,13 +99,13 @@ Test the form by using it in the rails console.
 bin/rails console
 ```
 
-```shell
-$ form = PassportApplicationForm.new
-$ form.name = "John Doe"
-$ form.birth_date = { year: 1990, month: 1, day: 1 }
-$ form.ssn = "123-45-6789"
-$ form.residential_address = { street_address_line_1: "123 Main St", street_address_line_2: "Apt 4B", city: "Anytown", state: "CA", zip: "12345" }
-$ form.save
+```ruby
+form = PassportApplicationForm.new
+form.name = "John Doe"
+form.birth_date = { year: 1990, month: 1, day: 1 }
+form.ssn = "123-45-6789"
+form.residential_address = { street_address_line_1: "123 Main St", street_address_line_2: "Apt 4B", city: "Anytown", state: "CA", zip: "12345" }
+form.save
 ```
 
 > [!NOTE]  
