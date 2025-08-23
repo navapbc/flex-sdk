@@ -51,7 +51,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
 
     it "updates application.rb with start_listening_for_events call" do
       content = File.read("#{destination_root}/config/application.rb")
-      
+
       expected = <<~RUBY
         require_relative "boot"
 
@@ -73,7 +73,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
           end
         end
       RUBY
-      
+
       # rstrip to remove trailing newline
       expect(content.rstrip).to eq(expected.rstrip)
     end
