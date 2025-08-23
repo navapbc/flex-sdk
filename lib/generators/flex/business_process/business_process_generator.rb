@@ -54,11 +54,7 @@ module Flex
             existing_content = $2
             closing = $3
 
-            if existing_content.strip.empty?
-              "#{opening}#{start_listening_call}#{closing}"
-            else
-              "#{opening}#{existing_content}\n  #{start_listening_call}#{closing}"
-            end
+            "#{opening}#{existing_content}\n  #{start_listening_call}#{closing}"
           end
         else
           # Find the Application class and insert before its closing end
