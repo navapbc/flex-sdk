@@ -72,11 +72,7 @@ module Flex
             existing_content = $2
             closing = $3
 
-            if existing_content.strip.empty?
-              "#{opening}#{start_listening_call}#{closing}"
-            else
-              "#{opening}#{existing_content}\n#{start_listening_call}#{closing}"
-            end
+            "#{opening}#{existing_content}\n  #{start_listening_call}#{closing}"
           end
         else
           # Find the Application class and insert before its closing end
@@ -94,6 +90,9 @@ module Flex
             lines.each_with_index do |line, index|
               if line.strip.start_with?("class Application")
                 indent_level = 1
+              elsif line.strip.match?(/\bdo(\s*\|[^|]*\|)?\s*$/) && indent_level > 0
+                # Line ends with 'do' or 'do |param|' - increment indent level
+                indent_level += 1
               elsif line.strip == "end" && indent_level > 0
                 indent_level -= 1
                 if indent_level == 0
@@ -111,7 +110,7 @@ module Flex
               after_initialize_lines = [
                 "",
                 "    config.after_initialize do",
-                "#{start_listening_call}",
+                "  #{start_listening_call}",
                 "    end"
               ]
 

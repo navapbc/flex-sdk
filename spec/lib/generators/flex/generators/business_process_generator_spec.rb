@@ -1,117 +1,91 @@
-require 'rails_helper'
-require 'generators/flex/business_process/business_process_generator'
-require 'fileutils'
-require 'tmpdir'
+require "rails_helper"
 
 RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ 'TestProcess' ], options.merge(quiet: true), destination_root: destination_root) }
-  let(:options) { { case: case_option, "application-form": app_form_option } }
   let(:case_option) { nil }
   let(:app_form_option) { nil }
+  let(:options) { { case: case_option, "application-form": app_form_option } }
+  let(:generator) { described_class.new([ 'TestProcess' ], options, destination_root: destination_root) }
 
   before do
-    FileUtils.mkdir_p("#{destination_root}/app/business_processes")
-    FileUtils.mkdir_p("#{destination_root}/config")
-
-    File.write("#{destination_root}/config/application.rb", <<~RUBY)
-      require_relative "boot"
-
-      require "rails/all"
-
-      Bundler.require(*Rails.groups)
-
-      module Dummy
-        class Application < Rails::Application
-          config.load_defaults Rails::VERSION::STRING.to_f
-
-          config.action_controller.include_all_helpers = false
-
-          config.autoload_lib(ignore: %w[assets tasks])
-        end
-      end
-    RUBY
+    allow(generator).to receive(:generate).and_call_original
+    allow(generator).to receive(:yes?).and_return(false)
   end
 
   after do
-    FileUtils.rm_rf(destination_root)
+    FileUtils.remove_entry(destination_root)
   end
 
-  describe "with basic name only" do
-    before do
-      allow(generator).to receive(:generate).and_call_original
-      allow(generator).to receive(:yes?).and_return(false)
+  describe "#create_business_process_file" do
+    it "creates a business process file" do
       generator.invoke_all
+      expect(File.exist?("#{destination_root}/app/business_processes/test_process_business_process.rb")).to be true
     end
 
-    it "creates business process file with correct naming" do
-      business_process_file = "#{destination_root}/app/business_processes/test_process_business_process.rb"
-      expect(File.exist?(business_process_file)).to be true
+    it "raises an error if the file already exists" do
+      FileUtils.mkdir_p("#{destination_root}/app/business_processes")
+      File.write("#{destination_root}/app/business_processes/test_process_business_process.rb", "existing content")
 
-      content = File.read(business_process_file)
-      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, TestProcessCase)")
-      expect(content).to include("bp.transition('submit_application', 'TestProcessApplicationFormSubmitted', 'example_1')")
+      expect { generator.invoke_all }.to raise_error("Business process file already exists at app/business_processes/test_process_business_process.rb")
     end
 
-    it "updates application.rb with start_listening_for_events call" do
-      application_file = "#{destination_root}/config/application.rb"
-      content = File.read(application_file)
+    it "creates the business process file with the correct content" do
+      generator.invoke_all
+      content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
+      expect(content).to include("class TestProcessBusinessProcess")
+      expect(content).to include("case_class TestProcessCase")
+      expect(content).to include("application_form_class TestProcessApplicationForm")
+    end
+
+    describe "with custom case option" do
+      let(:case_option) { "CustomCase" }
+
+      it "uses the custom case class" do
+        generator.invoke_all
+        content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
+        expect(content).to include("case_class CustomCase")
+      end
+    end
+
+    describe "with custom application form option" do
+      let(:app_form_option) { "CustomApplicationForm" }
+
+      it "uses the custom application form class" do
+        generator.invoke_all
+        content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
+        expect(content).to include("application_form_class CustomApplicationForm")
+      end
+    end
+  end
+
+  describe "#update_application_config" do
+    before do
+      FileUtils.mkdir_p("#{destination_root}/config")
+    end
+
+    it "adds config.after_initialize block when none exists" do
+      File.write("#{destination_root}/config/application.rb", <<~RUBY)
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+          end
+        end
+      RUBY
+
+      generator.invoke_all
+
+      content = File.read("#{destination_root}/config/application.rb")
       expect(content).to include("config.after_initialize do")
       expect(content).to include("TestProcessBusinessProcess.start_listening_for_events")
     end
-  end
 
-  describe "with custom case option" do
-    let(:case_option) { Faker::Name.first_name }
-
-    before do
-      allow(generator).to receive(:generate).and_call_original
-      allow(generator).to receive(:yes?).and_return(false)
-      generator.invoke_all
-    end
-
-    it "uses custom case name" do
-      business_process_file = "#{destination_root}/app/business_processes/test_process_business_process.rb"
-      content = File.read(business_process_file)
-      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, #{case_option})")
-      expect(content).to include("bp.transition('submit_application', 'TestProcessApplicationFormSubmitted', 'example_1')")
-    end
-  end
-
-  describe "with custom case and application_form options" do
-    let(:case_option) { Faker::Name.first_name }
-    let(:app_form_option) { Faker::Name.first_name }
-
-    before do
-      allow(generator).to receive(:generate).and_call_original
-      allow(generator).to receive(:yes?).and_return(false)
-      generator.invoke_all
-    end
-
-    it "uses custom case and application form names" do
-      business_process_file = "#{destination_root}/app/business_processes/test_process_business_process.rb"
-      content = File.read(business_process_file)
-      expect(content).to include("TestProcessBusinessProcess = Flex::BusinessProcess.define(:test_process, #{case_option})")
-      expect(content).to include("bp.transition('submit_application', '#{app_form_option}Submitted', 'example_1')")
-    end
-  end
-
-  describe "when business process file already exists" do
-    before do
-      File.write("#{destination_root}/app/business_processes/test_process_business_process.rb", "# existing file")
-      allow(generator).to receive(:generate).and_call_original
-      allow(generator).to receive(:yes?).and_return(false)
-    end
-
-    it "raises an error" do
-      expect {
-        generator.invoke_all
-      }.to raise_error(/Business process file already exists/)
-    end
-  end
-
-  describe "when config.after_initialize already exists" do
-    before do
+    it "appends to existing after_initialize block" do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
 
@@ -130,17 +104,31 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
         end
       RUBY
 
-      generator_with_existing_config = described_class.new([ 'Test' ], { quiet: true }, destination_root: destination_root)
-      allow(generator_with_existing_config).to receive(:generate).and_call_original
-      allow(generator_with_existing_config).to receive(:yes?).and_return(false)
-      generator_with_existing_config.invoke_all
-    end
+      generator.invoke_all
 
-    it "appends to existing after_initialize block" do
       content = File.read("#{destination_root}/config/application.rb")
-      expect(content).to include("config.after_initialize do")
-      expect(content).to include("# existing code")
-      expect(content).to include("TestBusinessProcess.start_listening_for_events")
+
+      expected = <<~RUBY
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+
+            config.after_initialize do
+              # existing code
+              TestProcessBusinessProcess.start_listening_for_events
+            end
+          end
+        end
+      RUBY
+
+      # rstrip to remove trailing newline
+      expect(content.rstrip).to eq(expected.rstrip)
     end
   end
 
@@ -298,7 +286,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "application form generation" do
-    describe "when application form exists" do
+    context "when application form exists" do
       before do
         stub_const("TestProcessCase", Class.new)
         stub_const("TestProcessApplicationForm", Class.new)
@@ -316,7 +304,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
     end
 
-    describe "when application form does not exist and user declines" do
+    context "when application form does not exist and user declines" do
       before do
         stub_const("TestProcessCase", Class.new)
         allow(generator).to receive(:generate)
@@ -333,7 +321,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
     end
 
-    describe "when application form does not exist and user agrees" do
+    context "when application form does not exist and user agrees" do
       before do
         stub_const("TestProcessCase", Class.new)
         allow(generator).to receive(:generate)
@@ -350,7 +338,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
     end
 
-    describe "with skip-application-form option" do
+    context "when TestApplicationForm does not exist and skip-application-form option is provided" do
       let(:options) { { case: case_option, "application-form": app_form_option, "skip-application-form": true } }
 
       before do
