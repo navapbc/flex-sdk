@@ -18,6 +18,23 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "#create_business_process_file" do
+    before do
+      FileUtils.mkdir_p("#{destination_root}/config")
+      File.write("#{destination_root}/config/application.rb", <<~RUBY)
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+          end
+        end
+      RUBY
+    end
+
     it "creates a business process file" do
       generator.invoke_all
       expect(File.exist?("#{destination_root}/app/business_processes/test_process_business_process.rb")).to be true
@@ -135,6 +152,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
 
   describe "when start_listening_for_events already exists" do
     before do
+      FileUtils.mkdir_p("#{destination_root}/config")
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
 
@@ -167,6 +185,23 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "case generation" do
+    before do
+      FileUtils.mkdir_p("#{destination_root}/config")
+      File.write("#{destination_root}/config/application.rb", <<~RUBY)
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+          end
+        end
+      RUBY
+    end
+
     describe "when case exists" do
       before do
         stub_const("TestProcessCase", Class.new)
@@ -287,6 +322,23 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
   end
 
   describe "application form generation" do
+    before do
+      FileUtils.mkdir_p("#{destination_root}/config")
+      File.write("#{destination_root}/config/application.rb", <<~RUBY)
+        require_relative "boot"
+
+        require "rails/all"
+
+        Bundler.require(*Rails.groups)
+
+        module Dummy
+          class Application < Rails::Application
+            config.load_defaults Rails::VERSION::STRING.to_f
+          end
+        end
+      RUBY
+    end
+
     context "when application form exists" do
       before do
         stub_const("TestProcessCase", Class.new)
