@@ -51,8 +51,9 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       generator.invoke_all
       content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
       expect(content).to include("class TestProcessBusinessProcess")
-      expect(content).to include("case_class TestProcessCase")
-      expect(content).to include("application_form_class TestProcessApplicationForm")
+      expect(content).to include('def self.case_class')
+      expect(content).to include('"TestProcessCase"')
+      expect(content).to include("TestProcessApplicationFormSubmitted")
     end
 
     describe "with custom case option" do
@@ -61,7 +62,8 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       it "uses the custom case class" do
         generator.invoke_all
         content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
-        expect(content).to include("case_class CustomCase")
+        expect(content).to include('def self.case_class')
+        expect(content).to include('"CustomCase"')
       end
     end
 
@@ -71,7 +73,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       it "uses the custom application form class" do
         generator.invoke_all
         content = File.read("#{destination_root}/app/business_processes/test_process_business_process.rb")
-        expect(content).to include("application_form_class CustomApplicationForm")
+        expect(content).to include("CustomApplicationFormSubmitted")
       end
     end
   end
