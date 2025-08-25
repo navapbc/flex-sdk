@@ -19,6 +19,8 @@ jobs:
         project:
           - repo: navapbc/pfml-starter-kit-app
             app: demo
+          - repo: navapbc/community-engagement-medicaid
+            app: reporting-app
 
     steps:
       - name: Checkout project repo
