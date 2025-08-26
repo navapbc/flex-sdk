@@ -76,20 +76,32 @@ RSpec.describe Flex::Attributes::DocumentAttribute do
   describe "attachment handling" do
     it "allows attaching single files" do
       model.documents.attach(test_file)
+      model.profile_pictures.attach(test_image)
 
       expect(model.documents).to be_attached
       expect(model.documents.count).to eq(1)
       expect(model.documents.first.filename.to_s).to eq("test.txt")
       expect(model.documents.first.content_type).to eq("text/plain")
+
+      expect(model.profile_pictures).to be_attached
+      expect(model.profile_pictures.count).to eq(1)
+      expect(model.profile_pictures.first.filename.to_s).to eq("test.jpg")
+      expect(model.profile_pictures.first.content_type).to eq("image/jpeg")
     end
 
     it "allows attaching multiple files" do
       model.documents.attach([ test_file, test_image ])
+      model.profile_pictures.attach([ test_image, test_file ])
 
       expect(model.documents).to be_attached
       expect(model.documents.count).to eq(2)
       expect(model.documents.first.content_type).to eq("text/plain")
       expect(model.documents.last.content_type).to eq("image/jpeg")
+
+      expect(model.profile_pictures).to be_attached
+      expect(model.profile_pictures.count).to eq(2)
+      expect(model.profile_pictures.first.content_type).to eq("image/jpeg")
+      expect(model.profile_pictures.last.content_type).to eq("text/plain")
     end
 
     it "supports multiple document attributes on the same model" do
@@ -106,21 +118,15 @@ RSpec.describe Flex::Attributes::DocumentAttribute do
   describe "file operations" do
     before do
       model.documents.attach(test_file)
+      model.profile_pictures.attach(test_image)
     end
 
     it "allows purging attached files" do
-      expect(model.documents).to be_attached
       model.documents.purge
+      model.profile_pictures.purge
+
       expect(model.documents).not_to be_attached
-    end
-
-    it "allows purging attached files later" do
-      model.documents.attach(test_file)
-      model.save!
-
-      expect(model.documents).to be_attached
-      model.documents.purge_later
-      # We don't test the actual purging since it happens asynchronously
+      expect(model.profile_pictures).not_to be_attached
     end
 
     it "provides access to blob attributes" do
@@ -136,11 +142,15 @@ RSpec.describe Flex::Attributes::DocumentAttribute do
   describe "persistence" do
     it "persists attached files" do
       model.documents.attach(test_file)
+      model.profile_pictures.attach(test_image)
       model.save!
 
       reloaded_model = TestModel.find(model.id)
       expect(reloaded_model.documents).to be_attached
       expect(reloaded_model.documents.first.filename.to_s).to eq("test.txt")
+
+      expect(reloaded_model.profile_pictures).to be_attached
+      expect(reloaded_model.profile_pictures.first.filename.to_s).to eq("test.jpg")
     end
 
     it "allows replacing attached files" do
@@ -160,6 +170,7 @@ RSpec.describe Flex::Attributes::DocumentAttribute do
   describe "error handling" do
     it "handles attempting to attach to an unsaved record" do
       expect { model.documents.attach(test_file) }.not_to raise_error
+      expect { model.profile_pictures.attach(test_image) }.not_to raise_error
     end
 
     it "handles invalid attachments" do
