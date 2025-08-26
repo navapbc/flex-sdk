@@ -124,8 +124,8 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   describe 'validations' do
-    it 'validates presence of case_id on create' do
-      expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+    it 'validates presence of case on create' do
+      expect { described_class.create! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case must exist/)
     end
   end
 
