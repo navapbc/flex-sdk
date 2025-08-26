@@ -19,6 +19,7 @@ module Flex
     extend ActiveSupport::Concern
     include Flex::Attributes::AddressAttribute
     include Flex::Attributes::ArrayAttribute
+    include Flex::Attributes::DocumentAttribute
     include Flex::Attributes::MemorableDateAttribute
     include Flex::Attributes::MoneyAttribute
     include Flex::Attributes::NameAttribute
