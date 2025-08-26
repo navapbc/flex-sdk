@@ -20,7 +20,7 @@ module Flex
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date
-    attr_readonly :type
+    attr_readonly :type, :case_id, :case_type
 
     attribute :assignee_id, :uuid
     protected attr_writer :assignee_id
@@ -30,8 +30,7 @@ module Flex
     enum :status, pending: 0, completed: 1
 
     belongs_to :case, polymorphic: true
-    validates :case_id, presence: true
-    validates :case_type, presence: true
+    validates :case, presence: true
 
     default_scope -> { order(due_on: :asc) }
     scope :due_today, -> { where(due_on: Date.today) }
