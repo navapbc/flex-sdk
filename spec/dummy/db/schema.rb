@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_20_160000) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_26_184318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,8 +23,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_20_160000) do
     t.date "due_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "case_type"
     t.index ["assignee_id"], name: "index_flex_tasks_on_assignee_id"
-    t.index ["case_id"], name: "index_flex_tasks_on_case_id"
+    t.index ["case_id", "case_type"], name: "index_flex_tasks_on_case_id_and_case_type"
     t.index ["status"], name: "index_flex_tasks_on_status"
     t.index ["type"], name: "index_flex_tasks_on_type"
   end
