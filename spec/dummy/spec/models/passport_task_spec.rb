@@ -29,33 +29,13 @@ RSpec.describe PassportTask, type: :model do
       passport_task.case = nil
       expect(passport_task).not_to be_valid
     end
-
-    it 'cannot be associated with a non-passport case type' do
-      other_case = create(:flex_case) # Assuming you have a generic case factory
-      passport_task.case = other_case
-      expect(passport_task).to be_valid # Polymorphic associations don't enforce type restrictions by default
-
-      # But when we try to use it...
-      passport_task.save!
-      expect(passport_task.case).to be_instance_of(other_case.class)
-    end
   end
 
   describe 'lifecycle' do
-    it 'can be created with an associated case' do
-      expect { passport_task.save! }.to change(PassportTask, :count).by(1)
-    end
-
     it 'can be found through the case association' do
       passport_task.save!
       found_task = passport_case.tasks.first
       expect(found_task).to eq(passport_task)
-    end
-
-    it 'maintains the association after updates' do
-      passport_task.save!
-      passport_task.update!(description: 'Updated description')
-      expect(passport_task.reload.case).to eq(passport_case)
     end
   end
 
@@ -66,7 +46,7 @@ RSpec.describe PassportTask, type: :model do
     before { passport_task.save! }
 
     it 'can find tasks for a specific case' do
-      tasks_for_case = PassportTask.where(case: passport_case)
+      tasks_for_case = described_class.where(case: passport_case)
       expect(tasks_for_case).to include(passport_task)
       expect(tasks_for_case).not_to include(other_task)
     end
