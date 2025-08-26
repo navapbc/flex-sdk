@@ -17,6 +17,7 @@ module Flex
   class Case < ApplicationRecord
     self.abstract_class = true
 
+    has_many :tasks, as: :case, class_name: "Flex::Task"
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0

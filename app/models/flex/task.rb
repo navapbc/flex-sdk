@@ -20,7 +20,6 @@ module Flex
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date
-    attr_readonly :case_id
     attr_readonly :type
 
     attribute :assignee_id, :uuid
@@ -30,7 +29,10 @@ module Flex
     protected attr_writer :status
     enum :status, pending: 0, completed: 1
 
+    belongs_to :case, polymorphic: true
+    protected attribute :case_type, :string
     validates :case_id, presence: true
+    validates :case_type, presence: true
 
     default_scope -> { order(due_on: :asc) }
     scope :due_today, -> { where(due_on: Date.today) }
@@ -61,7 +63,7 @@ module Flex
     # @return [Flex::Task] The newly created task instance.
     def self.from_case(kase)
       raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
-      new(case_id: kase.id)
+      new(case: kase)
     end
 
     def assign(user_id)
