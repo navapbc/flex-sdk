@@ -30,7 +30,6 @@ module Flex
     enum :status, pending: 0, completed: 1
 
     belongs_to :case, polymorphic: true
-    protected attribute :case_type, :string
     validates :case_id, presence: true
     validates :case_type, presence: true
 
