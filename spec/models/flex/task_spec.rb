@@ -2,7 +2,38 @@ require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { TestCase.create! }
-  let(:task) { described_class.create!(case_id: kase.id, description: Faker::Quote.yoda) }
+  let(:task) { described_class.create!(case: kase, description: Faker::Quote.yoda) }
+
+  describe 'polymorphic associations' do
+    let(:other_case) { OtherTestCase.create! }
+
+    it 'belongs to a polymorphic case' do
+      expect(task.case).to eq(kase)
+      expect(task.case_type).to eq('TestCase')
+    end
+
+    it 'can be associated with different case types' do
+      new_task = described_class.create!(case: other_case)
+      expect(new_task.case).to eq(other_case)
+      expect(new_task.case_type).to eq('OtherTestCase')
+    end
+
+    it 'can find all tasks for a case' do
+      task2 = described_class.create!(case: kase)
+      expect(kase.tasks).to contain_exactly(task, task2)
+    end
+
+    it 'maintains case association through updates' do
+      task.update!(description: 'Updated')
+      expect(task.reload.case).to eq(kase)
+    end
+
+    it 'can be queried by case type' do
+      other_task = described_class.create!(case: other_case)
+      expect(described_class.where(case_type: 'TestCase')).to include(task)
+      expect(described_class.where(case_type: 'OtherTestCase')).to include(other_task)
+    end
+  end
 
   context 'when attempting to set readonly attributes' do
     describe 'status attribute' do
