@@ -58,10 +58,11 @@ module Flex
 
     # Creates a new non-persisted task instance associated with the given case.
     # @param kase [Flex::Case] The case to associate the task with.
+    # @param attributes [Hash] (Optional) Additional attributes to set on the task
     # @return [Flex::Task] The newly created task instance.
-    def self.from_case(kase)
+    def self.from_case(kase, **attributes)
       raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
-      new(case: kase)
+      new({ case: kase }.merge(attributes))
     end
 
     def assign(user_id)

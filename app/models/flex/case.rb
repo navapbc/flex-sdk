@@ -60,5 +60,17 @@ module Flex
     def business_process_instance
       BusinessProcessInstance.new(self, business_process_current_step)
     end
+
+    # Creates a new task associated with this case.
+    #
+    # @param task_class [Class] The class of the task to create (must be a subclass of Flex::Task)
+    # @param attributes [Hash] Additional attributes to set on the task
+    # @return [Flex::Task] The newly created task
+    # @raise [ArgumentError] If task_class is not a subclass of Flex::Task
+    def create_task(task_class, **attributes)
+      raise ArgumentError, "task_class must be a subclass of Flex::Task" unless task_class < Flex::Task
+
+      task_class.from_case(self, **attributes).tap(&:save!)
+    end
   end
 end
