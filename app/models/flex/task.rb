@@ -32,7 +32,7 @@ module Flex
     belongs_to :case, polymorphic: true
     validates :case, presence: true
 
-    default_scope -> { order(due_on: :asc) }
+    default_scope -> { preload(:case).order(due_on: :asc) }
     scope :due_today, -> { where(due_on: Date.today) }
     scope :due_tomorrow, -> { where(due_on: Date.tomorrow) }
     scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
