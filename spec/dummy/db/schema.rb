@@ -30,7 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_26_184318) do
     t.index ["type"], name: "index_flex_tasks_on_type"
   end
 
-  create_table "other_test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "foo_test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "status", default: 0
     t.string "business_process_current_step"
     t.uuid "application_form_id"

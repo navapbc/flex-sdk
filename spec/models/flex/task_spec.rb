@@ -5,7 +5,7 @@ RSpec.describe Flex::Task, type: :model do
   let(:task) { create(:flex_task, case: kase, description: Faker::Quote.yoda) }
 
   describe 'polymorphic associations' do
-    let(:other_case) { OtherTestCase.create! }
+    let(:foo_case) { FooTestCase.create! }
 
     it 'belongs to a polymorphic case' do
       expect(task.case).to eq(kase)
@@ -13,9 +13,9 @@ RSpec.describe Flex::Task, type: :model do
     end
 
     it 'can be associated with different case types' do
-      new_task = described_class.create!(case: other_case)
-      expect(new_task.case).to eq(other_case)
-      expect(new_task.case_type).to eq('OtherTestCase')
+      new_task = described_class.create!(case: foo_case)
+      expect(new_task.case).to eq(foo_case)
+      expect(new_task.case_type).to eq('FooTestCase')
     end
 
     it 'can find all tasks for a case' do
@@ -29,9 +29,9 @@ RSpec.describe Flex::Task, type: :model do
     end
 
     it 'can be queried by case type' do
-      other_task = described_class.create!(case: other_case)
+      foo_task = described_class.create!(case: foo_case)
       expect(described_class.where(case_type: 'TestCase')).to include(task)
-      expect(described_class.where(case_type: 'OtherTestCase')).to include(other_task)
+      expect(described_class.where(case_type: 'FooTestCase')).to include(foo_task)
     end
   end
 
