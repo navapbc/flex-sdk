@@ -70,7 +70,7 @@ module Flex
     def create_task(task_class, **attributes)
       raise ArgumentError, "task_class must be a subclass of Flex::Task" unless task_class < Flex::Task
 
-      task_class.from_case(self, **attributes).tap(&:save!)
+      task_class.create!(case: self, **attributes)
     end
   end
 end

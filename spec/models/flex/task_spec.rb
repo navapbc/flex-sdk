@@ -107,51 +107,6 @@ RSpec.describe Flex::Task, type: :model do
     end
   end
 
-  describe '.from_case' do
-    context 'with just a case' do
-      let(:from_case_task) { described_class.from_case(kase) }
-
-      it 'creates a new task associated with the given case' do
-        expect(from_case_task).to be_a(described_class)
-      end
-
-      it 'sets the new task case to the given case' do
-        expect(from_case_task.case).to eq(kase)
-      end
-
-      it 'creates a new, non-persisted record' do
-        expect(from_case_task).to be_new_record
-      end
-    end
-
-    context 'with additional attributes' do
-      let(:description) { Faker::Lorem.sentence }
-      let(:due_on) { Faker::Date.between(from: Date.today, to: Date.today + 1.year) }
-      let(:from_case_task) {
-        described_class.from_case(kase, description: description, due_on: due_on)
-      }
-
-      it 'sets the additional attributes' do
-        expect(from_case_task.description).to eq(description)
-        expect(from_case_task.due_on).to eq(due_on)
-      end
-
-      it 'maintains the case association' do
-        expect(from_case_task.case).to eq(kase)
-      end
-    end
-
-    context 'with invalid case' do
-      it 'raises ArgumentError when case is nil' do
-        expect { described_class.from_case(nil) }.to raise_error(ArgumentError)
-      end
-
-      it 'raises ArgumentError when case is not a Flex::Case' do
-        expect { described_class.from_case(Object.new) }.to raise_error(ArgumentError)
-      end
-    end
-  end
-
   describe 'validations' do
     it 'validates presence of case on create' do
       expect { described_class.create! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case must exist/)

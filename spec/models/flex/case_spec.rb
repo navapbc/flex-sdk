@@ -37,15 +37,6 @@ RSpec.describe Flex::Case, type: :model do
         test_case.create_task(NotATask)
       }.to raise_error(ArgumentError, 'task_class must be a subclass of Flex::Task')
     end
-
-    it 'uses Task.from_case to create the task' do
-      description = Faker::Quote.yoda
-      allow(TestTask).to receive(:from_case).and_call_original
-
-      test_case.create_task(TestTask, description: description)
-
-      expect(TestTask).to have_received(:from_case).with(test_case, description: description)
-    end
   end
 
   describe 'status attribute' do
