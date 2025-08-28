@@ -68,7 +68,7 @@ module Flex
     # @return [Flex::Task] The newly created task
     # @raise [ArgumentError] If task_class is not a subclass of Flex::Task
     def create_task(task_class, **attributes)
-      raise ArgumentError, "task_class must be a subclass of Flex::Task" unless task_class < Flex::Task
+      raise ArgumentError, "task_class must be Flex::Task or a subclass of it" unless task_class <= Flex::Task
 
       task_class.create!(case: self, **attributes)
     end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { create(:test_case) }
-  let(:task) { create(:flex_task, case: kase, description: Faker::Quote.yoda) }
+  let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
 
   describe 'polymorphic associations' do
     let(:foo_case) { FooTestCase.create! }

@@ -35,7 +35,7 @@ RSpec.describe Flex::Case, type: :model do
     it 'raises an error if task_class is not a subclass of Flex::Task' do
       expect {
         test_case.create_task(NotATask)
-      }.to raise_error(ArgumentError, 'task_class must be a subclass of Flex::Task')
+      }.to raise_error(ArgumentError, 'task_class must be Flex::Task or a subclass of it')
     end
   end
 
