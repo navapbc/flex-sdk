@@ -44,4 +44,4 @@ group :test do
   gem "temporary_tables", require: false
 end
 
-gem "debug", "~> 1.11", :groups => [:test, :development]
+gem "debug", "~> 1.11", groups: [ :test, :development ]
