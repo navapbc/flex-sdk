@@ -102,6 +102,9 @@ GEM
     css_parser (1.21.1)
       addressable
     date (3.4.1)
+    debug (1.11.0)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     diff-lcs (1.6.0)
     docile (1.4.1)
     dotenv (3.1.8)
@@ -395,6 +398,7 @@ PLATFORMS
 DEPENDENCIES
   actioncable
   capybara
+  debug (~> 1.11)
   dotenv
   factory_bot_rails
   faker

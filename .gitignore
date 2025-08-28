@@ -7,8 +7,10 @@ spec/**/tmp/*
 !spec/**/log/.keep
 !spec/**/tmp/.keep
 
-# VS Code workspace
+# VS Code files
 *.code-workspace
+.vscode/launch.json
+.vscode/settings.json
 
 # Ignore ds_store files
 **/*.DS_Store

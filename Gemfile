@@ -43,3 +43,5 @@ group :test do
   gem "capybara"
   gem "temporary_tables", require: false
 end
+
+gem "debug", "~> 1.11", groups: [ :test, :development ]

@@ -1,0 +1,4 @@
+{
+  "rubyTestExplorer.rspecCommand": "bundle exec rspec",
+  "rubyTestExplorer.testFramework": "rspec"
+}

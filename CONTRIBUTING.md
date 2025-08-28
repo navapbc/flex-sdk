@@ -33,6 +33,10 @@ or run tests in watch mode to automatically re-run tests on file changes:
 make test-watch
 ```
 
+#### Debugging Tests
+
+For instructions on how to debug tests, please see [debugging.md](./contributing/debugging.md).
+
 ## Writing Tests
 
 Please see [our testing contribution guide](/docs/contributing/testing.md).
