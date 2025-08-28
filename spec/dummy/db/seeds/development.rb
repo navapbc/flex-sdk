@@ -43,5 +43,5 @@ end
 
 5.times do
   # Create tasks without a due_on date
-  PassportVerifyInfoTask.create!(case: passport_cases.sample)
+  passport_cases.sample.create_task(PassportVerifyInfoTask)
 end
