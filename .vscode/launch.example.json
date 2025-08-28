@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "rdbg",
+      "name": "Run RSpec - Current File",
+      "request": "launch",
+      "useBundler": true,
+      "command": "rspec",
+      "script": "${file}",
+      "useTerminal": true
+    }
+  ]
+}
