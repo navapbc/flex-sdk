@@ -41,7 +41,7 @@ Here, the `PaidLeave` aggregate root can enforce rules, wrap changes in a transa
 
 ### Rules of thumb
 
-- Don’t create Rails associations between entities in different aggregates. Cross-aggregate associations often hide database calls that trigger N+1 query problems. They also make it harder to enforce consistency. If you must connect aggregates, use IDs instead of `has_many` or `belongs_to`.  
+- Don’t create Rails associations between entities in different aggregates. Cross-aggregate associations often hide database calls that trigger N+1 query problems. They also make it harder to enforce consistency. Avoiding these associations also makes it more feasible to split the application into microservices later, since there are no database-level dependencies between bounded contexts. If you must connect aggregates, use IDs instead of `has_many` or `belongs_to`.  
 - Load aggregates as a whole. Use `includes` or `preload` when fetching so the aggregate root and its related entities come in one query. This avoids hidden queries and keeps the aggregate consistent.  
 - Size aggregates carefully. Oversized aggregates make saves slow and complicated. Tiny aggregates make it hard to enforce business rules. Start small and merge later if needed. Splitting an aggregate after the fact is harder.  
 - Favor smaller aggregates. They usually perform better and scale more easily.  
