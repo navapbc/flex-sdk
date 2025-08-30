@@ -8,19 +8,19 @@ RSpec.describe Flex::ApplicationForm do
         in_progress_form = TestApplicationForm.create!
         submitted_form = TestApplicationForm.create!
         submitted_form.submit_application
-        
+
         result = TestApplicationForm.in_progress
-        
+
         expect(result).to include(in_progress_form)
         expect(result).not_to include(submitted_form)
       end
-      
+
       it "returns an empty relation when no forms are in progress" do
         form = TestApplicationForm.create!
         form.submit_application
-        
+
         result = TestApplicationForm.in_progress
-        
+
         expect(result).to be_empty
       end
     end
