@@ -3,7 +3,7 @@ require "support/matchers/publish_event_with_payload"
 
 RSpec.describe Flex::ApplicationForm do
   describe "scopes" do
-    describe ".in_progress" do
+    context "with .in_progress scope" do
       it "returns only in_progress application forms" do
         in_progress_form = TestApplicationForm.create!
         submitted_form = TestApplicationForm.create!
@@ -14,13 +14,16 @@ RSpec.describe Flex::ApplicationForm do
         expect(result).to include(in_progress_form)
         expect(result).not_to include(submitted_form)
       end
+    end
 
-      it "returns an empty relation when no forms are in progress" do
+    context "with no forms in progress" do
+      before do
         form = TestApplicationForm.create!
         form.submit_application
+      end
 
+      it "returns an empty relation from .in_progress scope" do
         result = TestApplicationForm.in_progress
-
         expect(result).to be_empty
       end
     end
