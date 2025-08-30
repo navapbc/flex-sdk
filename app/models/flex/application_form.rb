@@ -27,6 +27,8 @@ module Flex
     protected attr_writer :status
     enum :status, in_progress: 0, submitted: 1
 
+    scope :in_progress, -> { where(status: :in_progress) }
+
     attribute :user_id, :uuid
     attribute :submitted_at, :datetime
 
