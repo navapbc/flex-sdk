@@ -20,8 +20,7 @@ module Flex
   class Task < ApplicationRecord
     attribute :description, :text
     attribute :due_on, :date
-    attr_readonly :case_id
-    attr_readonly :type
+    attr_readonly :type, :case_id, :case_type, :id
 
     attribute :assignee_id, :uuid
     protected attr_writer :assignee_id
@@ -30,9 +29,10 @@ module Flex
     protected attr_writer :status
     enum :status, pending: 0, completed: 1
 
-    validates :case_id, presence: true
+    belongs_to :case, polymorphic: true
+    validates :case, presence: true
 
-    default_scope -> { order(due_on: :asc) }
+    default_scope -> { preload(:case).order(due_on: :asc) }
     scope :due_today, -> { where(due_on: Date.today) }
     scope :due_tomorrow, -> { where(due_on: Date.tomorrow) }
     scope :due_this_week, -> { where(due_on: Date.today.beginning_of_week..Date.today.end_of_week) }
@@ -54,14 +54,6 @@ module Flex
         task.assign(user_id)
         task
       end
-    end
-
-    # Creates a new non-persisted task instance associated with the given case.
-    # @param kase [Flex::Case] The case to associate the task with.
-    # @return [Flex::Task] The newly created task instance.
-    def self.from_case(kase)
-      raise ArgumentError, "`kase` must be a subclass of Flex::Case" unless kase.present? && kase.is_a?(Flex::Case)
-      new(case_id: kase.id)
     end
 
     def assign(user_id)

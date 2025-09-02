@@ -11,7 +11,7 @@ RSpec.describe <%= @task_name %>, type: :model do
     let(:test_case) { create(:test_case) }
     
     it "can be created with valid attributes" do
-      task = described_class.from_case(test_case)
+      task = test_case.create_task(described_class)
       expect(task).to be_valid
     end
   end

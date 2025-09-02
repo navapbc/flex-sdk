@@ -35,6 +35,9 @@ init-db: db-up wait-on-db db-migrate db-test-prepare db-seed
 db-up: ## Run just the database container
 	docker compose -f spec/dummy/docker-compose.yml up --remove-orphans --detach $(DB_NAME)
 
+db-create: ## Create the database
+	$(RAILS_CMD) db:create
+
 db-migrate: ## Run database migrations
 	$(RAILS_CMD) db:migrate
 
@@ -49,6 +52,9 @@ db-seed: ## Seed the database
 
 db-reset: ## Reset the database
 	$(RAILS_CMD) db:reset
+
+db-drop: ## Drop the database
+	$(RAILS_CMD) db:drop
 
 db-console: ## Access the rails db console
 	$(RAILS_CMD) dbconsole

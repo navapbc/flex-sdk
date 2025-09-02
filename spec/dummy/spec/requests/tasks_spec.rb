@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Tasks", type: :request do
-  let!(:test_case) { TestCase.create! }
+  let!(:test_case) { create(:test_case) }
   let!(:user) { User.create!(first_name: "Test", last_name: "User") }
 
   before do
@@ -13,14 +13,14 @@ RSpec.describe "Tasks", type: :request do
 
   describe "Task scopes" do
     it "unassigned scope with unassigned tasks" do
-      Flex::Task.create!(case_id: test_case.id, description: "Test task")
+      create(:flex_task, case: test_case, description: "Test task")
 
       result = Flex::Task.unassigned
       expect(result.count).to eq(1)
     end
 
     it "unassigned scope with assigned tasks" do
-      task = Flex::Task.create!(case_id: test_case.id, description: "Test task")
+      task = create(:flex_task, case: test_case, description: "Test task")
       task.assign(user.id)
 
       result = Flex::Task.unassigned
@@ -28,15 +28,15 @@ RSpec.describe "Tasks", type: :request do
     end
 
     it "next_unassigned returns earliest due task" do
-      later_task = Flex::Task.create!(case_id: test_case.id, description: "Later task", due_on: Date.current + 1.day)
-      earliest_task = Flex::Task.create!(case_id: test_case.id, description: "Earlier task", due_on: Date.current)
+      later_task = create(:flex_task, case: test_case, description: "Later task", due_on: Date.current + 1.day)
+      earliest_task = create(:flex_task, case: test_case, description: "Earlier task", due_on: Date.current)
 
       result = Flex::Task.next_unassigned
       expect(result).to eq(earliest_task)
     end
 
     it "next_unassigned returns nil when no unassigned tasks" do
-      task = Flex::Task.create!(case_id: test_case.id, description: "Assigned task")
+      task = create(:flex_task, case: test_case, description: "Assigned task")
       task.assign(user.id)
 
       result = Flex::Task.next_unassigned
@@ -44,7 +44,7 @@ RSpec.describe "Tasks", type: :request do
     end
 
     it "assign_next_task_to returns assigned task when available" do
-      task = Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current)
+      task = create(:flex_task, case: test_case, description: "Test task", due_on: Date.current)
 
       result = Flex::Task.assign_next_task_to(user.id)
       expect(result).to eq(task)
@@ -52,7 +52,7 @@ RSpec.describe "Tasks", type: :request do
     end
 
     it "assign_next_task_to returns nil when no unassigned tasks exist" do
-      task = Flex::Task.create!(case_id: test_case.id, description: "Assigned task")
+      task = create(:flex_task, case: test_case, description: "Assigned task")
       task.assign(user.id)
 
       result = Flex::Task.assign_next_task_to(user.id)
@@ -60,7 +60,7 @@ RSpec.describe "Tasks", type: :request do
     end
 
     it "assign_next_task_to uses transaction to prevent race conditions" do
-      task = Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current)
+      task = create(:flex_task, case: test_case, description: "Test task", due_on: Date.current)
 
       # Verify the method uses a transaction by checking it assigns correctly
       result = Flex::Task.assign_next_task_to(user.id)
@@ -75,7 +75,7 @@ RSpec.describe "Tasks", type: :request do
 
   describe "POST /tasks/pick_up_next_task" do
     context "when unassigned tasks exist" do
-      let!(:task) { Flex::Task.create!(case_id: test_case.id, description: "Test task", due_on: Date.current) }
+      let!(:task) { create(:flex_task, case: test_case, description: "Test task", due_on: Date.current) }
 
       it "assigns task and redirects to task page" do
         post "/tasks/pick_up_next_task"
@@ -101,9 +101,9 @@ RSpec.describe "Tasks", type: :request do
 
     context "when multiple unassigned tasks exist" do
       before do
-        Flex::Task.create!(case_id: test_case.id, description: "Latest due task", due_on: Date.current + 2.days)
-        Flex::Task.create!(case_id: test_case.id, description: "Middle due task", due_on: Date.current + 1.day)
-        Flex::Task.create!(case_id: test_case.id, description: "Earliest due task", due_on: Date.current)
+        create(:flex_task, case: test_case, description: "Latest due task", due_on: Date.current + 2.days)
+        create(:flex_task, case: test_case, description: "Middle due task", due_on: Date.current + 1.day)
+        create(:flex_task, case: test_case, description: "Earliest due task", due_on: Date.current)
       end
 
       it "picks up the task with the earliest due date" do

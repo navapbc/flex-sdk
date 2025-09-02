@@ -5,6 +5,7 @@ module Flex
     helper DateHelper
 
     before_action :set_task, only: %i[ show update ]
+    before_action :set_case, only: %i[ show update ]
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
@@ -42,6 +43,10 @@ module Flex
 
     def set_task
       @task = Flex::Task.find(params[:id]) if params[:id].present?
+    end
+
+    def set_case
+      @case = @task.case if @task.present?
     end
 
     def add_task_details_view_path

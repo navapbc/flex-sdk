@@ -20,6 +20,7 @@ group :development, :test do
   gem "shoulda-matchers", "~> 6.0"
   gem "faker"
   gem "dotenv"
+  gem "rails-controller-testing"
 
   # Lookbook
   gem "lookbook", ">= 2.3.9"

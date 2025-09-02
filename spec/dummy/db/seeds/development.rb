@@ -23,7 +23,7 @@ ten_days_ago = Date.current - 10.days
   task = PassportVerifyInfoTask.create!(
     description: "Task description for #{index}",
     due_on: ten_days_ago + index.days,
-    case_id: passport_cases.sample.id
+    case: passport_cases.sample
   )
 
   task.assign(users.sample.id)
@@ -34,7 +34,7 @@ end
   task = PassportPhotoTask.create!(
     description: "Task description for #{index}",
     due_on: ten_days_ago + index.days,
-    case_id: passport_cases.sample.id
+    case: passport_cases.sample
   )
 
   task.assign(users.sample.id)
@@ -43,5 +43,5 @@ end
 
 5.times do
   # Create tasks without a due_on date
-  PassportVerifyInfoTask.create!(case_id: passport_cases.sample.id)
+  passport_cases.sample.create_task(PassportVerifyInfoTask)
 end

@@ -1,8 +1,39 @@
 require 'rails_helper'
 
 RSpec.describe Flex::Task, type: :model do
-  let(:kase) { TestCase.create! }
-  let(:task) { described_class.create!(case_id: kase.id, description: Faker::Quote.yoda) }
+  let(:kase) { create(:test_case) }
+  let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
+
+  describe 'polymorphic associations' do
+    let(:foo_case) { FooTestCase.create! }
+
+    it 'belongs to a polymorphic case' do
+      expect(task.case).to eq(kase)
+      expect(task.case_type).to eq('TestCase')
+    end
+
+    it 'can be associated with different case types' do
+      new_task = described_class.create!(case: foo_case)
+      expect(new_task.case).to eq(foo_case)
+      expect(new_task.case_type).to eq('FooTestCase')
+    end
+
+    it 'can find all tasks for a case' do
+      task2 = described_class.create!(case: kase)
+      expect(kase.tasks).to contain_exactly(task, task2)
+    end
+
+    it 'maintains case association through updates' do
+      task.update!(description: 'Updated')
+      expect(task.reload.case).to eq(kase)
+    end
+
+    it 'can be queried by case type' do
+      foo_task = described_class.create!(case: foo_case)
+      expect(described_class.where(case_type: 'TestCase')).to include(task)
+      expect(described_class.where(case_type: 'FooTestCase')).to include(foo_task)
+    end
+  end
 
   context 'when attempting to set readonly attributes' do
     describe 'status attribute' do
@@ -76,25 +107,9 @@ RSpec.describe Flex::Task, type: :model do
     end
   end
 
-  describe '#from_case' do
-    let (:from_case_task) { described_class.from_case(kase) }
-
-    it 'creates a new task associated with the given case' do
-      expect(from_case_task).to be_a(described_class)
-    end
-
-    it 'sets the new task case_id to the given case id' do
-      expect(from_case_task.case_id).to eq(kase.id)
-    end
-
-    it 'creates a new, non-persisted record' do
-      expect(from_case_task).to be_new_record
-    end
-  end
-
   describe 'validations' do
-    it 'validates presence of case_id on create' do
-      expect { described_class.create!(case_id: nil) }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case can't be blank/)
+    it 'validates presence of case on create' do
+      expect { described_class.create! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case must exist/)
     end
   end
 
