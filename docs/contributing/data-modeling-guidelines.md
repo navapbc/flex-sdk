@@ -71,8 +71,8 @@ end
   end
   ```
 
-- Size aggregates carefully. Oversized aggregates make saves slow and complicated. Tiny aggregates make it hard to enforce business rules. Start small and merge later if needed. Splitting an aggregate after the fact is harder.
-- Favor smaller aggregates. They usually perform better and scale more easily.
+- Size aggregates carefully based on the number of related entities they contain. An oversized aggregate (one that groups too many entities together) makes saves slow and complicated because more data needs to be loaded and validated together. A tiny aggregate (containing just a single entity) might make it hard to enforce business rules across related entities. Start with fewer entities per aggregate and merge them later if needed. Splitting an aggregate with many entities after the fact is harder.
+- Favor aggregates with fewer entities. They usually perform better and scale more easily since they reduce the amount of data that needs to be loaded and validated together. For example, if you have `Case`, `Document`, and `Note` entities, you might start with each as its own aggregate rather than automatically grouping them all under `Case`.
 - Be open to eventual consistency. Not every rule has to be enforced immediately. Some business processes can handle checks that run asynchronously, especially when strict consistency would slow things down too much.
 
 By following these rules, you’ll build models that are both reliable and maintainable—even if you’re new to DDD.
