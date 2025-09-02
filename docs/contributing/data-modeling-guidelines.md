@@ -37,7 +37,7 @@ LeavePeriod.find(id).update(start:, end:)
 PaidLeave.find(id).update_leave_period(leave_period_id, start:, end:)
 ```
 
-Here, the `PaidLeave` aggregate root can enforce rules, wrap changes in a transaction, and handle concurrency. For example,
+Here, the `PaidLeave` aggregate root can enforce rules and wrap changes in a transaction. For example,
 
 ```ruby
 class PaidLeave < ApplicationRecord
