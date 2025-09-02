@@ -37,7 +37,27 @@ LeavePeriod.find(id).update(start:, end:)
 PaidLeave.find(id).update_leave_period(leave_period_id, start:, end:)
 ```
 
-Here, the `PaidLeave` aggregate root can enforce rules, wrap changes in a transaction, and handle concurrency.
+Here, the `PaidLeave` aggregate root can enforce rules, wrap changes in a transaction, and handle concurrency. For example,
+
+```ruby
+class PaidLeave < ApplicationRecord
+  has_many :leave_periods
+
+  def update_leave_period(leave_period_id, start:, end:)
+    with_lock do
+      leave_period = leave_periods.find { |lp| lp.id == leave_period_id }
+      other_leave_periods = leave_periods.reject { |lp| lp.id == leave_period_id }
+      leave_period.attributes = { start:, end: }
+      # Check if new [start, end] period overlaps with any of the other leave periods
+      if other_leave_periods.any? { |lp| lp.overlaps?(leave_period) }
+        # Raise validation error
+      else
+        leave_period.save!
+      end
+    end
+  end
+end
+```
 
 ### Rules of thumb
 
