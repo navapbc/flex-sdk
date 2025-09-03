@@ -8,4 +8,10 @@
   <button class="usa-button usa-button--outline">Reject</button>
 <% end %>
 
-<%= render template: 'flex/cases/show', locals: { model_class: PassportCase } %>
+<%= render template: 'flex/cases/show', locals: {
+  cases_path: passport_cases_path,
+  kase: {
+    id: @case.id,
+    status: @case.status,
+  },
+} %>

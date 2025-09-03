@@ -1,13 +1,13 @@
-<%= content_for :title, model_class.name.titleize %>
+<%= content_for :title, title %>
 
   <!-- Main content -->
   <main class="usa-section">
     <div class="grid-container">
-      <h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Case', ' Cases') %></h1>
+      <h1 class="usa-heading-xl"><%= title %></h1>
 
       <% tabs = [
-        { name: "Open", path: polymorphic_path(model_class), active: action_name == "index" },
-        { name: "Closed", path: polymorphic_path(model_class, action: "closed"), active: action_name == "closed" }
+        { name: "Open", path: cases_path, active: action_name == "index" },
+        { name: "Closed", path: closed_cases_path, active: action_name == "closed" }
       ] %>
 
       <nav class="display-flex border-bottom-1px border-base-light">
@@ -17,7 +17,7 @@
       </nav>
 
       <!-- Cases -->
-      <table class="usa-table usa-table--borderless usa-table--striped">
+      <table class="usa-table usa-table--borderless usa-table--striped width-full">
         <thead>
           <tr>
             <th scope="col">Case ID</th>
@@ -26,13 +26,13 @@
           </tr>
         </thead>
         <tbody>
-          <% if @cases.any? %>
-            <% @cases.each do |kase| %>
+          <% if cases.any? %>
+            <% cases.each do |kase| %>
               <tr>
-                <td><%= kase.id %></td>
-                <td><%= kase.created_at.strftime('%m/%d/%Y') %></td>
+                <td><%= kase[:id] %></td>
+                <td><%= kase[:created_at] %></td>
                 <td>
-                  <%= link_to "View", polymorphic_path(kase), class: "usa-button usa-button--outline" %>
+                  <%= link_to "View", kase[:path], class: "usa-button usa-button--outline" %>
                 </td>
               </tr>
             <% end %>
