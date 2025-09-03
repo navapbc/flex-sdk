@@ -38,6 +38,12 @@ Always run these commands in this order when setting up:
 make setup  # Installs dependencies, creates .env, and initializes database
 ```
 
+### .env configuration
+
+After running `make setup`, you or the user will need to configure environment variables in the `.env` file located at `./spec/dummy/.env`.
+
+This file is used to set up the necessary environment for the dummy application.
+
 ### Database Setup
 
 The database is automatically set up by `make setup`, but if needed separately:
