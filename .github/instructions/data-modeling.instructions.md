@@ -76,7 +76,3 @@ end
 - Be open to eventual consistency. Not every rule has to be enforced immediately. Some business processes can handle checks that run asynchronously, especially when strict consistency would slow things down too much.
 
 By following these rules, you’ll build models that are both reliable and maintainable—even if you’re new to DDD.
-
-### For AI
-
-A copy of these instructions is kept for AI in [data-modeling.instructions.md](/.github/instructions/data-modeling.instructions.md)
