@@ -1,3 +1,7 @@
+---
+applyTo: "app/models/**/*.rb"
+---
+
 # Data Modeling Guidelines
 
 The Flex SDK uses domain-driven design (DDD) principles. These guidelines explain key ideas in plain language, with examples, so developers can apply them consistently.
