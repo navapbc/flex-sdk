@@ -8,9 +8,11 @@
           <%= link_to breadcrumb[:text], breadcrumb[:link], class: "usa-breadcrumb__link" %>
         </li>
       <% end %>
-      <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-        <span><%= breadcrumbs.last[:text] %></span>
-      </li>
+      <% if breadcrumbs.last %>
+        <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+          <span><%= breadcrumbs.last[:text] %></span>
+        </li>
+      <% end %>
     </ol>
   </nav>
 <% end %>
