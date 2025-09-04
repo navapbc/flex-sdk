@@ -17,11 +17,15 @@
     <%
       breadcrumbs = local_assigns[:breadcrumbs] || [
         {
-          text: "Cases",
-          link: polymorphic_path(model_class)
+          text: t("flex.tasks.breadcrumbs.home"),
+          link: "/"
         },
         {
-          text: @case.id
+          text: t("flex.tasks.breadcrumbs.tasks"),
+          link: url_for(only_path: true, action: :index)
+        },
+        {
+          text: t("tasks.types.#{task.type.underscore}")
         }
       ]
     %>
