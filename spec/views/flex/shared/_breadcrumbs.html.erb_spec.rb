@@ -24,11 +24,11 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
     end
 
     context "with a single breadcrumb" do
-      let(:breadcrumbs) { [{ text: "Dashboard" }] }
+      let(:breadcrumbs) { [ { text: "Dashboard" } ] }
 
       it "renders a single breadcrumb without a link" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         expect(rendered).to have_selector('nav.usa-breadcrumb[aria-label="Breadcrumbs"]')
         expect(rendered).to have_selector('ol.usa-breadcrumb__list')
         expect(rendered).to have_selector('li.usa-breadcrumb__list-item.usa-current[aria-current="page"]')
@@ -48,24 +48,24 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
 
       it "renders all breadcrumbs with proper structure" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         expect(rendered).to have_selector('nav.usa-breadcrumb[aria-label="Breadcrumbs"]')
         expect(rendered).to have_selector('ol.usa-breadcrumb__list')
       end
 
       it "renders clickable links for all but the last breadcrumb" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         # First breadcrumb (Home)
         expect(rendered).to have_selector('li.usa-breadcrumb__list-item a.usa-breadcrumb__link[href="/"]', text: "Home")
-        
+
         # Second breadcrumb (Cases)
         expect(rendered).to have_selector('li.usa-breadcrumb__list-item a.usa-breadcrumb__link[href="/cases"]', text: "Cases")
       end
 
       it "renders the last breadcrumb as current page without a link" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         expect(rendered).to have_selector('li.usa-breadcrumb__list-item.usa-current[aria-current="page"]')
         expect(rendered).to have_selector('li.usa-current span', text: "Case #12345")
         expect(rendered).not_to have_selector('li.usa-current a')
@@ -73,7 +73,7 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
 
       it "has proper accessibility attributes" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         expect(rendered).to have_selector('nav[aria-label="Breadcrumbs"]')
         expect(rendered).to have_selector('li[aria-current="page"]')
       end
@@ -98,7 +98,7 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
 
       it "properly escapes special characters in text" do
         render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
-        
+
         expect(rendered).to include("Home &amp; Dashboard")
         expect(rendered).to include("Cases &gt; Applications")
         expect(rendered).to include("Case #12345 (Active)")
