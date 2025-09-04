@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-This repository contains the Flex SDK, a Ruby on Rails engine designed to help create intuitive, accessible, and effective digital-native government digital services. The SDK provides components for:
+This repository contains the Flex SDK, a Ruby on Rails engine designed to help create intuitive, accessible, and effective digital-native government services. The SDK provides components for:
 
 - Multi-page intake application forms
 - Case management workflows
