@@ -38,7 +38,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
       let(:request_path) { "/cases/123/documents" }
 
       before do
-        allow(view).to receive(:request).and_return(double(path: request_path))
+        allow(view).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: request_path))
         render partial: "flex/cases/sidenav", locals: { sidenav: sidenav }
       end
 
@@ -58,7 +58,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
       let(:request_path) { "/cases/123/settings" }
 
       before do
-        allow(view).to receive(:request).and_return(double(path: request_path))
+        allow(view).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: request_path))
         render partial: "flex/cases/sidenav", locals: { sidenav: sidenav }
       end
 
