@@ -8,4 +8,33 @@
   <button class="usa-button usa-button--outline">Reject</button>
 <% end %>
 
-<%= render template: 'flex/cases/show', locals: { model_class: PassportCase } %>
+<%= render template: 'flex/cases/show', locals: {
+  model_class: PassportCase,
+  kase: @case,
+  sidenav: [
+    {
+      text: "Overview",
+      link: polymorphic_path(@case)
+    },
+    {
+      text: "Application details",
+      link: application_details_passport_case_path(@case)
+    },
+    {
+      text: "Tasks",
+      link: passport_case_tasks_path(@case)
+    },
+    {
+      text: "Documents",
+      link: documents_passport_case_path(@case)
+    },
+    {
+      text: "Case history",
+      link: history_passport_case_path(@case)
+    },
+    {
+      text: "Notes",
+      link: notes_passport_case_path(@case)
+    }
+  ]
+} %>

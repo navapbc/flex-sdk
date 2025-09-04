@@ -4,8 +4,17 @@ Rails.application.routes.draw do
   mount Lookbook::Engine, at: "/lookbook"
 
   resources :passport_cases do
+    resources :tasks
+
     collection do
       get :closed
+    end
+
+    member do
+      get :application_details
+      get :documents
+      get :history
+      get :notes
     end
   end
 
