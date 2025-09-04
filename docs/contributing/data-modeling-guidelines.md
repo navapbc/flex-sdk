@@ -28,13 +28,17 @@ If you update entities directly, you risk skipping important checks or breaking 
 **Bad:** (updates entity directly)
 
 ```ruby
-LeavePeriod.find(id).update(start:, end:)
+LeavePeriod.find(leave_period_id).update(start:, end:)
 ```
 
 **Good:** (routes change through aggregate root)
 
 ```ruby
-PaidLeave.find(id).update_leave_period(leave_period_id, start:, end:)
+PaidLeave.transaction do
+  paid_leave = PaidLeave.lock.find(paid_leave_id)
+  paid_leave.leave_periods.find { |lp| lp.id == leave_period_id }.attributes = { start:, end: }
+  paid_leave.save!
+end
 ```
 
 Here, the `PaidLeave` aggregate root can enforce rules and wrap changes in a transaction. For example,
@@ -42,6 +46,7 @@ Here, the `PaidLeave` aggregate root can enforce rules and wrap changes in a tra
 ```ruby
 class PaidLeave < ApplicationRecord
   has_many :leave_periods
+  accepts_nested_attributes_for :leave_periods
   validate :leave_periods_have_no_overlap
   
   private
@@ -76,7 +81,3 @@ end
 - Be open to eventual consistency. Not every rule has to be enforced immediately. Some business processes can handle checks that run asynchronously, especially when strict consistency would slow things down too much.
 
 By following these rules, you’ll build models that are both reliable and maintainable—even if you’re new to DDD.
-
-### For AI
-
-A copy of these instructions is kept for AI in [data-modeling.instructions.md](/.github/instructions/data-modeling.instructions.md)
