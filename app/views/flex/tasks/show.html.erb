@@ -14,19 +14,23 @@
 %>
 <main class="usa-section">
   <div class="grid-container">
-    <nav class="usa-breadcrumb" aria-label="Breadcrumbs">
-      <ol class="usa-breadcrumb__list">
-        <li class="usa-breadcrumb__list-item">
-          <%= link_to t("flex.tasks.breadcrumbs.home"), "/", class: "usa-breadcrumb__link" %>
-        </li>
-        <li class="usa-breadcrumb__list-item">
-          <%= link_to t("flex.tasks.breadcrumbs.tasks"), url_for(only_path: true, action: :index), class: "usa-breadcrumb__link" %>
-        </li>
-        <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-          <span><%= t("tasks.types.#{task.type.underscore}") %></span>
-        </li>
-      </ol>
-    </nav>
+    <%
+      breadcrumbs = local_assigns[:breadcrumbs] || [
+        {
+          text: t("flex.tasks.breadcrumbs.home"),
+          link: "/"
+        },
+        {
+          text: t("flex.tasks.breadcrumbs.tasks"),
+          link: url_for(only_path: true, action: :index)
+        },
+        {
+          text: t("tasks.types.#{task.type.underscore}")
+        }
+      ]
+    %>
+    <%= render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: } %>
+
     <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
     <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
       <div class="grid-container">
