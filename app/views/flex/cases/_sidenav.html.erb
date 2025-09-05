@@ -17,7 +17,7 @@
     <ul class="usa-sidenav">
       <% sidenav.each do |item| %>
         <li class="usa-sidenav__item">
-          <a href="<%= item[:link] %>" class="<%= request.path == item[:link] ? "usa-current" : "" %>"><%= item[:text] %></a>
+          <%= link_to item[:text], item[:link], class: { "usa-current" => request.path == item[:link] } %>
         </li>
       <% end %>
     </ul>
