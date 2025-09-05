@@ -1,4 +1,6 @@
 class PassportCasesController < StaffController
+  before_action :set_case, only: %i[ show application_details documents history notes ]
+
   def index
     @cases = PassportCase.order(created_at: :desc)
                          .all
@@ -17,7 +19,18 @@ class PassportCasesController < StaffController
   end
 
   def show
-    @case = PassportCase.find(params[:id])
+  end
+
+  def application_details
+  end
+
+  def documents
+  end
+
+  def history
+  end
+
+  def notes
   end
 
   def edit
@@ -29,4 +42,10 @@ class PassportCasesController < StaffController
   def model_class
     controller_path.classify.constantize
   end
+
+  private
+
+    def set_case
+      @case = PassportCase.find(params[:id])
+    end
 end

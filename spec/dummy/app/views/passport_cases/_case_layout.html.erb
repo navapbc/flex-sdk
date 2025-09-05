@@ -1,0 +1,35 @@
+<% content_for :case_summary do %>
+  <p>Passport ID: <span class="text-bold"><%= @case.passport_id %></span></p>
+  <p>Current step: <span class="text-bold"><%= @case.business_process_current_step %></span></p>
+<% end %>
+
+<%= render template: 'flex/cases/show', locals: {
+  model_class: PassportCase,
+  kase: kase,
+  sidenav: [
+    {
+      text: "Overview",
+      link: polymorphic_path(kase)
+    },
+    {
+      text: "Application details",
+      link: application_details_passport_case_path(kase)
+    },
+    {
+      text: "Tasks",
+      link: passport_case_tasks_path(kase)
+    },
+    {
+      text: "Documents",
+      link: documents_passport_case_path(kase)
+    },
+    {
+      text: "Case history",
+      link: history_passport_case_path(kase)
+    },
+    {
+      text: "Notes",
+      link: notes_passport_case_path(kase)
+    }
+  ]
+} %>

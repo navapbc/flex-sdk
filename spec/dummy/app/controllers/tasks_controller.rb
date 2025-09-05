@@ -5,8 +5,8 @@ class TasksController < Flex::TasksController
 
   def show
     super
-    kase = PassportCase.find(@task.case_id)
-    @application_form = PassportApplicationForm.find(kase.application_form_id)
+    @case = PassportCase.find(@task.case_id)
+    @application_form = PassportApplicationForm.find(@case.application_form_id)
   end
 
   protected
