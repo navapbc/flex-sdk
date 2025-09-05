@@ -7,11 +7,10 @@ Rails.application.routes.draw do
 
   scope path: "/staff" do
     resources :passport_cases do
- 
       collection do
         get :closed
       end
-  
+
       member do
         get :application_details
         get :tasks
