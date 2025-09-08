@@ -23,13 +23,13 @@
           link: polymorphic_path(model_class)
         },
         {
-          text: @case.id
+          text: kase.id
         }
       ]
     %>
     <%= render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: } %>
 
-    <h1 class="usa-heading-xl">Case ID: <%= @case.id %></h1>
+    <h1 class="usa-heading-xl">Case ID: <%= kase.id %></h1>
     <%= yield :case_summary %>
     <p>Status: <%= render partial: "flex/cases/status_tag", locals: { status: kase.status } %></p>
 
