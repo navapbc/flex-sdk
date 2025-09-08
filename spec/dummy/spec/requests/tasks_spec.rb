@@ -73,12 +73,12 @@ RSpec.describe "Tasks", type: :request do
     end
   end
 
-  describe "POST /tasks/pick_up_next_task" do
+  describe "POST /staff/tasks/pick_up_next_task" do
     context "when unassigned tasks exist" do
       let!(:task) { create(:flex_task, case: test_case, description: "Test task", due_on: Date.current) }
 
       it "assigns task and redirects to task page" do
-        post "/tasks/pick_up_next_task"
+        post "/staff/tasks/pick_up_next_task"
 
         expect(response).to redirect_to(task_path(task))
         follow_redirect!
@@ -91,7 +91,7 @@ RSpec.describe "Tasks", type: :request do
 
     context "when no unassigned tasks exist" do
       it "shows no tasks available message and stays on index" do
-        post "/tasks/pick_up_next_task"
+        post "/staff/tasks/pick_up_next_task"
 
         expect(response).to redirect_to(tasks_path)
         follow_redirect!
@@ -107,7 +107,7 @@ RSpec.describe "Tasks", type: :request do
       end
 
       it "picks up the task with the earliest due date" do
-        post "/tasks/pick_up_next_task"
+        post "/staff/tasks/pick_up_next_task"
 
         # Verify that a task was assigned to the user
         assigned_task = Flex::Task.where(assignee_id: user.id).last
