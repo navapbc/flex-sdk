@@ -47,6 +47,7 @@ group :test do
   gem "simplecov", require: false
   gem "capybara"
   gem "temporary_tables", require: false
+  gem "pundit-matchers"
 end
 
 gem "debug", "~> 1.11", groups: [ :test, :development ]
