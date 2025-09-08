@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     flex (0.1.0)
+      pundit (>= 2.3.1)
       rails (>= 7.1.5.1)
       validates_timeliness (>= 7.0.0)
 
@@ -234,6 +235,8 @@ GEM
     public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
+    pundit (2.5.0)
+      activesupport (>= 3.0.0)
     racc (1.8.1)
     rack (3.1.12)
     rack-session (2.1.0)
@@ -412,6 +415,7 @@ DEPENDENCIES
   lookbook (>= 2.3.9)
   pg (~> 1.1)
   puma
+  pundit
   rails-controller-testing
   rspec-rails (~> 7.0.0)
   rubocop-rails-omakase
