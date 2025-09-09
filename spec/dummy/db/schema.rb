@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_09_235600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "flex_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "flex_tasks", force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.integer "status", default: 0
-    t.uuid "assignee_id"
-    t.uuid "case_id"
+    t.integer "assignee_id"
+    t.integer "case_id"
     t.date "due_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "passport_application_forms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "passport_application_forms", force: :cascade do |t|
     t.string "name_first"
     t.string "name_last"
     t.date "date_of_birth"
@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.string "name_middle"
   end
 
-  create_table "passport_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "passport_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "passport_id", null: false
     t.string "business_process_current_step"
@@ -61,7 +61,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
   end
 
-  create_table "test_application_forms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "test_application_forms", force: :cascade do |t|
     t.integer "status", default: 0
     t.string "test_string"
     t.datetime "created_at", null: false
@@ -69,7 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.datetime "submitted_at"
   end
 
-  create_table "test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "test_cases", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.string "business_process_current_step"
     t.datetime "created_at", null: false
@@ -79,7 +79,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.index ["application_form_id"], name: "index_test_cases_on_application_form_id"
   end
 
-  create_table "test_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "test_records", force: :cascade do |t|
     t.date "date_of_birth"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -92,8 +92,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.string "address_state"
     t.string "address_zip_code"
     t.string "tax_id"
-    t.integer "reporting_period_year"
-    t.integer "reporting_period_quarter"
     t.date "period_start"
     t.date "period_end"
     t.integer "weekly_wage"
@@ -102,16 +100,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.jsonb "names"
     t.jsonb "reporting_periods"
     t.date "adopted_on"
-    t.integer "base_period_start_year"
-    t.integer "base_period_start_quarter"
-    t.integer "base_period_end_year"
-    t.integer "base_period_end_quarter"
-    t.integer "activity_reporting_period_year"
-    t.integer "activity_reporting_period_month"
     t.jsonb "activity_reporting_periods"
+    t.string "reporting_period"
+    t.string "activity_reporting_period"
+    t.string "base_period_start"
+    t.string "base_period_end"
   end
 
-  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.datetime "created_at", null: false
