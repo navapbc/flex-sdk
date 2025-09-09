@@ -20,7 +20,7 @@ module Flex
         # render template: "flex/previews/empty", locals: {
         render template: "flex/staff/_header", locals: {
           cases_links: [
-            { name: "Passport Cases", path: "/passport_cases" }
+            { name: "Passport Cases", path: "/staff/passport_cases" }
           ],
           request: request
         }
