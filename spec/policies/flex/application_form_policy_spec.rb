@@ -16,10 +16,6 @@ RSpec.describe Flex::ApplicationFormPolicy, type: :policy do
     described_class::Scope.new(current_user, TestApplicationForm.all).resolve
   end
 
-
-
-
-
   context "when unauthenticated" do
     let(:current_user) { nil }
 
