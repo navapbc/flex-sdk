@@ -24,7 +24,6 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     expect(object).to be_valid
   end
 
-  # rubocop:disable RSpec/MultipleMemoizedHelpers
   describe "range: true" do
     let(:start_year) { 2023 }
     let(:start_quarter) { 1 }
@@ -158,5 +157,4 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       expect(loaded_record.base_period).to eq(range)
     end
   end
-  # rubocop:enable RSpec/MultipleMemoizedHelpers
 end

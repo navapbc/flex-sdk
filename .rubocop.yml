@@ -10,8 +10,14 @@ RSpec/ExampleLength:
   Enabled: false
 RSpec/MultipleExpectations:
   Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
 RSpec/NestedGroups:
   Enabled: false
+RSpec/NoExpectationExample:
+  AllowedPatterns:
+    - assert_
+    - is_expected_in_block
 
 AllCops:
   Exclude:

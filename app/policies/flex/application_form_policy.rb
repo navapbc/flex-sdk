@@ -33,6 +33,7 @@ module Flex
       owning_user? && !record.submitted?
     end
 
+    # rubocop:disable Style/Documentation
     class Scope < ::ApplicationPolicy::Scope
       def resolve
         scope.where(user_id: user.id)

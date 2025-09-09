@@ -2,29 +2,23 @@ require 'rails_helper'
 
 RSpec.describe Flex::ApplicationFormPolicy, type: :policy do
   # Create a test policy class that includes the module
+  subject { test_policy_class.new(current_user, record) }
+
   let(:test_policy_class) do
     Class.new(::ApplicationPolicy) do
       include Flex::ApplicationFormPolicy
-      
-      attr_reader :user, :record
-      
-      def initialize(user, record)
-        @user = user
-        @record = record
-      end
     end
   end
-  
-  subject { test_policy_class.new(current_user, record) }
-
   let(:owning_user) { create(:user) }
   let(:base_record) { create(:test_application_form, user_id: owning_user.id) }
-
   let(:record) { base_record }
-
   let(:resolved_scope) do
     described_class::Scope.new(current_user, TestApplicationForm.all).resolve
   end
+
+
+
+
 
   context "when unauthenticated" do
     let(:current_user) { nil }
