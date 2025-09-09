@@ -10,18 +10,38 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     ],
     invalid_value: FactoryBot.build(:year_quarter, :invalid)
 
-  it "validates quarter values are between 1 and 4" do
-    object.reporting_period_year = 2025
-    object.reporting_period_quarter = 5
-    expect(object).not_to be_valid
-    expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
+  describe "string assignment" do
+    it "accepts string values in 'YYYYQQ' format" do
+      object.reporting_period = "2025Q01"
+      expect(object.reporting_period.year).to eq(2025)
+      expect(object.reporting_period.quarter).to eq(1)
+    end
 
-    object.reporting_period_quarter = 0
-    expect(object).not_to be_valid
-    expect(object.errors.full_messages_for("reporting_period_quarter")).to include("Reporting period quarter must be in 1..4")
+    it "accepts string values in 'YYYYQQ' format without leading zeros" do
+      object.reporting_period = "2025Q3"
+      expect(object.reporting_period.year).to eq(2025)
+      expect(object.reporting_period.quarter).to eq(3)
+    end
 
-    object.reporting_period_quarter = 2
-    expect(object).to be_valid
+    it "returns nil for invalid string formats" do
+      object.reporting_period = "invalid"
+      expect(object.reporting_period).to be_nil
+    end
+
+    it "returns nil for strings without Q separator" do
+      object.reporting_period = "20251"
+      expect(object.reporting_period).to be_nil
+    end
+
+    it "serializes to string format with leading zeros" do
+      year_quarter = Flex::YearQuarter.new(year: 2025, quarter: 1)
+      object.reporting_period = year_quarter
+      object.save!
+
+      loaded_object = TestRecord.find(object.id)
+      expect(loaded_object.reporting_period.year).to eq(2025)
+      expect(loaded_object.reporting_period.quarter).to eq(1)
+    end
   end
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers

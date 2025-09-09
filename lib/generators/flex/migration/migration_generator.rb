@@ -57,15 +57,9 @@ module Flex
         when :us_date
           [ "#{name}:date" ]
         when :year_month
-          [
-            "#{name}_year:integer",
-            "#{name}_month:integer"
-          ]
+          [ "#{name}:string" ]
         when :year_quarter
-          [
-            "#{name}_year:integer",
-            "#{name}_quarter:integer"
-          ]
+          [ "#{name}:string" ]
         else
           # Allow built-in types like string, integer, etc.
           [ "#{name}:#{type}" ]
