@@ -26,7 +26,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163036) do
     t.string "case_type"
     t.index ["assignee_id"], name: "index_flex_tasks_on_assignee_id"
     t.index ["case_id"], name: "index_flex_tasks_on_case_id"
-    t.index ["case_type"], name: "index_flex_tasks_on_case_type"
     t.index ["status"], name: "index_flex_tasks_on_status"
     t.index ["type"], name: "index_flex_tasks_on_type"
   end
