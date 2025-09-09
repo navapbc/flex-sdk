@@ -6,6 +6,7 @@ class CreateFlexTasks < ActiveRecord::Migration[8.0]
     t.integer :status, index: true, default: 0
     t.uuid :assignee_id, index: true # not linked to anything yet but will be later
     t.uuid :case_id, index: true
+    t.string :case_type
     t.date :due_on
 
     t.timestamps
