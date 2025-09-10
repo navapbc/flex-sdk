@@ -134,8 +134,8 @@ Array attributes behave like standard Ruby arrays with automatic serialization/d
 ```ruby
 # Setting an array of addresses
 company.office_locations = [
-  Flex::Address.new("123 Main St", nil, "Boston", "MA", "02108"),
-  Flex::Address.new("456 Oak Ave", "Suite 4", "San Francisco", "CA", "94107")
+  Flex::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
+  Flex::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
 ]
 
 # Array of ranges (complex nested type)
