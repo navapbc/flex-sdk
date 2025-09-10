@@ -22,7 +22,6 @@ module Flex
       extend ActiveSupport::Concern
       include Flex::Validations
 
-      # Module-level attribute type identifier
       def self.attribute_type
         :multi_column_value_object
       end

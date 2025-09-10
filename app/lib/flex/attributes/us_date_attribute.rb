@@ -5,7 +5,6 @@ module Flex
     module USDateAttribute
       extend ActiveSupport::Concern
 
-      # Module-level attribute type identifier
       def self.attribute_type
         :single_column_value_object
       end
