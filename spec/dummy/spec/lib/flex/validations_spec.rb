@@ -91,9 +91,9 @@ RSpec.describe Flex::Validations do
 
       it 'adds errors under the attribute name with subfield' do
         expect(object).not_to be_valid
-        expect(object.errors[:base_period_start_quarter]).to include("must be in 1..4")
-        expect(object.errors[:base_period_end_quarter]).to include("must be in 1..4")
-        expect(object.errors[:activity_reporting_period_month]).to include("must be in 1..12")
+        expect(object.base_period_start.errors[:quarter]).to include("must be in 1..4")
+        expect(object.base_period_end.errors[:quarter]).to include("must be in 1..4")
+        expect(object.activity_reporting_period.errors[:month]).to include("must be in 1..12")
         expect(object.errors[:period_start]).to include("is an invalid date")
         expect(object.errors[:period_start]).to include("is an invalid date")
       end
