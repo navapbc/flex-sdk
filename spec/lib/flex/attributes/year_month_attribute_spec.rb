@@ -43,4 +43,25 @@ RSpec.describe Flex::Attributes::YearMonthAttribute do
       expect(loaded_object.activity_reporting_period.month).to eq(2)
     end
   end
+
+  describe "validation" do
+    it "validates month values are between 1 and 12" do
+      object.activity_reporting_period = { year: 2025, month: 13 }
+      expect(object).not_to be_valid
+      expect(object.activity_reporting_period.errors.full_messages_for("month")).to include("Month must be in 1..12")
+
+      object.activity_reporting_period = { year: 2025, month: 0 }
+      expect(object).not_to be_valid
+      expect(object.activity_reporting_period.errors.full_messages_for("month")).to include("Month must be in 1..12")
+
+      object.activity_reporting_period = { year: 2025, month: 2 }
+      expect(object).to be_valid
+    end
+
+    it "validates year values are present" do
+      object.activity_reporting_period = { year: nil, month: 12 }
+      expect(object).not_to be_valid
+      expect(object.activity_reporting_period.errors.full_messages_for("year")).to include("Year can't be blank")
+    end
+  end
 end

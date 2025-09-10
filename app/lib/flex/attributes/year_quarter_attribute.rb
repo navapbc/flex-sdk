@@ -38,13 +38,13 @@ module Flex
             hash = value.with_indifferent_access
             year = hash[:year]
             quarter = hash[:quarter]
-            Flex::YearQuarter.new(year: year, quarter: quarter)
+            Flex::YearQuarter.new(year:, quarter:)
           when String
             parts = value.split("Q")
             return nil if parts.length < 2
-            year = parts[0].to_i
-            quarter = parts[1].to_i
-            Flex::YearQuarter.new(year: year, quarter: quarter)
+            year = parts[0]
+            quarter = parts[1]
+            Flex::YearQuarter.new(year:, quarter:)
           else
             nil
           end

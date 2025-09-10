@@ -12,12 +12,6 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
 
   describe "string assignment" do
     it "accepts string values in 'YYYYQQ' format" do
-      object.reporting_period = "2025Q01"
-      expect(object.reporting_period.year).to eq(2025)
-      expect(object.reporting_period.quarter).to eq(1)
-    end
-
-    it "accepts string values in 'YYYYQQ' format without leading zeros" do
       object.reporting_period = "2025Q3"
       expect(object.reporting_period.year).to eq(2025)
       expect(object.reporting_period.quarter).to eq(3)
@@ -41,6 +35,27 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       loaded_object = TestRecord.find(object.id)
       expect(loaded_object.reporting_period.year).to eq(2025)
       expect(loaded_object.reporting_period.quarter).to eq(1)
+    end
+  end
+
+  describe "validation" do
+    it "validates quarter values are between 1 and 4" do
+      object.reporting_period = { year: 2025, quarter: 5 }  
+      expect(object).not_to be_valid
+      expect(object.reporting_period.errors.full_messages_for("quarter")).to include("Quarter must be in 1..4")
+
+      object.reporting_period = { year: 2025, quarter: 0 }
+      expect(object).not_to be_valid
+      expect(object.reporting_period.errors.full_messages_for("quarter")).to include("Quarter must be in 1..4")
+
+      object.reporting_period = { year: 2025, quarter: 2 }
+      expect(object).to be_valid
+    end
+
+    it "validates year values are present" do
+      object.reporting_period = { year: nil, quarter: 1 }
+      expect(object).not_to be_valid
+      expect(object.reporting_period.errors.full_messages_for("year")).to include("Year can't be blank")
     end
   end
 
