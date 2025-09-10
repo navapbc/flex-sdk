@@ -67,39 +67,6 @@ module Flex
         def year_quarter_attribute(name, options = {})
           attribute name, YearQuarterType.new
           flex_validates_nested(name) if options.fetch(:validate, true)
-
-          # Provide backward compatibility by defining nested attribute accessors
-          define_method("#{name}_year") do
-            value = public_send(name)
-            return Flex::YearQuarter.new.year if value.nil?
-            value.year
-          end
-
-          define_method("#{name}_year=") do |year|
-            current_value = public_send(name)
-            quarter = current_value&.quarter
-            if year.present? || quarter.present?
-              public_send("#{name}=", Flex::YearQuarter.new(year: year, quarter: quarter))
-            else
-              public_send("#{name}=", nil)
-            end
-          end
-
-          define_method("#{name}_quarter") do
-            value = public_send(name)
-            return Flex::YearQuarter.new.quarter if value.nil?
-            value.quarter
-          end
-
-          define_method("#{name}_quarter=") do |quarter|
-            current_value = public_send(name)
-            year = current_value&.year
-            if year.present? || quarter.present?
-              public_send("#{name}=", Flex::YearQuarter.new(year: year, quarter: quarter))
-            else
-              public_send("#{name}=", nil)
-            end
-          end
         end
       end
     end

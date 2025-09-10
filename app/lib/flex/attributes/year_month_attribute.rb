@@ -67,39 +67,6 @@ module Flex
         def year_month_attribute(name, options = {})
           attribute name, YearMonthType.new
           flex_validates_nested(name) if options.fetch(:validate, true)
-
-          # Provide backward compatibility by defining nested attribute accessors
-          define_method("#{name}_year") do
-            value = public_send(name)
-            return Flex::YearMonth.new.year if value.nil?
-            value.year
-          end
-
-          define_method("#{name}_year=") do |year|
-            current_value = public_send(name)
-            month = current_value&.month
-            if year.present? || month.present?
-              public_send("#{name}=", Flex::YearMonth.new(year: year, month: month))
-            else
-              public_send("#{name}=", nil)
-            end
-          end
-
-          define_method("#{name}_month") do
-            value = public_send(name)
-            return Flex::YearMonth.new.month if value.nil?
-            value.month
-          end
-
-          define_method("#{name}_month=") do |month|
-            current_value = public_send(name)
-            year = current_value&.year
-            if year.present? || month.present?
-              public_send("#{name}=", Flex::YearMonth.new(year: year, month: month))
-            else
-              public_send("#{name}=", nil)
-            end
-          end
         end
       end
     end
