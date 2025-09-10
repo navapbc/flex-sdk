@@ -1,0 +1,28 @@
+<table class="usa-table usa-table--borderless usa-table--striped width-full">
+  <thead>
+    <tr>
+       <% headers.each do |header| %>
+          <th scope="col"><%= header %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+      <% if rows.any? %>
+        <% rows.each do |row| %>
+          <% if defined?(row_view) %>
+            <%= render partial: row_view, locals: { row: } %>
+          <% else %>
+            <tr>
+              <% row.each do |cell| %>
+              <td><%= cell %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="<%= headers.size %>" class="text-center"><%= defined?(empty_text) ? empty_text : tag.i("empty") %></td>
+        </tr>
+      <% end %>
+  </tbody>
+</table>
