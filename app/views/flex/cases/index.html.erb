@@ -15,29 +15,12 @@
 </nav>
 
 <!-- Cases -->
-<table class="usa-table usa-table--borderless usa-table--striped">
-  <thead>
-    <tr>
-      <th scope="col">Case ID</th>
-      <th scope="col">Created</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @cases.any? %>
-      <% @cases.each do |kase| %>
-        <tr>
-          <td><%= kase.id %></td>
-          <td><%= kase.created_at.strftime('%m/%d/%Y') %></td>
-          <td>
-            <%= link_to "View", polymorphic_path(kase), class: "usa-button usa-button--outline" %>
-          </td>
-        </tr>
-      <% end %>
-    <% else %>
-      <tr>
-        <td colspan="3" class="text-center">No cases</td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= render template: "flex/shared/_table", locals: {
+    headers: [ "Case ID", "Created", "Action" ],
+    rows: cases.map { |kase| [
+      kase.id,
+      kase.created_at.strftime('%m/%d/%Y'),
+      link_to("View", polymorphic_path(kase), class: "usa-button usa-button--outline")
+    ]}
+  }
+%>
