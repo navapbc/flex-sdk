@@ -19,6 +19,11 @@ module Flex
     module TaxIdAttribute
       extend ActiveSupport::Concern
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :single_column_value_object
+      end
+
       # A custom ActiveRecord type that allows storing a Tax ID (such as SSN).
       # It uses the Flex::TaxId value object for storage and formatting.
       class TaxIdType < ActiveModel::Type::String

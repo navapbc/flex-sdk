@@ -25,6 +25,11 @@ module Flex
     module ArrayAttribute
       extend ActiveSupport::Concern
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :array
+      end
+
       # Custom type for handling arrays of value objects in ActiveRecord attributes
       #
       # @api private

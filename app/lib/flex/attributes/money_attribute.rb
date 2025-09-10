@@ -19,6 +19,13 @@ module Flex
     module MoneyAttribute
       extend ActiveSupport::Concern
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :single_column_value_object
+      end
+
+
+
       # A custom ActiveRecord type that allows storing money amounts.
       # It uses the Flex::Money value object for storage and arithmetic operations.
       class MoneyType < ActiveModel::Type::Integer

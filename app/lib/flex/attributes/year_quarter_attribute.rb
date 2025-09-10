@@ -21,6 +21,11 @@ module Flex
       extend ActiveSupport::Concern
       include Validations
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :single_column_value_object
+      end
+
       # Custom ActiveModel type for handling YearQuarter values.
       # Supports casting from hashes, strings, and YearQuarter objects.
       # Serializes to string format "YYYYQQ" for database storage.

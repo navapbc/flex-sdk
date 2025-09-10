@@ -5,6 +5,11 @@ module Flex
     module USDateAttribute
       extend ActiveSupport::Concern
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :single_column_value_object
+      end
+
       # A custom ActiveRecord type that allows storing a date. It behaviors the same
       # as the default Date type, but when casting a string it uses the US regional
       # format (MM/DD/YYYY) instead of default heuristics used by Date.parse which can

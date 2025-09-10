@@ -18,6 +18,11 @@ module Flex
     module MemorableDateAttribute
       extend ActiveSupport::Concern
 
+      # Module-level attribute type identifier
+      def self.attribute_type
+        :single_column_value_object
+      end
+
       # A custom ActiveRecord type that allows storing a date. It behaviors the same
       # as the default Date type, but it allows setting the attribute using a hash
       # with keys :year, :month, and :day. This is meant to be used in conjunction
