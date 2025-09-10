@@ -40,7 +40,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
 
   describe "validation" do
     it "validates quarter values are between 1 and 4" do
-      object.reporting_period = { year: 2025, quarter: 5 }  
+      object.reporting_period = { year: 2025, quarter: 5 }
       expect(object).not_to be_valid
       expect(object.reporting_period.errors.full_messages_for("quarter")).to include("Quarter must be in 1..4")
 
