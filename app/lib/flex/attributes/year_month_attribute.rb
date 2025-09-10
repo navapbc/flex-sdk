@@ -71,7 +71,8 @@ module Flex
           # Provide backward compatibility by defining nested attribute accessors
           define_method("#{name}_year") do
             value = public_send(name)
-            value&.year
+            return Flex::YearMonth.new.year if value.nil?
+            value.year
           end
 
           define_method("#{name}_year=") do |year|
@@ -86,7 +87,8 @@ module Flex
 
           define_method("#{name}_month") do
             value = public_send(name)
-            value&.month
+            return Flex::YearMonth.new.month if value.nil?
+            value.month
           end
 
           define_method("#{name}_month=") do |month|

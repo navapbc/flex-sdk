@@ -9,8 +9,7 @@ module Flex
       temporary_table :quarterly_wages do |t|
         t.string :person_id
         t.integer :amount
-        t.integer :period_year
-        t.integer :period_quarter
+        t.string :period
         t.timestamps
       end
 
