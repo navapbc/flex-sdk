@@ -6,7 +6,13 @@ module Flex
   # in form models.
   #
   # @example Creating an address
-  #   address = Flex::Address.new("123 Main St", "Apt 4B", "Anytown", "CA", "12345")
+  #   address = Flex::Address.new(
+  #     street_line_1: "123 Main St",
+  #     street_line_2: "Apt 4B",
+  #     city: "Anytown",
+  #     state: "CA",
+  #     zip_code: "12345"
+  #   )
   #
   # Key features:
   # - Stores address components (street lines, city, state, zip)

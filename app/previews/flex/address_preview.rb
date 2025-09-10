@@ -19,7 +19,13 @@ module Flex
 
     def filled
       model = new_model
-      model.address = Flex::Address.new("123 Main St", "Apt 4B", "Anytown", "CA", "12345")
+      model.address = Flex::Address.new(
+        street_line_1: "123 Main St",
+        street_line_2: "Apt 4B",
+        city: "Anytown",
+        state: "CA",
+        zip_code: "12345"
+      )
       render template: "flex/previews/_address", locals: { model: model }
     end
 
