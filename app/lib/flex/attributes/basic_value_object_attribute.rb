@@ -38,6 +38,7 @@ module Flex
             value_hash = nested_attribute_types.keys.map do |nested_attribute_name|
               [ nested_attribute_name, send("#{name}_#{nested_attribute_name}") ]
             end.to_h
+            return nil if value_hash.values.all?(&:nil?)
             value_class.new(value_hash)
           end
 

@@ -111,7 +111,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
 
     it "handles nil values gracefully" do
       object.base_period = nil
-      expect(object.base_period).to eq(Flex::YearQuarterRange.new)
+      expect(object.base_period).to be_nil
       expect(object.base_period_start).to be_nil
       expect(object.base_period_end).to be_nil
     end

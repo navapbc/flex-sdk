@@ -12,6 +12,11 @@ RSpec.shared_examples "value object shared examples" do |
     let(attr) { value }
   end
 
+  it "allows setting #{attribute} as nil" do
+    object.public_send("#{attribute}=", nil)
+    expect(object.public_send(attribute)).to be_nil
+  end
+
   it "allows setting #{attribute} as a value object" do
     value_object = value_class.new(**valid_nested_attributes)
     object.public_send("#{attribute}=", value_object)
