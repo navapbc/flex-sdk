@@ -54,7 +54,7 @@ module Flex
         def serialize(value)
           return nil if value.nil?
           return nil unless value.is_a?(Flex::YearMonth)
-          "#{value.year}-#{value.month.to_s.rjust(2, '0')}"
+          value.to_s
         end
 
         def deserialize(value)

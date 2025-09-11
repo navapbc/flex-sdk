@@ -38,11 +38,7 @@ module Flex
     end
 
     def coerce(other)
-      if other.is_a?(Integer)
-        [ self, other ]
-      else
-        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
-      end
+      [ self, other ]
     end
 
     def to_date_range
@@ -60,6 +56,10 @@ module Flex
                    USDate.new(year, month, 31)
       end
       DateRange.new(start: first_day, end: last_day)
+    end
+
+    def to_s
+      "#{year}-#{month.to_s.rjust(2, '0')}"
     end
 
     # Compares year months by time order. Returns:

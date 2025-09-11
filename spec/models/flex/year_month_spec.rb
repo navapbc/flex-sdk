@@ -29,8 +29,15 @@ RSpec.describe Flex::YearMonth do
     end
 
     it "raises TypeError for non-integer arguments" do
-      yq = described_class.new(year: 2023, month: 6)
-      expect { yq + "1" }.to raise_error(TypeError)
+      year_month = described_class.new(year: 2023, month: 6)
+      expect { year_month + "1" }.to raise_error(TypeError)
+      expect { year_month + 0.5 }.to raise_error(TypeError)
+    end
+
+    it "raises TypeError when trying to coerce non-integer numbers" do
+      year_month = described_class.new(year: 2023, month: 6)
+      expect { 0.5 + year_month }.to raise_error(TypeError, "Integer expected, got Float")
+      expect { 0.5 - year_month }.to raise_error(TypeError, "Integer expected, got Float")
     end
   end
 

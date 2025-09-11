@@ -32,6 +32,13 @@ RSpec.describe Flex::YearQuarter do
     it "raises TypeError for non-integer arguments" do
       yq = described_class.new(year: 2023, quarter: 2)
       expect { yq + "invalid" }.to raise_error(TypeError, "Integer expected, got String")
+      expect { yq + 0.5 }.to raise_error(TypeError, "Integer expected, got Float")
+    end
+
+    it "raises TypeError when trying to coerce non-integer numbers" do
+      yq = described_class.new(year: 2023, quarter: 2)
+      expect { 0.5 + yq }.to raise_error(TypeError, "Integer expected, got Float")
+      expect { 0.5 - yq }.to raise_error(TypeError, "Integer expected, got Float")
     end
   end
 
@@ -57,6 +64,16 @@ RSpec.describe Flex::YearQuarter do
       it description do
         expect(year_quarter.to_date_range).to eq(expected)
       end
+    end
+
+    it "raises when quarter is not 1, 2, 3, or 4" do
+      expect { described_class.new(year: 2023, quarter: 5).to_date_range }.to raise_error(ArgumentError, "Quarter must be 1, 2, 3, or 4")
+    end
+  end
+
+  describe "to_s" do
+    it "returns the year and quarter as a string" do
+      expect(described_class.new(year: 2023, quarter: 2).to_s).to eq("2023Q02")
     end
   end
 
