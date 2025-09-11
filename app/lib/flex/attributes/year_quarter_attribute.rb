@@ -53,7 +53,6 @@ module Flex
 
         def serialize(value)
           return nil if value.nil?
-          return nil unless value.is_a?(Flex::YearQuarter)
           value.to_s
         end
 

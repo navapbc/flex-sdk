@@ -63,6 +63,15 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("reporting_period")).to include("Reporting period is an invalid quarter")
     end
+
+    [ 123, 123.45, Object.new ].each do |invalid_object|
+      it "casts #{invalid_object.class} to nil and marks as invalid" do
+        object.reporting_period = invalid_object
+        expect(object.reporting_period).to be_nil
+        expect(object).not_to be_valid
+        expect(object.errors.full_messages_for("reporting_period")).to include("Reporting period is an invalid quarter")
+      end
+    end
   end
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers

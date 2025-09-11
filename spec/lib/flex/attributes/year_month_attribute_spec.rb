@@ -69,5 +69,14 @@ RSpec.describe Flex::Attributes::YearMonthAttribute do
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("activity_reporting_period")).to include("Activity reporting period is an invalid month")
     end
+
+    [ 123, 123.45, Object.new ].each do |invalid_object|
+      it "casts #{invalid_object.class} to nil and marks as invalid" do
+        object.activity_reporting_period = invalid_object
+        expect(object.activity_reporting_period).to be_nil
+        expect(object).not_to be_valid
+        expect(object.errors.full_messages_for("activity_reporting_period")).to include("Activity reporting period is an invalid month")
+      end
+    end
   end
 end
