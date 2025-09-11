@@ -9,6 +9,7 @@ Welcome to the Flex SDK documentation. This index provides an organized overview
 ## Core concepts
 
 - [Flex SDK components](./flex-sdk-components.md) - Overview of available SDK components
+- [Authorization](./authorization.md) - Built-in base policies for secure authorization patterns
 - [Flex Data Modeler](./flex-data-modeler.md) - Learn how to define data models using Flex Attributes and generate migrations using the Flex Migration Generator.
 - [Multi-Page Form Builder](./multi-page-form-builder.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies

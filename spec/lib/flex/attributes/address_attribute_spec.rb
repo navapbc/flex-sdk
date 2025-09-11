@@ -1,7 +1,6 @@
 require "rails_helper"
 require_relative "value_object_attribute_shared_examples"
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Flex::Attributes::AddressAttribute do
   include_examples "value object shared examples", Flex::Address, :address,
     valid_nested_attributes: FactoryBot.attributes_for(:address, :base, :with_street_line_2),
@@ -18,4 +17,3 @@ RSpec.describe Flex::Attributes::AddressAttribute do
     ],
     invalid_value: FactoryBot.build(:address, :invalid)
 end
-# rubocop:enable RSpec/MultipleMemoizedHelpers

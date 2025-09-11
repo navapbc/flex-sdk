@@ -23,4 +23,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", ">= 7.1.5.1"
   spec.add_dependency "validates_timeliness", ">= 7.0.0"
+  spec.add_dependency "pundit", ">= 2.5.0"
 end
