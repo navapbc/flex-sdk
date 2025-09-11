@@ -30,10 +30,11 @@ module Flex
       # Serializes to string format "YYYY-MM" for database storage.
       class YearMonthType < ActiveModel::Type::Value
         def cast(value)
-          return nil if value.nil?
-          return value if value.is_a?(Flex::YearMonth)
-
           case value
+          when nil
+            nil
+          when Flex::YearMonth
+            value
           when Hash
             hash = value.with_indifferent_access
             year = hash[:year]
