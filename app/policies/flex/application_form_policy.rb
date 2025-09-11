@@ -10,7 +10,7 @@ module Flex
     end
 
     def show?
-      owning_user?
+      owner?
     end
 
     def create?
@@ -18,19 +18,19 @@ module Flex
     end
 
     def update?
-      owning_user? && record.in_progress?
+      owner? && record.in_progress?
     end
 
     def review?
-      owning_user? && record.in_progress?
+      owner? && record.in_progress?
     end
 
     def destroy?
-      owning_user? && record.in_progress?
+      owner? && record.in_progress?
     end
 
     def submit?
-      owning_user? && !record.submitted?
+      owner? && !record.submitted?
     end
 
     # rubocop:disable Style/Documentation
@@ -42,7 +42,7 @@ module Flex
 
     private
 
-    def owning_user?
+    def owner?
       record.user_id == user.id
     end
   end
