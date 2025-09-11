@@ -71,6 +71,7 @@ module Flex
         def year_quarter_attribute(name, options = {})
           attribute name, YearQuarterType.new
           flex_validates_nested(name) if options.fetch(:validate, true)
+          flex_validates_type_casted_attribute(name, :invalid_year_quarter)
         end
       end
     end

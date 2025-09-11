@@ -7,6 +7,8 @@ en:
       invalid_array: "contains one or more invalid items"
       invalid_date: "is an invalid date"
       invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
+      invalid_year_month: "is an invalid month"
+      invalid_year_quarter: "is an invalid quarter"
       string_range_start_greater_than_end: "start must come before end alphabetically"
       us_date_range_start_greater_than_end: "start date cannot be after end date"
       year_month_range_start_greater_than_end: "start cannot be after end"

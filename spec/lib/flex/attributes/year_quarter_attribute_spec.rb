@@ -57,6 +57,12 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       expect(object).not_to be_valid
       expect(object.reporting_period.errors.full_messages_for("year")).to include("Year can't be blank")
     end
+
+    it "validates assigning using a properly formatted string" do
+      object.reporting_period = "asdf"
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("reporting_period")).to include("Reporting period is an invalid quarter")
+    end
   end
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers

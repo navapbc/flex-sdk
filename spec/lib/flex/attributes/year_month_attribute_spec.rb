@@ -63,5 +63,11 @@ RSpec.describe Flex::Attributes::YearMonthAttribute do
       expect(object).not_to be_valid
       expect(object.activity_reporting_period.errors.full_messages_for("year")).to include("Year can't be blank")
     end
+
+    it "validates assigning using a properly formatted string" do
+      object.activity_reporting_period = "asdf"
+      expect(object).not_to be_valid
+      expect(object.errors.full_messages_for("activity_reporting_period")).to include("Activity reporting period is an invalid month")
+    end
   end
 end
