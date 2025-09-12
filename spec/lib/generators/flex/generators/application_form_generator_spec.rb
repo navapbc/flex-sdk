@@ -31,7 +31,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
         it "transforms '#{input_name}' to '#{expected_name}'" do
           generator.create_application_form
-          expect(generator).to have_received(:generate).with("flex:model", expected_name, "--parent", "Flex::ApplicationForm")
+          expect(generator).to have_received(:generate).with("flex:model", expected_name, "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
         end
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
     context "when no parent option is provided" do
       it "defaults to Flex::ApplicationForm" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "uses the custom parent class" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "--parent", "CustomApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "CustomApplicationForm")
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "defaults to Flex::ApplicationForm" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
       end
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
     context "with additional attributes" do
       it "passes through additional arguments to model generator" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "name:string", "email:string", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "name:string", "email:string", "--parent", "Flex::ApplicationForm")
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "passes through both parent and attributes" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "name:string", "email:string", "--parent", "CustomForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "name:string", "email:string", "--parent", "CustomForm")
       end
     end
   end
@@ -94,7 +94,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "still appends ApplicationForm suffix" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "TestApplicationformApplicationForm", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestApplicationformApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "appends ApplicationForm suffix" do
         generator.create_application_form
-        expect(generator).to have_received(:generate).with("flex:model", "ApplicationFormTestApplicationForm", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "ApplicationFormTestApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
       end
     end
   end
@@ -118,7 +118,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
     it "actually invokes the Rails model generator" do
       allow(generator).to receive(:generate)
       generator.invoke_all
-      expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "--parent", "Flex::ApplicationForm")
+      expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
     end
 
     context "with custom parent and attributes" do
@@ -130,7 +130,7 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "passes all options correctly to Rails generator" do
         generator.invoke_all
-        expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "name:string", "--parent", "CustomParent")
+        expect(generator).to have_received(:generate).with("flex:model", "TestIntegrationApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "name:string", "--parent", "CustomParent")
       end
     end
 
@@ -143,8 +143,21 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
 
       it "does not double-append the suffix" do
         generator.invoke_all
-        expect(generator).to have_received(:generate).with("flex:model", "TestApplicationForm", "--parent", "Flex::ApplicationForm")
+        expect(generator).to have_received(:generate).with("flex:model", "TestApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "--parent", "Flex::ApplicationForm")
       end
+    end
+  end
+
+  describe "attribute conflict handling" do
+    let(:generator) { described_class.new([ name, "user_id:string", "status:string" ], options, destination_root: destination_root) }
+
+    before do
+      allow(generator).to receive(:generate)
+    end
+
+    it "allows user attributes to override base attributes" do
+      generator.create_application_form
+      expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "user_id:string", "status:string", "--parent", "Flex::ApplicationForm")
     end
   end
 end
