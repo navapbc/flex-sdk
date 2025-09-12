@@ -89,5 +89,19 @@ module Flex
       Rails.logger.debug "Publishing event #{self.class.name}Submitted for application with ID: #{id}"
       Flex::EventManager.publish("#{self.class.name}Submitted", self.event_payload)
     end
+
+    class << self
+      # Returns the base attributes required for all application forms
+      # Used by generators to ensure all application forms have the necessary attributes
+      #
+      # @return [Array<String>] Array of attribute definitions in "name:type" format
+      def base_attributes_for_generator
+        [
+          "user_id:uuid",
+          "status:integer",
+          "submitted_at:datetime"
+        ]
+      end
+    end
   end
 end

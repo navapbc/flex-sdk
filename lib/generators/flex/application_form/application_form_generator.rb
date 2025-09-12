@@ -15,12 +15,8 @@ module Flex
         # Set parent option default
         parent = options[:parent].blank? ? "Flex::ApplicationForm" : options[:parent]
 
-        # Define base application form attributes
-        base_attributes = [
-          "user_id:uuid",
-          "status:integer",
-          "submitted_at:datetime"
-        ]
+        # Get base application form attributes from the ApplicationForm class
+        base_attributes = Flex::ApplicationForm.base_attributes_for_generator
 
         # Build arguments for the Rails model generator
         model_args = [ form_name ]
