@@ -1,10 +1,10 @@
 <tr>
   <td>
     <% # TODO show in local time %>
-    <%= link_to application_form[:created_at], application_form[:path] %>
+    <%= link_to row[:created_at], row[:path] %>
   </td>
   <td>
-    <%= t("flex.application_forms.statuses.#{application_form[:status]}") %>
+    <%= t("flex.application_forms.statuses.#{row[:status]}") %>
   </td>
   <td>
     TODO
