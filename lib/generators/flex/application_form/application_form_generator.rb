@@ -15,11 +15,16 @@ module Flex
         # Set parent option default
         parent = options[:parent].blank? ? "Flex::ApplicationForm" : options[:parent]
 
+        # Get base application form attributes from the ApplicationForm class
+        base_attributes = Flex::ApplicationForm.base_attributes_for_generator
+
         # Build arguments for the Rails model generator
         model_args = [ form_name ]
 
-        # Pass through any additional arguments (attributes)
-        model_args.concat(args) if args.any?
+        # Merge base attributes with any additional arguments (attributes)
+        attribute_args = base_attributes.dup
+        attribute_args.concat(args) if args.any?
+        model_args.concat(attribute_args)
         model_args.concat([ "--parent", parent ])
 
         # Call the Rails model generator with transformed args
