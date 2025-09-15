@@ -149,15 +149,15 @@ RSpec.describe Flex::Generators::ApplicationFormGenerator, type: :generator do
   end
 
   describe "attribute conflict handling" do
-    let(:generator) { described_class.new([ name, "user_id:string", "status:string" ], options, destination_root: destination_root) }
+    let(:generator) { described_class.new([ name, "user_id:string", "status:string", "name:string" ], options, destination_root: destination_root) }
 
     before do
       allow(generator).to receive(:generate)
     end
 
-    it "allows user attributes to override base attributes" do
+    it "base attributes take precedence over user attributes" do
       generator.create_application_form
-      expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "user_id:string", "status:string", "--parent", "Flex::ApplicationForm")
+      expect(generator).to have_received(:generate).with("flex:model", "TestFormApplicationForm", "user_id:uuid", "status:integer", "submitted_at:datetime", "name:string", "--parent", "Flex::ApplicationForm")
     end
   end
 end
