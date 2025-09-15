@@ -69,7 +69,12 @@ module Flex
       def all_attributes
         attrs = @parsed_attributes.dup
         attrs << "type:string" if options[:sti]
-        attrs
+
+        # Merge base attributes from Flex::Case
+        base_attrs = Flex::Case.base_attributes_for_generator
+
+        # This merges the arrays and keeps unique values
+        (base_attrs + attrs).uniq
       end
 
       def business_process_name
