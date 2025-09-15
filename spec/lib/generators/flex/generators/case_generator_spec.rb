@@ -212,15 +212,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "keeps unique attributes when user redefines a base attribute" do
+      it "allows user attributes to override base attributes" do
         expect(generator).to have_received(:generate).with(
           "flex:model",
           "TestCase",
           "application_form_id:uuid",
-          "status:integer",
+          "status:string",
           "business_process_current_step:string",
           "facts:jsonb",
-          "status:string",
           "custom_field:text",
           "--parent",
           "Flex::Case"

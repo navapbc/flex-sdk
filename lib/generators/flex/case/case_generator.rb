@@ -70,11 +70,25 @@ module Flex
         attrs = @parsed_attributes.dup
         attrs << "type:string" if options[:sti]
 
-        # Merge base attributes from Flex::Case
+        # Merge base attributes from Flex::Case, allowing user attributes to override base ones
         base_attrs = Flex::Case.base_attributes_for_generator
 
-        # This merges the arrays and keeps unique values
-        (base_attrs + attrs).uniq
+        # Create a hash to handle attribute name conflicts
+        attr_hash = {}
+
+        # Add base attributes first
+        base_attrs.each do |attr|
+          name = attr.split(":").first
+          attr_hash[name] = attr
+        end
+
+        # Add user attributes, which will override base attributes with same name
+        attrs.each do |attr|
+          name = attr.split(":").first
+          attr_hash[name] = attr
+        end
+
+        attr_hash.values
       end
 
       def business_process_name
