@@ -212,12 +212,12 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "allows user attributes to override base attributes" do
+      it "ignores user attributes that conflict with base attributes" do
         expect(generator).to have_received(:generate).with(
           "flex:model",
           "TestCase",
           "application_form_id:uuid",
-          "status:string",
+          "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "custom_field:text",
