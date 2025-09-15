@@ -4,6 +4,11 @@ module Flex
     # It allows dates to be stored in a format that is consistent with US conventions
     module USDateAttribute
       extend ActiveSupport::Concern
+      include Validations
+
+      def self.attribute_type
+        :single_column_value_object
+      end
 
       # A custom ActiveRecord type that allows storing a date. It behaviors the same
       # as the default Date type, but when casting a string it uses the US regional
@@ -23,23 +28,7 @@ module Flex
       class_methods do
         def us_date_attribute(name, options)
           attribute name, USDateType.new
-
-          validate :"validate_#{name}"
-
-          # Create a validation method that checks if the value is a valid date
-          define_method "validate_#{name}" do
-            value = send(name)
-            raw_value = @attributes[name.to_s]&.value_before_type_cast
-
-            # If model.<attribute> is nil, but model.<attribute>_before_type_cast is not nil,
-            # that means the application failed to cast the value to the appropriate type in
-            # order to complete the attribute assignment. This means the original value
-            # is invalid.
-            did_type_cast_fail = value.nil? && raw_value.present?
-            if did_type_cast_fail
-              errors.add(name, :invalid_date)
-            end
-          end
+          flex_validates_type_casted_attribute(name, :invalid_date)
         end
       end
     end

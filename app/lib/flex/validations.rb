@@ -48,6 +48,24 @@ module Flex
           end
         end
       end
+
+      def flex_validates_type_casted_attribute(name, error_type)
+        validate :"validate_type_casted_attribute_#{name}"
+
+        define_method "validate_type_casted_attribute_#{name}" do
+          value = send(name)
+          raw_value = @attributes[name.to_s]&.value_before_type_cast
+
+          # If model.<attribute> is nil, but model.<attribute>_before_type_cast is not nil,
+          # that means the application failed to cast the value to the appropriate type in
+          # order to complete the attribute assignment. This means the original value
+          # is invalid.
+          did_type_cast_fail = value.nil? && raw_value.present?
+          if did_type_cast_fail
+            errors.add(name, error_type)
+          end
+        end
+      end
     end
   end
 end

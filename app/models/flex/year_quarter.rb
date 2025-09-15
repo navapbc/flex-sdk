@@ -38,11 +38,7 @@ module Flex
     end
 
     def coerce(other)
-      if other.is_a?(Integer)
-        [ self, other ]
-      else
-        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
-      end
+      [ self, other ]
     end
 
     def to_date_range
@@ -58,6 +54,10 @@ module Flex
       else
         raise ArgumentError, "Quarter must be 1, 2, 3, or 4"
       end
+    end
+
+    def to_s
+      "#{year}Q#{quarter.to_s.rjust(2, '0')}"
     end
 
     # Compares year quarters by time order. Returns:

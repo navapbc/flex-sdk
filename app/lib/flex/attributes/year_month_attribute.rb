@@ -19,7 +19,48 @@ module Flex
     #
     module YearMonthAttribute
       extend ActiveSupport::Concern
-      include BasicValueObjectAttribute
+      include Validations
+
+      def self.attribute_type
+        :single_column_value_object
+      end
+
+      # Custom ActiveModel type for handling YearMonth values.
+      # Supports casting from hashes, strings, and YearMonth objects.
+      # Serializes to string format "YYYY-MM" for database storage.
+      class YearMonthType < ActiveModel::Type::Value
+        def cast(value)
+          case value
+          when nil
+            nil
+          when Flex::YearMonth
+            value
+          when Hash
+            hash = value.with_indifferent_access
+            year = hash[:year]
+            month = hash[:month]
+            Flex::YearMonth.new(year:, month:)
+          when String
+            parts = value.split("-")
+            return nil if parts.length < 2
+            year = parts[0]
+            month = parts[1]
+            Flex::YearMonth.new(year:, month:)
+          else
+            nil
+          end
+        end
+
+        def serialize(value)
+          return nil if value.nil?
+          value.to_s
+        end
+
+        def deserialize(value)
+          return nil if value.nil?
+          cast(value)
+        end
+      end
 
       class_methods do
         # Defines a year month attribute with year and month components.
@@ -28,13 +69,9 @@ module Flex
         # @param [Hash] options Options for the attribute
         # @return [void]
         def year_month_attribute(name, options = {})
-          # Define the base attribute with its subfields
-          attribute :"#{name}_year", :integer
-          attribute :"#{name}_month", :integer
-          basic_value_object_attribute(name, Flex::YearMonth, {
-            "year" => :integer,
-            "month" => :integer
-          }, options)
+          attribute name, YearMonthType.new
+          flex_validates_nested(name)
+          flex_validates_type_casted_attribute(name, :invalid_year_month)
         end
       end
     end

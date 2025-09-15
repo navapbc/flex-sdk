@@ -22,6 +22,10 @@ module Flex
       extend ActiveSupport::Concern
       include Flex::Validations
 
+      def self.attribute_type
+        :multi_column_value_object
+      end
+
       class_methods do
         # Defines an attribute representing a range using ValueRange.
         #

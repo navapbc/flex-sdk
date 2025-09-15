@@ -19,7 +19,48 @@ module Flex
     #
     module YearQuarterAttribute
       extend ActiveSupport::Concern
-      include BasicValueObjectAttribute
+      include Validations
+
+      def self.attribute_type
+        :single_column_value_object
+      end
+
+      # Custom ActiveModel type for handling YearQuarter values.
+      # Supports casting from hashes, strings, and YearQuarter objects.
+      # Serializes to string format "YYYYQQ" for database storage.
+      class YearQuarterType < ActiveModel::Type::Value
+        def cast(value)
+          case value
+          when nil
+            nil
+          when Flex::YearQuarter
+            value
+          when Hash
+            hash = value.with_indifferent_access
+            year = hash[:year]
+            quarter = hash[:quarter]
+            Flex::YearQuarter.new(year:, quarter:)
+          when String
+            parts = value.split("Q")
+            return nil if parts.length < 2
+            year = parts[0]
+            quarter = parts[1]
+            Flex::YearQuarter.new(year:, quarter:)
+          else
+            nil
+          end
+        end
+
+        def serialize(value)
+          return nil if value.nil?
+          value.to_s
+        end
+
+        def deserialize(value)
+          return nil if value.nil?
+          cast(value)
+        end
+      end
 
       class_methods do
         # Defines a year quarter attribute with year and quarter components.
@@ -28,13 +69,9 @@ module Flex
         # @param [Hash] options Options for the attribute
         # @return [void]
         def year_quarter_attribute(name, options = {})
-          # Define the base attribute with its subfields
-          attribute :"#{name}_year", :integer
-          attribute :"#{name}_quarter", :integer
-          basic_value_object_attribute(name, Flex::YearQuarter, {
-            "year" => :integer,
-            "quarter" => :integer
-          }, options)
+          attribute name, YearQuarterType.new
+          flex_validates_nested(name)
+          flex_validates_type_casted_attribute(name, :invalid_year_quarter)
         end
       end
     end

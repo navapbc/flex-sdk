@@ -157,13 +157,12 @@ RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
     context "with year_month type" do
       let(:attrs) { [ "reporting_period:year_month" ] }
 
-      it "creates year and month columns" do
+      it "creates string column" do
         generator.create_migration_file
         expect(generator).to have_received(:generate).with(
           "migration",
           "CreateTestRecords",
-          "reporting_period_year:integer",
-          "reporting_period_month:integer"
+          "reporting_period:string"
         )
       end
     end
@@ -171,13 +170,12 @@ RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
     context "with year_quarter type" do
       let(:attrs) { [ "fiscal_period:year_quarter" ] }
 
-      it "creates year and quarter columns" do
+      it "creates string column" do
         generator.create_migration_file
         expect(generator).to have_received(:generate).with(
           "migration",
           "CreateTestRecords",
-          "fiscal_period_year:integer",
-          "fiscal_period_quarter:integer"
+          "fiscal_period:string"
         )
       end
     end
@@ -211,10 +209,8 @@ RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
         "valid_period_start:date",
         "valid_period_end:date",
         "amounts:jsonb",
-        "fiscal_quarter_year:integer",
-        "fiscal_quarter_quarter:integer",
-        "reporting_period_year:integer",
-        "reporting_period_month:integer"
+        "fiscal_quarter:string",
+        "reporting_period:string"
       )
     end
   end
