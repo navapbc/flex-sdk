@@ -73,22 +73,22 @@ module Flex
         # Merge base attributes from Flex::Case, with base attributes taking precedence
         base_attrs = Flex::Case.base_attributes_for_generator
 
-        # Create a hash to handle attribute name conflicts
-        attr_hash = {}
+        # Get base attribute names for conflict detection
+        base_attr_names = base_attrs.map { |attr| attr.split(":").first }
 
-        # Add user attributes first
+        # Start with base attributes (they always come first and take precedence)
+        result = base_attrs.dup
+
+        # Add user attributes that don't conflict with base attributes
         attrs.each do |attr|
           name = attr.split(":").first
-          attr_hash[name] = attr
+          # Only add user attribute if it doesn't conflict with base attributes
+          unless base_attr_names.include?(name)
+            result << attr
+          end
         end
 
-        # Add base attributes, which will override user attributes with same name
-        base_attrs.each do |attr|
-          name = attr.split(":").first
-          attr_hash[name] = attr
-        end
-
-        attr_hash.values
+        result
       end
 
       def business_process_name
