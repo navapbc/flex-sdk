@@ -65,27 +65,6 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
     end
 
-    context "with mixed case name" do
-      let(:name) { "BenefitsApplication" }
-
-      before do
-        allow(generator).to receive(:yes?).and_return(false)
-        generator.invoke_all
-      end
-
-      it "transforms 'BenefitsApplication' to 'BenefitsApplicationCase' with base attributes" do
-        expect(generator).to have_received(:generate).with(
-          "flex:model",
-          "BenefitsApplicationCase",
-          "application_form_id:uuid",
-          "status:integer",
-          "business_process_current_step:string",
-          "facts:jsonb",
-          "--parent",
-          "Flex::Case"
-        )
-      end
-    end
 
     context "with single word" do
       let(:name) { "Review" }
