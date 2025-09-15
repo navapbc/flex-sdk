@@ -15,20 +15,34 @@ module Flex
         # Set parent option default
         parent = options[:parent].blank? ? "Flex::ApplicationForm" : options[:parent]
 
-        # Get base application form attributes from the ApplicationForm class
-        base_attributes = Flex::ApplicationForm.base_attributes_for_generator
-
         # Build arguments for the Rails model generator
         model_args = [ form_name ]
 
         # Merge base attributes with any additional arguments (attributes)
-        attribute_args = base_attributes.dup
-        attribute_args.concat(args) if args.any?
+        # Base attributes take precedence over user-provided attributes
+        attribute_args = merge_attributes_with_base_attributes(args)
         model_args.concat(attribute_args)
         model_args.concat([ "--parent", parent ])
 
         # Call the Rails model generator with transformed args
         generate("flex:model", *model_args)
+      end
+
+      private
+
+      # Merges base attributes with user-provided attributes, ensuring base attributes take precedence
+      def merge_attributes_with_base_attributes(user_attributes)
+        base_attributes = Flex::ApplicationForm.base_attributes_for_generator
+        return base_attributes.dup if user_attributes.empty?
+
+        base_attribute_names = base_attributes.map { |attr| attr.split(":").first }
+
+        filtered_user_attributes = user_attributes.reject do |user_attr|
+          user_attr_name = user_attr.split(":").first
+          base_attribute_names.include?(user_attr_name)
+        end
+
+        base_attributes.dup + filtered_user_attributes
       end
     end
   end

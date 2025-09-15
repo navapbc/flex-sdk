@@ -18,6 +18,18 @@ module Flex
     self.abstract_class = true
 
     has_many :tasks, as: :case, class_name: "Flex::Task"
+
+    # Returns the base attributes that should be included in all case migrations.
+    # IMPORTANT: When adding new attributes to the Case model, add them here as well
+    # to ensure they're included in migrations created by the generator.
+    def self.base_attributes_for_generator
+      [
+        "application_form_id:uuid",
+        "status:integer",
+        "business_process_current_step:string",
+        "facts:jsonb"
+      ]
+    end
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0

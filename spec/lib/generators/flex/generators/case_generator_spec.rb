@@ -29,8 +29,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "transforms 'Passport' to 'PassportCase'" do
-        expect(generator).to have_received(:generate).with("flex:model", "PassportCase", "--parent", "Flex::Case")
+      it "transforms 'Passport' to 'PassportCase' with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "PassportCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -42,23 +51,20 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "keeps 'PassportCase' as 'PassportCase'" do
-        expect(generator).to have_received(:generate).with("flex:model", "PassportCase", "--parent", "Flex::Case")
+      it "keeps 'PassportCase' as 'PassportCase' with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "PassportCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
-    context "with mixed case name" do
-      let(:name) { "BenefitsApplication" }
-
-      before do
-        allow(generator).to receive(:yes?).and_return(false)
-        generator.invoke_all
-      end
-
-      it "transforms 'BenefitsApplication' to 'BenefitsApplicationCase'" do
-        expect(generator).to have_received(:generate).with("flex:model", "BenefitsApplicationCase", "--parent", "Flex::Case")
-      end
-    end
 
     context "with single word" do
       let(:name) { "Review" }
@@ -68,8 +74,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "transforms 'Review' to 'ReviewCase'" do
-        expect(generator).to have_received(:generate).with("flex:model", "ReviewCase", "--parent", "Flex::Case")
+      it "transforms 'Review' to 'ReviewCase' with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "ReviewCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -81,8 +96,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "transforms 'document' to 'DocumentCase'" do
-        expect(generator).to have_received(:generate).with("flex:model", "DocumentCase", "--parent", "Flex::Case")
+      it "transforms 'document' to 'DocumentCase' with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "DocumentCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
   end
@@ -94,8 +118,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "passes only the case name and parent" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "--parent", "Flex::Case")
+      it "includes base attributes from Flex::Case" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -107,8 +140,19 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "passes through attributes to model generator" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "name:string", "email:string", "--parent", "Flex::Case")
+      it "merges base attributes with user-provided attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "name:string",
+          "email:string",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -120,21 +164,66 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "passes through flex attributes to model generator" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "applicant_name:name", "home_address:address", "--parent", "Flex::Case")
+      it "merges base attributes with flex attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "applicant_name:name",
+          "home_address:address",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
     context "with mixed attributes" do
-      let(:attributes) { [ "status:string", "applicant_name:name", "priority:integer" ] }
+      let(:attributes) { [ "priority:integer", "applicant_name:name" ] }
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
         generator.invoke_all
       end
 
-      it "passes through all attributes to model generator" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "status:string", "applicant_name:name", "priority:integer", "--parent", "Flex::Case")
+      it "merges base attributes with user-provided attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "priority:integer",
+          "applicant_name:name",
+          "--parent",
+          "Flex::Case"
+        )
+      end
+    end
+
+    context "with conflicting base attributes" do
+      let(:attributes) { [ "status:string", "custom_field:text" ] }
+
+      before do
+        allow(generator).to receive(:yes?).and_return(false)
+        generator.invoke_all
+      end
+
+      it "ignores user attributes that conflict with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "custom_field:text",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
   end
@@ -148,8 +237,18 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "adds type:string attribute" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "type:string", "--parent", "Flex::Case")
+      it "adds type:string attribute along with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "type:string",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -162,8 +261,19 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "adds type:string attribute along with other attributes" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "name:string", "type:string", "--parent", "Flex::Case")
+      it "adds type:string attribute along with base and user attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "name:string",
+          "type:string",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -173,8 +283,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "does not add type attribute" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "--parent", "Flex::Case")
+      it "includes base attributes without type attribute" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
   end
@@ -383,7 +502,16 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       it "generates both business process and application form" do
         expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip-application-form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "Test").once
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "--parent", "Flex::Case").once
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        ).once
       end
     end
 
@@ -413,7 +541,19 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       it "handles all options correctly" do
         expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip-application-form").once
         expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
-        expect(generator).to have_received(:generate).with("flex:model", "TestCase", "name:string", "address:address", "type:string", "--parent", "Flex::Case").once
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "name:string",
+          "address:address",
+          "type:string",
+          "--parent",
+          "Flex::Case"
+        ).once
       end
     end
   end
@@ -427,8 +567,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "still appends Case suffix" do
-        expect(generator).to have_received(:generate).with("flex:model", "TestCASECase", "--parent", "Flex::Case")
+      it "still appends Case suffix and includes base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "TestCASECase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -440,8 +589,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "appends Case suffix" do
-        expect(generator).to have_received(:generate).with("flex:model", "CaseTestCase", "--parent", "Flex::Case")
+      it "appends Case suffix and includes base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "CaseTestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
 
@@ -453,8 +611,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "preserves namespace and handles case suffix" do
-        expect(generator).to have_received(:generate).with("flex:model", "MyModule::TestCase", "--parent", "Flex::Case")
+      it "preserves namespace and handles case suffix with base attributes" do
+        expect(generator).to have_received(:generate).with(
+          "flex:model",
+          "MyModule::TestCase",
+          "application_form_id:uuid",
+          "status:integer",
+          "business_process_current_step:string",
+          "facts:jsonb",
+          "--parent",
+          "Flex::Case"
+        )
       end
     end
   end
