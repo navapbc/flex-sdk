@@ -3,6 +3,12 @@ require 'rails_helper'
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { create(:test_case) }
   let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
+  let(:event_manager) { class_double(Flex::EventManager) }
+
+  before do
+    stub_const('Flex::EventManager', event_manager)
+    allow(Flex::EventManager).to receive(:publish)
+  end
 
   describe 'polymorphic associations' do
     let(:foo_case) { FooTestCase.create! }
@@ -36,12 +42,6 @@ RSpec.describe Flex::Task, type: :model do
   end
 
   context 'when attempting to set readonly attributes' do
-    describe 'status attribute' do
-      it 'cannot be modified directly' do
-        expect { task.status = :completed }.to raise_error(NoMethodError)
-      end
-    end
-
     describe 'assignee_id attribute' do
       it 'cannot be modified directly' do
         expect { task.assignee_id = Faker::Number.non_zero_digit }.to raise_error(NoMethodError)
@@ -87,51 +87,44 @@ RSpec.describe Flex::Task, type: :model do
     end
   end
 
-  describe '#mark_completed' do
-    it 'marks the task as completed' do
-      task.mark_completed
-      task.reload # reload the task from the db to ensure it was properly marked completed
+  context "enum methods" do
+    describe '#completed' do
+      it 'marks the task as completed' do
+        task.completed!
+        task.reload
 
-      expect(task.status).to eq('completed')
+        expect(task.status).to eq('completed')
+        expect(task.completed?).to be true
+      end
+
+      it 'emits an event as completed' do
+        task.completed!
+
+        expect(Flex::EventManager).to have_received(:publish).with("Flex::TaskCompleted", hash_including(task_id: task.id, case_id: task.case_id)).once
+      end
     end
-  end
 
-  describe '#mark_pending' do
-    it 'marks the task as pending' do
-      task.mark_completed
+    describe '#pending' do
+      it 'marks the task as pending' do
+        task.pending!
+        task.reload
 
-      task.mark_pending
-      task.reload # reload the task from the db to ensure it was properly marked pending
+        expect(task.status).to eq('pending')
+        expect(task.pending?).to be true
+      end
 
-      expect(task.status).to eq('pending')
+      it 'emits an event as pending' do
+        task.completed! # Set it to completed first to ensure a status change
+        task.pending!
+
+        expect(Flex::EventManager).to have_received(:publish).with("Flex::TaskPending", hash_including(task_id: task.id, case_id: task.case_id)).once
+      end
     end
   end
 
   describe 'validations' do
     it 'validates presence of case on create' do
       expect { described_class.create! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Case must exist/)
-    end
-  end
-
-  describe '#complete?' do
-    it 'returns true if the task is completed' do
-      task.mark_completed
-      expect(task.complete?).to be true
-    end
-
-    it 'returns false if the task is not completed' do
-      expect(task.complete?).to be false
-    end
-  end
-
-  describe '#incomplete?' do
-    it 'returns true if the task is not completed' do
-      expect(task.incomplete?).to be true
-    end
-
-    it 'returns false if the task is completed' do
-      task.mark_completed
-      expect(task.incomplete?).to be false
     end
   end
 end
