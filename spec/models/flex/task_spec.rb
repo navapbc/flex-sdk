@@ -3,11 +3,10 @@ require 'rails_helper'
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { create(:test_case) }
   let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
-  let(:event_manager) { class_double(Flex::EventManager) }
+  let(:event_manager) { class_double(Flex::EventManager, publish: nil) }
 
   before do
     stub_const('Flex::EventManager', event_manager)
-    allow(Flex::EventManager).to receive(:publish)
   end
 
   describe 'polymorphic associations' do
