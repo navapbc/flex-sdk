@@ -87,7 +87,7 @@ RSpec.describe Flex::Task, type: :model do
     end
   end
 
-  context "enum methods" do
+  context "with enum methods" do
     describe '#completed' do
       it 'marks the task as completed' do
         task.completed!
