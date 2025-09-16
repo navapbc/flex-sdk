@@ -20,7 +20,7 @@ module Flex
 
     def update
       if params["task-action"].present?
-        @task.mark_completed
+        @task.completed!
         flash["task-message"] = I18n.t("tasks.messages.task_marked_completed")
       end
 
