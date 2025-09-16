@@ -18,6 +18,8 @@ module Flex
   # - Filtering capabilities through scopes
   #
   class Task < ApplicationRecord
+    after_update :publish_status_changed_event, if: :saved_change_to_status?
+
     attribute :description, :text
     attribute :due_on, :date
     attr_readonly :type, :case_id, :case_type, :id
@@ -26,7 +28,6 @@ module Flex
     protected attr_writer :assignee_id
 
     attribute :status, :integer, default: 0
-    protected attr_writer :status
     enum :status, pending: 0, completed: 1
 
     belongs_to :case, polymorphic: true
@@ -66,23 +67,10 @@ module Flex
       save!
     end
 
-    def mark_completed
-      self[:status] = :completed
-      save!
-      Flex::EventManager.publish("#{self.class.name}Completed", { task_id: id, case_id: case_id })
-    end
+    private
 
-    def mark_pending
-      self[:status] = :pending
-      save!
-    end
-
-    def complete?
-      status == "completed"
-    end
-
-    def incomplete?
-      !complete?
+    def publish_status_changed_event
+      Flex::EventManager.publish("#{self.class.name}#{status.capitalize}", { task_id: id, case_id: case_id })
     end
   end
 end

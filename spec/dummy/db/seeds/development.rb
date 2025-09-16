@@ -27,7 +27,7 @@ ten_days_ago = Date.current - 10.days
   )
 
   task.assign(users.sample.id)
-  task.mark_completed if rand(0..2) == 0
+  task.completed! if rand(0..2) == 0
 end
 
 20.times do |index|
@@ -38,7 +38,7 @@ end
   )
 
   task.assign(users.sample.id)
-  task.mark_completed if rand(0..5) == 0
+  task.completed! if rand(0..5) == 0
 end
 
 5.times do
