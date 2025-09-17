@@ -69,6 +69,14 @@ Specialized migration generator for creating income record tables with support f
 bin/rails generate flex:income_records_migration NAME period_type
 ```
 
+### flex:staff
+
+Creates a standard set of files required for implementing a staff dashboard in applications using the flex-sdk. This generator scaffolds controllers, views, and tests for staff task management. [See full usage guide](../lib/generators/flex/staff/USAGE)
+
+```bash
+bin/rails generate flex:staff
+```
+
 ## Generator Dependencies
 
 - When generating a case, the generator will check for the existence of associated business process and application form classes
