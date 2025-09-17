@@ -5,11 +5,14 @@ class TasksController < Flex::TasksController
   private
 
   def set_case
-    case_class = @task.case_type.constantize
-    @case = case_class.find(@task.case_id)
+    # all tasks need the following association
+    # belongs_to :case, class_name: "ExampleCase"
+    @case = @task.case
   end
 
   def set_application_form
-    # TODO: get application form from @case
+    # all cases need the following association
+    # has_one :application_form, foreign_key: :id, primary_key: :application_form_id, class_name: "ExampleApplicationForm"
+    @application_form = @case.application_form
   end
 end
