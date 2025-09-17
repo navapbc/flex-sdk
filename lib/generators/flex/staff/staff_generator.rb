@@ -41,6 +41,23 @@ module Flex
           get "staff", to: "staff#index"
         ROUTES
       end
+
+      def print_next_steps
+        say "\n" + set_color("Next Steps:", :green, :bold)
+        say "  1. Customize the case_classes method in app/controllers/staff_controller.rb"
+        say "     Example: def case_classes; [MyCase, AnotherCase]; end"
+        say "  2. Implement authentication and authorization policies in StaffController"
+        say "  3. Ensure your Task model has: belongs_to :case, class_name: \"YourCaseClass\""
+        say "  4. Ensure your Case model has: has_one :application_form, ..."
+        say "  5. Implement the pending tests in spec/requests/tasks_spec.rb"
+        say "  6. Customize the staff dashboard view in app/views/staff/index.html.erb"
+        say "\n" + set_color("Generated routes available at:", :blue, :bold)
+        say "  GET    /staff                    (staff dashboard)"
+        say "  GET    /staff/tasks              (tasks index)"
+        say "  GET    /staff/tasks/:id          (task show)"
+        say "  PATCH  /staff/tasks/:id          (task update)"
+        say "  POST   /staff/tasks/pick_up_next_task (assign next task)"
+      end
     end
   end
 end

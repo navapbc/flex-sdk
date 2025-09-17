@@ -14,7 +14,9 @@ class StaffController < Flex::StaffController
   # Override the case_classes method to return an array of case model classes:
 
   def case_classes
-    [MyCase, AnotherCase]  # Add your case classes here
+    # Add your case classes here
+    # Example: [MyCase, AnotherCase]
+    []
   end
   #
   # To further customize the header cases links:
