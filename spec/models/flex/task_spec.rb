@@ -1,13 +1,9 @@
 require 'rails_helper'
+require "support/matchers/publish_event_with_payload"
 
 RSpec.describe Flex::Task, type: :model do
   let(:kase) { create(:test_case) }
   let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
-  let(:event_manager) { class_double(Flex::EventManager, publish: nil) }
-
-  before do
-    stub_const('Flex::EventManager', event_manager)
-  end
 
   describe 'polymorphic associations' do
     let(:foo_case) { FooTestCase.create! }
@@ -97,9 +93,7 @@ RSpec.describe Flex::Task, type: :model do
       end
 
       it 'emits an event as completed' do
-        task.completed!
-
-        expect(Flex::EventManager).to have_received(:publish).with("Flex::TaskCompleted", hash_including(task_id: task.id, case_id: task.case_id)).once
+        expect { task.completed! }.to publish_event_with_payload("Flex::TaskCompleted", { task_id: task.id, case_id: task.case_id })
       end
     end
 
@@ -114,9 +108,8 @@ RSpec.describe Flex::Task, type: :model do
 
       it 'emits an event as pending' do
         task.completed! # Set it to completed first to ensure a status change
-        task.pending!
 
-        expect(Flex::EventManager).to have_received(:publish).with("Flex::TaskPending", hash_including(task_id: task.id, case_id: task.case_id)).once
+        expect { task.pending! }.to publish_event_with_payload("Flex::TaskPending", { task_id: task.id, case_id: task.case_id })
       end
     end
   end
