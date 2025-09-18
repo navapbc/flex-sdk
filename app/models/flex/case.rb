@@ -40,6 +40,7 @@ module Flex
     attribute :facts, :jsonb, default: {}
 
     default_scope { includes(:tasks) }
+    scope :closed, -> { where(status: :closed).order(created_at: :desc) }
     scope :for_application_form, ->(application_form_id) { where(application_form_id:) }
     scope :for_event, ->(event) do
       if event[:payload].key?(:case_id)
