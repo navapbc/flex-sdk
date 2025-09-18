@@ -30,6 +30,13 @@ module Flex
         "facts:jsonb"
       ]
     end
+
+    # Returns the business process class name for this case class.
+    # Converts "SomethingCase" to "SomethingBusinessProcess"
+    def self.business_process_class
+      name.sub("Case", "BusinessProcess")
+    end
+
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0
