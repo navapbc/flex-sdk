@@ -67,11 +67,16 @@ module Flex
     private
 
     def execute_current_step
-      Rails.logger.debug "Executing current step: #{current_step} for case ID: #{self.case.id}"
-      if current_step == "end"
-        self.case.close
-      else
-        business_process.steps[current_step].execute(self.case)
+      begin
+        Rails.logger.debug "Executing current step: #{current_step} for case ID: #{self.case.id}"
+        if current_step == "end"
+          self.case.close
+        else
+          business_process.steps[current_step].execute(self.case)
+        end
+      rescue Exception => e
+        Rails.logger.error "Error executing step #{current_step} for case ID: #{self.case.id} - #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
       end
     end
 
