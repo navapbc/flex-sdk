@@ -30,6 +30,16 @@ module Flex
         "facts:jsonb"
       ]
     end
+
+    # Returns the application form class name for this case class.
+    # Subclasses can override this method to customize the application form class naming.
+    #
+    # @return [String] The application form class name
+    # @example
+    #   PassportCase.application_form_class #=> "PassportApplicationForm"
+    def self.application_form_class
+      name.sub("Case", "ApplicationForm")
+    end
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0
