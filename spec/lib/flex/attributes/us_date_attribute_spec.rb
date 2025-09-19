@@ -55,39 +55,39 @@ RSpec.describe Strata::Attributes::USDateAttribute do
     end
 
     it "handles partial periods" do
-      object.period = { start: Flex::USDate.new(2023, 1, 1) }
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1)))
-      expect(object.period_start).to eq(Flex::USDate.new(2023, 1, 1))
+      object.period = { start: Strata::USDate.new(2023, 1, 1) }
+      expect(object.period).to eq(Strata::DateRange.new(start: Strata::USDate.new(2023, 1, 1)))
+      expect(object.period_start).to eq(Strata::USDate.new(2023, 1, 1))
       expect(object.period_end).to be_nil
 
-      object.period = Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31))
-      expect(object.period).to eq(Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31)))
+      object.period = Strata::DateRange.new(end: Strata::USDate.new(2023, 12, 31))
+      expect(object.period).to eq(Strata::DateRange.new(end: Strata::USDate.new(2023, 12, 31)))
       expect(object.period_start).to be_nil
-      expect(object.period_end).to eq(Flex::USDate.new(2023, 12, 31))
+      expect(object.period_end).to eq(Strata::USDate.new(2023, 12, 31))
     end
 
     it "validates that start date is before or equal to end date" do
-      object.period_start = Flex::USDate.new(2023, 12, 31)
-      object.period_end = Flex::USDate.new(2023, 1, 1)
+      object.period_start = Strata::USDate.new(2023, 12, 31)
+      object.period_end = Strata::USDate.new(2023, 1, 1)
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("period")).to include("Period start date cannot be after end date")
     end
 
     it "allows start date equal to end date" do
-      same_date = Flex::USDate.new(2023, 6, 15)
+      same_date = Strata::USDate.new(2023, 6, 15)
       object.period_start = same_date
       object.period_end = same_date
       expect(object).to be_valid
-      expect(object.period).to eq(Flex::DateRange.new(start: same_date, end: same_date))
+      expect(object.period).to eq(Strata::DateRange.new(start: same_date, end: same_date))
     end
 
     it "allows only one date to be present" do
-      object.period_start = Flex::USDate.new(2023, 1, 1)
+      object.period_start = Strata::USDate.new(2023, 1, 1)
       object.period_end = nil
       expect(object).to be_valid
 
       object.period_start = nil
-      object.period_end = Flex::USDate.new(2023, 12, 31)
+      object.period_end = Strata::USDate.new(2023, 12, 31)
       expect(object).to be_valid
     end
 

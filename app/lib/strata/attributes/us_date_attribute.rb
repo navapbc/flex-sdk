@@ -28,7 +28,7 @@ module Strata
       class_methods do
         def us_date_attribute(name, options)
           attribute name, USDateType.new
-          flex_validates_type_casted_attribute(name, :invalid_date)
+          strata_validates_type_casted_attribute(name, :invalid_date)
         end
       end
     end

@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe Flex::Attributes::MoneyAttribute do
+RSpec.describe Strata::Attributes::MoneyAttribute do
   let(:object) { TestRecord.new }
 
   it "allows setting money as a Money object" do
-    money = Flex::Money.new(cents: 1250)
+    money = Strata::Money.new(cents: 1250)
     object.weekly_wage = money
 
-    expect(object.weekly_wage).to be_a(Flex::Money)
+    expect(object.weekly_wage).to be_a(Strata::Money)
     expect(object.weekly_wage.cents_amount).to eq(1250)
     expect(object.weekly_wage.dollar_amount).to eq(12.5)
   end
@@ -15,7 +15,7 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
   it "allows setting money as an integer (cents)" do
     object.weekly_wage = 2500
 
-    expect(object.weekly_wage).to be_a(Flex::Money)
+    expect(object.weekly_wage).to be_a(Strata::Money)
     expect(object.weekly_wage.cents_amount).to eq(2500)
     expect(object.weekly_wage.dollar_amount).to eq(25.0)
   end
@@ -23,7 +23,7 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
   it "allows setting money as a hash with dollar_amount" do
     object.weekly_wage = { dollar_amount: 10.50 }
 
-    expect(object.weekly_wage).to be_a(Flex::Money)
+    expect(object.weekly_wage).to be_a(Strata::Money)
     expect(object.weekly_wage.cents_amount).to eq(1050)
     expect(object.weekly_wage.dollar_amount).to eq(10.5)
   end
@@ -36,7 +36,7 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
 
     it "handles zero values" do
       object.weekly_wage = 0
-      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage).to be_a(Strata::Money)
       expect(object.weekly_wage.cents_amount).to eq(0)
       expect(object.weekly_wage.dollar_amount).to eq(0.0)
       expect(object.weekly_wage.to_s).to eq("$0.00")
@@ -44,7 +44,7 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
 
     it "handles negative values" do
       object.weekly_wage = -500
-      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage).to be_a(Strata::Money)
       expect(object.weekly_wage.cents_amount).to eq(-500)
       expect(object.weekly_wage.dollar_amount).to eq(-5.0)
       expect(object.weekly_wage.to_s).to eq("-$5.00")
@@ -52,7 +52,7 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
 
     it "handles hash with string keys" do
       object.weekly_wage = { "dollar_amount" => "12.34" }
-      expect(object.weekly_wage).to be_a(Flex::Money)
+      expect(object.weekly_wage).to be_a(Strata::Money)
       expect(object.weekly_wage.cents_amount).to eq(1234)
       expect(object.weekly_wage.dollar_amount).to eq(12.34)
     end
@@ -70,12 +70,12 @@ RSpec.describe Flex::Attributes::MoneyAttribute do
 
   describe "persistence" do
     it "persists and loads money object correctly" do
-      money = Flex::Money.new(cents: 1250)
+      money = Strata::Money.new(cents: 1250)
       object.weekly_wage = money
       object.save!
 
       loaded_record = TestRecord.find(object.id)
-      expect(loaded_record.weekly_wage).to be_a(Flex::Money)
+      expect(loaded_record.weekly_wage).to be_a(Strata::Money)
       expect(loaded_record.weekly_wage).to eq(money)
       expect(loaded_record.weekly_wage.cents_amount).to eq(1250)
       expect(loaded_record.weekly_wage.dollar_amount).to eq(12.5)
