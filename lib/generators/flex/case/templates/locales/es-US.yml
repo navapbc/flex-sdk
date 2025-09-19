@@ -1,0 +1,2 @@
+es-US:
+  <%= file_name.pluralize %>:

@@ -26,6 +26,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -48,6 +50,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -71,6 +75,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -93,6 +99,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -115,6 +123,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
     context "with no attributes" do
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -137,6 +147,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -161,6 +173,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -185,6 +199,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -209,6 +225,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -234,6 +252,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -258,6 +278,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -280,6 +302,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
     context "without --sti flag" do
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -303,6 +327,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         stub_const("TestBusinessProcess", Class.new)
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -319,6 +345,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -335,6 +363,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         hide_const("TestBusinessProcess")
         allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -352,6 +382,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -366,6 +398,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -384,6 +418,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         stub_const("TestApplicationForm", Class.new)
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -400,6 +436,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -416,6 +454,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       before do
         hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -433,6 +473,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -447,6 +489,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -466,6 +510,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -480,6 +526,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.create_case_model
       end
 
@@ -496,6 +544,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         hide_const("TestBusinessProcess")
         hide_const("TestApplicationForm")
         allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -520,6 +570,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -535,6 +587,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -564,6 +618,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -586,6 +642,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -608,6 +666,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       before do
         allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
         generator.invoke_all
       end
 
@@ -622,6 +682,169 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "--parent",
           "Flex::Case"
         )
+      end
+    end
+  end
+
+  describe "staff controller generation" do
+    context "when StaffController exists" do
+      before do
+        stub_const("::StaffController", Class.new)
+        allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "does not generate staff controller" do
+        expect(generator).not_to have_received(:generate).with("flex:staff")
+      end
+    end
+
+    context "when StaffController does not exist and user agrees" do
+      before do
+        hide_const("::StaffController")
+        allow(generator).to receive(:yes?).and_return(true)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
+        generator.invoke_all
+      end
+
+      it "generates staff controller" do
+        expect(generator).to have_received(:generate).with("flex:staff")
+      end
+    end
+
+    context "when StaffController does not exist and user declines" do
+      before do
+        hide_const("::StaffController")
+        allow(generator).to receive(:yes?).and_return(false)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
+        generator.invoke_all
+      end
+
+      it "does not generate staff controller" do
+        expect(generator).not_to have_received(:generate).with("flex:staff")
+      end
+    end
+
+    context "with --staff-controller flag" do
+      let(:options) { { "staff-controller": true } }
+
+      before do
+        hide_const("::StaffController")
+        allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
+        generator.invoke_all
+      end
+
+      it "does not prompt user" do
+        expect(generator).not_to have_received(:yes?)
+      end
+
+      it "generates staff controller" do
+        expect(generator).to have_received(:generate).with("flex:staff")
+      end
+    end
+  end
+
+  describe "controller generation" do
+    before do
+      allow(generator).to receive(:yes?).and_return(false)
+      allow(generator).to receive(:template)
+      allow(generator).to receive(:route)
+      generator.invoke_all
+    end
+
+    it "creates controller file" do
+      expect(generator).to have_received(:template).with("controller.rb", "app/controllers/test_cases_controller.rb")
+    end
+  end
+
+  describe "view generation" do
+    before do
+      allow(generator).to receive(:yes?).and_return(false)
+      allow(generator).to receive(:template)
+      allow(generator).to receive(:route)
+      generator.invoke_all
+    end
+
+    it "creates all view files" do
+      expect(generator).to have_received(:template).with("views/index.html.erb", "app/views/test_cases/index.html.erb")
+      expect(generator).to have_received(:template).with("views/show.html.erb", "app/views/test_cases/show.html.erb")
+      expect(generator).to have_received(:template).with("views/documents.html.erb", "app/views/test_cases/documents.html.erb")
+      expect(generator).to have_received(:template).with("views/tasks.html.erb", "app/views/test_cases/tasks.html.erb")
+      expect(generator).to have_received(:template).with("views/notes.html.erb", "app/views/test_cases/notes.html.erb")
+    end
+  end
+
+  describe "route generation" do
+    before do
+      allow(generator).to receive(:yes?).and_return(false)
+      allow(generator).to receive(:template)
+      allow(generator).to receive(:route)
+      generator.invoke_all
+    end
+
+    it "adds routes under staff scope" do
+      expected_routes = <<~ROUTES
+        scope path: "/staff" do
+          resources :test_cases, only: [ :index, :show ] do
+            collection do
+              get :closed
+            end
+        #{'    '}
+            member do
+              get :tasks
+              get :documents
+              get :notes
+            end
+          end
+        end
+      ROUTES
+      expect(generator).to have_received(:route).with(expected_routes)
+    end
+  end
+
+  describe "locale generation" do
+    before do
+      allow(generator).to receive(:yes?).and_return(false)
+      allow(generator).to receive(:template)
+      allow(generator).to receive(:route)
+      generator.invoke_all
+    end
+
+    it "creates locale files" do
+      expect(generator).to have_received(:template).with("locales/en.yml", "config/locales/views/test_cases/en.yml")
+      expect(generator).to have_received(:template).with("locales/es-US.yml", "config/locales/views/test_cases/es-US.yml")
+    end
+  end
+
+  describe "combined new functionality" do
+    context "with all new features enabled" do
+      let(:options) { { "staff-controller": true } }
+
+      before do
+        hide_const("::StaffController")
+        allow(generator).to receive(:yes?)
+        allow(generator).to receive(:template)
+        allow(generator).to receive(:route)
+        generator.invoke_all
+      end
+
+      it "generates all components" do
+        expect(generator).to have_received(:generate).with("flex:staff")
+        expect(generator).to have_received(:template).with("controller.rb", "app/controllers/test_cases_controller.rb")
+        expect(generator).to have_received(:template).with("views/index.html.erb", "app/views/test_cases/index.html.erb")
+        expect(generator).to have_received(:template).with("locales/en.yml", "config/locales/views/test_cases/en.yml")
+        expect(generator).to have_received(:template).with("locales/es-US.yml", "config/locales/views/test_cases/es-US.yml")
+        expect(generator).to have_received(:route)
       end
     end
   end
