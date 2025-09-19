@@ -1,13 +1,13 @@
-require_relative "lib/flex/version"
+require_relative "lib/strata/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "flex"
+  spec.name        = "strata"
   spec.version     = Strata::VERSION
   spec.authors     = [ "TODO: Write your name" ]
   spec.email       = [ "TODO: Write your email address" ]
   spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of Flex."
-  spec.description = "TODO: Description of Flex."
+  spec.summary     = "TODO: Summary of Strata."
+  spec.description = "TODO: Description of Strata."
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
   # to allow pushing to a single host or delete this section to allow pushing to any host.
