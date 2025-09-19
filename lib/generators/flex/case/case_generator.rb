@@ -4,12 +4,15 @@ module Flex
   module Generators
     # Generator for creating Flex::Case models with optional business process and application form integration
     class CaseGenerator < Rails::Generators::NamedBase
+      source_root File.expand_path("templates", __dir__)
+
       argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
       class_option :"business-process", type: :string, desc: "Business process class name (optional)"
       class_option :"application-form", type: :string, desc: "Application form class name (optional)"
       class_option :"skip-business-process", type: :boolean, default: false, desc: "Skip business process generation check"
       class_option :"skip-application-form", type: :boolean, default: false, desc: "Skip application form generation check"
+      class_option :"staff-controller", type: :boolean, default: false, desc: "Generate StaffController if it doesn't exist"
       class_option :sti, type: :boolean, default: false, desc: "Add type column for single-table inheritance"
 
       def initialize(*args)
@@ -27,6 +30,12 @@ module Flex
 
         handle_business_process_generation unless options[:"skip-business-process"]
         handle_application_form_generation unless options[:"skip-application-form"]
+
+        handle_staff_controller_generation
+        create_case_controller
+        create_case_views
+        update_routes
+        create_locale_file
       end
 
       private
@@ -125,6 +134,52 @@ module Flex
           # Default case: extract from case name
           @case_name.gsub(/Case$/, "")
         end
+      end
+
+      def handle_staff_controller_generation
+        unless "::StaffController".safe_constantize.present?
+          if options[:"staff-controller"] || yes?("StaffController does not exist. Generate it? (y/n)")
+            generate("flex:staff")
+          end
+        end
+      end
+
+      def create_case_controller
+        template "controller.rb", "app/controllers/#{file_name.pluralize}_controller.rb"
+      end
+
+      def create_case_views
+        template "views/index.html.erb", "app/views/#{file_name.pluralize}/index.html.erb"
+        template "views/show.html.erb", "app/views/#{file_name.pluralize}/show.html.erb"
+        template "views/documents.html.erb", "app/views/#{file_name.pluralize}/documents.html.erb"
+        template "views/tasks.html.erb", "app/views/#{file_name.pluralize}/tasks.html.erb"
+        template "views/notes.html.erb", "app/views/#{file_name.pluralize}/notes.html.erb"
+        template "views/_case_layout.html.erb", "app/views/#{file_name.pluralize}/_case_layout.html.erb"
+      end
+
+      def update_routes
+        route_definition = <<~ROUTES
+          scope path: "/staff" do
+            resources :#{file_name.pluralize}, only: [ :index, :show ] do
+              collection do
+                get :closed
+              end
+          #{'    '}
+              member do
+                get :tasks
+                get :documents
+                get :notes
+              end
+            end
+          end
+        ROUTES
+
+        route route_definition
+      end
+
+      def create_locale_file
+        template "locales/en.yml", "config/locales/views/#{file_name.pluralize}/en.yml"
+        template "locales/es-US.yml", "config/locales/views/#{file_name.pluralize}/es-US.yml"
       end
     end
   end

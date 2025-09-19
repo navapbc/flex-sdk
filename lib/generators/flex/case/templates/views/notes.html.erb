@@ -1,0 +1,14 @@
+<%%= render template: 'flex/cases/show', locals: { 
+  model_class: <%= class_name %>, 
+  kase: @<%= file_name %>,
+  sidenav: [
+    { text: t('<%= file_name.pluralize %>.case_layout.details'), link: <%= file_name %>_path(@<%= file_name %>) },
+    { text: t('<%= file_name.pluralize %>.case_layout.tasks'), link: tasks_<%= file_name %>_path(@<%= file_name %>) },
+    { text: t('<%= file_name.pluralize %>.case_layout.documents'), link: documents_<%= file_name %>_path(@<%= file_name %>) },
+    { text: t('<%= file_name.pluralize %>.case_layout.notes'), link: notes_<%= file_name %>_path(@<%= file_name %>) }
+  ]
+} do %>
+  <%%= content_for :case_details do %>
+    <h2><%%= t('<%= file_name.pluralize %>.notes.title') %></h2>
+  <%% end %>
+<%% end %>

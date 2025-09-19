@@ -1,0 +1,12 @@
+<div class="case-details">
+  <h3>Case Details</h3>
+  <p><strong>ID:</strong> <%%= @<%= file_name %>.id %></p>
+  <p><strong>Status:</strong> <%%= @<%= file_name %>.status %></p>
+  <p><strong>Created:</strong> <%%= @<%= file_name %>.created_at.strftime('%m/%d/%Y') %></p>
+  
+  <%% if @application_form %>
+    <h4>Application Form</h4>
+    <p><strong>Status:</strong> <%%= @application_form.status %></p>
+    <p><strong>Submitted:</strong> <%%= @application_form.submitted_at&.strftime('%m/%d/%Y') %></p>
+  <%% end %>
+</div>
