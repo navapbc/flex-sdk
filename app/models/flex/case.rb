@@ -35,6 +35,11 @@ module Flex
       name.sub("Case", "BusinessProcess").constantize
     end
 
+    # Returns the application form class for this case class.
+    # Subclasses can override this method to customize the application form class naming.
+    def self.application_form_class
+      name.sub("Case", "ApplicationForm").constantize
+    end
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0
