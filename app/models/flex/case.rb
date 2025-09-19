@@ -31,12 +31,12 @@ module Flex
       ]
     end
 
-    # Returns the application form class name for this case class.
+    def self.business_process
+      name.sub("Case", "BusinessProcess").constantize
+    end
+
+    # Returns the application form class for this case class.
     # Subclasses can override this method to customize the application form class naming.
-    #
-    # @return [String] The application form class name
-    # @example
-    #   PassportCase.application_form_class #=> "PassportApplicationForm"
     def self.application_form_class
       name.sub("Case", "ApplicationForm").constantize
     end

@@ -44,7 +44,7 @@ module Flex
     end
 
     def business_process
-      self.case.class.name.sub("Case", "BusinessProcess").constantize
+      self.case.class.business_process
     end
 
     def start_from_event(event)
