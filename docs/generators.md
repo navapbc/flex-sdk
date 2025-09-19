@@ -80,7 +80,7 @@ bin/rails generate strata:staff
 ## Generator Dependencies
 
 - When generating a case, the generator will check for the existence of associated business process and application form classes
-- The task generator will verify the existence of the flex_tasks table
+- The task generator will verify the existence of the strata_tasks table
 - All generators that create models will automatically create the necessary database migrations
 
 ## Commonly Used Flex Attribute Types

@@ -8,7 +8,7 @@ module Strata
       source_root File.expand_path("templates", __dir__)
 
       class_option :parent, type: :string, desc: "The parent class for the generated task"
-      class_option :"skip-migration-check", type: :boolean, default: false, desc: "Skip checking if flex_tasks table exists"
+      class_option :"skip-migration-check", type: :boolean, default: false, desc: "Skip checking if strata_tasks table exists"
 
       def initialize(*args, &block)
         super
@@ -24,11 +24,11 @@ module Strata
         template "task_spec.rb", File.join("spec/models", "#{file_path}_spec.rb")
       end
 
-      def check_flex_tasks_table
+      def check_strata_tasks_table
         return if options[:"skip-migration-check"]
 
-        unless ActiveRecord::Base.connection.table_exists?(:flex_tasks)
-          say "Warning: flex_tasks table does not exist.", :yellow
+        unless ActiveRecord::Base.connection.table_exists?(:strata_tasks)
+          say "Warning: strata_tasks table does not exist.", :yellow
           if yes?("Would you like to install and run Flex migrations now? (y/n)")
             rails_command "strata:install:migrations"
             rails_command "db:migrate"

@@ -20,7 +20,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
 
   describe "with basic name only" do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       generator.invoke_all
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
     let(:options) { { parent: 'CustomTask' } }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       generator.invoke_all
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
         let(:task_name) { input }
 
         before do
-          allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+          allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
           generator.invoke_all
         end
 
@@ -84,9 +84,9 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
   end
 
   describe "database table check" do
-    context "when flex_tasks table exists" do
+    context "when strata_tasks table exists" do
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       end
 
       it "does not prompt for migration" do
@@ -96,9 +96,9 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
       end
     end
 
-    context "when flex_tasks table does not exist" do
+    context "when strata_tasks table does not exist" do
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(false)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(false)
         allow(generator).to receive(:say)
         allow(generator).to receive(:yes?).and_return(false)
       end
@@ -106,7 +106,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
       it "warns about missing table" do
         allow(generator).to receive(:say)
         generator.invoke_all
-        expect(generator).to have_received(:say).with("Warning: flex_tasks table does not exist.", :yellow)
+        expect(generator).to have_received(:say).with("Warning: strata_tasks table does not exist.", :yellow)
       end
 
       it "prompts to install and run migrations" do
@@ -114,7 +114,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
         expect(generator).to have_received(:yes?).with("Would you like to install and run Flex migrations now? (y/n)")
       end
 
-      it "runs flex:install:migrations first, then db:migrate when user agrees" do
+      it "runs strata:install:migrations first, then db:migrate when user agrees" do
         allow(generator).to receive(:yes?).and_return(true)
         allow(generator).to receive(:rails_command)
         generator.invoke_all
@@ -127,7 +127,7 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
       let(:options) { { "skip-migration-check": true } }
 
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(false)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(false)
       end
 
       it "skips database check" do

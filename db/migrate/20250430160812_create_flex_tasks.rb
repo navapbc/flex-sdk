@@ -1,6 +1,6 @@
-class CreateFlexTasks < ActiveRecord::Migration[8.0]
+class CreateStrataTasks < ActiveRecord::Migration[8.0]
   def change
-    create_table :flex_tasks, id: :uuid do |t|
+    create_table :strata_tasks, id: :uuid do |t|
     t.string :type, index: true
     t.text :description
     t.integer :status, index: true, default: 0
