@@ -1,15 +1,2 @@
 en:
   <%= file_name.pluralize %>:
-    case_layout:
-      details: "Details"
-      tasks: "Tasks"
-      documents: "Documents"
-      notes: "Notes"
-    show:
-      title: "<%= class_name.titleize %> Details"
-    tasks:
-      title: "Tasks"
-    documents:
-      title: "Documents"
-    notes:
-      title: "Notes"
