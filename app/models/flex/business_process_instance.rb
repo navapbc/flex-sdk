@@ -43,13 +43,13 @@ module Flex
       self.case.business_process_current_step = step
     end
 
-    def business_process_class
-      self.case.class.business_process_class
+    def business_process
+      self.case.class.business_process
     end
 
     def start_from_event(event)
       Rails.logger.debug "Starting business process from event: #{event[:name]} with payload: #{event[:payload]}"
-      self.current_step = business_process_class.start_step_name
+      self.current_step = business_process.start_step_name
       self.case.save!
       execute_current_step
     end
@@ -72,7 +72,7 @@ module Flex
         if current_step == "end"
           self.case.close
         else
-          business_process_class.steps[current_step].execute(self.case)
+          business_process.steps[current_step].execute(self.case)
         end
       rescue Exception => e
         Rails.logger.error "Error executing step #{current_step} for case ID: #{self.case.id} - #{e.message}"
@@ -81,7 +81,7 @@ module Flex
     end
 
     def get_next_step(event_name)
-      business_process_class.transitions&.dig(current_step, event_name)
+      business_process.transitions&.dig(current_step, event_name)
     end
   end
 end

@@ -31,7 +31,7 @@ module Flex
       ]
     end
 
-    def self.business_process_class
+    def self.business_process
       name.sub("Case", "BusinessProcess").constantize
     end
 
