@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Specify your gem's dependencies in flex.gemspec.
-gemspec
+# Specify your gem's dependencies in strata.gemspec.
+gemspec name: "strata"
 
 gem "puma"
 

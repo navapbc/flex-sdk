@@ -17,9 +17,9 @@ This repository contains the Flex SDK, a Ruby on Rails engine designed to help c
 - **Project Type**: Ruby Gem/Rails Engine
 - **Key Dependencies**:
   - validates_timeliness
-    - Version can be found in `flex.gemspec`
+    - Version can be found in `strata.gemspec`
   - Rails
-    - Version can be found in `flex.gemspec`
+    - Version can be found in `strata.gemspec`
 
 ## Build and Test Instructions
 
