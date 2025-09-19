@@ -2,7 +2,7 @@ require_relative "lib/flex/version"
 
 Gem::Specification.new do |spec|
   spec.name        = "flex"
-  spec.version     = Flex::VERSION
+  spec.version     = Strata::VERSION
   spec.authors     = [ "TODO: Write your name" ]
   spec.email       = [ "TODO: Write your email address" ]
   spec.homepage    = "TODO"

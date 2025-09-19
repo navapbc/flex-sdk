@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Flex
+module Strata
   module Rules
     RSpec.describe PaidLeaveRuleset do
       base_date = Date.new(2025, 7, 1)

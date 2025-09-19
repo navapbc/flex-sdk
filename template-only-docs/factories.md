@@ -2,7 +2,7 @@
 
 ## Name Factory
 
-The name factory creates `Flex::Name` objects with configurable first, middle, and last names.
+The name factory creates `Strata::Name` objects with configurable first, middle, and last names.
 
 ```ruby
 # Empty name
@@ -15,7 +15,7 @@ name = build(:name, :base)
 name = build(:name, :base, :with_middle)
 ```
 
-Note that Flex::Name is a value object, not an ActiveRecord model, so you can only use the `build` strategy. The `create` is not available for this factory.
+Note that Strata::Name is a value object, not an ActiveRecord model, so you can only use the `build` strategy. The `create` is not available for this factory.
 
 ## Address Factory
 
@@ -32,4 +32,4 @@ address = build(:address, :base)
 address = build(:address, :base, :with_street_line_2)
 ```
 
-Note that Flex::Address is a value object, not an ActiveRecord model, so you can only use the `build` strategy. The `create` is not available for this factory.
+Note that Strata::Address is a value object, not an ActiveRecord model, so you can only use the `build` strategy. The `create` is not available for this factory.

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::ValueObject do
+RSpec.describe Strata::ValueObject do
   let(:klass) do
     Class.new(described_class) do
       attribute :x, :integer

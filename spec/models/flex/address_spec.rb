@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Flex::Address do
+RSpec.describe Strata::Address do
   describe "initialization" do
     valid_params = {
       street_line_1: "123 Main St",

@@ -12,11 +12,11 @@ To use Flex Attributes in a model:
 
 ```ruby
 class MyModel < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :birth_date, :memorable_date
-  flex_attribute :applicant_name, :name
-  flex_attribute :salary, :money
+  strata_attribute :birth_date, :memorable_date
+  strata_attribute :applicant_name, :name
+  strata_attribute :salary, :money
 end
 ```
 
@@ -33,13 +33,13 @@ The Flex SDK provides a Rails generator to automatically create database migrati
 ### Usage
 
 ```shell
-bin/rails generate flex:migration AddAttributesToTableName attribute_name:attribute_type
+bin/rails generate strata:migration AddAttributesToTableName attribute_name:attribute_type
 ```
 
 ### Example
 
 ```shell
-bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date address:address email:string
+bin/rails generate strata:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date address:address email:string
 ```
 
 This generates a migration with the appropriate columns:
@@ -55,5 +55,5 @@ This generates a migration with the appropriate columns:
 For a complete list of supported attribute types and their column mappings, run:
 
 ```shell
-bin/rails generate flex:migration --help
+bin/rails generate strata:migration --help
 ```

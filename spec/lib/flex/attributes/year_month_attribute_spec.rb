@@ -1,8 +1,8 @@
 require "rails_helper"
 require_relative "value_object_attribute_shared_examples"
 
-RSpec.describe Flex::Attributes::YearMonthAttribute do
-  include_examples "value object shared examples", described_class, Flex::YearMonth, :activity_reporting_period,
+RSpec.describe Strata::Attributes::YearMonthAttribute do
+  include_examples "value object shared examples", described_class, Strata::YearMonth, :activity_reporting_period,
     valid_nested_attributes: FactoryBot.attributes_for(:year_month),
     array_values: [
       FactoryBot.build(:year_month),
@@ -34,7 +34,7 @@ RSpec.describe Flex::Attributes::YearMonthAttribute do
     end
 
     it "serializes to string format with leading zeros" do
-      year_month = Flex::YearMonth.new(year: 2025, month: 2)
+      year_month = Strata::YearMonth.new(year: 2025, month: 2)
       object.activity_reporting_period = year_month
       object.save!
 

@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/migration/migration_generator'
+require 'generators/strata/migration/migration_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
+RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ name, *attrs ], options, destination_root: destination_root) }
   let(:name) { 'CreateTestRecords' }

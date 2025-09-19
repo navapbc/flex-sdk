@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Flex::FormBuilder do
+RSpec.describe Strata::FormBuilder do
   before do
     test_form_class = Class.new do
       include ActiveModel::Model
       include ActiveModel::Attributes
-      include Flex::Attributes
+      include Strata::Attributes
 
       attribute :first_name, :string
       attribute :start_date, :date  # for date_picker
@@ -376,7 +376,7 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with an existing name value' do
-      let(:object) { TestRecord.new(name: Flex::Name.new(first: "John", middle: "Adams", last: "Doe")) }
+      let(:object) { TestRecord.new(name: Strata::Name.new(first: "John", middle: "Adams", last: "Doe")) }
 
       it 'pre-fills the name fields' do
         expect(result).to have_element(:input, name: 'object[name_first]', value: 'John')
@@ -435,7 +435,7 @@ RSpec.describe Flex::FormBuilder do
     end
 
     context 'with an existing address value' do
-      let(:object) { TestRecord.new(address: Flex::Address.new(street_line_1: "123 Main St", street_line_2: "Apt 4B", city: "Anytown", state: "CA", zip_code: "12345")) }
+      let(:object) { TestRecord.new(address: Strata::Address.new(street_line_1: "123 Main St", street_line_2: "Apt 4B", city: "Anytown", state: "CA", zip_code: "12345")) }
 
       it 'pre-fills the address fields' do
         expect(result).to have_element(:input, name: 'object[address_street_line_1]', value: '123 Main St')

@@ -15,7 +15,7 @@ RSpec.describe "Tasks", type: :request do
     it "unassigned scope with unassigned tasks" do
       create(:flex_task, case: test_case, description: "Test task")
 
-      result = Flex::Task.unassigned
+      result = Strata::Task.unassigned
       expect(result.count).to eq(1)
     end
 
@@ -23,7 +23,7 @@ RSpec.describe "Tasks", type: :request do
       task = create(:flex_task, case: test_case, description: "Test task")
       task.assign(user.id)
 
-      result = Flex::Task.unassigned
+      result = Strata::Task.unassigned
       expect(result.count).to eq(0)
     end
 
@@ -31,7 +31,7 @@ RSpec.describe "Tasks", type: :request do
       later_task = create(:flex_task, case: test_case, description: "Later task", due_on: Date.current + 1.day)
       earliest_task = create(:flex_task, case: test_case, description: "Earlier task", due_on: Date.current)
 
-      result = Flex::Task.next_unassigned
+      result = Strata::Task.next_unassigned
       expect(result).to eq(earliest_task)
     end
 
@@ -39,14 +39,14 @@ RSpec.describe "Tasks", type: :request do
       task = create(:flex_task, case: test_case, description: "Assigned task")
       task.assign(user.id)
 
-      result = Flex::Task.next_unassigned
+      result = Strata::Task.next_unassigned
       expect(result).to be_nil
     end
 
     it "assign_next_task_to returns assigned task when available" do
       task = create(:flex_task, case: test_case, description: "Test task", due_on: Date.current)
 
-      result = Flex::Task.assign_next_task_to(user.id)
+      result = Strata::Task.assign_next_task_to(user.id)
       expect(result).to eq(task)
       expect(result.assignee_id).to eq(user.id)
     end
@@ -55,7 +55,7 @@ RSpec.describe "Tasks", type: :request do
       task = create(:flex_task, case: test_case, description: "Assigned task")
       task.assign(user.id)
 
-      result = Flex::Task.assign_next_task_to(user.id)
+      result = Strata::Task.assign_next_task_to(user.id)
       expect(result).to be_nil
     end
 
@@ -63,12 +63,12 @@ RSpec.describe "Tasks", type: :request do
       task = create(:flex_task, case: test_case, description: "Test task", due_on: Date.current)
 
       # Verify the method uses a transaction by checking it assigns correctly
-      result = Flex::Task.assign_next_task_to(user.id)
+      result = Strata::Task.assign_next_task_to(user.id)
       expect(result).to eq(task)
       expect(result.assignee_id).to eq(user.id)
 
       # Verify no other tasks can be assigned after this one is taken
-      second_result = Flex::Task.assign_next_task_to(user.id)
+      second_result = Strata::Task.assign_next_task_to(user.id)
       expect(second_result).to be_nil
     end
   end
@@ -110,7 +110,7 @@ RSpec.describe "Tasks", type: :request do
         post "/staff/tasks/pick_up_next_task"
 
         # Verify that a task was assigned to the user
-        assigned_task = Flex::Task.where(assignee_id: user.id).last
+        assigned_task = Strata::Task.where(assignee_id: user.id).last
         expect(assigned_task).to be_present
         expect(assigned_task.due_on).to eq(Date.current) # Should be the earliest due date
         expect(response).to redirect_to(task_path(assigned_task))

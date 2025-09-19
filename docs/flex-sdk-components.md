@@ -36,9 +36,9 @@ attribute :mailing_zip_code, :string
 With Flex Attributes, you can define the same fields with just a few lines of code:
 
 ```ruby
-flex_attribute :name
-flex_attribute :residential_address, :address
-flex_attribute :mailing_address, :address
+strata_attribute :name
+strata_attribute :residential_address, :address
+strata_attribute :mailing_address, :address
 ```
 
 See [Flex Data Modeler](./flex-data-modeler.md) for more information on how to define your data model.
@@ -60,7 +60,7 @@ Use Flex Business Process Modeler to define business processes for managing case
 For example, the following code defines a business process for Medicaid eligibility determination:
 
 ```ruby
-MedicaidBusinessProcess = Flex::BusinessProcess.define(:medicaid, MedicaidCase) do |bp|
+MedicaidBusinessProcess = Strata::BusinessProcess.define(:medicaid, MedicaidCase) do |bp|
   # Steps
   bp.applicant_task("submit_application")
   bp.system_process("calculate_preliminary_eligibility", ->(kase) {

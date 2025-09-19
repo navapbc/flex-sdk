@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Flex::ApplicationFormPolicy, type: :policy do
+RSpec.describe Strata::ApplicationFormPolicy, type: :policy do
   # Create a test policy class that includes the module
   subject { test_policy_class.new(current_user, record) }
 
   let(:test_policy_class) do
     Class.new(::ApplicationPolicy) do
-      include Flex::ApplicationFormPolicy
+      include Strata::ApplicationFormPolicy
     end
   end
   let(:owning_user) { create(:user) }

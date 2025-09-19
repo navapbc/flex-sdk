@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Flex
+module Strata
   module Rules
     RSpec.describe MedicaidRuleset do
       evaluated_on = Date.new(2025, 5, 28) # Freeze time for testing

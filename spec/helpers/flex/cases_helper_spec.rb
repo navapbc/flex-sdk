@@ -10,5 +10,5 @@ require 'rails_helper'
 #     end
 #   end
 # end
-module Flex
+module Strata
 end

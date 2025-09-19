@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Flex::TasksController, type: :controller do
+RSpec.describe Strata::TasksController, type: :controller do
   let(:user) { create(:user) }
   let(:case_record) { create(:test_case) }
   let(:application_form) { create(:application_form, case: case_record) }
-  let(:task) { case_record.create_task(Flex::Task) }
+  let(:task) { case_record.create_task(Strata::Task) }
 
   before do
     Rails.application.routes.draw do

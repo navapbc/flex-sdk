@@ -1,5 +1,5 @@
 //= link_tree ../images
-//= link flex_manifest.js
+//= link strata_manifest.js
 
 // USWDS assets
 // You can reference these relative to the dist directory (e.g. "assets/img" and "assets/js")

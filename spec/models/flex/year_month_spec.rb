@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Flex::YearMonth do
+RSpec.describe Strata::YearMonth do
   let(:object) { TestRecord.new }
 
   describe "initialization" do
@@ -54,10 +54,10 @@ RSpec.describe Flex::YearMonth do
 
   describe "to_date_range" do
     [
-      [ "calculates correct date range for January", described_class.new(year: 2023, month: 1), Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31)) ],
-      [ "calculates correct date range for April", described_class.new(year: 2023, month: 4), Flex::DateRange.new(start: Flex::USDate.new(2023, 4, 1), end: Flex::USDate.new(2023, 4, 30)) ],
-      [ "calculates correct date range for February in non-leap year", described_class.new(year: 2023, month: 2), Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28)) ],
-      [ "calculates correct date range for February in leap year", described_class.new(year: 2024, month: 2), Flex::DateRange.new(start: Flex::USDate.new(2024, 2, 1), end: Flex::USDate.new(2024, 2, 29)) ]
+      [ "calculates correct date range for January", described_class.new(year: 2023, month: 1), Strata::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 1, 31)) ],
+      [ "calculates correct date range for April", described_class.new(year: 2023, month: 4), Strata::DateRange.new(start: Strata::USDate.new(2023, 4, 1), end: Strata::USDate.new(2023, 4, 30)) ],
+      [ "calculates correct date range for February in non-leap year", described_class.new(year: 2023, month: 2), Strata::DateRange.new(start: Strata::USDate.new(2023, 2, 1), end: Strata::USDate.new(2023, 2, 28)) ],
+      [ "calculates correct date range for February in leap year", described_class.new(year: 2024, month: 2), Strata::DateRange.new(start: Strata::USDate.new(2024, 2, 1), end: Strata::USDate.new(2024, 2, 29)) ]
     ].each do |description, year_month, expected|
       it description do
         expect(year_month.to_date_range).to eq(expected)

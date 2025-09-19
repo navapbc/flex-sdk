@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Flex::TaskService::Database do
+RSpec.describe Strata::TaskService::Database do
   subject(:service) { described_class.new }
 
   let(:test_case) { TestCase.create! }
-  let(:task_class) { Class.new(Flex::Task) }
+  let(:task_class) { Class.new(Strata::Task) }
 
   before do
     stub_const("DatabaseTestTask", task_class)
@@ -15,7 +15,7 @@ RSpec.describe Flex::TaskService::Database do
       task = service.create_task(DatabaseTestTask, test_case)
 
       expect(task).to be_a(DatabaseTestTask)
-      expect(task).to be_a(Flex::Task)
+      expect(task).to be_a(Strata::Task)
       expect(task).to be_persisted
       expect(task.case_id).to eq(test_case.id)
     end
@@ -34,19 +34,19 @@ RSpec.describe Flex::TaskService::Database do
 
     context 'when given task class is nil' do
       it 'raises an error' do
-        expect { service.create_task(nil, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Flex::Task or a subclass of Flex::Task/)
+        expect { service.create_task(nil, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Strata::Task or a subclass of Strata::Task/)
       end
     end
 
-    context 'when given task class is not a subclass of Flex::Task' do
+    context 'when given task class is not a subclass of Strata::Task' do
       it 'raises an error' do
-        expect { service.create_task(String, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Flex::Task or a subclass of Flex::Task/)
+        expect { service.create_task(String, test_case) }.to raise_error(ArgumentError, /`task_class` must be a Strata::Task or a subclass of Strata::Task/)
       end
     end
 
     context 'when given case is nil' do
       it 'raises an error' do
-        expect { service.create_task(Flex::Task, nil) }.to raise_error(ArgumentError, /`kase` must be a subclass of Flex::Case/)
+        expect { service.create_task(Strata::Task, nil) }.to raise_error(ArgumentError, /`kase` must be a subclass of Strata::Case/)
       end
     end
   end

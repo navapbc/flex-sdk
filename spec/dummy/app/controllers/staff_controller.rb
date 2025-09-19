@@ -1,5 +1,5 @@
 # Controller for the staff dashboard at /staff.
-class StaffController < Flex::StaffController
+class StaffController < Strata::StaffController
   protected
 
   def case_classes

@@ -1,0 +1,67 @@
+<%# Show view for displaying a task
+    Required locals:
+    - assigned_user_display_text: String - The name of the user assigned to this task
+    - task: Strata::Task - The task object
+
+    Optional locals:
+    - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
+    
+    Example usage:
+      render template: 'flex/tasks/default/show', locals: {
+        task: @task,
+        assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
+      }
+%>
+<main class="usa-section">
+  <div class="grid-container">
+    <%
+      breadcrumbs = local_assigns[:breadcrumbs] || [
+        {
+          text: t("flex.tasks.breadcrumbs.home"),
+          link: "/"
+        },
+        {
+          text: t("flex.tasks.breadcrumbs.tasks"),
+          link: url_for(only_path: true, action: :index)
+        },
+        {
+          text: t("tasks.types.#{task.type.underscore}")
+        }
+      ]
+    %>
+    <%= render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: } %>
+
+    <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
+    <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
+      <div class="grid-container">
+        <div class="grid-row grid-gap-2">
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
+          </div>
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
+          </div>
+          <div class="grid-col-auto">
+            <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="usa-section padding-top-2">
+      <% if flash["task-message"] %>
+        <div class="usa-alert usa-alert--info usa-alert--no-icon">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text">
+              <%= flash["task-message"] %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+      <h2 class="section-heading-h2"><%= t("flex.tasks.show.headers.task_details") %></h2>
+      <% if content_for?(:task_details_partial) %>
+        <%= yield(:task_details_partial) %>
+      <% else %>
+        <%= render partial: "details/#{task.type.underscore}", locals: local_assigns.to_h %>
+      <% end %>
+    </section>
+  </main>

@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Flex::Case, type: :model do
+RSpec.describe Strata::Case, type: :model do
   let(:test_case) { TestCase.new }
 
   describe '#create_task' do
     before do
-      stub_const('TestTask', Class.new(Flex::Task))
+      stub_const('TestTask', Class.new(Strata::Task))
       stub_const('NotATask', Class.new)
     end
 
@@ -32,10 +32,10 @@ RSpec.describe Flex::Case, type: :model do
       expect(task).to be_persisted
     end
 
-    it 'raises an error if task_class is not a subclass of Flex::Task' do
+    it 'raises an error if task_class is not a subclass of Strata::Task' do
       expect {
         test_case.create_task(NotATask)
-      }.to raise_error(ArgumentError, 'task_class must be Flex::Task or a subclass of it')
+      }.to raise_error(ArgumentError, 'task_class must be Strata::Task or a subclass of it')
     end
   end
 

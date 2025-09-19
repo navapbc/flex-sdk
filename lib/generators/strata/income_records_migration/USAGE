@@ -1,0 +1,17 @@
+Description:
+    Generates a Rails migration for income records with specified period types.
+    This generator supports two period types: 'year_quarter' and 'date_range'.
+
+Usage:
+    bin/rails generate strata:income_records_migration NAME period_type
+
+Examples:
+    bin/rails generate strata:income_records_migration CreateIncomeRecords year_quarter
+    bin/rails generate strata:income_records_migration CreateIncomeRecords date_range
+
+Supported Period Types:
+    year_quarter - Creates columns: period_year (:integer), period_quarter (:integer)
+    date_range   - Creates columns: period_start (:date), period_end (:date)
+
+This will create:
+    A Rails migration file with the appropriate column definitions for the specified period type, as well as any additional columns defined in the generator.

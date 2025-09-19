@@ -24,11 +24,11 @@ To use Flex Attributes in your model:
 
 ```ruby
 class MyModel < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :applicant_name, :name
-  flex_attribute :home_address, :address
-  flex_attribute :salary, :money
+  strata_attribute :applicant_name, :name
+  strata_attribute :home_address, :address
+  strata_attribute :salary, :money
 end
 ```
 
@@ -39,10 +39,10 @@ The Address Attribute provides structured handling of physical addresses with va
 ### Usage in Model
 
 ```ruby
-class ApplicationForm < Flex::ApplicationForm
-  include Flex::Attributes
+class ApplicationForm < Strata::ApplicationForm
+  include Strata::Attributes
 
-  flex_attribute :mailing_address, :address
+  strata_attribute :mailing_address, :address
 end
 ```
 
@@ -60,7 +60,7 @@ For an attribute named `mailing_address`:
 
 ### Available Methods
 
-The `Flex::Address` value object provides:
+The `Strata::Address` value object provides:
 
 - `street_line_1`, `street_line_2`, `city`, `state`, `zip_code` - Component accessors
 - `to_s` - Returns formatted address string (e.g., "123 Main St, Apt 4B, Anytown, CA 12345")
@@ -80,8 +80,8 @@ form.mailing_address = {
   zip_code: "12345"
 }
 
-# Setting an address with a Flex::Address object
-form.mailing_address = Flex::Address.new(
+# Setting an address with a Strata::Address object
+form.mailing_address = Strata::Address.new(
   street_line_1: "123 Main Street",
   street_line_2: "Apt 4B",
   city: "Anytown",
@@ -111,11 +111,11 @@ The Array Attribute allows storing arrays of value objects in a single JSONB dat
 
 ```ruby
 class Company < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :office_locations, :address, array: true
-  flex_attribute :employee_names, :name, array: true
-  flex_attribute :reporting_periods, :year_quarter, array: true
+  strata_attribute :office_locations, :address, array: true
+  strata_attribute :employee_names, :name, array: true
+  strata_attribute :reporting_periods, :year_quarter, array: true
 end
 ```
 
@@ -134,20 +134,20 @@ Array attributes behave like standard Ruby arrays with automatic serialization/d
 ```ruby
 # Setting an array of addresses
 company.office_locations = [
-  Flex::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
-  Flex::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
+  Strata::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
+  Strata::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
 ]
 
 # Array of ranges (complex nested type)
 class Enrollment < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :leave_periods, [:us_date, range: true], array: true
+  strata_attribute :leave_periods, [:us_date, range: true], array: true
 end
 
 enrollment.leave_periods = [
-  Flex::DateRange.new(start: Date.new(2023, 1, 1), end: Date.new(2023, 1, 31)),
-  Flex::DateRange.new(start: Date.new(2023, 6, 1), end: Date.new(2023, 6, 30))
+  Strata::DateRange.new(start: Date.new(2023, 1, 1), end: Date.new(2023, 1, 31)),
+  Strata::DateRange.new(start: Date.new(2023, 6, 1), end: Date.new(2023, 6, 30))
 ]
 ```
 
@@ -163,9 +163,9 @@ The Memorable Date Attribute provides date handling with support for hash input 
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :date_of_birth, :memorable_date
+  strata_attribute :date_of_birth, :memorable_date
 end
 ```
 
@@ -208,10 +208,10 @@ The Money Attribute provides handling of US dollar amounts with automatic conver
 
 ```ruby
 class Employee < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :salary, :money
-  flex_attribute :bonus, :money
+  strata_attribute :salary, :money
+  strata_attribute :bonus, :money
 end
 ```
 
@@ -223,7 +223,7 @@ A money attribute creates **1 integer column** that stores the amount in cents:
 
 ### Available Methods
 
-The `Flex::Money` value object provides:
+The `Strata::Money` value object provides:
 
 - `cents` - Returns the amount in cents (integer)
 - `dollar_amount` - Returns the amount in dollars (BigDecimal)
@@ -235,7 +235,7 @@ The `Flex::Money` value object provides:
 
 ```ruby
 # Setting with cents
-employee.salary = Flex::Money.new(cents: 75000_00) # $75,000.00
+employee.salary = Strata::Money.new(cents: 75000_00) # $75,000.00
 
 # Setting with a hash containing dollar amount
 employee.salary = { dollar_amount: 75000.00 }
@@ -266,10 +266,10 @@ The Name Attribute provides structured handling of person names with first, midd
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :name, :name
-  flex_attribute :emergency_contact_name, :name
+  strata_attribute :name, :name
+  strata_attribute :emergency_contact_name, :name
 end
 ```
 
@@ -289,7 +289,7 @@ For an attribute named `owner`:
 
 ### Available Methods
 
-The `Flex::Name` value object provides:
+The `Strata::Name` value object provides:
 
 - `first`, `middle`, `last` - Component accessors
 - `full_name` - Returns the complete name with proper spacing
@@ -309,8 +309,8 @@ person.name = {
   last: "Doe"
 }
 
-# Setting a name with a Flex::Name object
-person.name = Flex::Name.new(first: "John", middle: "A", last: "Doe")
+# Setting a name with a Strata::Name object
+person.name = Strata::Name.new(first: "John", middle: "A", last: "Doe")
 
 # Accessing name components
 puts person.name.first # => "John"
@@ -334,10 +334,10 @@ The Range Attribute provides handling of value ranges using start and end values
 
 ```ruby
 class Enrollment < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :coverage_period, :us_date, range: true
-  flex_attribute :base_period, :year_quarter, range: true
+  strata_attribute :coverage_period, :us_date, range: true
+  strata_attribute :base_period, :year_quarter, range: true
 end
 ```
 
@@ -350,7 +350,7 @@ A range attribute creates **2 columns** for the start and end values:
 
 ### Available Methods
 
-Range attributes return `Flex::ValueRange` objects that provide:
+Range attributes return `Strata::ValueRange` objects that provide:
 
 - `start`, `end` - Access to the range boundaries
 - `include?` - Check if a value falls within the range
@@ -366,7 +366,7 @@ enrollment.coverage_period = {
 }
 
 # Setting with a ValueRange object
-enrollment.coverage_period = Flex::DateRange.new(
+enrollment.coverage_period = Strata::DateRange.new(
   start: Date.new(2023, 1, 1),
   end: Date.new(2023, 12, 31)
 )
@@ -396,10 +396,10 @@ The Tax ID Attribute provides handling of tax identification numbers (such as So
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :ssn, :tax_id
-  flex_attribute :ein, :tax_id
+  strata_attribute :ssn, :tax_id
+  strata_attribute :ein, :tax_id
 end
 ```
 
@@ -411,7 +411,7 @@ A tax ID attribute creates **1 string column**:
 
 ### Available Methods
 
-The `Flex::TaxId` value object provides:
+The `Strata::TaxId` value object provides:
 
 - `formatted` - Returns the tax ID with dashes in XXX-XX-XXXX format
 - `to_s` - Returns the raw digits without formatting
@@ -445,10 +445,10 @@ The US Date Attribute provides date handling with US regional format parsing (MM
 
 ```ruby
 class Application < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :submitted_on, :us_date
-  flex_attribute :effective_date, :us_date
+  strata_attribute :submitted_on, :us_date
+  strata_attribute :effective_date, :us_date
 end
 ```
 
@@ -491,10 +491,10 @@ The Year Month Attribute provides handling of year and month combinations with a
 
 ```ruby
 class Report < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :activity_reporting_period, :year_month
-  flex_attribute :billing_period, :year_month
+  strata_attribute :activity_reporting_period, :year_month
+  strata_attribute :billing_period, :year_month
 end
 ```
 
@@ -507,7 +507,7 @@ A year month attribute creates **2 integer columns**:
 
 ### Available Methods
 
-The `Flex::YearMonth` value object provides:
+The `Strata::YearMonth` value object provides:
 
 - `year`, `month` - Component accessors
 - `+`, `-` - Arithmetic operations for month math
@@ -521,8 +521,8 @@ The `Flex::YearMonth` value object provides:
 # Setting a year month with a hash
 report.activity_reporting_period = { year: 2023, month: 6 }
 
-# Setting with a Flex::YearMonth object
-report.activity_reporting_period = Flex::YearMonth.new(year: 2023, month: 6)
+# Setting with a Strata::YearMonth object
+report.activity_reporting_period = Strata::YearMonth.new(year: 2023, month: 6)
 
 # Accessing components
 puts report.activity_reporting_period.year # => 2023
@@ -554,10 +554,10 @@ The Year Quarter Attribute provides handling of year and quarter combinations wi
 
 ```ruby
 class Report < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
-  flex_attribute :reporting_period, :year_quarter
-  flex_attribute :comparison_period, :year_quarter
+  strata_attribute :reporting_period, :year_quarter
+  strata_attribute :comparison_period, :year_quarter
 end
 ```
 
@@ -570,7 +570,7 @@ A year quarter attribute creates **2 integer columns**:
 
 ### Available Methods
 
-The `Flex::YearQuarter` value object provides:
+The `Strata::YearQuarter` value object provides:
 
 - `year`, `quarter` - Component accessors
 - `+`, `-` - Arithmetic operations for quarter math
@@ -584,8 +584,8 @@ The `Flex::YearQuarter` value object provides:
 # Setting a year quarter with a hash
 report.reporting_period = { year: 2023, quarter: 2 }
 
-# Setting with a Flex::YearQuarter object
-report.reporting_period = Flex::YearQuarter.new(year: 2023, quarter: 2)
+# Setting with a Strata::YearQuarter object
+report.reporting_period = Strata::YearQuarter.new(year: 2023, quarter: 2)
 
 # Accessing components
 puts report.reporting_period.year # => 2023

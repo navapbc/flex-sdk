@@ -1,20 +1,20 @@
 require 'rails_helper'
 
-RSpec.describe Flex::Validations do
+RSpec.describe Strata::Validations do
   let(:object) { TestRecord.new }
 
   describe '#flex_validates_nested' do
     let(:valid_base_period) do
-      Flex::YearQuarterRange.new(
-        start: Flex::YearQuarter.new(year: 2025, quarter: 1),
-        end: Flex::YearQuarter.new(year: 2025, quarter: 4)
+      Strata::YearQuarterRange.new(
+        start: Strata::YearQuarter.new(year: 2025, quarter: 1),
+        end: Strata::YearQuarter.new(year: 2025, quarter: 4)
       )
     end
 
     let(:valid_period) do
-      Flex::DateRange.new(
-        start: Flex::USDate.new(2025, 6, 16),
-        end: Flex::USDate.new(2025, 6, 17)
+      Strata::DateRange.new(
+        start: Strata::USDate.new(2025, 6, 16),
+        end: Strata::USDate.new(2025, 6, 17)
       )
     end
 
@@ -47,11 +47,11 @@ RSpec.describe Flex::Validations do
 
     context 'when nested object is blank' do
       before do
-        object.base_period = Flex::YearQuarterRange.new(
-          start: Flex::YearQuarter.new(year: nil, quarter: nil),
-          end: Flex::YearQuarter.new(year: nil, quarter: nil)
+        object.base_period = Strata::YearQuarterRange.new(
+          start: Strata::YearQuarter.new(year: nil, quarter: nil),
+          end: Strata::YearQuarter.new(year: nil, quarter: nil)
         )
-        object.period = Flex::DateRange.new(
+        object.period = Strata::DateRange.new(
           start: nil,
           end: nil
         )
@@ -64,9 +64,9 @@ RSpec.describe Flex::Validations do
 
     context 'when nested object has base errors' do
       before do
-        object.period = Flex::DateRange.new(
-          start: Flex::USDate.new(2025, 1, 1),
-          end: Flex::USDate.new(2020, 1, 1)
+        object.period = Strata::DateRange.new(
+          start: Strata::USDate.new(2025, 1, 1),
+          end: Strata::USDate.new(2020, 1, 1)
         )
       end
 
@@ -78,11 +78,11 @@ RSpec.describe Flex::Validations do
 
     context 'when nested object has nested attribute errors' do
       before do
-        object.base_period = Flex::YearQuarterRange.new(
-          start: Flex::YearQuarter.new(year: 2025, quarter: 0),
-          end: Flex::YearQuarter.new(year: 2025, quarter: 5)
+        object.base_period = Strata::YearQuarterRange.new(
+          start: Strata::YearQuarter.new(year: 2025, quarter: 0),
+          end: Strata::YearQuarter.new(year: 2025, quarter: 5)
         )
-        object.activity_reporting_period = Flex::YearMonth.new(year: 2025, month: 13)
+        object.activity_reporting_period = Strata::YearMonth.new(year: 2025, month: 13)
         object.period = {
           start: "1/35/2025",
           end: "2/30/2025"

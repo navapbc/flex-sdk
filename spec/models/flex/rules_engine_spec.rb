@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Flex
+module Strata
   RSpec.describe RulesEngine do
     let(:example_ruleset) {
       Class.new do

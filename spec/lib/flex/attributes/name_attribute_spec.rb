@@ -1,8 +1,8 @@
 require "rails_helper"
 require_relative "value_object_attribute_shared_examples"
 
-RSpec.describe Flex::Attributes::NameAttribute do
-  include_examples "value object shared examples", described_class, Flex::Name, :name,
+RSpec.describe Strata::Attributes::NameAttribute do
+  include_examples "value object shared examples", described_class, Strata::Name, :name,
     valid_nested_attributes: FactoryBot.attributes_for(:name, :base, :with_middle),
     nested_attributes_without_normalization: {
       first: "jean-luc",

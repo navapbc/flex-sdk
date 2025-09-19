@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/case/case_generator'
+require 'generators/strata/case/case_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
+RSpec.describe Strata::Generators::CaseGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ name ] + attributes, options.merge(quiet: true), destination_root: destination_root) }
   let(:name) { 'TestCase' }
@@ -31,14 +31,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "transforms 'Passport' to 'PassportCase' with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "PassportCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -53,14 +53,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "keeps 'PassportCase' as 'PassportCase' with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "PassportCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -76,14 +76,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "transforms 'Review' to 'ReviewCase' with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "ReviewCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -98,14 +98,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "transforms 'document' to 'DocumentCase' with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "DocumentCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -118,16 +118,16 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
         generator.invoke_all
       end
 
-      it "includes base attributes from Flex::Case" do
+      it "includes base attributes from Strata::Case" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "merges base attributes with user-provided attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -151,7 +151,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "name:string",
           "email:string",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -166,7 +166,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "merges base attributes with flex attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -175,7 +175,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "applicant_name:name",
           "home_address:address",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -190,7 +190,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "merges base attributes with user-provided attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -199,7 +199,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "priority:integer",
           "applicant_name:name",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -214,7 +214,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "ignores user attributes that conflict with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -222,7 +222,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "facts:jsonb",
           "custom_field:text",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -239,7 +239,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "adds type:string attribute along with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -247,7 +247,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "facts:jsonb",
           "type:string",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -263,7 +263,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "adds type:string attribute along with base and user attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -272,7 +272,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "name:string",
           "type:string",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -285,14 +285,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "includes base attributes without type attribute" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -311,7 +311,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate business process" do
-        expect(generator).not_to have_received(:generate).with("flex:business_process", anything)
+        expect(generator).not_to have_received(:generate).with("strata:business_process", anything)
       end
     end
 
@@ -327,7 +327,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate business process" do
-        expect(generator).not_to have_received(:generate).with("flex:business_process", anything)
+        expect(generator).not_to have_received(:generate).with("strata:business_process", anything)
       end
     end
 
@@ -343,7 +343,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates business process" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip-application-form").once
+        expect(generator).to have_received(:generate).with("strata:business_process", "Test", "--skip-application-form").once
       end
     end
 
@@ -357,7 +357,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "uses custom business process name" do
         expect(generator).not_to have_received(:yes?)
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBusinessProcess", "--skip-application-form")
+        expect(generator).to have_received(:generate).with("strata:business_process", "CustomBusinessProcess", "--skip-application-form")
       end
     end
 
@@ -374,7 +374,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate business process" do
-        expect(generator).not_to have_received(:generate).with("flex:business_process", anything)
+        expect(generator).not_to have_received(:generate).with("strata:business_process", anything)
       end
     end
   end
@@ -392,7 +392,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
 
@@ -408,7 +408,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
 
@@ -424,7 +424,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates application form" do
-        expect(generator).to have_received(:generate).with("flex:application_form", "Test").once
+        expect(generator).to have_received(:generate).with("strata:application_form", "Test").once
       end
     end
 
@@ -438,7 +438,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "uses custom application form name" do
         expect(generator).not_to have_received(:yes?)
-        expect(generator).to have_received(:generate).with("flex:application_form", "CustomApplicationForm")
+        expect(generator).to have_received(:generate).with("strata:application_form", "CustomApplicationForm")
       end
     end
 
@@ -455,7 +455,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
   end
@@ -471,7 +471,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "respects skip flag over custom name" do
         expect(generator).not_to have_received(:yes?)
-        expect(generator).not_to have_received(:generate).with("flex:business_process", anything)
+        expect(generator).not_to have_received(:generate).with("strata:business_process", anything)
       end
     end
 
@@ -485,7 +485,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "respects skip flag over custom name" do
         expect(generator).not_to have_received(:yes?)
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
   end
@@ -500,17 +500,17 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "generates both business process and application form" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "Test", "--skip-application-form").once
-        expect(generator).to have_received(:generate).with("flex:application_form", "Test").once
+        expect(generator).to have_received(:generate).with("strata:business_process", "Test", "--skip-application-form").once
+        expect(generator).to have_received(:generate).with("strata:application_form", "Test").once
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         ).once
       end
     end
@@ -524,8 +524,8 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "uses custom names for both" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip-application-form").once
-        expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
+        expect(generator).to have_received(:generate).with("strata:business_process", "CustomBP", "--skip-application-form").once
+        expect(generator).to have_received(:generate).with("strata:application_form", "CustomAF").once
       end
     end
 
@@ -539,10 +539,10 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       end
 
       it "handles all options correctly" do
-        expect(generator).to have_received(:generate).with("flex:business_process", "CustomBP", "--skip-application-form").once
-        expect(generator).to have_received(:generate).with("flex:application_form", "CustomAF").once
+        expect(generator).to have_received(:generate).with("strata:business_process", "CustomBP", "--skip-application-form").once
+        expect(generator).to have_received(:generate).with("strata:application_form", "CustomAF").once
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCase",
           "application_form_id:uuid",
           "status:integer",
@@ -552,7 +552,7 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
           "address:address",
           "type:string",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         ).once
       end
     end
@@ -569,14 +569,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "still appends Case suffix and includes base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "TestCASECase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -591,14 +591,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "appends Case suffix and includes base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "CaseTestCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end
@@ -613,14 +613,14 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
 
       it "preserves namespace and handles case suffix with base attributes" do
         expect(generator).to have_received(:generate).with(
-          "flex:model",
+          "strata:model",
           "MyModule::TestCase",
           "application_form_id:uuid",
           "status:integer",
           "business_process_current_step:string",
           "facts:jsonb",
           "--parent",
-          "Flex::Case"
+          "Strata::Case"
         )
       end
     end

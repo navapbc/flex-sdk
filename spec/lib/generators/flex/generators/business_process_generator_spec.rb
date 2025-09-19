@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/business_process/business_process_generator'
+require 'generators/strata/business_process/business_process_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
+RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ 'Test' ], options.merge(quiet: true), destination_root: destination_root) }
   let(:options) { { case: case_option, "application-form": app_form_option } }
@@ -91,7 +91,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     it "uses custom case name" do
       business_process_file = "#{destination_root}/app/business_processes/test_business_process.rb"
       content = File.read(business_process_file)
-      expect(content).to include("class TestBusinessProcess < Flex::BusinessProcess")
+      expect(content).to include("class TestBusinessProcess < Strata::BusinessProcess")
       expect(content).to include("def self.case_class")
     end
   end
@@ -109,7 +109,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
     it "uses custom case and application form names" do
       business_process_file = "#{destination_root}/app/business_processes/test_business_process.rb"
       content = File.read(business_process_file)
-      expect(content).to include("class TestBusinessProcess < Flex::BusinessProcess")
+      expect(content).to include("class TestBusinessProcess < Strata::BusinessProcess")
       expect(content).to include("def self.case_class")
 
       expect(content).to include("def self.case_class")
@@ -215,7 +215,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
 
@@ -232,7 +232,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
 
@@ -249,7 +249,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "generates application form" do
-        expect(generator).to have_received(:generate).with("flex:application_form", "Test").exactly(1).times
+        expect(generator).to have_received(:generate).with("strata:application_form", "Test").exactly(1).times
       end
     end
 
@@ -268,7 +268,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "does not generate application form" do
-        expect(generator).not_to have_received(:generate).with("flex:application_form", anything)
+        expect(generator).not_to have_received(:generate).with("strata:application_form", anything)
       end
     end
 
@@ -287,7 +287,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "generates application form" do
-        expect(generator).to have_received(:generate).with("flex:application_form", "Test").exactly(1).times
+        expect(generator).to have_received(:generate).with("strata:application_form", "Test").exactly(1).times
       end
     end
 
@@ -301,7 +301,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "uses the full name as base name" do
-        expect(generator).to have_received(:generate).with("flex:application_form", "CustomForm").exactly(1).times
+        expect(generator).to have_received(:generate).with("strata:application_form", "CustomForm").exactly(1).times
       end
     end
 
@@ -315,7 +315,7 @@ RSpec.describe Flex::Generators::BusinessProcessGenerator, type: :generator do
       end
 
       it "correctly extracts base name from namespaced class" do
-        expect(generator).to have_received(:generate).with("flex:application_form", "MyModule::Test").exactly(1).times
+        expect(generator).to have_received(:generate).with("strata:application_form", "MyModule::Test").exactly(1).times
       end
     end
   end

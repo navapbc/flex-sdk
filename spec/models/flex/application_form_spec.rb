@@ -1,7 +1,7 @@
 require "rails_helper"
 require "support/matchers/publish_event_with_payload"
 
-RSpec.describe Flex::ApplicationForm do
+RSpec.describe Strata::ApplicationForm do
   describe "validations" do
     let(:application_form) { TestApplicationForm.new }
 

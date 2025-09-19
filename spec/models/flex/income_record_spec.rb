@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'temporary_tables'
 
-module Flex
+module Strata
   RSpec.describe IncomeRecord, type: :model do
     describe 'IncomeRecord[YearQuarter]' do
       include TemporaryTables::Methods
@@ -14,7 +14,7 @@ module Flex
       end
 
       before do
-        stub_const("QuarterlyWage", described_class[Flex::YearQuarter])
+        stub_const("QuarterlyWage", described_class[Strata::YearQuarter])
       end
 
       describe '#period_type' do

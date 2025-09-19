@@ -1,7 +1,7 @@
 require "rails_helper"
 require "support/matchers/publish_event_with_payload"
 
-module Flex
+module Strata
   RSpec.describe PassportApplicationForm do
     describe "validations" do
       let(:passport_application_form) { described_class.new }

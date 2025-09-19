@@ -32,13 +32,13 @@ Creating a new Flex form follows a similar process to generating a standard Rail
 Run the following command to generate a new application form model. Replace the name of the application form with the desired name.
 
 ```shell
-bin/rails generate flex:application_form PassportApplicationForm
+bin/rails generate strata:application_form PassportApplicationForm
 ```
 
 If you already know some of the attributes you want to include in the form, you can specify them in the generate command, like so:
 
 ```shell
-bin/rails generate flex:application_form PassportApplicationForm name:name birth_date:memorable_date ssn:tax_id residential_address:address
+bin/rails generate strata:application_form PassportApplicationForm name:name birth_date:memorable_date ssn:tax_id residential_address:address
 ```
 
 For a list of supported attributes, see [Flex Data Modeler](/docs/flex-data-modeler.md).
@@ -49,11 +49,11 @@ Alternatively, use the `bin/rails generate scaffold` command to generate additio
 bin/rails generate scaffold PassportApplicationForm
 ```
 
-### 2. Update the model to extend from Flex::ApplicationForm
+### 2. Update the model to extend from Strata::ApplicationForm
 
 ```ruby
-# models/flex/passport_application_form.rb
-class PassportApplicationForm < Flex::ApplicationForm # <-- ensure that you're extending from Flex::ApplicationForm, not ApplicationRecord
+# models/strata/passport_application_form.rb
+class PassportApplicationForm < Strata::ApplicationForm # <-- ensure that you're extending from Strata::ApplicationForm, not ApplicationRecord
 ```
 
 ### 3. Add attributes to your model
@@ -61,11 +61,11 @@ class PassportApplicationForm < Flex::ApplicationForm # <-- ensure that you're e
 Add attributes to your model. More can be added later.
 
 ```ruby
-class PassportApplicationForm < Flex::ApplicationForm
-  flex_attribute :name, :name
-  flex_attribute :birth_date, :memorable_date
-  flex_attribute :ssn, :tax_id
-  flex_attribute :residential_address, :address
+class PassportApplicationForm < Strata::ApplicationForm
+  strata_attribute :name, :name
+  strata_attribute :birth_date, :memorable_date
+  strata_attribute :ssn, :tax_id
+  strata_attribute :residential_address, :address
 end
 ```
 
@@ -80,7 +80,7 @@ Generate a migration. The migration needs to include the following attributes in
 - `submitted_at:datetime`
 
 ```shell
-bin/rails generate flex:migration status:integer user_id:uuid submitted_at:datetime name:name birth_date:memorable_date ssn:tax_id residential_address:address
+bin/rails generate strata:migration status:integer user_id:uuid submitted_at:datetime name:name birth_date:memorable_date ssn:tax_id residential_address:address
 ```
 
 For more information about the Flex migration generator, see [Flex Data Modeler](/docs/flex-data-modeler.md).

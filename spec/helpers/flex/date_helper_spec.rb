@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::DateHelper, type: :helper do
+RSpec.describe Strata::DateHelper, type: :helper do
   describe '#local_en_us' do
     it 'formats a date in US locale (MM/DD/YYYY)' do
       date = Date.new(2023, 1, 15)

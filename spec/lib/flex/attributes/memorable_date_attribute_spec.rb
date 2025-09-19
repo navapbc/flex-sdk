@@ -1,20 +1,20 @@
 require "rails_helper"
 
-RSpec.describe Flex::Attributes::MemorableDateAttribute do
+RSpec.describe Strata::Attributes::MemorableDateAttribute do
   let(:object) { TestRecord.new }
 
   it "allows setting a Date" do
     object.date_of_birth = Date.new(2020, 1, 2)
-    expect(object.date_of_birth).to eq(Flex::USDate.new(2020, 1, 2))
+    expect(object.date_of_birth).to eq(Strata::USDate.new(2020, 1, 2))
     expect(object.date_of_birth.year).to eq(2020)
     expect(object.date_of_birth.month).to eq(1)
     expect(object.date_of_birth.day).to eq(2)
   end
 
   [
-    [ { year: 2020, month: 1, day: 2 }, Flex::USDate.new(2020, 1, 2), 2020, 1, 2 ],
-    [ { year: "2020", month: "1", day: "2" }, Flex::USDate.new(2020, 1, 2), 2020, 1, 2 ],
-    [ { year: "2020", month: "01", day: "02" }, Flex::USDate.new(2020, 1, 2), 2020, 1, 2 ],
+    [ { year: 2020, month: 1, day: 2 }, Strata::USDate.new(2020, 1, 2), 2020, 1, 2 ],
+    [ { year: "2020", month: "1", day: "2" }, Strata::USDate.new(2020, 1, 2), 2020, 1, 2 ],
+    [ { year: "2020", month: "01", day: "02" }, Strata::USDate.new(2020, 1, 2), 2020, 1, 2 ],
     [ { year: "badyear", month: "badmonth", day: "badday" }, nil, nil, nil, nil ]
   ].each do |input_hash, expected, expected_year, expected_month, expected_day|
     it "allows setting a Hash with year, month, and day [#{input_hash}]" do
@@ -28,8 +28,8 @@ RSpec.describe Flex::Attributes::MemorableDateAttribute do
   end
 
   [
-    [ "2020-1-2", Flex::USDate.new(2020, 1, 2), 2020, 1, 2 ],
-    [ "2020-01-02", Flex::USDate.new(2020, 1, 2), 2020, 1, 2 ],
+    [ "2020-1-2", Strata::USDate.new(2020, 1, 2), 2020, 1, 2 ],
+    [ "2020-01-02", Strata::USDate.new(2020, 1, 2), 2020, 1, 2 ],
     [ "badyear-badmonth-badday", nil, nil, nil, nil ]
   ].each do |input_string, expected, expected_year, expected_month, expected_day|
     it "allows setting string in format <YEAR>-<MONTH>-<DAY> [#{expected}]" do
