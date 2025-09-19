@@ -44,7 +44,7 @@ module Flex
     end
 
     def business_process_class
-      self.case.class.business_process_class.constantize
+      self.case.class.business_process_class
     end
 
     def start_from_event(event)
