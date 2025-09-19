@@ -6,6 +6,7 @@ module Flex
 
     before_action :set_task, only: %i[ show update ]
     before_action :set_case, only: %i[ show update ]
+    before_action :set_application_form, only: %i[ show update]
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
@@ -47,6 +48,10 @@ module Flex
 
     def set_case
       @case = @task.case if @task.present?
+    end
+
+    def set_application_form
+      @application_form = @case.class.application_form_class.find(@case.application_form_id) if @case.present?
     end
 
     def add_task_details_view_path
