@@ -51,7 +51,7 @@ module Flex
     end
 
     def set_application_form
-      @application_form = @case.application_form if @case.present?
+      @application_form = @case.class.application_form_class.find(@case.application_form_id) if @case.present?
     end
 
     def add_task_details_view_path
