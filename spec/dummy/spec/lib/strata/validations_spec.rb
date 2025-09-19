@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Strata::Validations do
   let(:object) { TestRecord.new }
 
-  describe '#flex_validates_nested' do
+  describe '#strata_validates_nested' do
     let(:valid_base_period) do
       Strata::YearQuarterRange.new(
         start: Strata::YearQuarter.new(year: 2025, quarter: 1),
