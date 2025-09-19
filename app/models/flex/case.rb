@@ -38,7 +38,7 @@ module Flex
     # @example
     #   PassportCase.application_form_class #=> "PassportApplicationForm"
     def self.application_form_class
-      name.sub("Case", "ApplicationForm")
+      name.sub("Case", "ApplicationForm").constantize
     end
     attribute :application_form_id, :uuid
 
