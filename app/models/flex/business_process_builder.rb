@@ -53,7 +53,7 @@ module Flex
       end
 
       def start_on_application_form_created(step_name)
-        event_name = "#{case_class.application_form_class.name}Created"
+        event_name = "#{case_class.application_form_class}Created"
         start(step_name, on: event_name) do |event|
           case_class.new(application_form_id: event[:payload][:application_form_id])
         end
