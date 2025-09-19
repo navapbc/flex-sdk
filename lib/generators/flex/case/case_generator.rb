@@ -154,7 +154,6 @@ module Flex
         template "views/documents.html.erb", "app/views/#{file_name.pluralize}/documents.html.erb"
         template "views/tasks.html.erb", "app/views/#{file_name.pluralize}/tasks.html.erb"
         template "views/notes.html.erb", "app/views/#{file_name.pluralize}/notes.html.erb"
-        template "views/_case_layout.html.erb", "app/views/#{file_name.pluralize}/_case_layout.html.erb"
       end
 
       def update_routes

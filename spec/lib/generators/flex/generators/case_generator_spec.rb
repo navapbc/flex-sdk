@@ -781,7 +781,6 @@ RSpec.describe Flex::Generators::CaseGenerator, type: :generator do
       expect(generator).to have_received(:template).with("views/documents.html.erb", "app/views/test_cases/documents.html.erb")
       expect(generator).to have_received(:template).with("views/tasks.html.erb", "app/views/test_cases/tasks.html.erb")
       expect(generator).to have_received(:template).with("views/notes.html.erb", "app/views/test_cases/notes.html.erb")
-      expect(generator).to have_received(:template).with("views/_case_layout.html.erb", "app/views/test_cases/_case_layout.html.erb")
     end
   end
 
