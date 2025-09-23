@@ -38,7 +38,9 @@ module Flex
     # Returns the application form class for this case class.
     # Subclasses can override this method to customize the application form class naming.
     def self.application_form_class
-      name.sub("Case", "ApplicationForm").constantize
+      # We want to return the class name as a string due to a build issue, which is resolvable in upgrading to Rails 8.
+      # Method call will need to constantize downstream.
+      name.sub("Case", "ApplicationForm")
     end
     attribute :application_form_id, :uuid
 
