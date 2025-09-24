@@ -1,2 +1,2 @@
-class TasksController < Flex::TasksController
+class TasksController < Strata::TasksController
 end

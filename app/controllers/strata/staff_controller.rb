@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # Base controller for all staff-related functionality.
   # Sets the layout to the flex/staff layout
   class StaffController < ApplicationController
