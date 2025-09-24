@@ -14,7 +14,7 @@ module Strata
       layout "component_preview"
 
       def default
-        render template: "flex/shared/_breadcrumbs", locals: {
+        render template: "strata/shared/_breadcrumbs", locals: {
           breadcrumbs: [
             { text: "Home", link: "/" },
             { text: "Cases", link: "/cases" },
