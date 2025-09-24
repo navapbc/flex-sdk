@@ -59,7 +59,7 @@
           <% if local_assigns.key?(:row_view) %>
             <%= render partial: row_view, locals: { application_form: } %>
           <% else %>
-            <%= render partial: "flex/application_forms/row", locals: { application_form: } %>
+            <%= render partial: "strata/application_forms/row", locals: { application_form: } %>
           <% end %>
         <% end %>
       </tbody>

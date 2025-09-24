@@ -39,10 +39,10 @@
   <!-- Filters -->
   <div class="grid-row grid-gap-4 margin-bottom-4">
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/type_filter', locals: { task_types: task_types } %>
+      <%= render partial: 'strata/tasks/type_filter', locals: { task_types: task_types } %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
-      <%= render partial: 'flex/tasks/due_date_filter' %>
+      <%= render partial: 'strata/tasks/due_date_filter' %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
@@ -94,7 +94,7 @@
   </table>
   <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
 <% else %>
-  <%= render partial: 'flex/tasks/no_tasks_alert' %>
+  <%= render partial: 'strata/tasks/no_tasks_alert' %>
 <% end %>
 </div>
 </div>
