@@ -1,5 +1,5 @@
-# This migration comes from flex (originally 20250430160812)
-class CreateFlexTasks < ActiveRecord::Migration[8.0]
+# This migration comes from strata (originally 20250430160812)
+class CreateStrataTasks < ActiveRecord::Migration[8.0]
   def change
     create_table :strata_tasks, id: :uuid do |t|
     t.string :type, index: true
