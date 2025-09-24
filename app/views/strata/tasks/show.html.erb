@@ -17,11 +17,11 @@
     <%
       breadcrumbs = local_assigns[:breadcrumbs] || [
         {
-          text: t("flex.tasks.breadcrumbs.home"),
+          text: t("strata.tasks.breadcrumbs.home"),
           link: "/"
         },
         {
-          text: t("flex.tasks.breadcrumbs.tasks"),
+          text: t("strata.tasks.breadcrumbs.tasks"),
           link: url_for(only_path: true, action: :index)
         },
         {
@@ -36,13 +36,13 @@
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
+            <strong><%= t("strata.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
           </div>
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
+            <strong><%= t("strata.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
           </div>
           <div class="grid-col-auto">
-            <strong><%= t("flex.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
+            <strong><%= t("strata.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@
           </div>
         </div>
       <% end %>
-      <h2 class="section-heading-h2"><%= t("flex.tasks.show.headers.task_details") %></h2>
+      <h2 class="section-heading-h2"><%= t("strata.tasks.show.headers.task_details") %></h2>
       <% if content_for?(:task_details_partial) %>
         <%= yield(:task_details_partial) %>
       <% else %>

@@ -1,13 +1,13 @@
 <%= form_with method: 'get' do |form| %>
   <%= hidden_field_tag(:filter_type, params[:filter_type]) if params[:filter_type].present? %>
   <%= hidden_field_tag(:filter_status, params[:filter_status]) if params[:filter_status].present? %>
-  <%= form.label :filter_date, t("flex.tasks.partials.due_date_filter.label"), class: 'usa-label' %>
+  <%= form.label :filter_date, t("strata.tasks.partials.due_date_filter.label"), class: 'usa-label' %>
   <%= form.select :filter_date, [
-      [t("flex.tasks.partials.due_date_filter.options.all"), ""],
-      [t("flex.tasks.partials.due_date_filter.options.overdue"), "overdue"],
-      [t("flex.tasks.partials.due_date_filter.options.today"), "today"],
-      [t("flex.tasks.partials.due_date_filter.options.tomorrow"), "tomorrow"],
-      [t("flex.tasks.partials.due_date_filter.options.this_week"), "this_week"],
+      [t("strata.tasks.partials.due_date_filter.options.all"), ""],
+      [t("strata.tasks.partials.due_date_filter.options.overdue"), "overdue"],
+      [t("strata.tasks.partials.due_date_filter.options.today"), "today"],
+      [t("strata.tasks.partials.due_date_filter.options.tomorrow"), "tomorrow"],
+      [t("strata.tasks.partials.due_date_filter.options.this_week"), "this_week"],
     ],
     { include_blank: false, selected: params[:filter_date] },
     { class: 'usa-select', onchange: 'this.form.submit()' } %>

@@ -142,7 +142,7 @@ module Strata
       options[:width] = "md"
 
       append_to_option(options, :class, " usa-masked")
-      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("flex.form_builder.tax_id_format")))
+      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("strata.form_builder.tax_id_format")))
 
       text_field(attribute, options)
     end
@@ -155,7 +155,7 @@ module Strata
         end
       end
 
-      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("flex.form_builder.date_picker_format")))
+      append_to_option(options, :hint, @template.content_tag(:p, I18n.t("strata.form_builder.date_picker_format")))
 
       group_options = options[:group_options] || {}
       append_to_option(group_options, :class, " usa-date-picker")
@@ -180,7 +180,7 @@ module Strata
     # @see https://designsystem.digital.gov/components/memorable-date/
     def memorable_date(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
-      hint_text = options.delete(:hint) || I18n.t("flex.form_builder.memorable_date_hint")
+      hint_text = options.delete(:hint) || I18n.t("strata.form_builder.memorable_date_hint")
       hint_id = "#{attribute}_hint"
 
       object_value = object&.send(attribute)
@@ -192,7 +192,7 @@ module Strata
       month_options = (1..12).map do |m|
         [ Date::MONTHNAMES[m], m ]
       end
-      month_options.unshift([ I18n.t("flex.form_builder.select_month"), "" ])
+      month_options.unshift([ I18n.t("strata.form_builder.select_month"), "" ])
 
       fieldset(legend_text) do
         @template.content_tag(:span, hint_text, class: "usa-hint", id: hint_id) +
@@ -260,9 +260,9 @@ module Strata
     # @option options [String] :last_hint Custom hint text for last name
     # @return [String] The rendered HTML for the name input
     def name(attribute, options = {})
-      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.name.legend")
-      first_hint_text = options.delete(:first_hint) || I18n.t("flex.form_builder.name.first_hint")
-      last_hint_text = options.delete(:last_hint) || I18n.t("flex.form_builder.name.last_hint")
+      legend_text = options.delete(:legend) || I18n.t("strata.form_builder.name.legend")
+      first_hint_text = options.delete(:first_hint) || I18n.t("strata.form_builder.name.first_hint")
+      last_hint_text = options.delete(:last_hint) || I18n.t("strata.form_builder.name.last_hint")
       first_hint_id = "#{attribute}_first_hint"
       last_hint_id = "#{attribute}_last_hint"
 
@@ -276,7 +276,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_first",
-              label: I18n.t("flex.form_builder.name.first_label"),
+              label: I18n.t("strata.form_builder.name.first_label"),
               hint: first_hint_text,
               class: "usa-input usa-input--xl",
               "aria-describedby": first_hint_id,
@@ -288,7 +288,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_middle",
-              label: I18n.t("flex.form_builder.name.middle_label"),
+              label: I18n.t("strata.form_builder.name.middle_label"),
               class: "usa-input usa-input--xl",
               optional: true,
               autocomplete: "additional-name"
@@ -299,7 +299,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_last",
-              label: I18n.t("flex.form_builder.name.last_label"),
+              label: I18n.t("strata.form_builder.name.last_label"),
               hint: last_hint_text,
               class: "usa-input usa-input--xl",
               autocomplete: "family-name"
@@ -360,8 +360,8 @@ module Strata
       no_options = options[:no_options] || {}
       value = if object then object.send(attribute) else nil end
 
-      yes_options = { label: I18n.t("flex.form_builder.boolean_true") }.merge(yes_options)
-      no_options = { label: I18n.t("flex.form_builder.boolean_false") }.merge(no_options)
+      yes_options = { label: I18n.t("strata.form_builder.boolean_true") }.merge(yes_options)
+      no_options = { label: I18n.t("strata.form_builder.boolean_false") }.merge(no_options)
 
       @template.capture do
         # Hidden field included for same reason as radio button collections (https://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-collection_radio_buttons)
@@ -387,7 +387,7 @@ module Strata
     # @option options [String] :legend Custom legend text
     # @return [String] The rendered HTML for the address input
     def address_fields(attribute, options = {})
-      legend_text = options.delete(:legend) || I18n.t("flex.form_builder.address.legend")
+      legend_text = options.delete(:legend) || I18n.t("strata.form_builder.address.legend")
 
       fieldset(legend_text) do
         @template.content_tag(:div) do
@@ -395,7 +395,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_street_line_1",
-              label: I18n.t("flex.form_builder.address.street_line_1_label"),
+              label: I18n.t("strata.form_builder.address.street_line_1_label"),
               class: "usa-input usa-input--xl",
               autocomplete: "address-line1"
             )
@@ -405,7 +405,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_street_line_2",
-              label: I18n.t("flex.form_builder.address.street_line_2_label"),
+              label: I18n.t("strata.form_builder.address.street_line_2_label"),
               class: "usa-input usa-input--xl",
               optional: true,
               autocomplete: "address-line2"
@@ -416,7 +416,7 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_city",
-              label: I18n.t("flex.form_builder.address.city_label"),
+              label: I18n.t("strata.form_builder.address.city_label"),
               class: "usa-input usa-input--xl",
               autocomplete: "address-level2"
             )
@@ -427,7 +427,7 @@ module Strata
             select(
               "#{attribute}_state",
               us_states_and_territories,
-              { label: I18n.t("flex.form_builder.address.state_label") },
+              { label: I18n.t("strata.form_builder.address.state_label") },
               { class: "usa-select", autocomplete: "address-level1" }
             )
           end +
@@ -436,8 +436,8 @@ module Strata
           @template.content_tag(:div, class: "usa-form-group") do
             text_field(
               "#{attribute}_zip_code",
-              label: I18n.t("flex.form_builder.address.zip_code_label"),
-              hint: I18n.t("flex.form_builder.address.zip_code_hint"),
+              label: I18n.t("strata.form_builder.address.zip_code_label"),
+              hint: I18n.t("strata.form_builder.address.zip_code_hint"),
               class: "usa-input usa-input--md",
               inputmode: "numeric",
               pattern: "[0-9]{5}(-[0-9]{4})?",
@@ -450,8 +450,8 @@ module Strata
 
     def date_range(attribute, options = {})
       legend_text = options.delete(:legend) || human_name(attribute)
-      start_hint_text = I18n.t("flex.form_builder.date_range.start_hint")
-      end_hint_text = I18n.t("flex.form_builder.date_range.end_hint")
+      start_hint_text = I18n.t("strata.form_builder.date_range.start_hint")
+      end_hint_text = I18n.t("strata.form_builder.date_range.end_hint")
 
       fieldset(legend_text) do
         field_error(attribute) +
@@ -459,14 +459,14 @@ module Strata
           date_picker(
             "#{attribute}_start",
             hint: start_hint_text,
-            label: I18n.t("flex.form_builder.date_range.start_label")
+            label: I18n.t("strata.form_builder.date_range.start_label")
           )
         end +
         form_group do
           date_picker(
             "#{attribute}_end",
             hint: end_hint_text,
-            label: I18n.t("flex.form_builder.date_range.end_label")
+            label: I18n.t("strata.form_builder.date_range.end_label")
           )
         end
       end
