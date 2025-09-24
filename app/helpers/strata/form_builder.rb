@@ -582,7 +582,7 @@ module Strata
       end
 
       if options[:optional]
-        text += @template.content_tag(:span, " (#{I18n.t('flex.form_builder.optional').downcase})", class: "usa-hint")
+        text += @template.content_tag(:span, " (#{I18n.t('strata.form_builder.optional').downcase})", class: "usa-hint")
       end
 
       if hint_option
