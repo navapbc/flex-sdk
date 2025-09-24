@@ -1,8 +1,8 @@
 module Strata
   # Base controller for all staff-related functionality.
-  # Sets the layout to the flex/staff layout
+  # Sets the layout to the strata/staff layout
   class StaffController < ApplicationController
-    layout "flex/staff"
+    layout "strata/staff"
 
     before_action :set_header_cases_links
 
