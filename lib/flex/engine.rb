@@ -25,6 +25,7 @@ module Flex
     initializer "flex.factory_bot", after: "factory_bot.set_factory_paths" do
       if defined?(FactoryBot)
         FactoryBot.definition_file_paths << File.expand_path("../../../spec/factories/flex", __FILE__)
+        FactoryBot.definition_file_paths << File.expand_path("../../../spec/factories/strata", __FILE__)
       end
     end
 

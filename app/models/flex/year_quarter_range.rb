@@ -1,3 +1,3 @@
 module Flex
-  YearQuarterRange = ValueRange[YearQuarter]
+  YearQuarterRange = Strata::ValueRange[Strata::YearQuarter]
 end
