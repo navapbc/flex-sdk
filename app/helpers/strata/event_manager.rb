@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # EventManager is a pub/sub system for workflow events.
   # It allows components to communicate with each other asynchronously
   # through event publishing and subscription.
@@ -7,7 +7,7 @@ module Flex
   # between workflow steps and notifying components of state changes.
   #
   # @example Publishing an event
-  #   Flex::EventManager.publish("FormSubmitted", { form_id: 123 })
+  #   Strata::EventManager.publish("FormSubmitted", { form_id: 123 })
   #
   # @example Subscribing to an event
   #   subscription = Flex::EventManager.subscribe("FormSubmitted") do |event|
