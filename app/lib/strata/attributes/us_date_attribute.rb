@@ -1,10 +1,10 @@
-module Flex
+module Strata
   module Attributes
     # This module provides a custom ActiveRecord type for handling dates in a US format.
     # It allows dates to be stored in a format that is consistent with US conventions
     module USDateAttribute
       extend ActiveSupport::Concern
-      include Validations
+      include Flex::Validations
 
       def self.attribute_type
         :single_column_value_object

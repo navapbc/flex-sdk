@@ -17,16 +17,16 @@ module Flex
   #
   module Attributes
     extend ActiveSupport::Concern
-    include Flex::Attributes::AddressAttribute
-    include Flex::Attributes::ArrayAttribute
-    include Flex::Attributes::MemorableDateAttribute
-    include Flex::Attributes::MoneyAttribute
-    include Flex::Attributes::NameAttribute
-    include Flex::Attributes::RangeAttribute
-    include Flex::Attributes::TaxIdAttribute
-    include Flex::Attributes::USDateAttribute
-    include Flex::Attributes::YearMonthAttribute
-    include Flex::Attributes::YearQuarterAttribute
+    include Strata::Attributes::AddressAttribute
+    include Strata::Attributes::ArrayAttribute
+    include Strata::Attributes::MemorableDateAttribute
+    include Strata::Attributes::MoneyAttribute
+    include Strata::Attributes::NameAttribute
+    include Strata::Attributes::RangeAttribute
+    include Strata::Attributes::TaxIdAttribute
+    include Strata::Attributes::USDateAttribute
+    include Strata::Attributes::YearMonthAttribute
+    include Strata::Attributes::YearQuarterAttribute
 
     # Helper method. Given a type, return the corresponding class in the Strata module.
     # If the class is not found in the Strata module, it will try to find it

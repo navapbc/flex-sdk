@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # RangeAttribute provides a DSL for defining attributes representing ranges
     # of values using ValueRange objects.
@@ -11,7 +11,7 @@ module Flex
     #   end
     #
     #   enrollment = Enrollment.new
-    #   enrollment.period = Flex::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
+    #   enrollment.period = Strata::DateRange.new(Date.new(2023, 1, 1), Date.new(2023, 12, 31))
     #
     # Key features:
     # - Stores ranges in a single jsonb column

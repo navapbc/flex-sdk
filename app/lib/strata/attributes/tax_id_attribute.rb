@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # TaxIdAttribute provides a DSL for defining tax ID attributes in form models.
     # It creates a string field with validation and formatting capabilities for

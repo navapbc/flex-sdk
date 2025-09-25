@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # MoneyAttribute provides a DSL for defining money attributes in form models.
     # It creates an integer field with validation and formatting capabilities for

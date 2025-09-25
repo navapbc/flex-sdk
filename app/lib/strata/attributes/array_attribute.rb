@@ -1,11 +1,11 @@
-module Flex
+module Strata
   module Attributes
     # ArrayAttribute provides a DSL for defining attributes representing arrays
     # of value objects.
     #
     # @example Defining an array of addresses
     #   class Company < ApplicationRecord
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :office_locations, :address, array: true
     #   end
@@ -72,7 +72,7 @@ module Flex
         # @return [void]
         # @param [Object] item_type
         def array_attribute(name, item_type, options = {})
-          item_class = Flex::Attributes::ArrayAttribute.get_item_class(item_type)
+          item_class = Strata::Attributes::ArrayAttribute.get_item_class(item_type)
 
           attribute name, ArrayType.new(item_class), default: []
           validate :"validate_#{name}"

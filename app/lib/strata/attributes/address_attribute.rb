@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # AddressAttribute provides a DSL for defining address attributes in form models.
     # It sets up a composed_of relationship with the Flex::Address value object
@@ -7,7 +7,7 @@ module Flex
     #
     # @example Adding an address attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes::AddressAttribute
+    #     include Strata::Attributes::AddressAttribute
     #     address_attribute :mailing_address
     #   end
     #

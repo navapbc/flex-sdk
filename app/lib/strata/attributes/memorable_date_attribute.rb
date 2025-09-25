@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # MemorableDateAttribute provides a DSL for defining date attributes in form models
     # that can be entered as separate year, month, and day fields.

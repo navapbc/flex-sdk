@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # Internal module used by other Flex attribute modules to implement attributes
     # whose type is a subclass of Strata::ValueObject. This module is not intended to be
@@ -16,7 +16,7 @@ module Flex
     # This module is used internally to implement higher-level attribute modules in Flex.
     module BasicValueObjectAttribute
       extend ActiveSupport::Concern
-      include Validations
+      include Flex::Validations
 
       class_methods do
         # Defines an attribute associated with a subclass of

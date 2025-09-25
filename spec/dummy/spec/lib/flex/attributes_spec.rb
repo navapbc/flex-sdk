@@ -12,7 +12,7 @@ RSpec.describe Flex::Attributes do
       object.tax_id = Strata::TaxId.new("987-65-4321")
       object.weekly_wage = Strata::Money.new(cents: 5000)
       object.date_of_birth = Strata::USDate.new(1990, 3, 15)
-      object.period = Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31))
+      object.period = Strata::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31))
       object.save!
 
       loaded_record = TestRecord.find(object.id)
@@ -44,7 +44,7 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.date_of_birth).to eq(Strata::USDate.new(1990, 3, 15))
 
       # Verify date_range
-      expect(loaded_record.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)))
+      expect(loaded_record.period).to eq(Strata::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)))
       expect(loaded_record.period_start).to eq(Strata::USDate.new(2023, 1, 1))
       expect(loaded_record.period_end).to eq(Strata::USDate.new(2023, 12, 31))
     end

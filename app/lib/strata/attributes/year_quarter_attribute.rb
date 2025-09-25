@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # YearQuarterAttribute provides functionality for handling year and quarter fields.
     # It uses the Strata::YearQuarter value object for storage and manipulation.
@@ -19,7 +19,7 @@ module Flex
     #
     module YearQuarterAttribute
       extend ActiveSupport::Concern
-      include Validations
+      include Flex::Validations
 
       def self.attribute_type
         :single_column_value_object

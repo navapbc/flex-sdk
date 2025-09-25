@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Attributes
     # NameAttribute provides functionality for handling name fields with first, middle, and last components.
     # It uses the Strata::Name value object for storage and manipulation.

@@ -368,7 +368,7 @@ RSpec.describe Strata::ValueRange do
 
   describe ".[]" do
     it 'memoizes the value range class for a given value class' do
-      expect(Flex::DateRange).to be(described_class[Strata::USDate])
+      expect(Strata::DateRange).to be(described_class[Strata::USDate])
       [ Strata::USDate, Integer, String ].each do |value_class|
         expect(described_class[value_class]).to be(described_class[value_class]) # rubocop:disable RSpec/IdenticalEqualityAssertion
       end
@@ -377,7 +377,7 @@ RSpec.describe Strata::ValueRange do
     it 'raises ArgumentError when using Date as value class' do
       expect { described_class[Date] }.to raise_error(
         ArgumentError,
-        "Use Strata::ValueRange[Strata::USDate] or Flex::DateRange instead of Strata::ValueRange[Date]"
+        "Use Strata::ValueRange[Strata::USDate] or Strata::DateRange instead of Strata::ValueRange[Date]"
       )
     end
   end

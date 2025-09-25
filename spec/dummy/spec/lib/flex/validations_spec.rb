@@ -12,7 +12,7 @@ RSpec.describe Flex::Validations do
     end
 
     let(:valid_period) do
-      Flex::DateRange.new(
+      Strata::DateRange.new(
         start: Strata::USDate.new(2025, 6, 16),
         end: Strata::USDate.new(2025, 6, 17)
       )
@@ -51,7 +51,7 @@ RSpec.describe Flex::Validations do
           start: Strata::YearQuarter.new(year: nil, quarter: nil),
           end: Strata::YearQuarter.new(year: nil, quarter: nil)
         )
-        object.period = Flex::DateRange.new(
+        object.period = Strata::DateRange.new(
           start: nil,
           end: nil
         )
@@ -64,7 +64,7 @@ RSpec.describe Flex::Validations do
 
     context 'when nested object has base errors' do
       before do
-        object.period = Flex::DateRange.new(
+        object.period = Strata::DateRange.new(
           start: Strata::USDate.new(2025, 1, 1),
           end: Strata::USDate.new(2020, 1, 1)
         )
