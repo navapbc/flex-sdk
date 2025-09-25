@@ -1,8 +1,8 @@
 require 'rails_helper'
 require 'temporary_tables'
 
-module Flex
-  RSpec.describe Strata::IncomeRecord, type: :model do
+module Strata
+  RSpec.describe IncomeRecord, type: :model do
     describe 'IncomeRecord[YearQuarter]' do
       include TemporaryTables::Methods
 
