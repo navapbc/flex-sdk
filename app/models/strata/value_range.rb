@@ -22,7 +22,7 @@ module Strata
 
     def self.[](value_class)
       if value_class == Date
-        raise ArgumentError, "Use Strata::ValueRange[Strata::USDate] or Flex::DateRange instead of Strata::ValueRange[Date]"
+        raise ArgumentError, "Use Strata::ValueRange[Strata::USDate] or Strata::DateRange instead of Strata::ValueRange[Date]"
       end
 
       @value_range_classes ||= {}

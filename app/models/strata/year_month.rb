@@ -55,7 +55,7 @@ module Strata
       else
                    USDate.new(year, month, 31)
       end
-      Flex::DateRange.new(start: first_day, end: last_day)
+      Strata::DateRange.new(start: first_day, end: last_day)
     end
 
     def to_s
