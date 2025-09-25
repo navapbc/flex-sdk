@@ -16,18 +16,18 @@
 <!-- Main content -->
 <main class="usa-section">
   <div class="grid-container">
-    <h1 class="usa-heading-xl"><%= t("flex.tasks.index.title") %></h1>
+    <h1 class="usa-heading-xl"><%= t("strata.tasks.index.title") %></h1>
     <nav class="display-flex border-bottom-1px border-base-light">
       <% 
         filter_params = params.permit(:filter_date, :filter_type, :filter_status)
         [
           { 
-            name: t("flex.tasks.index.tabs.assigned"), 
+            name: t("strata.tasks.index.tabs.assigned"), 
             path: url_for(filter_params.merge(filter_status: nil)), 
             active: params[:filter_status] != "completed" 
           },
           { 
-            name: t("flex.tasks.index.tabs.completed"), 
+            name: t("strata.tasks.index.tabs.completed"), 
             path: url_for(filter_params.merge(filter_status: "completed")), 
             active: params[:filter_status] == "completed" 
           }
@@ -46,11 +46,11 @@
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
-      <%= button_to t("flex.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task), 
+      <%= button_to t("strata.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task), 
                       id: "next-task-button",
                       disabled: !unassigned_tasks&.any?,
                       method: :post, 
-                      title: unassigned_tasks&.any? ? t("flex.tasks.messages.no_tasks_available") : nil,
+                      title: unassigned_tasks&.any? ? t("strata.tasks.messages.no_tasks_available") : nil,
                       class: "usa-button" %>
     </div>
   </div>
@@ -60,16 +60,16 @@
       <thead>
         <tr>
           <th data-sortable scope="col" role="columnheader" aria-sort="descending">
-            <%= t("flex.tasks.index.columns.col_due_date") %>
+            <%= t("strata.tasks.index.columns.col_due_date") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            <%= t("flex.tasks.index.columns.col_type") %>
+            <%= t("strata.tasks.index.columns.col_type") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            <%= t("flex.tasks.index.columns.col_case_id") %>
+            <%= t("strata.tasks.index.columns.col_case_id") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
-            <%= t("flex.tasks.index.columns.col_created_date") %>
+            <%= t("strata.tasks.index.columns.col_created_date") %>
           </th>
         </tr>
       </thead>
