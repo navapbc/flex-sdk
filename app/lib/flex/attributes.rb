@@ -28,14 +28,18 @@ module Flex
     include Flex::Attributes::YearMonthAttribute
     include Flex::Attributes::YearQuarterAttribute
 
-    # Helper method. Given a type, return the corresponding class in the Flex module.
-    # If the class is not found in the Flex module, it will try to find it
-    # in the global namespace.
+    # Helper method. Given a type, return the corresponding class in the Strata module.
+    # If the class is not found in the Strata module, it will try to find it
+    # in the Flex module, then in the global namespace.
     def self.resolve_class(type)
       begin
-        "Flex::#{type.to_s.camelize}".constantize
+        "Strata::#{type.to_s.camelize}".constantize
       rescue NameError
-        type.to_s.camelize.constantize
+        begin
+          "Flex::#{type.to_s.camelize}".constantize
+        rescue NameError
+          type.to_s.camelize.constantize
+        end
       end
     end
 
@@ -46,7 +50,7 @@ module Flex
       # @param [Symbol] type The type of attribute (:address, :memorable_date, :money, :name, :tax_id, :us_date, :year_quarter)
       # @param [Hash] options Options for the attribute. This includes:
       #   - `:array` (Boolean): If true, the attribute will be an array of the specified type
-      #   - `:range` (Boolean): If true, the attribute will be a Flex::ValueRange of the specified type
+      #   - `:range` (Boolean): If true, the attribute will be a Strata::ValueRange of the specified type
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
       def flex_attribute(name, type, options = {})
