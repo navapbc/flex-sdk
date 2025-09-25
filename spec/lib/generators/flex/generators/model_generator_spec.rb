@@ -35,7 +35,7 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
       end
     end
 
-    it "creates model file with Flex::Attributes" do
+    it "creates model file with Strata::Attributes" do
       allow(generator).to receive(:generate).and_call_original
       allow(File).to receive(:join).and_call_original
       allow(generator).to receive(:template)
