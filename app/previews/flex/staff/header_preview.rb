@@ -17,8 +17,8 @@ module Flex
         # Mock the request object in order to simulate the current path
         request = Request.new("/passport_cases/closed")
 
-        # render template: "flex/previews/empty", locals: {
-        render template: "flex/staff/_header", locals: {
+        # render template: "strata/previews/empty", locals: {
+        render template: "strata/staff/_header", locals: {
           cases_links: [
             { name: "Passport Cases", path: "/staff/passport_cases" }
           ],

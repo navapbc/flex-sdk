@@ -9,8 +9,8 @@ Examples:
 
 This will create:
     Controllers:
-        app/controllers/staff_controller.rb - Main staff dashboard controller inheriting from Flex::StaffController
-        app/controllers/tasks_controller.rb - Tasks management controller inheriting from Flex::TasksController
+        app/controllers/staff_controller.rb - Main staff dashboard controller inheriting from Strata::StaffController
+        app/controllers/tasks_controller.rb - Tasks management controller inheriting from Strata::TasksController
 
     Views:
         app/views/staff/index.html.erb - Staff dashboard index page

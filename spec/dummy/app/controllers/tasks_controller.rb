@@ -1,4 +1,4 @@
-class TasksController < Flex::TasksController
+class TasksController < Strata::TasksController
   def task_class
     PassportTask
   end

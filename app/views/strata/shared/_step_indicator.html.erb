@@ -1,0 +1,52 @@
+<%
+# Renders a step indicator that shows progress through a multi-step process.
+#
+# @param steps [Array<String, Symbol>] An array of step identifiers that will be displayed in order
+# @param current_step [String, Symbol] The identifier of the current active step
+# @param translation_scope [String] - I18n scope prefix, defaulting to 'flex.application_forms.steps'
+#
+# Each step's display name is fetched from the i18n translations under flex.application_forms.steps
+# Steps before and including the current step are marked as complete.
+
+steps = steps.map(&:to_sym)
+current_step = current_step.to_sym
+current_step_index = steps.index(current_step) || -1
+translation_scope ||= "flex.application_forms.steps"
+step_indicators = steps.map.with_index do |step, index|
+  {
+    name: t("#{ step }", scope: translation_scope, default: step.to_s.humanize),
+    complete: index <= current_step_index,
+    current: step == current_step
+  }
+end
+step_indicator_class = ""
+step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] == :counters
+%>
+
+<div
+  class="usa-step-indicator <%= step_indicator_class %>"
+  aria-label="progress"
+>
+  <ol class="usa-step-indicator__segments">
+    <% step_indicators.each do |step_indicator| %>
+      <li
+        class="<%= class_names(
+          "usa-step-indicator__segment",
+          "usa-step-indicator__segment--complete": step_indicator[:complete],
+          "usa-step-indicator__segment--current": step_indicator[:current]
+        )%>"
+      >
+          <span class="usa-step-indicator__segment-label">
+            <%= step_indicator[:name] %>
+            <span class="usa-sr-only">
+              <% if step_indicator[:complete] %>
+                completed
+              <% else %>
+                not completed
+              <% end %>
+            </span>
+          </span>
+        </li>
+    <% end %>
+  </ol>
+</div>

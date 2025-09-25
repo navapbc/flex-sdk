@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # DateHelper provides view helpers for formatting and manipulating dates.
   # This module is used in views to display dates in consistent formats.
   #

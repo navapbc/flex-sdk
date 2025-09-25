@@ -1,5 +1,5 @@
-class StaffController < Flex::StaffController
-  # This controller inherits from Flex::StaffController and provides access to the staff dashboard.
+class StaffController < Strata::StaffController
+  # This controller inherits from Strata::StaffController and provides access to the staff dashboard.
   before_action :authenticate_user!
 
   # TODO implement staff policy

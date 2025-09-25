@@ -7,7 +7,7 @@
     - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
     
     Example usage:
-      render template: 'flex/tasks/default/show', locals: {
+      render template: 'strata/tasks/default/show', locals: {
         task: @task,
         assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
       }

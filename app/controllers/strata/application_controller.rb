@@ -1,4 +1,4 @@
-module Flex
+module Strata
   class ApplicationController < ::ApplicationController
   end
 end

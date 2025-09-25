@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::TasksController, type: :controller do
+RSpec.describe Strata::TasksController, type: :controller do
   let(:user) { create(:user) }
   let(:application_form) { create(:test_application_form) }
   let(:case_record) { create(:test_case, application_form_id: application_form.id) }
@@ -8,7 +8,7 @@ RSpec.describe Flex::TasksController, type: :controller do
 
   before do
     Rails.application.routes.draw do
-      namespace :flex do
+      namespace :strata do
         resources :tasks, only: [ :index, :show, :update ]
       end
     end
