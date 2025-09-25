@@ -1,0 +1,107 @@
+en:
+  attributes:
+    tax_id: "Tax ID"    
+  errors:
+    messages:
+      integer_range_start_greater_than_end: "start cannot be greater than end"
+      invalid_array: "contains one or more invalid items"
+      invalid_date: "is an invalid date"
+      invalid_tax_id: "is not a valid Taxpayer Identification Number (TIN). Use the format (XXX-XX-XXXX)"
+      invalid_year_month: "is an invalid month"
+      invalid_year_quarter: "is an invalid quarter"
+      string_range_start_greater_than_end: "start must come before end alphabetically"
+      us_date_range_start_greater_than_end: "start date cannot be after end date"
+      year_month_range_start_greater_than_end: "start cannot be after end"
+      year_quarter_range_start_greater_than_end: "start cannot be after end"
+  strata:
+    application_forms:
+      index:
+        col_created_at: "Created At"
+        col_status: "Status"
+        col_actions: "Actions"
+      statuses:
+        in_progress: "In Progress"
+        submitted: "Submitted"
+      steps:
+        in_progress: "In progress"
+        submitted: "In review"
+        decision_made: "Determination made"
+    form_builder:
+      boolean_true: "Yes"
+      boolean_false: "No"
+      date_picker_format: "Format: mm/dd/yyyy"
+      memorable_date_hint: "For example: January 19 2000"
+      optional: "Optional"
+      select_month: "- Select -"
+      tax_id_format: "For example, 123456789"
+      name:
+        legend: "Name"
+        first_label: "First or given name"
+        first_hint: "For example, Jose, Darren, or Mai"
+        middle_label: "Middle name"
+        last_label: "Last or family name"
+        last_hint: "For example, Martinez Gonzalez, Gu, or Smith"
+      address:
+        legend: "Address"
+        street_line_1_label: "Street address"
+        street_line_2_label: "Street address line 2"
+        city_label: "City"
+        state_label: "State, territory, or military post"
+        zip_code_label: "ZIP code"
+        zip_code_hint: "5-digit ZIP or ZIP+4"
+      date_range:
+        start_label: "Start date"
+        end_label: "End date"
+        start_hint: "Enter the start date"
+        end_hint: "Enter the end date"
+    tasks:
+      actions:
+        pick_next: "Pick up next task"
+      messages:
+        task_picked_up: "Task assigned to you"
+        no_tasks_available: "No tasks available!"
+      breadcrumbs:
+        home: "Home"
+        tasks: "Tasks"
+      index:
+        title: "Tasks"
+        tabs:
+          assigned: "Assigned"
+          completed: "Completed"
+        columns:
+          col_due_date: "Task due date"
+          col_type: "Task type"
+          col_case_id: "Case ID"
+          col_created_date: "Task created date"
+      show:
+        headers:
+          task_details: "Task Details"
+        details:
+          status: "Task status"
+          due_on: "Due on"
+          assigned_to: "Assigned to"
+      partials:
+        due_date_filter:
+          label: "Filter by due date"
+          options:
+            all: "All tasks"
+            overdue: "Overdue"
+            today: "Today"
+            tomorrow: "Tomorrow"
+            this_week: "This week"
+        type_filter:
+          label: "Filter by task type"
+          options:
+            all: "All tasks"
+        no_tasks_alert:
+          message: "No tasks available!"
+    layouts:
+      staff:
+        header:
+          title: "Case Management System"
+  tasks:
+    statuses:
+      pending: "Pending"
+      completed: "Completed"
+    messages:
+      task_marked_completed: "Task marked as completed"
