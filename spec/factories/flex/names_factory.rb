@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :name, class: Flex::Name do
+  factory :name, class: Strata::Name do
     middle { nil }
 
     trait :base do

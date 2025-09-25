@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::ValueRange do
+RSpec.describe Strata::ValueRange do
   let(:klass) do
     klass = described_class[value_class]
     klass.define_singleton_method(:name) { "#{value_class.name}Range" }
@@ -9,9 +9,9 @@ RSpec.describe Flex::ValueRange do
   let(:range) { klass.new(start: start_value, end: end_value) }
 
   describe "ValueRange[USDate]" do
-    let(:value_class) { Flex::USDate }
-    let(:start_value) { Flex::USDate.new(2023, 1, 1) }
-    let(:end_value) { Flex::USDate.new(2023, 12, 31) }
+    let(:value_class) { Strata::USDate }
+    let(:start_value) { Strata::USDate.new(2023, 1, 1) }
+    let(:end_value) { Strata::USDate.new(2023, 12, 31) }
 
     describe 'validations' do
       it 'is valid with valid start and end dates' do
@@ -75,8 +75,8 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start: start_value, end: Flex::USDate.new(2023, 6, 1)))
-        expect(range).not_to eq(klass.new(start: Flex::USDate.new(2023, 1, 2), end: end_value))
+        expect(range).not_to eq(klass.new(start: start_value, end: Strata::USDate.new(2023, 6, 1)))
+        expect(range).not_to eq(klass.new(start: Strata::USDate.new(2023, 1, 2), end: end_value))
       end
     end
   end
@@ -223,9 +223,9 @@ RSpec.describe Flex::ValueRange do
   end
 
   describe "ValueRange[YearMonth]" do
-    let(:value_class) { Flex::YearMonth }
-    let(:start_value) { Flex::YearMonth.new(year: 2023, month: 6) }
-    let(:end_value) { Flex::YearMonth.new(year: 2023, month: 12) }
+    let(:value_class) { Strata::YearMonth }
+    let(:start_value) { Strata::YearMonth.new(year: 2023, month: 6) }
+    let(:end_value) { Strata::YearMonth.new(year: 2023, month: 12) }
 
     describe 'validations' do
       it 'is valid with valid start and end months' do
@@ -233,7 +233,7 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start month is after end month' do
-        invalid_range = klass.new(start: Flex::YearMonth.new(year: 2023, month: 12), end: Flex::YearMonth.new(year: 2023, month: 6))
+        invalid_range = klass.new(start: Strata::YearMonth.new(year: 2023, month: 12), end: Strata::YearMonth.new(year: 2023, month: 6))
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start cannot be after end")
       end
@@ -246,7 +246,7 @@ RSpec.describe Flex::ValueRange do
 
     describe '#include?' do
       it 'returns true for a month within the range' do
-        middle_month = Flex::YearMonth.new(year: 2023, month: 9)
+        middle_month = Strata::YearMonth.new(year: 2023, month: 9)
         expect(range.include?(middle_month)).to be true
       end
 
@@ -256,8 +256,8 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for months outside the range' do
-        before_month = Flex::YearMonth.new(year: 2023, month: 1)
-        after_month = Flex::YearMonth.new(year: 2024, month: 1)
+        before_month = Strata::YearMonth.new(year: 2023, month: 1)
+        after_month = Strata::YearMonth.new(year: 2024, month: 1)
         expect(range.include?(before_month)).to be false
         expect(range.include?(after_month)).to be false
       end
@@ -288,16 +288,16 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start: start_value, end: Flex::YearMonth.new(year: 2023, month: 9)))
-        expect(range).not_to eq(klass.new(start: Flex::YearMonth.new(year: 2023, month: 7), end: end_value))
+        expect(range).not_to eq(klass.new(start: start_value, end: Strata::YearMonth.new(year: 2023, month: 9)))
+        expect(range).not_to eq(klass.new(start: Strata::YearMonth.new(year: 2023, month: 7), end: end_value))
       end
     end
   end
 
   describe "ValueRange[YearQuarter]" do
-    let(:value_class) { Flex::YearQuarter }
-    let(:start_value) { Flex::YearQuarter.new(year: 2023, quarter: 1) }
-    let(:end_value) { Flex::YearQuarter.new(year: 2023, quarter: 4) }
+    let(:value_class) { Strata::YearQuarter }
+    let(:start_value) { Strata::YearQuarter.new(year: 2023, quarter: 1) }
+    let(:end_value) { Strata::YearQuarter.new(year: 2023, quarter: 4) }
 
     describe 'validations' do
       it 'is valid with valid start and end quarters' do
@@ -305,7 +305,7 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'is invalid when start quarter is after end quarter' do
-        invalid_range = klass.new(start: Flex::YearQuarter.new(year: 2023, quarter: 4), end: Flex::YearQuarter.new(year: 2023, quarter: 1))
+        invalid_range = klass.new(start: Strata::YearQuarter.new(year: 2023, quarter: 4), end: Strata::YearQuarter.new(year: 2023, quarter: 1))
         expect(invalid_range).not_to be_valid
         expect(invalid_range.errors[:base]).to include("start cannot be after end")
       end
@@ -318,7 +318,7 @@ RSpec.describe Flex::ValueRange do
 
     describe '#include?' do
       it 'returns true for a quarter within the range' do
-        middle_quarter = Flex::YearQuarter.new(year: 2023, quarter: 2)
+        middle_quarter = Strata::YearQuarter.new(year: 2023, quarter: 2)
         expect(range.include?(middle_quarter)).to be true
       end
 
@@ -328,8 +328,8 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for quarters outside the range' do
-        before_quarter = Flex::YearQuarter.new(year: 2022, quarter: 4)
-        after_quarter = Flex::YearQuarter.new(year: 2024, quarter: 1)
+        before_quarter = Strata::YearQuarter.new(year: 2022, quarter: 4)
+        after_quarter = Strata::YearQuarter.new(year: 2024, quarter: 1)
         expect(range.include?(before_quarter)).to be false
         expect(range.include?(after_quarter)).to be false
       end
@@ -360,16 +360,16 @@ RSpec.describe Flex::ValueRange do
       end
 
       it 'returns false for ranges with different values' do
-        expect(range).not_to eq(klass.new(start: start_value, end: Flex::YearQuarter.new(year: 2023, quarter: 3)))
-        expect(range).not_to eq(klass.new(start: Flex::YearQuarter.new(year: 2023, quarter: 2), end: end_value))
+        expect(range).not_to eq(klass.new(start: start_value, end: Strata::YearQuarter.new(year: 2023, quarter: 3)))
+        expect(range).not_to eq(klass.new(start: Strata::YearQuarter.new(year: 2023, quarter: 2), end: end_value))
       end
     end
   end
 
   describe ".[]" do
     it 'memoizes the value range class for a given value class' do
-      expect(Flex::DateRange).to be(described_class[Flex::USDate])
-      [ Flex::USDate, Integer, String ].each do |value_class|
+      expect(Flex::DateRange).to be(described_class[Strata::USDate])
+      [ Strata::USDate, Integer, String ].each do |value_class|
         expect(described_class[value_class]).to be(described_class[value_class]) # rubocop:disable RSpec/IdenticalEqualityAssertion
       end
     end
@@ -377,7 +377,7 @@ RSpec.describe Flex::ValueRange do
     it 'raises ArgumentError when using Date as value class' do
       expect { described_class[Date] }.to raise_error(
         ArgumentError,
-        "Use Flex::ValueRange[Flex::USDate] or Flex::DateRange instead of Flex::ValueRange[Date]"
+        "Use Strata::ValueRange[Strata::USDate] or Flex::DateRange instead of Strata::ValueRange[Date]"
       )
     end
   end

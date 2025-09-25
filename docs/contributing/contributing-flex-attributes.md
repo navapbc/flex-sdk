@@ -26,13 +26,13 @@ This document describes how to create new Flex attributes
    define_method(name) do
      first = send("#{name}_first")
      last = send("#{name}_last")
-     Flex::Name.new(first, last)
+     Strata::Name.new(first, last)
    end
    
    # Setter handles both types
    define_method("#{name}=") do |value|
      case value
-     when Flex::Name
+     when Strata::Name
        send("#{name}_first=", value.first)
        send("#{name}_last=", value.last)
      when Hash
@@ -53,12 +53,12 @@ This document describes how to create new Flex attributes
    class MoneyType < ActiveModel::Type::Integer
      def cast(value)
        case value
-       when Flex::Money
+       when Strata::Money
          value
        when Hash
-         Flex::Money.new(value[:cents])
+         Strata::Money.new(value[:cents])
        when Integer
-         Flex::Money.new(value)
+         Strata::Money.new(value)
        end
      end
    end

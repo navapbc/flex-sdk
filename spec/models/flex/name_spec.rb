@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::Name do
+RSpec.describe Strata::Name do
   let(:first) { "Jane" }
   let(:middle) { "Adams" }
   let(:last) { "Doe" }

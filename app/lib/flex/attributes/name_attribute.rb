@@ -1,7 +1,7 @@
 module Flex
   module Attributes
     # NameAttribute provides functionality for handling name fields with first, middle, and last components.
-    # It uses the Flex::Name value object for storage and manipulation.
+    # It uses the Strata::Name value object for storage and manipulation.
     #
     # This module is automatically included when using Flex::Attributes.
     #
@@ -13,7 +13,7 @@ module Flex
     #   end
     #
     #   person = Person.new
-    #   person.name = Flex::Name.new("John", "A", "Doe")
+    #   person.name = Strata::Name.new("John", "A", "Doe")
     #   puts person.name.first  # => "John"
     #
     module NameAttribute
@@ -31,7 +31,7 @@ module Flex
         # @param [Hash] options Options for the attribute
         # @return [void]
         def name_attribute(name, options = {})
-          basic_value_object_attribute(name, Flex::Name, {
+          basic_value_object_attribute(name, Strata::Name, {
             "first" => :string,
             "middle" => :string,
             "last" => :string

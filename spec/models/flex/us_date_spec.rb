@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Flex::USDate do
+RSpec.describe Strata::USDate do
   describe ".cast" do
     it "returns nil when given nil" do
       expect(described_class.cast(nil)).to be_nil

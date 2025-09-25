@@ -54,7 +54,7 @@ module Flex
 
       describe '#state_of_residence' do
         [
-          [ "returns state from residential address", Address.new({
+          [ "returns state from residential address", Strata::Address.new({
               street_line_1: "123 A St",
               city: "Anchorage",
               state: "AK",

@@ -19,7 +19,7 @@ module Flex
 
     def filled
       model = new_model
-      model.address = Flex::Address.new(
+      model.address = Strata::Address.new(
         street_line_1: "123 Main St",
         street_line_2: "Apt 4B",
         city: "Anytown",

@@ -9,10 +9,10 @@ RSpec.describe Flex::Attributes do
       address = build(:address, :base, :with_street_line_2)
       object.name = name
       object.address = address
-      object.tax_id = Flex::TaxId.new("987-65-4321")
-      object.weekly_wage = Flex::Money.new(cents: 5000)
-      object.date_of_birth = Flex::USDate.new(1990, 3, 15)
-      object.period = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31))
+      object.tax_id = Strata::TaxId.new("987-65-4321")
+      object.weekly_wage = Strata::Money.new(cents: 5000)
+      object.date_of_birth = Strata::USDate.new(1990, 3, 15)
+      object.period = Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31))
       object.save!
 
       loaded_record = TestRecord.find(object.id)
@@ -32,21 +32,21 @@ RSpec.describe Flex::Attributes do
       expect(loaded_record.address_zip_code).to eq(address.zip_code)
 
       # Verify tax_id
-      expect(loaded_record.tax_id).to eq(Flex::TaxId.new("987-65-4321"))
+      expect(loaded_record.tax_id).to eq(Strata::TaxId.new("987-65-4321"))
       expect(loaded_record.tax_id.formatted).to eq("987-65-4321")
 
       # Verify money
-      expect(loaded_record.weekly_wage).to eq(Flex::Money.new(cents: 5000))
+      expect(loaded_record.weekly_wage).to eq(Strata::Money.new(cents: 5000))
       expect(loaded_record.weekly_wage.cents_amount).to eq(5000)
       expect(loaded_record.weekly_wage.dollar_amount).to eq(50.0)
 
       # Verify date_of_birth
-      expect(loaded_record.date_of_birth).to eq(Flex::USDate.new(1990, 3, 15))
+      expect(loaded_record.date_of_birth).to eq(Strata::USDate.new(1990, 3, 15))
 
       # Verify date_range
-      expect(loaded_record.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)))
-      expect(loaded_record.period_start).to eq(Flex::USDate.new(2023, 1, 1))
-      expect(loaded_record.period_end).to eq(Flex::USDate.new(2023, 12, 31))
+      expect(loaded_record.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)))
+      expect(loaded_record.period_start).to eq(Strata::USDate.new(2023, 1, 1))
+      expect(loaded_record.period_end).to eq(Strata::USDate.new(2023, 12, 31))
     end
   end
 end

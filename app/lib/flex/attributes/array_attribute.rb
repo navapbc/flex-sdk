@@ -12,8 +12,8 @@ module Flex
     #
     #   company = Company.new
     #   company.office_locations = [
-    #     Flex::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
-    #     Flex::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
+    #     Strata::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
+    #     Strata::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
     #   ]
     #
     # Key features:
@@ -33,7 +33,7 @@ module Flex
       #
       # @api private
       # @example Internal usage by array_attribute
-      #   attribute :addresses, ArrayType.new("Flex::Address")
+      #   attribute :addresses, ArrayType.new("Strata::Address")
       #
       class ArrayType < ActiveModel::Type::Value
         # @return [String] The fully qualified class name of the array items
@@ -43,7 +43,7 @@ module Flex
         #
         # @param [String] item_class The fully qualified class name of items in the array
         # @example
-        #   ArrayType.new("Flex::Address")
+        #   ArrayType.new("Strata::Address")
         def initialize(item_class)
           @item_class = item_class
         end
@@ -113,7 +113,7 @@ module Flex
         raise ArgumentError, "Expected range to be true for array item type when using syntax: `flex_attribute :name, [:type, range: true], array: true`" unless is_nested_type_a_range
 
         value_class = Flex::Attributes.resolve_class(nested_type)
-        Flex::ValueRange[value_class]
+        Strata::ValueRange[value_class]
       end
     end
   end

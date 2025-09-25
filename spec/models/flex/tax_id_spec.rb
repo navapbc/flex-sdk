@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::TaxId do
+RSpec.describe Strata::TaxId do
   describe '#initialize' do
     it 'strips non-numeric characters from the input' do
       tax_id = described_class.new('123-45-6789')

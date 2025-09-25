@@ -1,7 +1,7 @@
 module Flex
   module Attributes
     # YearMonthAttribute provides functionality for handling year and month fields.
-    # It uses the Flex::YearMonth value object for storage and manipulation.
+    # It uses the Strata::YearMonth value object for storage and manipulation.
     #
     # This module is automatically included when using Flex::Attributes.
     #
@@ -13,7 +13,7 @@ module Flex
     #   end
     #
     #   report = Report.new
-    #   report.reporting_period = Flex::YearMonth.new(2023, 6)
+    #   report.reporting_period = Strata::YearMonth.new(2023, 6)
     #   puts report.reporting_period.year     # => 2023
     #   puts report.reporting_period.month    # => 6
     #
@@ -33,19 +33,19 @@ module Flex
           case value
           when nil
             nil
-          when Flex::YearMonth
+          when Strata::YearMonth
             value
           when Hash
             hash = value.with_indifferent_access
             year = hash[:year]
             month = hash[:month]
-            Flex::YearMonth.new(year:, month:)
+            Strata::YearMonth.new(year:, month:)
           when String
             parts = value.split("-")
             return nil if parts.length < 2
             year = parts[0]
             month = parts[1]
-            Flex::YearMonth.new(year:, month:)
+            Strata::YearMonth.new(year:, month:)
           else
             nil
           end

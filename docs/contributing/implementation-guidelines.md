@@ -40,7 +40,7 @@ Use built-in Rails features and patterns rather than creating custom implementat
 ```ruby
 # Good - Using composed_of with minimal custom code
 composed_of :address,
-  class_name: "Flex::Address",
+  class_name: "Strata::Address",
   mapping: [
     [ "address_street_line_1", "street_line_1" ],
     [ "address_street_line_2", "street_line_2" ],
@@ -70,7 +70,7 @@ Use value objects to represent complex data structures:
 ### Example:
 
 ```ruby
-module Flex
+module Strata
   class Address
     include Comparable
     

@@ -13,7 +13,7 @@ module Flex
     #
     # Key features:
     # - Creates individual fields for address components
-    # - Sets up composed_of mapping to Flex::Address
+    # - Sets up composed_of mapping to Strata::Address
     # - Handles conversion between form data and Address objects
     #
     module AddressAttribute
@@ -26,7 +26,7 @@ module Flex
 
       class_methods do
         def address_attribute(name, options = {})
-          basic_value_object_attribute(name, Flex::Address, {
+          basic_value_object_attribute(name, Strata::Address, {
             "street_line_1" => :string,
             "street_line_2" => :string,
             "city" => :string,

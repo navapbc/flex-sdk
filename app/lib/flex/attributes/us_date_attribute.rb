@@ -17,7 +17,7 @@ module Flex
       class USDateType < ActiveModel::Type::Date
         # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
         def cast(value)
-          Flex::USDate.cast(value)
+          Strata::USDate.cast(value)
         end
 
         def type

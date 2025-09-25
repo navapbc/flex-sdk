@@ -4,8 +4,8 @@ RSpec.describe Flex::Attributes::USDateAttribute do
   let(:object) { TestRecord.new }
 
   [
-    [ "allows setting as a Flex::USDate object", Flex::USDate.new(2023, 5, 15), Flex::USDate.new(2023, 5, 15) ],
-    [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Flex::USDate.new(2023, 5, 15) ],
+    [ "allows setting as a Strata::USDate object", Strata::USDate.new(2023, 5, 15), Strata::USDate.new(2023, 5, 15) ],
+    [ "allows setting as a string in MM/DD/YYYY format", "05/15/2023", Strata::USDate.new(2023, 5, 15) ],
     [ "allows setting nil", nil, nil ]
   ].each do |description, value, expected|
     it description do
@@ -16,35 +16,35 @@ RSpec.describe Flex::Attributes::USDateAttribute do
 
   describe "range: true" do
     it "allows setting period as a Flex::DateRange object" do
-      object.period = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31))
+      object.period = Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31))
 
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)))
-      expect(object.period_start).to eq(Flex::USDate.new(2023, 1, 1))
-      expect(object.period_end).to eq(Flex::USDate.new(2023, 12, 31))
-      expect(object.period.start).to eq(Flex::USDate.new(2023, 1, 1))
-      expect(object.period.end).to eq(Flex::USDate.new(2023, 12, 31))
+      expect(object.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)))
+      expect(object.period_start).to eq(Strata::USDate.new(2023, 1, 1))
+      expect(object.period_end).to eq(Strata::USDate.new(2023, 12, 31))
+      expect(object.period.start).to eq(Strata::USDate.new(2023, 1, 1))
+      expect(object.period.end).to eq(Strata::USDate.new(2023, 12, 31))
     end
 
     it "allows setting period as a hash" do
-      object.period = { start: Flex::USDate.new(2023, 6, 1), end: Flex::USDate.new(2023, 8, 31) }
+      object.period = { start: Strata::USDate.new(2023, 6, 1), end: Strata::USDate.new(2023, 8, 31) }
 
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 6, 1), end: Flex::USDate.new(2023, 8, 31)))
-      expect(object.period_start).to eq(Flex::USDate.new(2023, 6, 1))
-      expect(object.period_end).to eq(Flex::USDate.new(2023, 8, 31))
+      expect(object.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 6, 1), end: Strata::USDate.new(2023, 8, 31)))
+      expect(object.period_start).to eq(Strata::USDate.new(2023, 6, 1))
+      expect(object.period_end).to eq(Strata::USDate.new(2023, 8, 31))
     end
 
     it "allows setting period with string keys" do
-      object.period = { "start" => Flex::USDate.new(2023, 3, 1), "end" => Flex::USDate.new(2023, 5, 31) }
+      object.period = { "start" => Strata::USDate.new(2023, 3, 1), "end" => Strata::USDate.new(2023, 5, 31) }
 
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 3, 1), end: Flex::USDate.new(2023, 5, 31)))
-      expect(object.period_start).to eq(Flex::USDate.new(2023, 3, 1))
-      expect(object.period_end).to eq(Flex::USDate.new(2023, 5, 31))
+      expect(object.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 3, 1), end: Strata::USDate.new(2023, 5, 31)))
+      expect(object.period_start).to eq(Strata::USDate.new(2023, 3, 1))
+      expect(object.period_end).to eq(Strata::USDate.new(2023, 5, 31))
     end
 
     it "allows setting nested period attributes directly" do
-      object.period_start = Flex::USDate.new(2023, 9, 1)
-      object.period_end = Flex::USDate.new(2023, 11, 30)
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 9, 1), end: Flex::USDate.new(2023, 11, 30)))
+      object.period_start = Strata::USDate.new(2023, 9, 1)
+      object.period_end = Strata::USDate.new(2023, 11, 30)
+      expect(object.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 9, 1), end: Strata::USDate.new(2023, 11, 30)))
     end
 
     it "handles nil values gracefully" do
@@ -55,26 +55,26 @@ RSpec.describe Flex::Attributes::USDateAttribute do
     end
 
     it "handles partial periods" do
-      object.period = { start: Flex::USDate.new(2023, 1, 1) }
-      expect(object.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1)))
-      expect(object.period_start).to eq(Flex::USDate.new(2023, 1, 1))
+      object.period = { start: Strata::USDate.new(2023, 1, 1) }
+      expect(object.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1)))
+      expect(object.period_start).to eq(Strata::USDate.new(2023, 1, 1))
       expect(object.period_end).to be_nil
 
-      object.period = Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31))
-      expect(object.period).to eq(Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31)))
+      object.period = Flex::DateRange.new(end: Strata::USDate.new(2023, 12, 31))
+      expect(object.period).to eq(Flex::DateRange.new(end: Strata::USDate.new(2023, 12, 31)))
       expect(object.period_start).to be_nil
-      expect(object.period_end).to eq(Flex::USDate.new(2023, 12, 31))
+      expect(object.period_end).to eq(Strata::USDate.new(2023, 12, 31))
     end
 
     it "validates that start date is before or equal to end date" do
-      object.period_start = Flex::USDate.new(2023, 12, 31)
-      object.period_end = Flex::USDate.new(2023, 1, 1)
+      object.period_start = Strata::USDate.new(2023, 12, 31)
+      object.period_end = Strata::USDate.new(2023, 1, 1)
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("period")).to include("Period start date cannot be after end date")
     end
 
     it "allows start date equal to end date" do
-      same_date = Flex::USDate.new(2023, 6, 15)
+      same_date = Strata::USDate.new(2023, 6, 15)
       object.period_start = same_date
       object.period_end = same_date
       expect(object).to be_valid
@@ -82,12 +82,12 @@ RSpec.describe Flex::Attributes::USDateAttribute do
     end
 
     it "allows only one date to be present" do
-      object.period_start = Flex::USDate.new(2023, 1, 1)
+      object.period_start = Strata::USDate.new(2023, 1, 1)
       object.period_end = nil
       expect(object).to be_valid
 
       object.period_start = nil
-      object.period_end = Flex::USDate.new(2023, 12, 31)
+      object.period_end = Strata::USDate.new(2023, 12, 31)
       expect(object).to be_valid
     end
 
@@ -136,10 +136,10 @@ RSpec.describe Flex::Attributes::USDateAttribute do
     end
 
     [
-      [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)) ],
-      [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(start: Flex::USDate.new(2023, 6, 15), end: Flex::USDate.new(2023, 6, 15)) ],
-      [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(end: Flex::USDate.new(2023, 12, 31)) ],
-      [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1)) ],
+      [ "allows setting period as a Ruby Range of dates", Date.new(2023, 1, 1), Date.new(2023, 12, 31), Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with same start and end", Date.new(2023, 6, 15), Date.new(2023, 6, 15), Flex::DateRange.new(start: Strata::USDate.new(2023, 6, 15), end: Strata::USDate.new(2023, 6, 15)) ],
+      [ "allows setting period as a Ruby Range of dates with nil start", nil, Date.new(2023, 12, 31), Flex::DateRange.new(end: Strata::USDate.new(2023, 12, 31)) ],
+      [ "allows setting period as a Ruby Range of dates with nil end", Date.new(2023, 1, 1), nil, Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1)) ],
       [ "allows setting period as nil..nil", nil, nil, nil ]
     ].each do |description, start_date, end_date, expected|
       it description do
@@ -164,7 +164,7 @@ RSpec.describe Flex::Attributes::USDateAttribute do
     object.save!
 
     loaded_record = TestRecord.find(object.id)
-    expect(loaded_record.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 12, 31)))
+    expect(loaded_record.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 12, 31)))
     expect(loaded_record.period_start).to eq(Date.new(2023, 1, 1))
     expect(loaded_record.period_end).to eq(Date.new(2023, 12, 31))
     expect(loaded_record.period.start).to eq(Date.new(2023, 1, 1))
@@ -175,7 +175,7 @@ RSpec.describe Flex::Attributes::USDateAttribute do
     object.save!
 
     loaded_record = TestRecord.find(object.id)
-    expect(loaded_record.period).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 5), end: Flex::USDate.new(2023, 6, 12)))
+    expect(loaded_record.period).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 5), end: Strata::USDate.new(2023, 6, 12)))
     expect(loaded_record.period_start).to eq(Date.new(2023, 1, 5))
     expect(loaded_record.period_end).to eq(Date.new(2023, 6, 12))
     expect(loaded_record.period.start).to eq(Date.new(2023, 1, 5))
@@ -185,8 +185,8 @@ RSpec.describe Flex::Attributes::USDateAttribute do
 
   describe "array: true" do
     it "persists and loads arrays of value objects" do
-      leave_period_1 = Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31))
-      leave_period_2 = Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28))
+      leave_period_1 = Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 1, 31))
+      leave_period_2 = Flex::DateRange.new(start: Strata::USDate.new(2023, 2, 1), end: Strata::USDate.new(2023, 2, 28))
       object.leave_periods = [ leave_period_1, leave_period_2 ]
 
       object.save!
@@ -201,14 +201,14 @@ RSpec.describe Flex::Attributes::USDateAttribute do
   describe "array of ranges with flex_attribute [ :us_date, range: true ], array: true" do
     it "allows setting an array of date ranges" do
       periods = [
-        Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31)),
-        Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28))
+        Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 1, 31)),
+        Flex::DateRange.new(start: Strata::USDate.new(2023, 2, 1), end: Strata::USDate.new(2023, 2, 28))
       ]
       object.leave_periods = periods
       expect(object.leave_periods).to be_an(Array)
       expect(object.leave_periods.size).to eq(2)
-      expect(object.leave_periods[0]).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 1, 1), end: Flex::USDate.new(2023, 1, 31)))
-      expect(object.leave_periods[1]).to eq(Flex::DateRange.new(start: Flex::USDate.new(2023, 2, 1), end: Flex::USDate.new(2023, 2, 28)))
+      expect(object.leave_periods[0]).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 1, 31)))
+      expect(object.leave_periods[1]).to eq(Flex::DateRange.new(start: Strata::USDate.new(2023, 2, 1), end: Strata::USDate.new(2023, 2, 28)))
     end
   end
 end

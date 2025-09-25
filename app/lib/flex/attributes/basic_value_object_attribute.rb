@@ -1,7 +1,7 @@
 module Flex
   module Attributes
     # Internal module used by other Flex attribute modules to implement attributes
-    # whose type is a subclass of Flex::ValueObject. This module is not intended to be
+    # whose type is a subclass of Strata::ValueObject. This module is not intended to be
     # used directly by clients of Flex.
     #
     # The module provides functionality to create attributes that represent complex values
@@ -20,10 +20,10 @@ module Flex
 
       class_methods do
         # Defines an attribute associated with a subclass of
-        # Flex::ValueObject
+        # Strata::ValueObject
         #
         # @param [Symbol] name The base name for the attribute
-        # @param [Class] value_class the subclass of Flex::ValueObject
+        # @param [Class] value_class the subclass of Strata::ValueObject
         # @param [Hash] options Options for the attribute
         # @return [void]
         # @param [Object] nested_attribute_types

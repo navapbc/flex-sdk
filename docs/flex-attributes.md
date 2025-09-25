@@ -60,7 +60,7 @@ For an attribute named `mailing_address`:
 
 ### Available Methods
 
-The `Flex::Address` value object provides:
+The `Strata::Address` value object provides:
 
 - `street_line_1`, `street_line_2`, `city`, `state`, `zip_code` - Component accessors
 - `to_s` - Returns formatted address string (e.g., "123 Main St, Apt 4B, Anytown, CA 12345")
@@ -80,8 +80,8 @@ form.mailing_address = {
   zip_code: "12345"
 }
 
-# Setting an address with a Flex::Address object
-form.mailing_address = Flex::Address.new(
+# Setting an address with a Strata::Address object
+form.mailing_address = Strata::Address.new(
   street_line_1: "123 Main Street",
   street_line_2: "Apt 4B",
   city: "Anytown",
@@ -134,8 +134,8 @@ Array attributes behave like standard Ruby arrays with automatic serialization/d
 ```ruby
 # Setting an array of addresses
 company.office_locations = [
-  Flex::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
-  Flex::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
+  Strata::Address.new(street_line_1: "123 Main St", street_line_2: nil, city: "Boston", state: "MA", zip_code: "02108"),
+  Strata::Address.new(street_line_1: "456 Oak Ave", street_line_2: "Suite 4", city: "San Francisco", state: "CA", zip_code: "94107")
 ]
 
 # Array of ranges (complex nested type)
@@ -223,7 +223,7 @@ A money attribute creates **1 integer column** that stores the amount in cents:
 
 ### Available Methods
 
-The `Flex::Money` value object provides:
+The `Strata::Money` value object provides:
 
 - `cents` - Returns the amount in cents (integer)
 - `dollar_amount` - Returns the amount in dollars (BigDecimal)
@@ -235,7 +235,7 @@ The `Flex::Money` value object provides:
 
 ```ruby
 # Setting with cents
-employee.salary = Flex::Money.new(cents: 75000_00) # $75,000.00
+employee.salary = Strata::Money.new(cents: 75000_00) # $75,000.00
 
 # Setting with a hash containing dollar amount
 employee.salary = { dollar_amount: 75000.00 }
@@ -289,7 +289,7 @@ For an attribute named `owner`:
 
 ### Available Methods
 
-The `Flex::Name` value object provides:
+The `Strata::Name` value object provides:
 
 - `first`, `middle`, `last` - Component accessors
 - `full_name` - Returns the complete name with proper spacing
@@ -309,8 +309,8 @@ person.name = {
   last: "Doe"
 }
 
-# Setting a name with a Flex::Name object
-person.name = Flex::Name.new(first: "John", middle: "A", last: "Doe")
+# Setting a name with a Strata::Name object
+person.name = Strata::Name.new(first: "John", middle: "A", last: "Doe")
 
 # Accessing name components
 puts person.name.first # => "John"
@@ -350,7 +350,7 @@ A range attribute creates **2 columns** for the start and end values:
 
 ### Available Methods
 
-Range attributes return `Flex::ValueRange` objects that provide:
+Range attributes return `Strata::ValueRange` objects that provide:
 
 - `start`, `end` - Access to the range boundaries
 - `include?` - Check if a value falls within the range
@@ -411,7 +411,7 @@ A tax ID attribute creates **1 string column**:
 
 ### Available Methods
 
-The `Flex::TaxId` value object provides:
+The `Strata::TaxId` value object provides:
 
 - `formatted` - Returns the tax ID with dashes in XXX-XX-XXXX format
 - `to_s` - Returns the raw digits without formatting
@@ -507,7 +507,7 @@ A year month attribute creates **2 integer columns**:
 
 ### Available Methods
 
-The `Flex::YearMonth` value object provides:
+The `Strata::YearMonth` value object provides:
 
 - `year`, `month` - Component accessors
 - `+`, `-` - Arithmetic operations for month math
@@ -521,8 +521,8 @@ The `Flex::YearMonth` value object provides:
 # Setting a year month with a hash
 report.activity_reporting_period = { year: 2023, month: 6 }
 
-# Setting with a Flex::YearMonth object
-report.activity_reporting_period = Flex::YearMonth.new(year: 2023, month: 6)
+# Setting with a Strata::YearMonth object
+report.activity_reporting_period = Strata::YearMonth.new(year: 2023, month: 6)
 
 # Accessing components
 puts report.activity_reporting_period.year # => 2023
@@ -570,7 +570,7 @@ A year quarter attribute creates **2 integer columns**:
 
 ### Available Methods
 
-The `Flex::YearQuarter` value object provides:
+The `Strata::YearQuarter` value object provides:
 
 - `year`, `quarter` - Component accessors
 - `+`, `-` - Arithmetic operations for quarter math

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Flex::Money do
+RSpec.describe Strata::Money do
   describe "initialization" do
     describe "with valid inputs" do
       [

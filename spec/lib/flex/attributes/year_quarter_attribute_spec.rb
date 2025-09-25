@@ -2,7 +2,7 @@ require "rails_helper"
 require_relative "value_object_attribute_shared_examples"
 
 RSpec.describe Flex::Attributes::YearQuarterAttribute do
-  include_examples "value object shared examples", described_class, Flex::YearQuarter, :reporting_period,
+  include_examples "value object shared examples", described_class, Strata::YearQuarter, :reporting_period,
     valid_nested_attributes: FactoryBot.attributes_for(:year_quarter),
     array_values: [
       FactoryBot.build(:year_quarter),
@@ -28,7 +28,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     end
 
     it "serializes to string format with leading zeros" do
-      year_quarter = Flex::YearQuarter.new(year: 2025, quarter: 1)
+      year_quarter = Strata::YearQuarter.new(year: 2025, quarter: 1)
       object.reporting_period = year_quarter
       object.save!
 
@@ -79,14 +79,14 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     let(:start_quarter) { 1 }
     let(:end_year) { 2023 }
     let(:end_quarter) { 4 }
-    let(:start_value) { Flex::YearQuarter.new(year: start_year, quarter: start_quarter) }
-    let(:end_value) { Flex::YearQuarter.new(year: end_year, quarter: end_quarter) }
-    let(:range) { Flex::YearQuarterRange.new(start: start_value, end: end_value) }
+    let(:start_value) { Strata::YearQuarter.new(year: start_year, quarter: start_quarter) }
+    let(:end_value) { Strata::YearQuarter.new(year: end_year, quarter: end_quarter) }
+    let(:range) { Strata::ValueRange[Strata::YearQuarter].new(start: start_value, end: end_value) }
 
     it "allows setting a ValueRange object" do
       object.base_period = range
 
-      expect(object.base_period).to eq(Flex::YearQuarterRange.new(start: start_value, end: end_value))
+      expect(object.base_period).to eq(Strata::ValueRange[Strata::YearQuarter].new(start: start_value, end: end_value))
       expect(object.base_period_start).to eq(start_value)
       expect(object.base_period_end).to eq(end_value)
     end
@@ -94,7 +94,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     it "allows setting a Range object" do
       object.base_period = start_value..end_value
 
-      expect(object.base_period).to eq(Flex::YearQuarterRange.new(start: start_value, end: end_value))
+      expect(object.base_period).to eq(Strata::ValueRange[Strata::YearQuarter].new(start: start_value, end: end_value))
       expect(object.base_period_start).to eq(start_value)
       expect(object.base_period_end).to eq(end_value)
     end
@@ -103,7 +103,7 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       object.base_period_start = start_value
       object.base_period_end = end_value
 
-      expect(object.base_period).to eq(Flex::YearQuarterRange.new(start: start_value, end: end_value))
+      expect(object.base_period).to eq(Strata::ValueRange[Strata::YearQuarter].new(start: start_value, end: end_value))
       expect(object.base_period_start).to eq(start_value)
       expect(object.base_period_end).to eq(end_value)
     end
@@ -129,27 +129,27 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
     end
 
     it "validates that start year quarter is before or equal to end year quarter" do
-      object.base_period_start = Flex::YearQuarter.new(year: 2024, quarter: 4)
-      object.base_period_end = Flex::YearQuarter.new(year: 2023, quarter: 1)
+      object.base_period_start = Strata::YearQuarter.new(year: 2024, quarter: 4)
+      object.base_period_end = Strata::YearQuarter.new(year: 2023, quarter: 1)
       expect(object).not_to be_valid
       expect(object.errors.full_messages_for("base_period")).to include("Base period start cannot be after end")
     end
 
     it "allows start year quarter equal to end year quarter" do
-      same_yq = Flex::YearQuarter.new(year: 2023, quarter: 3)
+      same_yq = Strata::YearQuarter.new(year: 2023, quarter: 3)
       object.base_period_start = same_yq
       object.base_period_end = same_yq
       expect(object).to be_valid
-      expect(object.base_period).to eq(Flex::ValueRange[Flex::YearQuarter].new(start: same_yq, end: same_yq))
+      expect(object.base_period).to eq(Strata::ValueRange[Strata::YearQuarter].new(start: same_yq, end: same_yq))
     end
 
     it "allows only one year quarter to be present without validation error" do
-      object.base_period_start = Flex::YearQuarter.new(year: 2023, quarter: 1)
+      object.base_period_start = Strata::YearQuarter.new(year: 2023, quarter: 1)
       object.base_period_end = nil
       expect(object).to be_valid
 
       object.base_period_start = nil
-      object.base_period_end = Flex::YearQuarter.new(year: 2023, quarter: 4)
+      object.base_period_end = Strata::YearQuarter.new(year: 2023, quarter: 4)
       expect(object).to be_valid
     end
 
@@ -158,9 +158,9 @@ RSpec.describe Flex::Attributes::YearQuarterAttribute do
       start_quarter = 1
       end_year = 2023
       end_quarter = 4
-      start_value = Flex::YearQuarter.new(year: start_year, quarter: start_quarter)
-      end_value = Flex::YearQuarter.new(year: end_year, quarter: end_quarter)
-      range = Flex::YearQuarterRange.new(start: start_value, end: end_value)
+      start_value = Strata::YearQuarter.new(year: start_year, quarter: start_quarter)
+      end_value = Strata::YearQuarter.new(year: end_year, quarter: end_quarter)
+      range = Strata::ValueRange[Strata::YearQuarter].new(start: start_value, end: end_value)
       object.base_period = range
       object.save!
 

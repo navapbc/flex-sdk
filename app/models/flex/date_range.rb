@@ -1,3 +1,3 @@
 module Flex
-  DateRange = ValueRange[USDate]
+  DateRange = Strata::ValueRange[Strata::USDate]
 end

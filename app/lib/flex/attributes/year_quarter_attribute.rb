@@ -1,7 +1,7 @@
 module Flex
   module Attributes
     # YearQuarterAttribute provides functionality for handling year and quarter fields.
-    # It uses the Flex::YearQuarter value object for storage and manipulation.
+    # It uses the Strata::YearQuarter value object for storage and manipulation.
     #
     # This module is automatically included when using Flex::Attributes.
     #
@@ -13,7 +13,7 @@ module Flex
     #   end
     #
     #   report = Report.new
-    #   report.reporting_period = Flex::YearQuarter.new(2023, 2)
+    #   report.reporting_period = Strata::YearQuarter.new(2023, 2)
     #   puts report.reporting_period.year     # => 2023
     #   puts report.reporting_period.quarter  # => 2
     #
@@ -33,19 +33,19 @@ module Flex
           case value
           when nil
             nil
-          when Flex::YearQuarter
+          when Strata::YearQuarter
             value
           when Hash
             hash = value.with_indifferent_access
             year = hash[:year]
             quarter = hash[:quarter]
-            Flex::YearQuarter.new(year:, quarter:)
+            Strata::YearQuarter.new(year:, quarter:)
           when String
             parts = value.split("Q")
             return nil if parts.length < 2
             year = parts[0]
             quarter = parts[1]
-            Flex::YearQuarter.new(year:, quarter:)
+            Strata::YearQuarter.new(year:, quarter:)
           else
             nil
           end
