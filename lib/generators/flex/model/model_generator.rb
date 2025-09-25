@@ -4,7 +4,7 @@ require "rails/generators/named_base"
 module Flex
   module Generators
     # Rails model generator that supports Flex attributes like :name, :address, :money, etc.
-    # Automatically includes Flex::Attributes and creates appropriate database migrations
+    # Automatically includes Strata::Attributes and creates appropriate database migrations
     class ModelGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("templates", __dir__)
 

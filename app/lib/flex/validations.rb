@@ -6,7 +6,7 @@ module Flex
   #
   # This module should be included in models that need to validate nested value objects.
   # It provides the flex_validates_nested class method for defining these validations.
-  # It is automatically included in the Flex::Attributes module.
+  # It is automatically included in the Strata::Attributes module.
   #
   # @example Including Validations in a model and validating a nested date range
   #   class MyModel < ApplicationRecord

@@ -100,7 +100,7 @@ module Strata
 
       def self.get_item_class(item_type)
         if !item_type.is_a?(Array)
-          return Flex::Attributes.resolve_class(item_type)
+          return Strata::Attributes.resolve_class(item_type)
         end
 
         # Handle nested attributes that are arrays or ranges
@@ -112,7 +112,7 @@ module Strata
         raise ArgumentError, "Arrays of arrays are not currently supported" if is_nested_type_an_array
         raise ArgumentError, "Expected range to be true for array item type when using syntax: `flex_attribute :name, [:type, range: true], array: true`" unless is_nested_type_a_range
 
-        value_class = Flex::Attributes.resolve_class(nested_type)
+        value_class = Strata::Attributes.resolve_class(nested_type)
         Strata::ValueRange[value_class]
       end
     end

@@ -24,7 +24,7 @@ To use Strata Attributes in your model:
 
 ```ruby
 class MyModel < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :applicant_name, :name
   flex_attribute :home_address, :address
@@ -40,7 +40,7 @@ The Address Attribute provides structured handling of physical addresses with va
 
 ```ruby
 class ApplicationForm < Flex::ApplicationForm
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :mailing_address, :address
 end
@@ -111,7 +111,7 @@ The Array Attribute allows storing arrays of value objects in a single JSONB dat
 
 ```ruby
 class Company < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :office_locations, :address, array: true
   flex_attribute :employee_names, :name, array: true
@@ -140,7 +140,7 @@ company.office_locations = [
 
 # Array of ranges (complex nested type)
 class Enrollment < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :leave_periods, [:us_date, range: true], array: true
 end
@@ -163,7 +163,7 @@ The Memorable Date Attribute provides date handling with support for hash input 
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :date_of_birth, :memorable_date
 end
@@ -208,7 +208,7 @@ The Money Attribute provides handling of US dollar amounts with automatic conver
 
 ```ruby
 class Employee < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :salary, :money
   flex_attribute :bonus, :money
@@ -266,7 +266,7 @@ The Name Attribute provides structured handling of person names with first, midd
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :name, :name
   flex_attribute :emergency_contact_name, :name
@@ -334,7 +334,7 @@ The Range Attribute provides handling of value ranges using start and end values
 
 ```ruby
 class Enrollment < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :coverage_period, :us_date, range: true
   flex_attribute :base_period, :year_quarter, range: true
@@ -396,7 +396,7 @@ The Tax ID Attribute provides handling of tax identification numbers (such as So
 
 ```ruby
 class Person < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :ssn, :tax_id
   flex_attribute :ein, :tax_id
@@ -445,7 +445,7 @@ The US Date Attribute provides date handling with US regional format parsing (MM
 
 ```ruby
 class Application < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :submitted_on, :us_date
   flex_attribute :effective_date, :us_date
@@ -491,7 +491,7 @@ The Year Month Attribute provides handling of year and month combinations with a
 
 ```ruby
 class Report < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :activity_reporting_period, :year_month
   flex_attribute :billing_period, :year_month
@@ -554,7 +554,7 @@ The Year Quarter Attribute provides handling of year and quarter combinations wi
 
 ```ruby
 class Report < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :reporting_period, :year_quarter
   flex_attribute :comparison_period, :year_quarter

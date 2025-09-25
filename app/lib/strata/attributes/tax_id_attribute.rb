@@ -6,7 +6,7 @@ module Strata
     #
     # @example Adding a tax ID attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :ssn, :tax_id
     #   end

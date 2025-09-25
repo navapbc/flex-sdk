@@ -19,7 +19,7 @@ module Flex
   class ApplicationForm < ApplicationRecord
     self.abstract_class = true
 
-    include Flex::Attributes
+    include Strata::Attributes
 
     define_model_callbacks :submit, only: [ :before, :after ]
 

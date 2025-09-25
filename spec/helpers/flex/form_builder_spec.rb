@@ -5,7 +5,7 @@ RSpec.describe Flex::FormBuilder do
     test_form_class = Class.new do
       include ActiveModel::Model
       include ActiveModel::Attributes
-      include Flex::Attributes
+      include Strata::Attributes
 
       attribute :first_name, :string
       attribute :start_date, :date  # for date_picker

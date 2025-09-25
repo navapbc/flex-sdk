@@ -20,7 +20,7 @@ module Strata
   #   )
   #
   class IncomeRecord < ApplicationRecord
-    include Flex::Attributes
+    include Strata::Attributes
 
     self.abstract_class = true
 

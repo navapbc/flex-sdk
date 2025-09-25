@@ -12,7 +12,7 @@ To use Flex Attributes in a model:
 
 ```ruby
 class MyModel < ApplicationRecord
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :birth_date, :memorable_date
   flex_attribute :applicant_name, :name

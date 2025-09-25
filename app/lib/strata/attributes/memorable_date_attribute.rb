@@ -5,7 +5,7 @@ module Strata
     #
     # @example Adding a memorable date attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :birth_date, :memorable_date
     #   end

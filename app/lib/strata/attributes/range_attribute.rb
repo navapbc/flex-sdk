@@ -5,7 +5,7 @@ module Strata
     #
     # @example Defining a date range
     #   class Enrollment < ApplicationRecord
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :period, :us_date, range: true
     #   end
@@ -34,7 +34,7 @@ module Strata
         # @return [void]
         # @param [Object] value_type
         def range_attribute(name, value_type, options = {})
-          value_class = Flex::Attributes.resolve_class(value_type)
+          value_class = Strata::Attributes.resolve_class(value_type)
 
           basic_value_object_attribute(name, Strata::ValueRange[value_class], {
             "start" => value_type,

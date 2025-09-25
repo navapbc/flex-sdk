@@ -6,7 +6,7 @@ module Strata
     #
     # @example Adding a money attribute to a form model
     #   class MyForm < Flex::ApplicationForm
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :salary, :money
     #   end

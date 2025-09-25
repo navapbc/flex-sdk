@@ -3,11 +3,11 @@ module Strata
     # YearMonthAttribute provides functionality for handling year and month fields.
     # It uses the Strata::YearMonth value object for storage and manipulation.
     #
-    # This module is automatically included when using Flex::Attributes.
+    # This module is automatically included when using Strata::Attributes.
     #
     # @example Using the year month attribute
     #   class Report < ApplicationRecord
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :reporting_period, :year_month
     #   end

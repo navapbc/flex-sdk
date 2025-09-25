@@ -1,5 +1,5 @@
 class PassportApplicationForm < Flex::ApplicationForm
-  include Flex::Attributes
+  include Strata::Attributes
 
   flex_attribute :name, :name
   flex_attribute :date_of_birth, :memorable_date

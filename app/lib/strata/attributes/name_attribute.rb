@@ -3,11 +3,11 @@ module Strata
     # NameAttribute provides functionality for handling name fields with first, middle, and last components.
     # It uses the Strata::Name value object for storage and manipulation.
     #
-    # This module is automatically included when using Flex::Attributes.
+    # This module is automatically included when using Strata::Attributes.
     #
     # @example Using the name attribute
     #   class Person < ApplicationRecord
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :name, :name
     #   end

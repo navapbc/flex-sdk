@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Flex::Attributes do
+RSpec.describe Strata::Attributes do
   let(:object) { TestRecord.new }
 
   describe "persisting and loading from database" do

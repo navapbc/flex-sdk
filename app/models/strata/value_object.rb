@@ -20,7 +20,7 @@ module Strata
     include ActiveModel::AttributeAssignment
     include ActiveModel::Validations
     include ActiveModel::Serializers::JSON
-    include Flex::Attributes
+    include Strata::Attributes
     include Flex::Validations
 
     def ==(other)

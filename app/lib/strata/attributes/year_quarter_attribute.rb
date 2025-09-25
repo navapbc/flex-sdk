@@ -3,11 +3,11 @@ module Strata
     # YearQuarterAttribute provides functionality for handling year and quarter fields.
     # It uses the Strata::YearQuarter value object for storage and manipulation.
     #
-    # This module is automatically included when using Flex::Attributes.
+    # This module is automatically included when using Strata::Attributes.
     #
     # @example Using the year quarter attribute
     #   class Report < ApplicationRecord
-    #     include Flex::Attributes
+    #     include Strata::Attributes
     #
     #     flex_attribute :reporting_period, :year_quarter
     #   end

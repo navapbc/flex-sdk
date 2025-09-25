@@ -1,6 +1,6 @@
 Description:
     Generates a Rails model that supports Flex attributes like :name, :address, :money, etc.
-    This generator automatically includes Flex::Attributes and creates the appropriate
+    This generator automatically includes Strata::Attributes and creates the appropriate
     database migrations with the correct column structure for Flex attribute types.
 
 Usage:
@@ -21,5 +21,5 @@ Supported Flex Attribute Types:
     year_quarter         - Creates columns: year_quarter_year (:integer), year_quarter_quarter (:integer)
 
 This will create:
-    A Rails model file that includes Flex::Attributes with the appropriate flex_attribute declarations
+    A Rails model file that includes Strata::Attributes with the appropriate flex_attribute declarations
     A migration file with the correct database columns for each Flex attribute type

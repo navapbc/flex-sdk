@@ -1,14 +1,14 @@
-module Flex
+module Strata
   # Attributes is a module that extends ActiveRecord with custom attribute types.
   # It provides a consistent interface for defining specialized attributes like
   # memorable dates, names, addresses, tax IDs, and money amounts.
   #
   # This module should be included in models that need these custom attribute types.
-  # See app/lib/flex/attributes/ folder for the list of all available flex attributes.
+  # See app/lib/strata/attributes/ folder for the list of all available strata attributes.
   #
   # @example Including Attributes in a model
   #   class MyModel < ApplicationRecord
-  #     include Flex::Attributes
+  #     include Strata::Attributes
   #
   #     flex_attribute :birth_date, :memorable_date
   #     flex_attribute :applicant_name, :name
