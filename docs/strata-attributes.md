@@ -1,6 +1,6 @@
-# Flex Attributes Documentation
+# Strata Attributes Documentation
 
-This document provides comprehensive documentation for all Flex Attributes available in the Flex SDK. Flex Attributes are custom data types that extend ActiveRecord with specialized functionality for handling complex data structures commonly used in government and enterprise applications.
+This document provides comprehensive documentation for all Strata Attributes available in the Flex SDK. Strata Attributes are custom data types that extend ActiveRecord with specialized functionality for handling complex data structures commonly used in government and enterprise applications.
 
 ## Table of Contents
 
@@ -18,9 +18,9 @@ This document provides comprehensive documentation for all Flex Attributes avail
 
 ## Overview
 
-Flex Attributes provide a declarative way to define complex data types in your ActiveRecord models. Each attribute type handles the mapping between a single logical attribute in your model and one or more database columns, along with specialized validation and formatting capabilities.
+Strata Attributes provide a declarative way to define complex data types in your ActiveRecord models. Each attribute type handles the mapping between a single logical attribute in your model and one or more database columns, along with specialized validation and formatting capabilities.
 
-To use Flex Attributes in your model:
+To use Strata Attributes in your model:
 
 ```ruby
 class MyModel < ApplicationRecord
