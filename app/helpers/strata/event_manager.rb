@@ -10,7 +10,7 @@ module Strata
   #   Strata::EventManager.publish("FormSubmitted", { form_id: 123 })
   #
   # @example Subscribing to an event
-  #   subscription = Flex::EventManager.subscribe("FormSubmitted") do |event|
+  #   subscription = Strata::EventManager.subscribe("FormSubmitted") do |event|
   #     # Handle the event
   #     puts "Form #{event[:payload][:form_id]} was submitted"
   #   end
