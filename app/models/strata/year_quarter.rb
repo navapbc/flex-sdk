@@ -44,13 +44,13 @@ module Strata
     def to_date_range
       case quarter
       when 1
-        Strata::DateRange.new(start: USDate.new(year, 1, 1), end: USDate.new(year, 3, 31))
+        DateRange.new(start: USDate.new(year, 1, 1), end: USDate.new(year, 3, 31))
       when 2
-        Strata::DateRange.new(start: USDate.new(year, 4, 1), end: USDate.new(year, 6, 30))
+        DateRange.new(start: USDate.new(year, 4, 1), end: USDate.new(year, 6, 30))
       when 3
-        Strata::DateRange.new(start: USDate.new(year, 7, 1), end: USDate.new(year, 9, 30))
+        DateRange.new(start: USDate.new(year, 7, 1), end: USDate.new(year, 9, 30))
       when 4
-        Strata::DateRange.new(start: USDate.new(year, 10, 1), end: USDate.new(year, 12, 31))
+        DateRange.new(start: USDate.new(year, 10, 1), end: USDate.new(year, 12, 31))
       else
         raise ArgumentError, "Quarter must be 1, 2, 3, or 4"
       end
