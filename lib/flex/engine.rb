@@ -8,9 +8,9 @@ module Flex
   class Engine < ::Rails::Engine
     isolate_namespace Flex
 
-    initializer "flex.helpers" do
+    initializer "strata.helpers" do
       ActiveSupport.on_load :action_controller do
-        helper Flex::ApplicationHelper
+        helper Strata::ApplicationHelper
       end
     end
 
@@ -36,7 +36,7 @@ module Flex
     end
 
     config.after_initialize do
-      Rails.autoloaders.main.on_unload("Flex::EventManager") do |klass|
+      Rails.autoloaders.main.on_unload("Strata::EventManager") do |klass|
         klass.unsubscribe_all
       end
     end

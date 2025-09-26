@@ -18,22 +18,22 @@ namespace :flex do
       end
     end
 
-    desc "Publish a specified Flex event"
+    desc "Publish a specified Strata event"
     task :publish_event, [ :event_name ] => [ :environment ] do |t, args|
       event_name = fetch_required_args!(args, :event_name).first
 
-      Flex::EventManager.publish(event_name)
+      Strata::EventManager.publish(event_name)
 
       Rails.logger.info "Event '#{event_name}' emitted successfully"
     end
 
-    desc "Publish a specified Flex event for a given case with a given ID"
+    desc "Publish a specified Strata event for a given case with a given ID"
     task :publish_case_event, [ :event_name, :case_class, :case_id ] => [ :environment ] do |t, args|
       event_name, case_class, case_id = *fetch_required_args!(args, :event_name, :case_class, :case_id)
       constantized_case_class = constantize_case_class(case_class)
 
       kase = constantized_case_class.find(case_id)
-      Flex::EventManager.publish(event_name, { kase: kase })
+      Strata::EventManager.publish(event_name, { kase: kase })
 
       Rails.logger.info "Event '#{event_name}' emitted for '#{case_class}' with ID '#{case_id}'"
     end

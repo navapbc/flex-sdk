@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::FormBuilder do
+RSpec.describe Strata::FormBuilder do
   before do
     test_form_class = Class.new do
       include ActiveModel::Model

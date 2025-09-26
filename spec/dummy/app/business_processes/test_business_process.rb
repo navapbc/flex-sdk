@@ -2,13 +2,13 @@ class TestBusinessProcess < Flex::BusinessProcess
   # Define steps
   staff_task('staff_task', PassportPhotoTask)
   system_process('system_process', ->(kase) {
-    Flex::EventManager.publish("event2", { case_id: kase.id })
+    Strata::EventManager.publish("event2", { case_id: kase.id })
   })
   staff_task('staff_task_2', PassportVerifyInfoTask)
   applicant_task('applicant_task')
   third_party_task('third_party_task')
   system_process('system_process_2', ->(kase) {
-    Flex::EventManager.publish("event6", { case_id: kase.id })
+    Strata::EventManager.publish("event6", { case_id: kase.id })
   })
 
   # Define start step

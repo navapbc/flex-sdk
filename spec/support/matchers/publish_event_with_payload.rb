@@ -10,12 +10,12 @@ RSpec::Matchers.define :publish_event_with_payload do |event_name, expected_payl
       @actual_payload = event[:payload]
     end
 
-    subscription = Flex::EventManager.subscribe(event_name, callback)
+    subscription = Strata::EventManager.subscribe(event_name, callback)
 
     begin
       block.call
     ensure
-      Flex::EventManager.unsubscribe(subscription) if subscription
+      Strata::EventManager.unsubscribe(subscription) if subscription
     end
 
     @event_triggered && RSpec::Matchers::BuiltIn::Include.new(expected_payload).matches?(@actual_payload)

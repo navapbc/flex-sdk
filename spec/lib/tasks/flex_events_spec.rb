@@ -2,13 +2,13 @@ require 'rails_helper'
 require 'rake'
 
 RSpec.describe 'flex:events', type: :task do
-  let(:event_manager) { class_double(Flex::EventManager) }
+  let(:event_manager) { class_double(Strata::EventManager) }
 
   before do
     Rake.application.rake_require('tasks/flex_events')
     Rake::Task.define_task(:environment)
-    stub_const('Flex::EventManager', event_manager)
-    allow(Flex::EventManager).to receive(:publish)
+    stub_const('Strata::EventManager', event_manager)
+    allow(Strata::EventManager).to receive(:publish)
   end
 
   describe 'publish_event' do
@@ -36,7 +36,7 @@ RSpec.describe 'flex:events', type: :task do
 
         task.invoke(event_name)
 
-        expect(Flex::EventManager).to have_received(:publish).with(event_name)
+        expect(Strata::EventManager).to have_received(:publish).with(event_name)
         expect(Rails.logger).to have_received(:info).with(/Event '#{event_name}' emitted successfully/)
       end
     end
@@ -89,7 +89,7 @@ RSpec.describe 'flex:events', type: :task do
 
         task.invoke(event_name, "TestCase", case_id)
 
-        expect(Flex::EventManager).to have_received(:publish).with(event_name, hash_including(kase: test_case))
+        expect(Strata::EventManager).to have_received(:publish).with(event_name, hash_including(kase: test_case))
         expect(Rails.logger).to have_received(:info).with(/Event '#{event_name}' emitted for 'TestCase' with ID '#{case_id}'/)
       end
     end

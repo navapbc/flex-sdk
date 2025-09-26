@@ -105,7 +105,7 @@ module Flex
 
         get_event_names.each do |event_name|
           Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
-          subscriptions[event_name] = EventManager.subscribe(event_name, method(:handle_event))
+          subscriptions[event_name] = Strata::EventManager.subscribe(event_name, method(:handle_event))
         end
 
         @listening = true
@@ -116,7 +116,7 @@ module Flex
 
         subscriptions.each do |event_name, subscription|
           Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
-          Flex::EventManager.unsubscribe(subscription)
+          Strata::EventManager.unsubscribe(subscription)
         end
         subscriptions.clear
         @listening = false

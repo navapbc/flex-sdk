@@ -70,7 +70,7 @@ module Flex
     private
 
     def publish_status_changed_event
-      Flex::EventManager.publish("#{self.class.name}#{status.capitalize}", { task_id: id, case_id: case_id })
+      Strata::EventManager.publish("#{self.class.name}#{status.capitalize}", { task_id: id, case_id: case_id })
     end
   end
 end
