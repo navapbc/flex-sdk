@@ -1,18 +1,18 @@
-module Flex
+module Strata
   # Validations is a module that provides nested validation support for value objects.
   # It extends ActiveModel::Validations to handle validation of nested attributes in a
   # consistent way, propagating errors from nested objects to the parent model with
   # appropriate attribute name prefixing.
   #
   # This module should be included in models that need to validate nested value objects.
-  # It provides the flex_validates_nested class method for defining these validations.
+  # It provides the strata_validates_nested class method for defining these validations.
   # It is automatically included in the Strata::Attributes module.
   #
   # @example Including Validations in a model and validating a nested date range
   #   class MyModel < ApplicationRecord
-  #     include Flex::Validations
+  #     include Strata::Validations
   #
-  #     flex_validates_nested :period
+  #     strata_validates_nested :period
   #   end
   #
   module Validations
@@ -20,7 +20,7 @@ module Flex
     include ActiveModel::Validations
 
     class_methods do
-      def flex_validates_nested(name)
+      def strata_validates_nested(name)
         validate :"validate_nested_#{name}"
 
         # Adds a validator for an attribute that represents a value object.
@@ -49,7 +49,7 @@ module Flex
         end
       end
 
-      def flex_validates_type_casted_attribute(name, error_type)
+      def strata_validates_type_casted_attribute(name, error_type)
         validate :"validate_type_casted_attribute_#{name}"
 
         define_method "validate_type_casted_attribute_#{name}" do

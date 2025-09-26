@@ -21,7 +21,7 @@ module Strata
     include ActiveModel::Validations
     include ActiveModel::Serializers::JSON
     include Strata::Attributes
-    include Flex::Validations
+    include Strata::Validations
 
     def ==(other)
       return false if self.class != other.class
