@@ -9,7 +9,7 @@ module Strata
       options[:builder] = Strata::FormBuilder
       args = { scope: scope, url: url, format: format, **options }
       args[:model] = model if model
-      form_with args, &block
+      form_with(**args, &block)
     end
   end
 end
