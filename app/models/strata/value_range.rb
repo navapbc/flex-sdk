@@ -5,8 +5,8 @@ module Strata
     # start and end attributes are defined dynamically based on the value_class
     # (see ValueRange.[] method)
 
-    flex_validates_nested :start
-    flex_validates_nested :end
+    strata_validates_nested :start
+    strata_validates_nested :end
     validate :start_cannot_be_greater_than_end
 
     def include?(value)

@@ -19,7 +19,7 @@ module Strata
     #
     module YearQuarterAttribute
       extend ActiveSupport::Concern
-      include Flex::Validations
+      include Strata::Validations
 
       def self.attribute_type
         :single_column_value_object
@@ -70,8 +70,8 @@ module Strata
         # @return [void]
         def year_quarter_attribute(name, options = {})
           attribute name, YearQuarterType.new
-          flex_validates_nested(name)
-          flex_validates_type_casted_attribute(name, :invalid_year_quarter)
+          strata_validates_nested(name)
+          strata_validates_type_casted_attribute(name, :invalid_year_quarter)
         end
       end
     end

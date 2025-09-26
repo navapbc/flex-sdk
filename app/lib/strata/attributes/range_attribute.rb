@@ -20,7 +20,7 @@ module Strata
     #
     module RangeAttribute
       extend ActiveSupport::Concern
-      include Flex::Validations
+      include Strata::Validations
 
       def self.attribute_type
         :multi_column_value_object
@@ -53,7 +53,7 @@ module Strata
             end
           end
 
-          flex_validates_nested(name)
+          strata_validates_nested(name)
         end
       end
     end

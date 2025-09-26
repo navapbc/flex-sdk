@@ -4,7 +4,7 @@ module Strata
     # It allows dates to be stored in a format that is consistent with US conventions
     module USDateAttribute
       extend ActiveSupport::Concern
-      include Flex::Validations
+      include Strata::Validations
 
       def self.attribute_type
         :single_column_value_object
@@ -28,7 +28,7 @@ module Strata
       class_methods do
         def us_date_attribute(name, options)
           attribute name, USDateType.new
-          flex_validates_type_casted_attribute(name, :invalid_date)
+          strata_validates_type_casted_attribute(name, :invalid_date)
         end
       end
     end

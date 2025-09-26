@@ -1,8 +1,8 @@
 module Strata
   module Attributes
-    # Internal module used by other Flex attribute modules to implement attributes
+    # Internal module used by other Strata attribute modules to implement attributes
     # whose type is a subclass of Strata::ValueObject. This module is not intended to be
-    # used directly by clients of Flex.
+    # used directly by clients of Strata.
     #
     # The module provides functionality to create attributes that represent complex values
     # as value objects, with nested attributes that are automatically mapped to and from
@@ -13,10 +13,10 @@ module Strata
     # - A setter method that accepts either a value object or a hash of values
     # - Automatic validation handling for the nested structure
     #
-    # This module is used internally to implement higher-level attribute modules in Flex.
+    # This module is used internally to implement higher-level attribute modules in Strata.
     module BasicValueObjectAttribute
       extend ActiveSupport::Concern
-      include Flex::Validations
+      include Strata::Validations
 
       class_methods do
         # Defines an attribute associated with a subclass of
@@ -56,7 +56,7 @@ module Strata
             end
           end
 
-          flex_validates_nested(name)
+          strata_validates_nested(name)
         end
       end
     end
