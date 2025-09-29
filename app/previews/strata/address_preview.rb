@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # AddressPreview provides preview examples for the address component.
   # It demonstrates different states of the address input fields including empty,
   # filled, and invalid states.
@@ -8,13 +8,13 @@ module Flex
   #
   # @example Viewing the filled state preview
   #   # In Lookbook UI
-  #   # Navigate to Flex > AddressPreview > filled
+  #   # Navigate to Strata > AddressPreview > filled
   #
   class AddressPreview < Lookbook::Preview
     layout "component_preview"
 
     def empty
-      render template: "flex/previews/_address", locals: { model: new_model }
+      render template: "strata/previews/_address", locals: { model: new_model }
     end
 
     def filled
@@ -26,12 +26,12 @@ module Flex
         state: "CA",
         zip_code: "12345"
       )
-      render template: "flex/previews/_address", locals: { model: model }
+      render template: "strata/previews/_address", locals: { model: model }
     end
 
     def custom_legend
       model = new_model
-      render template: "flex/previews/_address", locals: { model: model, legend: "What is your address?" }
+      render template: "strata/previews/_address", locals: { model: model, legend: "What is your address?" }
     end
 
     private

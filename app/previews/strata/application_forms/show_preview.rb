@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module ApplicationForms
     # ShowPreview provides preview examples for the application form show view.
     # It demonstrates different states of the application form detail page.
@@ -12,7 +12,7 @@ module Flex
     #
     class ShowPreview < Lookbook::Preview
       def in_progress
-        render template: "flex/application_forms/show", locals: {
+        render template: "strata/application_forms/show", locals: {
           title: "My Application",
           back_link_text: "Back to Applications",
           index_path: "/applications",
@@ -24,7 +24,7 @@ module Flex
       end
 
       def submitted
-        render template: "flex/application_forms/show", locals: {
+        render template: "strata/application_forms/show", locals: {
           title: "My Application",
           back_link_text: "Back to Applications",
           index_path: "/applications",
