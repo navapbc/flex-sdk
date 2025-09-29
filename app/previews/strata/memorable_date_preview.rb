@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # MemorableDatePreview provides preview examples for the memorable date component.
   # It demonstrates different states of the date input fields including empty,
   # filled, and invalid states.
@@ -8,26 +8,26 @@ module Flex
   #
   # @example Viewing the filled state preview
   #   # In Lookbook UI
-  #   # Navigate to Flex > MemorableDatePreview > filled
+  #   # Navigate to Strata > MemorableDatePreview > filled
   #
   class MemorableDatePreview < Lookbook::Preview
     layout "component_preview"
 
     def empty
-      render template: "flex/previews/_memorable_date", locals: { model: new_model }
+      render template: "strata/previews/_memorable_date", locals: { model: new_model }
     end
 
     def filled
       model = new_model
       model.date_of_birth = Date.new(1990, 2, 28)
-      render template: "flex/previews/_memorable_date", locals: { model: model }
+      render template: "strata/previews/_memorable_date", locals: { model: model }
     end
 
     def invalid
       model = new_model
       model.date_of_birth = { year: 1990, month: 2, day: 31 }
       model.valid?
-      render template: "flex/previews/_memorable_date", locals: { model: model }
+      render template: "strata/previews/_memorable_date", locals: { model: model }
     end
 
     private

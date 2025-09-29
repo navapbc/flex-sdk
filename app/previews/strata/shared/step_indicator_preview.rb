@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module Shared
     # StepIndicatorPreview provides preview examples for the step indicator component.
     # It demonstrates different states of the step indicator including in-progress,
@@ -9,20 +9,20 @@ module Flex
     #
     # @example Viewing the submitted state preview
     #   # In Lookbook UI
-    #   # Navigate to Flex > StepIndicatorPreview > submitted
+    #   # Navigate to Strata > StepIndicatorPreview > submitted
     #
     class StepIndicatorPreview < Lookbook::Preview
       layout "component_preview"
 
       def default
-        render template: "flex/shared/_step_indicator", locals: {
+        render template: "strata/shared/_step_indicator", locals: {
           steps: [ :in_progress, :submitted, :decision_made ],
           current_step: :submitted
         }
       end
 
       def counters
-        render template: "flex/shared/_step_indicator", locals: {
+        render template: "strata/shared/_step_indicator", locals: {
           type: :counters,
           steps: [ :in_progress, :submitted, :decision_made ],
           current_step: :submitted
@@ -32,7 +32,7 @@ module Flex
       # @!group Statuses
 
       def in_progress
-        render template: "flex/shared/_step_indicator", locals: {
+        render template: "strata/shared/_step_indicator", locals: {
           type: :counters,
           steps: [ :in_progress, :submitted, :decision_made ],
           current_step: :in_progress
@@ -40,7 +40,7 @@ module Flex
       end
 
       def submitted
-        render template: "flex/shared/_step_indicator", locals: {
+        render template: "strata/shared/_step_indicator", locals: {
           type: :counters,
           steps: [ :in_progress, :submitted, :decision_made ],
           current_step: :submitted
@@ -48,7 +48,7 @@ module Flex
       end
 
       def decision_made
-        render template: "flex/shared/_step_indicator", locals: {
+        render template: "strata/shared/_step_indicator", locals: {
           type: :counters,
           steps: [ :in_progress, :submitted, :decision_made ],
           current_step: :decision_made

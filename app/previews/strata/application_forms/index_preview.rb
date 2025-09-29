@@ -1,4 +1,4 @@
-module Flex
+module Strata
   module ApplicationForms
     # IndexPreview provides preview examples for the application forms index view.
     # It demonstrates different states of the application forms list page.
@@ -12,7 +12,7 @@ module Flex
     #
     class IndexPreview < Lookbook::Preview
       def empty
-        render template: "flex/application_forms/index", locals: {
+        render template: "strata/application_forms/index", locals: {
           title: "My Applications",
           intro: "Start a new application or continue an existing one.",
           new_button_text: "Start New Application",
@@ -23,7 +23,7 @@ module Flex
       end
 
       def with_applications
-        render template: "flex/application_forms/index", locals: {
+        render template: "strata/application_forms/index", locals: {
           title: "My Applications",
           intro: "Start a new application or continue an existing one.",
           new_button_text: "Start New Application",
