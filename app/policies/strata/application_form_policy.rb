@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # Common policy for application forms
   #
   # @note All actions require a logged-in user
