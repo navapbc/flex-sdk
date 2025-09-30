@@ -14,7 +14,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_235647) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "flex_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "strata_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type"
     t.text "description"
     t.integer "status", default: 0
@@ -24,10 +24,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_235647) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "case_type"
-    t.index ["assignee_id"], name: "index_flex_tasks_on_assignee_id"
-    t.index ["case_id"], name: "index_flex_tasks_on_case_id"
-    t.index ["status"], name: "index_flex_tasks_on_status"
-    t.index ["type"], name: "index_flex_tasks_on_type"
+    t.index ["assignee_id"], name: "index_strata_tasks_on_assignee_id"
+    t.index ["case_id"], name: "index_strata_tasks_on_case_id"
+    t.index ["status"], name: "index_strata_tasks_on_status"
+    t.index ["type"], name: "index_strata_tasks_on_type"
   end
 
   create_table "foo_test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -115,5 +115,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_235647) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "flex_tasks", "users", column: "assignee_id", on_delete: :nullify
+  add_foreign_key "strata_tasks", "users", column: "assignee_id", on_delete: :nullify
 end

@@ -1,3 +1,3 @@
-class TestApplicationForm < Flex::ApplicationForm
+class TestApplicationForm < Strata::ApplicationForm
   attribute :test_string, :string
 end
