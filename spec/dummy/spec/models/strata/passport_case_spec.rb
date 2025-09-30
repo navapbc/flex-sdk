@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Flex
+module Strata
   RSpec.describe PassportCase, type: :model do
     let(:test_case) { described_class.new }
 
