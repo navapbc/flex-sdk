@@ -3,7 +3,7 @@
   <p>Current step: <span class="text-bold"><%= @case.business_process_current_step %></span></p>
 <% end %>
 
-<%= render template: 'flex/cases/show', locals: {
+<%= render template: 'strata/cases/show', locals: {
   model_class: PassportCase,
   kase: @case,
   sidenav: [

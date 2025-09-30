@@ -32,10 +32,10 @@ module Strata
       task = Strata::Task.assign_next_task_to(current_user.id)
 
       if task
-        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
+        flash["task-message"] = I18n.t("strata.tasks.messages.task_picked_up")
         redirect_to url_for(action: :show, id: task.id)
       else
-        flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
+        flash["task-message"] = I18n.t("strata.tasks.messages.no_tasks_available")
         redirect_to url_for(action: :index)
       end
     end
