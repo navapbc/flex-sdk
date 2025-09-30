@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
+RSpec.describe "strata/cases/_sidenav.html.erb", type: :view do
   context "when content_for(:sidenav) is provided" do
     before do
       view.content_for(:sidenav) do
         '<div>Custom sidenav</div>'
       end
-      render partial: "flex/cases/sidenav", locals: { sidenav: [] }
+      render partial: "strata/cases/sidenav", locals: { sidenav: [] }
     end
 
     it "renders the custom sidenav" do
-      render partial: "flex/cases/sidenav"
+      render partial: "strata/cases/sidenav"
       expect(rendered).to include("Custom sidenav")
     end
   end
@@ -25,7 +25,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
     end
 
     before do
-      render partial: "flex/cases/sidenav", locals: { sidenav: sidenav }
+      render partial: "strata/cases/sidenav", locals: { sidenav: sidenav }
     end
 
     it "renders the custom sidenav with the correct links" do
@@ -39,7 +39,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
 
       before do
         allow(view).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: request_path))
-        render partial: "flex/cases/sidenav", locals: { sidenav: sidenav }
+        render partial: "strata/cases/sidenav", locals: { sidenav: sidenav }
       end
 
       it "adds usa-current class to the matching link" do
@@ -59,7 +59,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
 
       before do
         allow(view).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: request_path))
-        render partial: "flex/cases/sidenav", locals: { sidenav: sidenav }
+        render partial: "strata/cases/sidenav", locals: { sidenav: sidenav }
       end
 
       it "does not add usa-current class to any links" do
@@ -70,7 +70,7 @@ RSpec.describe "flex/cases/_sidenav.html.erb", type: :view do
 
   context "when sidenav is an empty array" do
     before do
-      render partial: "flex/cases/sidenav", locals: { sidenav: [] }
+      render partial: "strata/cases/sidenav", locals: { sidenav: [] }
     end
 
     it "renders the sidenav navigation with no items" do

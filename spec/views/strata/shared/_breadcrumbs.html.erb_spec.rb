@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
+RSpec.describe "strata/shared/_breadcrumbs.html.erb", type: :view do
   describe "when custom breadcrumbs are provided" do
     before do
       view.content_for(:breadcrumbs) do
         '<nav>Custom breadcrumbs</nav>'
       end
-      render partial: "flex/shared/breadcrumbs"
+      render partial: "strata/shared/breadcrumbs"
     end
 
     it "renders the custom breadcrumbs content" do
@@ -20,7 +20,7 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
 
   describe "when no custom breadcrumbs are provided" do
     before do
-      render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
+      render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs }
     end
 
     context "with a single breadcrumb" do
@@ -70,7 +70,7 @@ RSpec.describe "flex/shared/_breadcrumbs.html.erb", type: :view do
       let(:breadcrumbs) { [] }
 
       it "raises an error when trying to access last element" do
-        expect { render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs } }.not_to raise_error
+        expect { render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs } }.not_to raise_error
       end
     end
 
