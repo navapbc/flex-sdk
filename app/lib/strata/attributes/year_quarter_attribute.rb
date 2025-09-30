@@ -9,7 +9,7 @@ module Strata
     #   class Report < ApplicationRecord
     #     include Strata::Attributes
     #
-    #     flex_attribute :reporting_period, :year_quarter
+    #     strata_attribute :reporting_period, :year_quarter
     #   end
     #
     #   report = Report.new

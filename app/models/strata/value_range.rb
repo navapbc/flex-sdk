@@ -28,8 +28,8 @@ module Strata
       @value_range_classes ||= {}
       @value_range_classes[value_class] ||= Class.new(self) do
         value_type = value_class.name.demodulize.underscore.to_sym
-        flex_attribute :start, value_type
-        flex_attribute :end, value_type
+        strata_attribute :start, value_type
+        strata_attribute :end, value_type
 
         define_singleton_method(:value_class) { value_class }
       end

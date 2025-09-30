@@ -8,7 +8,7 @@ module Strata
     #   class MyForm < Flex::ApplicationForm
     #     include Strata::Attributes
     #
-    #     flex_attribute :salary, :money
+    #     strata_attribute :salary, :money
     #   end
     #
     # Key features:
