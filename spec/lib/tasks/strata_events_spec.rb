@@ -1,18 +1,18 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'flex:events', type: :task do
+RSpec.describe 'strata:events', type: :task do
   let(:event_manager) { class_double(Strata::EventManager) }
 
   before do
-    Rake.application.rake_require('tasks/flex_events')
+    Rake.application.rake_require('tasks/strata_events')
     Rake::Task.define_task(:environment)
     stub_const('Strata::EventManager', event_manager)
     allow(Strata::EventManager).to receive(:publish)
   end
 
   describe 'publish_event' do
-    let(:task) { Rake::Task['flex:events:publish_event'] }
+    let(:task) { Rake::Task['strata:events:publish_event'] }
 
     after do
       task.reenable
@@ -43,7 +43,7 @@ RSpec.describe 'flex:events', type: :task do
   end
 
   describe 'publish_case_event' do
-    let(:task) { Rake::Task['flex:events:publish_case_event'] }
+    let(:task) { Rake::Task['strata:events:publish_case_event'] }
 
     after do
       task.reenable

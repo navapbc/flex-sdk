@@ -114,11 +114,11 @@ RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
         expect(generator).to have_received(:yes?).with("Would you like to install and run Strata migrations now? (y/n)")
       end
 
-      it "runs Strata:install:migrations first, then db:migrate when user agrees" do
+      it "runs strata:install:migrations first, then db:migrate when user agrees" do
         allow(generator).to receive(:yes?).and_return(true)
         allow(generator).to receive(:rails_command)
         generator.invoke_all
-        expect(generator).to have_received(:rails_command).with("Strata:install:migrations").ordered
+        expect(generator).to have_received(:rails_command).with("strata:install:migrations").ordered
         expect(generator).to have_received(:rails_command).with("db:migrate").ordered
       end
     end

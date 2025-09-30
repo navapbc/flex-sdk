@@ -1,4 +1,4 @@
-namespace :flex do
+namespace :strata do
   namespace :events do
     def fetch_required_args!(args, *required_keys)
       missing = required_keys.select { |k| args[k].blank? }
