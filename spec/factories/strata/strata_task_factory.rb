@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :flex_task, class: 'Flex::Task' do
+  factory :strata_task, class: 'Strata::Task' do
     association :case, factory: :test_case
 
     trait :with_description do

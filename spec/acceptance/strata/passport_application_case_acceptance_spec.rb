@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Flex
+module Strata
   RSpec.describe PassportBusinessProcess, type: :model do
     let(:test_form) { build(:passport_application_form) }
 

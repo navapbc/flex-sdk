@@ -1,4 +1,4 @@
 FactoryBot.define do
-  factory :flex_case, class: 'TestCase' do
+  factory :strata_case, class: 'TestCase' do
   end
 end
