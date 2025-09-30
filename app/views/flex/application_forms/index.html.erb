@@ -40,29 +40,17 @@
   <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
 
   <section class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
-    <table class="usa-table usa-table--borderless width-full">
-      <thead>
-        <tr>
-          <th scope="col">
-            <%= t("flex.application_forms.index.col_created_at") %>
-          </th>
-          <th scope="col">
-            <%= t("flex.application_forms.index.col_status") %>
-          </th>
-          <th scope="col">
-            <%= t("flex.application_forms.index.col_actions") %>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% application_forms.each do |application_form| %>
-          <% if local_assigns.key?(:row_view) %>
-            <%= render partial: row_view, locals: { application_form: } %>
-          <% else %>
-            <%= render partial: "flex/application_forms/row", locals: { application_form: } %>
-          <% end %>
-        <% end %>
-      </tbody>
-    </table>
+    <%= render template: "flex/shared/_table", locals: {
+        headers: [
+          t("flex.application_forms.index.col_created_at"),
+          t("flex.application_forms.index.col_status"),
+          t("flex.application_forms.index.col_actions")
+        ],
+        rows: application_forms,
+        row_view: local_assigns.key?(:row_view) ? row_view : "flex/application_forms/row",
+        empty_text: "No applications"
+      }
+    %>
   </section>
+
 <% end %>
