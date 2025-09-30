@@ -1,6 +1,6 @@
 # Implementation Guidelines
 
-This document provides guidelines for implementing features in the Flex SDK. Following these guidelines will help ensure code quality, maintainability, and consistency.
+This document provides guidelines for implementing features in the Strata SDK. Following these guidelines will help ensure code quality, maintainability, and consistency.
 
 ## Code Simplicity
 

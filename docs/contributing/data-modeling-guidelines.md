@@ -1,10 +1,10 @@
 # Data Modeling Guidelines
 
-The Flex SDK uses domain-driven design (DDD) principles. These guidelines explain key ideas in plain language, with examples, so developers can apply them consistently.
+The Strata SDK uses domain-driven design (DDD) principles. These guidelines explain key ideas in plain language, with examples, so developers can apply them consistently.
 
 ## ActiveRecord vs Repository Pattern
 
-DDD often recommends the repository pattern as a layer that separates domain logic from data persistence. To align with common Rails practice, the Flex SDK skips this extra layer. Instead, the model class itself acts as the repository.
+DDD often recommends the repository pattern as a layer that separates domain logic from data persistence. To align with common Rails practice, the Strata SDK skips this extra layer. Instead, the model class itself acts as the repository.
 
 ### What this means for you
 

@@ -1,9 +1,9 @@
-# Flex Rules Engine
+# Strata Rules Engine
 
-The Flex Rules Engine allows developers to implement and maintain policy rules as code. The same rules can be used for both internal eligibility determination logic as well as public facing unauthenticated calculators.
+The Strata Rules Engine allows developers to implement and maintain policy rules as code. The same rules can be used for both internal eligibility determination logic as well as public facing unauthenticated calculators.
 
 > [!NOTE]  
-> The Flex Rules Engine is still a work in progress, and detailed documentation will be provided as the feature matures.
+> The Strata Rules Engine is still a work in progress, and detailed documentation will be provided as the feature matures.
 
 ## Key features
 

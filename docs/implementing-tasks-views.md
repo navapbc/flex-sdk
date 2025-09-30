@@ -1,13 +1,13 @@
 # Implementing Task Views
 
-This guide explains how to implement and customize the task views in the Flex engine, with a focus on the `index.html.erb` template.
+This guide explains how to implement and customize the task views in the Strata engine, with a focus on the `index.html.erb` template.
 
 ## Quick Start Implementation
 
 To implement the tasks index view in your application, create an `index.html.erb` file in your views directory with the following content:
 
 ```erb
-<%= render template: 'flex/tasks/index', locals: {
+<%= render template: 'strata/tasks/index', locals: {
   tasks: @tasks,
   task_types: @task_types,
   unassigned_tasks: @unassigned_tasks
@@ -18,9 +18,9 @@ To implement the tasks index view in your application, create an `index.html.erb
 
 The view requires the following local variables to be passed:
 
-- `tasks`: An array of `Flex::Task` objects to display in the list
+- `tasks`: An array of `Strata::Task` objects to display in the list
 - `task_types`: An array of available task types for filtering
-- `unassigned_tasks`: An array of `Flex::Task` objects used to determine the state of the "Pick Next Task" button
+- `unassigned_tasks`: An array of `Strata::Task` objects used to determine the state of the "Pick Next Task" button
 
 ### Controller Setup
 
@@ -28,9 +28,9 @@ In your controller, ensure you have the following instance variables set:
 
 ```ruby
 def index
-  @tasks = Flex::Task.where(assignee_id: current_user.id) # or your task retrieval logic
-  @task_types = ["MyCustomTask", "OtherTask", Flex::Task.name]
-  @unassigned_tasks = Flex::Task.where(assignee_id: nil) # or your unassigned tasks logic
+  @tasks = Strata::Task.where(assignee_id: current_user.id) # or your task retrieval logic
+  @task_types = ["MyCustomTask", "OtherTask", Strata::Task.name]
+  @unassigned_tasks = Strata::Task.where(assignee_id: nil) # or your unassigned tasks logic
 end
 ```
 
@@ -39,7 +39,7 @@ end
 The view uses several translation keys that you can override in your application:
 
 ```yaml
-flex:
+strata:
   tasks:
     index:
       title: "Tasks"

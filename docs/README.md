@@ -1,19 +1,19 @@
-# Flex SDK Documentation
+# Strata SDK Documentation
 
-Welcome to the Flex SDK documentation. This index provides an organized overview of all available documentation.
+Welcome to the Strata SDK documentation. This index provides an organized overview of all available documentation.
 
 ## Getting Started
 
-- [Getting started guide](./getting-started.md) - Begin here to create your first Flex application
+- [Getting started guide](./getting-started.md) - Begin here to create your first Strata application
 
 ## Core concepts
 
-- [Flex SDK components](./flex-sdk-components.md) - Overview of available SDK components
+- [Strata SDK components](./strata-sdk-components.md) - Overview of available SDK components
 - [Authorization](./authorization.md) - Built-in base policies for secure authorization patterns
-- [Flex Data Modeler](./flex-data-modeler.md) - Learn how to define data models using Flex Attributes and generate migrations using the Flex Migration Generator.
+- [Strata Data Modeler](./strata-data-modeler.md) - Learn how to define data models using Strata Attributes and generate migrations using the Strata Migration Generator.
 - [Multi-Page Form Builder](./multi-page-form-builder.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
-- [Flex Rules Engine](./flex-rules-engine.md) - Introduction to the rules engine for business logic
+- [Strata Rules Engine](./strata-rules-engine.md) - Introduction to the rules engine for business logic
 
 ## Implementation guides
 
@@ -25,5 +25,5 @@ Welcome to the Flex SDK documentation. This index provides an organized overview
 
 ## Reference
 
-- [Flex attributes](./flex-attributes.md) - Detailed documentation on all Flex attributes
-- [Generators](./generators.md) - Generate boilerplate code with Flex generators
+- [Strata attributes](./strata-attributes.md) - Detailed documentation on all Strata attributes
+- [Generators](./generators.md) - Generate boilerplate code with Strata generators

@@ -1,6 +1,6 @@
 # Creating Application Forms
 
-This guide will walk you through creating application forms for your digital service using the Flex SDK. When implementing government digital services, the intake process is typically a good place to start, and application forms are the foundation of most intake processes.
+This guide will walk you through creating application forms for your digital service using the Strata SDK. When implementing government digital services, the intake process is typically a good place to start, and application forms are the foundation of most intake processes.
 
 ## What is an Application Form?
 
@@ -19,29 +19,29 @@ While most intake processes are application forms, there are some important exce
 
 ### `ApplicationForm` class
 
-[ApplicationForm](./app/models/flex/application_form.rb) is an abstract parent class that should be used when creating new Flex forms within your application.
+[ApplicationForm](./app/models/strata/application_form.rb) is an abstract parent class that should be used when creating new Strata forms within your application.
 
-Out-of-the-box, [ApplicationForm](./app/models/flex/application_form.rb) provides a `status` attribute that comes with 2 options: "in_progress" or "submitted". The default option is "in_progress". Whenever a form is submitted, its status will change to "submitted". Any attempts to change any attributes on this form after the status is changed to "submitted" will result in error.
+Out-of-the-box, [ApplicationForm](./app/models/strata/application_form.rb) provides a `status` attribute that comes with 2 options: "in_progress" or "submitted". The default option is "in_progress". Whenever a form is submitted, its status will change to "submitted". Any attempts to change any attributes on this form after the status is changed to "submitted" will result in error.
 
 ## Creating a new form
 
-Creating a new Flex form follows a similar process to generating a standard Rails model, with the key difference being that the model extends from ApplicationForm instead of ApplicationRecord. This guide walks through the implementation of an example passport application processing system.
+Creating a new Strata form follows a similar process to generating a standard Rails model, with the key difference being that the model extends from ApplicationForm instead of ApplicationRecord. This guide walks through the implementation of an example passport application processing system.
 
 ### 1. Generate an application form model
 
 Run the following command to generate a new application form model. Replace the name of the application form with the desired name.
 
 ```shell
-bin/rails generate flex:application_form PassportApplicationForm
+bin/rails generate strata:application_form PassportApplicationForm
 ```
 
 If you already know some of the attributes you want to include in the form, you can specify them in the generate command, like so:
 
 ```shell
-bin/rails generate flex:application_form PassportApplicationForm name:name birth_date:memorable_date ssn:tax_id residential_address:address
+bin/rails generate strata:application_form PassportApplicationForm name:name birth_date:memorable_date ssn:tax_id residential_address:address
 ```
 
-For a list of supported attributes, see [Flex Data Modeler](/docs/flex-data-modeler.md).
+For a list of supported attributes, see [Strata Data Modeler](/docs/strata-data-modeler.md).
 
 Alternatively, use the `bin/rails generate scaffold` command to generate additional files such as views:
 
@@ -49,11 +49,11 @@ Alternatively, use the `bin/rails generate scaffold` command to generate additio
 bin/rails generate scaffold PassportApplicationForm
 ```
 
-### 2. Update the model to extend from Flex::ApplicationForm
+### 2. Update the model to extend from Strata::ApplicationForm
 
 ```ruby
-# models/flex/passport_application_form.rb
-class PassportApplicationForm < Flex::ApplicationForm # <-- ensure that you're extending from Flex::ApplicationForm, not ApplicationRecord
+# models/strata/passport_application_form.rb
+class PassportApplicationForm < Strata::ApplicationForm # <-- ensure that you're extending from Strata::ApplicationForm, not ApplicationRecord
 ```
 
 ### 3. Add attributes to your model
@@ -61,15 +61,15 @@ class PassportApplicationForm < Flex::ApplicationForm # <-- ensure that you're e
 Add attributes to your model. More can be added later.
 
 ```ruby
-class PassportApplicationForm < Flex::ApplicationForm
-  flex_attribute :name, :name
-  flex_attribute :birth_date, :memorable_date
-  flex_attribute :ssn, :tax_id
-  flex_attribute :residential_address, :address
+class PassportApplicationForm < Strata::ApplicationForm
+  strata_attribute :name, :name
+  strata_attribute :birth_date, :memorable_date
+  strata_attribute :ssn, :tax_id
+  strata_attribute :residential_address, :address
 end
 ```
 
-For more information about how to use Flex attributes, see [Flex Data Modeler](/docs/flex-data-modeler.md).
+For more information about how to use Strata attributes, see [Strata Data Modeler](/docs/strata-data-modeler.md).
 
 ### 4. Generate migrations for added attributes
 
@@ -80,10 +80,10 @@ Generate a migration. The migration needs to include the following attributes in
 - `submitted_at:datetime`
 
 ```shell
-bin/rails generate flex:migration status:integer user_id:uuid submitted_at:datetime name:name birth_date:memorable_date ssn:tax_id residential_address:address
+bin/rails generate strata:migration status:integer user_id:uuid submitted_at:datetime name:name birth_date:memorable_date ssn:tax_id residential_address:address
 ```
 
-For more information about the Flex migration generator, see [Flex Data Modeler](/docs/flex-data-modeler.md).
+For more information about the Strata migration generator, see [Strata Data Modeler](/docs/strata-data-modeler.md).
 
 ### 4. Run migrations
 
@@ -110,7 +110,7 @@ form.save
 
 > [!NOTE]  
 > This documentation is a work in progress. It still needs documentation on how to generate and test views, controllers, and routes
-> In the meantime, if you find any issues, please provide feedback or suggestions for improvement to the Flex SDK team.
+> In the meantime, if you find any issues, please provide feedback or suggestions for improvement to the Strata SDK team.
 
 ## Next Steps
 

@@ -1,6 +1,6 @@
 # Strata Attributes Documentation
 
-This document provides comprehensive documentation for all Strata Attributes available in the Flex SDK. Strata Attributes are custom data types that extend ActiveRecord with specialized functionality for handling complex data structures commonly used in government and enterprise applications.
+This document provides comprehensive documentation for all Strata Attributes available in the Strata SDK. Strata Attributes are custom data types that extend ActiveRecord with specialized functionality for handling complex data structures commonly used in government and enterprise applications.
 
 ## Table of Contents
 
@@ -26,9 +26,9 @@ To use Strata Attributes in your model:
 class MyModel < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :applicant_name, :name
-  flex_attribute :home_address, :address
-  flex_attribute :salary, :money
+  strata_attribute :applicant_name, :name
+  strata_attribute :home_address, :address
+  strata_attribute :salary, :money
 end
 ```
 
@@ -39,10 +39,10 @@ The Address Attribute provides structured handling of physical addresses with va
 ### Usage in Model
 
 ```ruby
-class ApplicationForm < Flex::ApplicationForm
+class ApplicationForm < Strata::ApplicationForm
   include Strata::Attributes
 
-  flex_attribute :mailing_address, :address
+  strata_attribute :mailing_address, :address
 end
 ```
 
@@ -113,9 +113,9 @@ The Array Attribute allows storing arrays of value objects in a single JSONB dat
 class Company < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :office_locations, :address, array: true
-  flex_attribute :employee_names, :name, array: true
-  flex_attribute :reporting_periods, :year_quarter, array: true
+  strata_attribute :office_locations, :address, array: true
+  strata_attribute :employee_names, :name, array: true
+  strata_attribute :reporting_periods, :year_quarter, array: true
 end
 ```
 
@@ -142,12 +142,12 @@ company.office_locations = [
 class Enrollment < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :leave_periods, [:us_date, range: true], array: true
+  strata_attribute :leave_periods, [:us_date, range: true], array: true
 end
 
 enrollment.leave_periods = [
-  Flex::DateRange.new(start: Date.new(2023, 1, 1), end: Date.new(2023, 1, 31)),
-  Flex::DateRange.new(start: Date.new(2023, 6, 1), end: Date.new(2023, 6, 30))
+  Strata::DateRange.new(start: Date.new(2023, 1, 1), end: Date.new(2023, 1, 31)),
+  Strata::DateRange.new(start: Date.new(2023, 6, 1), end: Date.new(2023, 6, 30))
 ]
 ```
 
@@ -165,7 +165,7 @@ The Memorable Date Attribute provides date handling with support for hash input 
 class Person < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :date_of_birth, :memorable_date
+  strata_attribute :date_of_birth, :memorable_date
 end
 ```
 
@@ -210,8 +210,8 @@ The Money Attribute provides handling of US dollar amounts with automatic conver
 class Employee < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :salary, :money
-  flex_attribute :bonus, :money
+  strata_attribute :salary, :money
+  strata_attribute :bonus, :money
 end
 ```
 
@@ -268,8 +268,8 @@ The Name Attribute provides structured handling of person names with first, midd
 class Person < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :name, :name
-  flex_attribute :emergency_contact_name, :name
+  strata_attribute :name, :name
+  strata_attribute :emergency_contact_name, :name
 end
 ```
 
@@ -336,8 +336,8 @@ The Range Attribute provides handling of value ranges using start and end values
 class Enrollment < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :coverage_period, :us_date, range: true
-  flex_attribute :base_period, :year_quarter, range: true
+  strata_attribute :coverage_period, :us_date, range: true
+  strata_attribute :base_period, :year_quarter, range: true
 end
 ```
 
@@ -366,7 +366,7 @@ enrollment.coverage_period = {
 }
 
 # Setting with a ValueRange object
-enrollment.coverage_period = Flex::DateRange.new(
+enrollment.coverage_period = Strata::DateRange.new(
   start: Date.new(2023, 1, 1),
   end: Date.new(2023, 12, 31)
 )
@@ -398,8 +398,8 @@ The Tax ID Attribute provides handling of tax identification numbers (such as So
 class Person < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :ssn, :tax_id
-  flex_attribute :ein, :tax_id
+  strata_attribute :ssn, :tax_id
+  strata_attribute :ein, :tax_id
 end
 ```
 
@@ -447,8 +447,8 @@ The US Date Attribute provides date handling with US regional format parsing (MM
 class Application < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :submitted_on, :us_date
-  flex_attribute :effective_date, :us_date
+  strata_attribute :submitted_on, :us_date
+  strata_attribute :effective_date, :us_date
 end
 ```
 
@@ -493,8 +493,8 @@ The Year Month Attribute provides handling of year and month combinations with a
 class Report < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :activity_reporting_period, :year_month
-  flex_attribute :billing_period, :year_month
+  strata_attribute :activity_reporting_period, :year_month
+  strata_attribute :billing_period, :year_month
 end
 ```
 
@@ -556,8 +556,8 @@ The Year Quarter Attribute provides handling of year and quarter combinations wi
 class Report < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :reporting_period, :year_quarter
-  flex_attribute :comparison_period, :year_quarter
+  strata_attribute :reporting_period, :year_quarter
+  strata_attribute :comparison_period, :year_quarter
 end
 ```
 
@@ -584,8 +584,8 @@ The `Strata::YearQuarter` value object provides:
 # Setting a year quarter with a hash
 report.reporting_period = { year: 2023, quarter: 2 }
 
-# Setting with a Flex::YearQuarter object
-report.reporting_period = Flex::YearQuarter.new(year: 2023, quarter: 2)
+# Setting with a Strata::YearQuarter object
+report.reporting_period = Strata::YearQuarter.new(year: 2023, quarter: 2)
 
 # Accessing components
 puts report.reporting_period.year # => 2023

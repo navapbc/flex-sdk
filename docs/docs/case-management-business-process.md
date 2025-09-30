@@ -1,6 +1,6 @@
 # Creating a Case Management Business Process
 
-After creating an application form, the next step is to define how that application will be processed. In Flex, this is done through a case management business process, which defines the workflow and tasks needed to process the application.
+After creating an application form, the next step is to define how that application will be processed. In Strata, this is done through a case management business process, which defines the workflow and tasks needed to process the application.
 
 ## Understanding Case Management
 
@@ -17,19 +17,19 @@ A case management business process consists of:
 
 ## Creating a new business process
 
-Creating a case management business process involves generating a case model that extends from `Flex::Case` and defining a business process that specifies the workflow. The business process determines how an application moves through your organization, from initial submission to final determination. This guide continues with the passport application example to demonstrate how to create a business process for handling passport applications.
+Creating a case management business process involves generating a case model that extends from `Strata::Case` and defining a business process that specifies the workflow. The business process determines how an application moves through your organization, from initial submission to final determination. This guide continues with the passport application example to demonstrate how to create a business process for handling passport applications.
 
 ### 1. Generate the Case and Business Process
 
 First, generate the case model and business process files:
 
 ```shell
-bin/rails generate flex:case PassportCase
+bin/rails generate strata:case PassportCase
 ```
 
 This command will:
 
-- Create a case model in `app/models/flex/passport_case.rb`
+- Create a case model in `app/models/strata/passport_case.rb`
 - Generate a business process in `app/business_processes/passport_business_process.rb`
 - Set up the necessary database migrations
 - Create task models and views
@@ -40,7 +40,7 @@ Update the generated business process file to define your workflow:
 
 ```ruby
 # app/business_processes/passport_business_process.rb
-class PassportBusinessProcess < Flex::BusinessProcess
+class PassportBusinessProcess < Strata::BusinessProcess
   # Define steps
   applicant_task('submit_application')
 
@@ -65,10 +65,10 @@ end
 For each task in your business process, generate the necessary views:
 
 ```shell
-bin/rails generate flex:task verify_identity PassportCase
-bin/rails generate flex:task review_documents PassportCase
-bin/rails generate flex:task process_payment PassportCase
-bin/rails generate flex:task make_determination PassportCase
+bin/rails generate strata:task verify_identity PassportCase
+bin/rails generate strata:task review_documents PassportCase
+bin/rails generate strata:task process_payment PassportCase
+bin/rails generate strata:task make_determination PassportCase
 ```
 
 ### 5. Test the Business Process
@@ -89,4 +89,4 @@ kase.business_process_instance.current_step
 
 ## Next Steps
 
-1. [Add custom task implementations](../lib/generators/flex/task/USAGE)
+1. [Add custom task implementations](../lib/generators/strata/task/USAGE)
