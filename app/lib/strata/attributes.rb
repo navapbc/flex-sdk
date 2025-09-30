@@ -10,9 +10,9 @@ module Strata
   #   class MyModel < ApplicationRecord
   #     include Strata::Attributes
   #
-  #     strata_attribute :birth_date, :memorable_date
-  #     strata_attribute :applicant_name, :name
-  #     strata_attribute :salary, :money
+  #     flex_attribute :birth_date, :memorable_date
+  #     flex_attribute :applicant_name, :name
+  #     flex_attribute :salary, :money
   #   end
   #
   module Attributes
@@ -53,7 +53,7 @@ module Strata
       #   - `:range` (Boolean): If true, the attribute will be a Strata::ValueRange of the specified type
       # @raise [ArgumentError] If an unsupported attribute type is provided
       # @return [void]
-      def strata_attribute(name, type, options = {})
+      def flex_attribute(name, type, options = {})
         is_array = options.delete(:array) || false
         is_range = options.delete(:range) || false
 

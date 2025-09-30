@@ -1,2 +1,2 @@
-class TestTask < Strata::Task
+class TestTask < Flex::Task
 end

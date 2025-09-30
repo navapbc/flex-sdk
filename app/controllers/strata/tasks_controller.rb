@@ -1,5 +1,5 @@
 module Strata
-  # Controller for managing Strata::Task records. Handles listing, filtering, showing, and updating tasks.
+  # Controller for managing Flex::Task records. Handles listing, filtering, showing, and updating tasks.
   # This controller helps a parent application manage tasks by not forcing the parent application to implement the same functionality.
   class TasksController < ::StaffController
     helper DateHelper
@@ -10,9 +10,9 @@ module Strata
     before_action :add_task_details_view_path, only: %i[ show ]
 
     def index
-      @task_types = Strata::Task.distinct(:type).unscope(:order).pluck(:type) # Postgres does not support using `order` with `distinct`, thus we have to unscope `order` here.
+      @task_types = Flex::Task.distinct(:type).unscope(:order).pluck(:type) # Postgres does not support using `order` with `distinct`, thus we have to unscope `order` here.
       @tasks = filter_tasks
-      @unassigned_tasks = Strata::Task.incomplete.unassigned
+      @unassigned_tasks = Flex::Task.incomplete.unassigned
     end
 
     def show
@@ -29,13 +29,13 @@ module Strata
     end
 
     def pick_up_next_task
-      task = Strata::Task.assign_next_task_to(current_user.id)
+      task = Flex::Task.assign_next_task_to(current_user.id)
 
       if task
-        flash["task-message"] = I18n.t("strata.tasks.messages.task_picked_up")
+        flash["task-message"] = I18n.t("flex.tasks.messages.task_picked_up")
         redirect_to url_for(action: :show, id: task.id)
       else
-        flash["task-message"] = I18n.t("strata.tasks.messages.no_tasks_available")
+        flash["task-message"] = I18n.t("flex.tasks.messages.no_tasks_available")
         redirect_to url_for(action: :index)
       end
     end
@@ -43,7 +43,7 @@ module Strata
     private
 
     def set_task
-      @task = Strata::Task.find(params[:id]) if params[:id].present?
+      @task = Flex::Task.find(params[:id]) if params[:id].present?
     end
 
     def set_case
@@ -63,7 +63,7 @@ module Strata
     end
 
     def filter_tasks
-      tasks = filter_tasks_by_date(Strata::Task.all, index_filter_params[:filter_date])
+      tasks = filter_tasks_by_date(Flex::Task.all, index_filter_params[:filter_date])
       tasks = filter_tasks_by_type(tasks, index_filter_params[:filter_type])
       tasks = filter_tasks_by_status(tasks, index_filter_params[:filter_status])
 

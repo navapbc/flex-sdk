@@ -7,7 +7,7 @@ module Strata
     #   class Company < ApplicationRecord
     #     include Strata::Attributes
     #
-    #     strata_attribute :office_locations, :address, array: true
+    #     flex_attribute :office_locations, :address, array: true
     #   end
     #
     #   company = Company.new
@@ -110,7 +110,7 @@ module Strata
         is_nested_type_a_range = nested_options.delete(:range) || false
 
         raise ArgumentError, "Arrays of arrays are not currently supported" if is_nested_type_an_array
-        raise ArgumentError, "Expected range to be true for array item type when using syntax: `strata_attribute :name, [:type, range: true], array: true`" unless is_nested_type_a_range
+        raise ArgumentError, "Expected range to be true for array item type when using syntax: `flex_attribute :name, [:type, range: true], array: true`" unless is_nested_type_a_range
 
         value_class = Strata::Attributes.resolve_class(nested_type)
         Strata::ValueRange[value_class]

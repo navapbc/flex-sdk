@@ -9,7 +9,7 @@ module Strata
     #   class Person < ApplicationRecord
     #     include Strata::Attributes
     #
-    #     strata_attribute :name, :name
+    #     flex_attribute :name, :name
     #   end
     #
     #   person = Person.new

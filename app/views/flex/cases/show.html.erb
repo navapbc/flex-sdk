@@ -1,0 +1,43 @@
+<%#
+  Case show page
+
+  Required parameters:
+  - model_class: The model class
+  - kase: The case object
+  - sidenav: Array of navigation items, each with:
+    - text: Display text for the navigation item
+    - link: URL path for the navigation item
+
+  Example usage:
+    render template: 'flex/cases/show', locals: {
+      sidenav: custom_nav_items
+    }
+%>
+<%
+  breadcrumbs = local_assigns[:breadcrumbs] || [
+    {
+      text: "Cases",
+      link: polymorphic_path(model_class)
+    },
+    {
+      text: kase.id
+    }
+  ]
+%>
+<%= render partial: "flex/shared/breadcrumbs", locals: { breadcrumbs: } %>
+
+<h1 class="usa-heading-xl">Case ID: <%= kase.id %></h1>
+<%= yield :case_summary %>
+<p>Status: <%= render partial: "flex/cases/status_tag", locals: { status: kase.status } %></p>
+
+<div class="grid-row grid-gap border-top-2px border-base-lighter padding-top-2">
+  <div class="tablet:grid-col-3 margin-bottom-4 tablet:margin-bottom-0">
+    <%= render partial: "flex/cases/sidenav", locals: {
+      sidenav:
+    } %>
+  </div>
+
+  <div class="tablet:grid-col-9">
+    <%= yield :case_details %>
+  </div>
+</div>

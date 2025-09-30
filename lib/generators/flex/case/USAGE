@@ -1,0 +1,42 @@
+Description:
+    Generates a Flex::Case model with optional business process and application form integration.
+    Automatically appends "Case" to the name if not already present.
+
+Usage:
+    bin/rails generate flex:case NAME [attributes] [options]
+
+Examples:
+    bin/rails generate flex:case Passport
+    bin/rails generate flex:case PassportCase
+    bin/rails generate flex:case Benefits name:name address:address
+    bin/rails generate flex:case Medicaid --business-process MedicaidBusinessProcess
+    bin/rails generate flex:case Application --application-form CustomApplicationForm
+    bin/rails generate flex:case Document --sti
+    bin/rails generate flex:case Review --skip-business-process --skip-application-form
+
+Options:
+    --business-process CLASS_NAME: Custom business process class name (optional)
+        Default: {NAME}BusinessProcess (e.g., "PassportBusinessProcess")
+        Example: --business-process CustomBusinessProcess
+
+    --application-form FORM_NAME: Custom application form class name (optional)
+        Default: {NAME}ApplicationForm (e.g., "PassportApplicationForm")
+        Example: --application-form CustomApplicationForm
+
+    --skip-business-process: Skip business process generation check (optional)
+        Use this flag to bypass checking if the business process exists
+
+    --skip-application-form: Skip application form generation check (optional)
+        Use this flag to bypass checking if the application form exists
+
+    --sti: Add type column for single-table inheritance (optional)
+        Adds a type:string attribute to support STI patterns
+
+    All standard Rails model generator options are also available and will be passed through:
+        attribute:type - Define model attributes with their types (string, integer, boolean, date, etc.)
+        --skip-migration - Skip generating database migration
+        --skip-tests - Skip generating test files
+        --force - Overwrite existing files
+
+This will create:
+    A Rails model file that extends Flex::Case with the name automatically transformed to include "Case" suffix if not already present. The generator will check for the existence of associated business process and application form classes, prompting to generate them if they don't exist (unless skip flags are used). All specified attributes and Rails model generator options are passed through to the underlying flex:model generator.

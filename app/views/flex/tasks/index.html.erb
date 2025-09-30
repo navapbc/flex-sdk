@@ -1,0 +1,101 @@
+<%# Index view for displaying a list of tasks with filtering and tab navigation
+  #
+  # @param tasks [Array<Flex::Task>] Array of tasks to display
+  # @param unassigned_tasks [Array<Flex::Task>] Array of unassigned tasks for button state
+  # @param task_types [Array<String>] Array of task types for filtering
+  #
+  # @example Task types array
+  #   ["Flex::Task", "Flex::OtherTask", "MyCustomTask"]
+  #
+  # @note Internationalization keys that can be overridden:
+  #   - flex.tasks.index.title: Title for the tasks index page
+  #   - flex.tasks.index.tabs.assigned: Label for the assigned tasks tab
+  #   - flex.tasks.index.tabs.completed: Label for the completed tasks tab
+  #
+ %>
+<!-- Main content -->
+<main class="usa-section">
+  <div class="grid-container">
+    <h1 class="usa-heading-xl"><%= t("flex.tasks.index.title") %></h1>
+    <nav class="display-flex border-bottom-1px border-base-light">
+      <% 
+        filter_params = params.permit(:filter_date, :filter_type, :filter_status)
+        [
+          { 
+            name: t("flex.tasks.index.tabs.assigned"), 
+            path: url_for(filter_params.merge(filter_status: nil)), 
+            active: params[:filter_status] != "completed" 
+          },
+          { 
+            name: t("flex.tasks.index.tabs.completed"), 
+            path: url_for(filter_params.merge(filter_status: "completed")), 
+            active: params[:filter_status] == "completed" 
+          }
+        ].each do |tab| 
+      %>
+      <%= render partial: "flex/cases/nav_tab", locals: tab %>
+    <% end %>
+  </nav>
+  <!-- Filters -->
+  <div class="grid-row grid-gap-4 margin-bottom-4">
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/type_filter', locals: { task_types: task_types } %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <%= render partial: 'flex/tasks/due_date_filter' %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-3">
+      <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
+      <%= button_to t("flex.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task), 
+                      id: "next-task-button",
+                      disabled: !unassigned_tasks&.any?,
+                      method: :post, 
+                      title: unassigned_tasks&.any? ? t("flex.tasks.messages.no_tasks_available") : nil,
+                      class: "usa-button" %>
+    </div>
+  </div>
+  <% if tasks&.any? %>
+    <!-- Tasks -->
+    <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
+      <thead>
+        <tr>
+          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
+            <%= t("flex.tasks.index.columns.col_due_date") %>
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            <%= t("flex.tasks.index.columns.col_type") %>
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            <%= t("flex.tasks.index.columns.col_case_id") %>
+          </th>
+          <th data-sortable scope="col" role="columnheader">
+            <%= t("flex.tasks.index.columns.col_created_date") %>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          tasks.each do |task|
+          %>
+        <tr>
+          <td data-sort-value="<%= time_since_epoch task.due_on %>">
+            <%= local_en_us task.due_on %>
+          </td>
+          <td data-sort-value="<%= task.type %>">
+            <%= link_to t("tasks.types.#{task.type.underscore}"), url_for(only_path: true, action: :show, id: task.id.to_s) %>
+          </td>
+          <td data-sort-value="<%= task.case_id %>"><%= task.case_id %></td>
+          <td data-sort-value="<%= time_since_epoch task.created_at %>">
+            <%= local_en_us task.created_at.to_date %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
+<% else %>
+  <%= render partial: 'flex/tasks/no_tasks_alert' %>
+<% end %>
+</div>
+</div>
+</main>
