@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/migration/migration_generator'
+require 'generators/strata/migration/migration_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
+RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ name, *attrs ], options, destination_root: destination_root) }
   let(:name) { 'CreateTestRecords' }
@@ -35,10 +35,10 @@ RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
       end
     end
 
-    context "with Flex attribute types" do
+    context "with Strata attribute types" do
       let(:attrs) { [ "full_name:name", "home_address:address" ] }
 
-      it "maps Flex types to their corresponding database columns" do
+      it "maps Strata types to their corresponding database columns" do
         generator.create_migration_file
         expect(generator).to have_received(:generate).with(
           "migration",
@@ -58,7 +58,7 @@ RSpec.describe Flex::Generators::MigrationGenerator, type: :generator do
     context "with mixed attribute types" do
       let(:attrs) { [ "full_name:name", "email:string", "birth_date:us_date" ] }
 
-      it "handles both Flex and built-in types correctly" do
+      it "handles both Strata and built-in types correctly" do
         generator.create_migration_file
         expect(generator).to have_received(:generate).with(
           "migration",

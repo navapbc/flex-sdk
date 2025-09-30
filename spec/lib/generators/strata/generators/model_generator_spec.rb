@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/model/model_generator'
+require 'generators/strata/model/model_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
+RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new(args, options, destination_root: destination_root) }
   let(:args) { [ name ] }
@@ -20,13 +20,13 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
     FileUtils.rm_rf(destination_root)
   end
 
-  describe "generating a model with Flex attributes" do
+  describe "generating a model with Strata attributes" do
     let(:args) { [ "Dog", "name:name", "owner:name", "age:integer" ] }
 
     context "with default options" do
-      it "calls flex:migration generator for all attributes" do
+      it "calls strata:migration generator for all attributes" do
         generator.create_migration_file
-        expect(generator).to have_received(:generate).with("flex:migration", "CreateDogs", "name:name", "owner:name", "age:integer")
+        expect(generator).to have_received(:generate).with("strata:migration", "CreateDogs", "name:name", "owner:name", "age:integer")
       end
 
       it "does not call active_record:migration generator" do
@@ -49,9 +49,9 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
     let(:args) { [ "Cat", "name:string", "age:integer" ] }
 
     context "with default options" do
-      it "calls flex:migration generator for all attributes" do
+      it "calls strata:migration generator for all attributes" do
         generator.create_migration_file
-        expect(generator).to have_received(:generate).with("flex:migration", "CreateCats", "name:string", "age:integer")
+        expect(generator).to have_received(:generate).with("strata:migration", "CreateCats", "name:string", "age:integer")
       end
 
       it "does not call active_record:migration generator" do
@@ -65,9 +65,9 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
     let(:args) { [ "Person", "full_name:name", "email:string", "birth_date:date" ] }
 
     context "with default options" do
-      it "calls flex:migration generator for all attributes" do
+      it "calls strata:migration generator for all attributes" do
         generator.create_migration_file
-        expect(generator).to have_received(:generate).with("flex:migration", "CreatePeople", "full_name:name", "email:string", "birth_date:date")
+        expect(generator).to have_received(:generate).with("strata:migration", "CreatePeople", "full_name:name", "email:string", "birth_date:date")
       end
 
       it "does not call active_record:migration generator" do
@@ -82,7 +82,7 @@ RSpec.describe Flex::Generators::ModelGenerator, type: :generator do
 
     it "handles all attributes correctly" do
       generator.create_migration_file
-      expect(generator).to have_received(:generate).with("flex:migration", "CreateTests", "name:name", "count:integer", "email:string")
+      expect(generator).to have_received(:generate).with("strata:migration", "CreateTests", "name:name", "count:integer", "email:string")
     end
   end
 

@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/task/task_generator'
+require 'generators/strata/task/task_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
+RSpec.describe Strata::Generators::TaskGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([ task_name ], options.merge(quiet: true), destination_root: destination_root) }
   let(:task_name) { 'TestTask' }
@@ -20,7 +20,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
 
   describe "with basic name only" do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       generator.invoke_all
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       expect(File.exist?(task_file)).to be true
 
       content = File.read(task_file)
-      expect(content).to include("class TestTask < Flex::Task")
+      expect(content).to include("class TestTask < Strata::Task")
     end
 
     it "creates test file" do
@@ -38,7 +38,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
 
       content = File.read(test_file)
       expect(content).to include("RSpec.describe TestTask")
-      expect(content).to include("expect(described_class.superclass).to eq(Flex::Task)")
+      expect(content).to include("expect(described_class.superclass).to eq(Strata::Task)")
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
     let(:options) { { parent: 'CustomTask' } }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+      allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       generator.invoke_all
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
         let(:task_name) { input }
 
         before do
-          allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+          allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
           generator.invoke_all
         end
 
@@ -77,16 +77,16 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
           expect(File.exist?(task_file)).to be true
 
           content = File.read(task_file)
-          expect(content).to include("class #{expected} < Flex::Task")
+          expect(content).to include("class #{expected} < Strata::Task")
         end
       end
     end
   end
 
   describe "database table check" do
-    context "when flex_tasks table exists" do
+    context "when strata_tasks table exists" do
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(true)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(true)
       end
 
       it "does not prompt for migration" do
@@ -96,9 +96,9 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       end
     end
 
-    context "when flex_tasks table does not exist" do
+    context "when strata_tasks table does not exist" do
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(false)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(false)
         allow(generator).to receive(:say)
         allow(generator).to receive(:yes?).and_return(false)
       end
@@ -106,19 +106,19 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       it "warns about missing table" do
         allow(generator).to receive(:say)
         generator.invoke_all
-        expect(generator).to have_received(:say).with("Warning: flex_tasks table does not exist.", :yellow)
+        expect(generator).to have_received(:say).with("Warning: strata_tasks table does not exist.", :yellow)
       end
 
       it "prompts to install and run migrations" do
         generator.invoke_all
-        expect(generator).to have_received(:yes?).with("Would you like to install and run Flex migrations now? (y/n)")
+        expect(generator).to have_received(:yes?).with("Would you like to install and run Strata migrations now? (y/n)")
       end
 
-      it "runs flex:install:migrations first, then db:migrate when user agrees" do
+      it "runs Strata:install:migrations first, then db:migrate when user agrees" do
         allow(generator).to receive(:yes?).and_return(true)
         allow(generator).to receive(:rails_command)
         generator.invoke_all
-        expect(generator).to have_received(:rails_command).with("flex:install:migrations").ordered
+        expect(generator).to have_received(:rails_command).with("Strata:install:migrations").ordered
         expect(generator).to have_received(:rails_command).with("db:migrate").ordered
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe Flex::Generators::TaskGenerator, type: :generator do
       let(:options) { { "skip-migration-check": true } }
 
       before do
-        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:flex_tasks).and_return(false)
+        allow(ActiveRecord::Base.connection).to receive(:table_exists?).with(:strata_tasks).and_return(false)
       end
 
       it "skips database check" do

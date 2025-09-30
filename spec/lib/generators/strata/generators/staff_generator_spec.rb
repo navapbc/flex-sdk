@@ -1,9 +1,9 @@
 require 'rails_helper'
-require 'generators/flex/staff/staff_generator'
+require 'generators/strata/staff/staff_generator'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe Flex::Generators::StaffGenerator, type: :generator do
+RSpec.describe Strata::Generators::StaffGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
   let(:generator) { described_class.new([], {}, destination_root: destination_root) }
 
