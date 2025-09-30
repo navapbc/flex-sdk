@@ -8,7 +8,7 @@ module Strata
     #   class MyForm < Flex::ApplicationForm
     #     include Strata::Attributes
     #
-    #     flex_attribute :ssn, :tax_id
+    #     strata_attribute :ssn, :tax_id
     #   end
     #
     # Key features:

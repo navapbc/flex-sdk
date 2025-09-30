@@ -25,19 +25,19 @@ module Strata
     self.abstract_class = true
 
     attribute :person_id, :uuid
-    flex_attribute :amount, :money
+    strata_attribute :amount, :money
 
     def self.[](period_type)
       Class.new(self) do
         if period_type == :year_quarter || period_type == Strata::YearQuarter
-          flex_attribute :period, :year_quarter
+          strata_attribute :period, :year_quarter
 
           define_singleton_method :period_type do
             :year_quarter
           end
 
         elsif period_type == :date_range || period_type == Range
-          flex_attribute :period, :us_date, range: true
+          strata_attribute :period, :us_date, range: true
 
           define_singleton_method :period_type do
             :date_range

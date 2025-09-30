@@ -7,7 +7,7 @@ module Strata
     #   class Enrollment < ApplicationRecord
     #     include Strata::Attributes
     #
-    #     flex_attribute :period, :us_date, range: true
+    #     strata_attribute :period, :us_date, range: true
     #   end
     #
     #   enrollment = Enrollment.new

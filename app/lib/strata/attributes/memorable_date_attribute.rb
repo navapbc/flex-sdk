@@ -7,7 +7,7 @@ module Strata
     #   class MyForm < Flex::ApplicationForm
     #     include Strata::Attributes
     #
-    #     flex_attribute :birth_date, :memorable_date
+    #     strata_attribute :birth_date, :memorable_date
     #   end
     #
     # Key features:

@@ -1,0 +1,17 @@
+<% module_namespacing do -%>
+class <%= class_name %> < <%= parent_class_name.classify %>
+<% if has_strata_attributes? -%>
+  include Strata::Attributes
+
+<% strata_attributes.each do |attribute| -%>
+  strata_attribute :<%= attribute[:name] %>, :<%= attribute[:type] %>
+<% end -%>
+<% end -%>
+<% if has_rails_attributes? -%>
+
+<% rails_attributes.each do |attribute| -%>
+  attribute :<%= attribute[:name] %>, :<%= attribute[:type] %>
+<% end -%>
+<% end -%>
+end
+<% end -%>
