@@ -1,2 +1,2 @@
-class PassportTask < Strata::Task
+class PassportTask < Flex::Task
 end

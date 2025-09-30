@@ -198,7 +198,7 @@ RSpec.describe Strata::Attributes::USDateAttribute do
     end
   end
 
-  describe "array of ranges with strata_attribute [ :us_date, range: true ], array: true" do
+  describe "array of ranges with flex_attribute [ :us_date, range: true ], array: true" do
     it "allows setting an array of date ranges" do
       periods = [
         Strata::DateRange.new(start: Strata::USDate.new(2023, 1, 1), end: Strata::USDate.new(2023, 1, 31)),

@@ -1,4 +1,4 @@
-class TestBusinessProcess < Strata::BusinessProcess
+class TestBusinessProcess < Flex::BusinessProcess
   # Define steps
   staff_task('staff_task', PassportPhotoTask)
   system_process('system_process', ->(kase) {

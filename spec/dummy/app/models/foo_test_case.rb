@@ -1,2 +1,2 @@
-class FooTestCase < Strata::Case
+class FooTestCase < Flex::Case
 end

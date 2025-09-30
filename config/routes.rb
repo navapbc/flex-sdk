@@ -1,2 +1,2 @@
-Strata::Engine.routes.draw do
+Flex::Engine.routes.draw do
 end

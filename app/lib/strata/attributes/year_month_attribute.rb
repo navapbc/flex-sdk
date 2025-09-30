@@ -9,7 +9,7 @@ module Strata
     #   class Report < ApplicationRecord
     #     include Strata::Attributes
     #
-    #     strata_attribute :reporting_period, :year_month
+    #     flex_attribute :reporting_period, :year_month
     #   end
     #
     #   report = Report.new

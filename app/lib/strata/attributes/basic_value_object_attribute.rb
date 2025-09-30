@@ -30,7 +30,7 @@ module Strata
         def basic_value_object_attribute(name, value_class, nested_attribute_types, options = {})
           # Define the base attribute with its subfields
           nested_attribute_types.each do |nested_attribute_name, nested_attribute_type|
-            strata_attribute "#{name}_#{nested_attribute_name}", nested_attribute_type
+            flex_attribute "#{name}_#{nested_attribute_name}", nested_attribute_type
           end
 
           # Define the getter method

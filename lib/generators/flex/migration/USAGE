@@ -1,0 +1,30 @@
+Description:
+    Generates a Rails migration with the appropriate database columns for Flex attributes.
+    This generator maps each Flex attribute type to its required database columns automatically.
+    Additionally, it supports all standard Rails migration types.
+
+Usage:
+    bin/rails generate flex:migration NAME [attribute:type attribute:type] [options]
+
+Examples:
+    bin/rails generate flex:migration AddPersonalInfoToUsers name:name date_of_birth:memorable_date
+    bin/rails generate flex:migration AddAddressesToApplications home_address:address work_address:address
+    bin/rails generate flex:migration AddFinancialInfoToReports salary:money tax_id:tax_id
+    bin/rails generate flex:migration AddPeriodicsToProfile leave_periods:array reporting_periods:array
+
+Supported Attribute Types:
+    address              - Creates columns: street_line_1, street_line_2, city, state, zip_code (all :string)
+    array                - Creates columns: single :jsonb column for storing arrays of objects
+    date_range           - Creates columns: start, end (both :date)
+    memorable_date       - Creates columns: single :date column
+    money                - Creates columns: single :integer column (stores cents)
+    name                 - Creates columns: first, middle, last (all :string)
+    tax_id               - Creates columns: single :string column
+    us_date              - Creates columns: single :date column
+    year_month           - Creates columns: year (:integer), month (:integer)
+    year_quarter         - Creates columns: year (:integer), quarter (:integer)
+    year_quarter_range   - Creates columns: start_year, start_quarter, end_year, end_quarter (all :integer)
+    standard Rails types - Any additional standard Rails migration types can be specified as needed.
+
+This will create:
+    A standard Rails migration file with the appropriate column definitions for each Flex attribute type, as well as any standard Rails migration types.

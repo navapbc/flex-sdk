@@ -1,8 +1,8 @@
-class PassportApplicationForm < Strata::ApplicationForm
+class PassportApplicationForm < Flex::ApplicationForm
   include Strata::Attributes
 
-  strata_attribute :name, :name
-  strata_attribute :date_of_birth, :memorable_date
+  flex_attribute :name, :name
+  flex_attribute :date_of_birth, :memorable_date
 
   def has_all_necessary_fields?
     !name_first.nil? && !name_last.nil? && !date_of_birth.nil?
