@@ -1,11 +1,11 @@
-module Flex
+module Strata
   # ThirdPartyTask represents a task that requires interaction from a third party.
   # It is used in business processes to create tasks that third parties
   # need to complete.
   #
   # @example Defining a third party task in a business process
   #   bp.step('review_employee_leave_application',
-  #     Flex::ThirdPartyTask.new("Review Employee Leave Application"))
+  #     Strata::ThirdPartyTask.new("Review Employee Leave Application"))
   #
   # Key features:
   # - Simple logging of task execution

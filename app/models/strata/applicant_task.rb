@@ -1,11 +1,11 @@
-module Flex
+module Strata
   # ApplicantTask represents a task that requires interaction from the applicant.
   # It is used in business processes to create tasks that applicants
   # need to complete.
   #
   # @example Defining an applicant task in a business process
   #   bp.step('submit_documents',
-  #     Flex::ApplicantTask.new("Submit Documents"))
+  #     Strata::ApplicantTask.new("Submit Documents"))
   #
   # Key features:
   # - Simple logging of task execution

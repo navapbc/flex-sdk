@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # StaffTask represents a task that requires human interaction.
   # It is used in business processes to create tasks that staff members
   # need to complete manually.
@@ -8,7 +8,7 @@ module Flex
   #
   # @example Defining a staff task in a business process
   #   bp.step('verify_documents',
-  #     Flex::StaffTask.new(MedicaidVerificationTask, Flex::TaskService.get))
+  #     Strata::StaffTask.new(MedicaidVerificationTask, Strata::TaskService.get))
   #
   # Key features:
   # - Integration with task management services
@@ -18,7 +18,7 @@ module Flex
     include Step
 
     def initialize(task_class, task_management_service)
-      raise ArgumentError, "`task_class` must be a Flex::Task or a subclass of Flex::Task" unless task_class.present? && task_class <= (Flex::Task)
+      raise ArgumentError, "`task_class` must be a Strata::Task or a subclass of Strata::Task" unless task_class.present? && task_class <= (Strata::Task)
       @task_class = task_class
       @task_management_service = task_management_service
     end
