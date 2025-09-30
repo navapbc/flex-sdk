@@ -1,4 +1,4 @@
-name: Update flex
+name: Update strata
 
 on:
   push:
@@ -49,17 +49,17 @@ jobs:
         with:
           ruby-version: ${{ steps.ruby-version.outputs.RUBY_VERSION }}
 
-      - name: Update flex
+      - name: Update strata
         working-directory: project-repo/${{ matrix.project.app }}
         run: |
           bundle install
-          bundle update flex
+          bundle update strata
 
       - name: Commit changes
         working-directory: project-repo
         run: |
           git add .
-          git commit -m "Update flex to ${{ github.sha }}" || echo "No changes to commit"
+          git commit -m "Update strata to ${{ github.sha }}" || echo "No changes to commit"
 
       - name: Push changes to project repo
         working-directory: project-repo
