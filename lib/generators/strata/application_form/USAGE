@@ -1,0 +1,29 @@
+Description:
+    Generates a Strata application form model that extends Strata::ApplicationForm.
+    Automatically appends "ApplicationForm" to the name if not already present.
+
+Usage:
+    bin/rails generate strata:application_form NAME [attribute:type attribute:type] [options]
+
+Examples:
+    bin/rails generate strata:application_form Kitty
+    bin/rails generate strata:application_form KittyApplicationForm
+    bin/rails generate strata:application_form Passport name:name address:address
+    bin/rails generate strata:application_form Benefits --parent CustomApplicationForm
+    bin/rails generate strata:application_form MedicaidBenefits benefits_id:number date_of_birth:date
+
+Options:
+    --parent CLASS_NAME: Custom parent class name (optional)
+        Default: Strata::ApplicationForm
+        Example: --parent CustomApplicationForm
+
+    All standard Rails model generator options are also available and will be passed through:
+        attribute:type - Define model attributes with their types (string, integer, boolean, date, etc.)
+        --skip-migration - Skip generating database migration
+        --skip-tests - Skip generating test files
+        --force - Overwrite existing files
+        
+    For complete list of Rails model options, see: https://guides.rubyonrails.org/getting_started.html#creating-a-database-model
+
+This will create:
+    A Rails model file that extends Strata::ApplicationForm (or the specified parent class) with the name automatically transformed to include "ApplicationForm" suffix if not already present. All specified attributes and Rails model generator options are passed through to the underlying Rails model generator.

@@ -1,4 +1,4 @@
-class PassportBusinessProcess < Flex::BusinessProcess
+class PassportBusinessProcess < Strata::BusinessProcess
   # Define steps
   applicant_task('submit_application')
 

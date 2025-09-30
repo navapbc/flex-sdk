@@ -1,0 +1,24 @@
+Description:
+    Generates a Strata::Task subclass with standardized templates and automatically checks for the strata_tasks table.
+
+Usage:
+    bin/rails generate strata:task NAME [options]
+
+Examples:
+    bin/rails generate strata:task ReviewApplication
+    bin/rails generate strata:task ProcessPayment --parent CustomTask
+    bin/rails generate strata:task DataEntry --skip-migration-check
+
+Options:
+    --parent CLASS_NAME: Custom parent class name (optional)
+        Default: Strata::Task
+        Example: --parent CustomTaskBase
+
+    --skip-migration-check: Skip checking if strata_tasks table exists (optional)
+        Default: false
+        Example: --skip-migration-check
+
+This will create:
+    A task class file at app/models/{name}_task.rb inheriting from the specified parent class (default: Strata::Task)
+    A corresponding RSpec test file at spec/models/{name}_task_spec.rb
+    Automatically checks for strata_tasks table existence and prompts to install and run Strata migrations if needed (unless --skip-migration-check is used)

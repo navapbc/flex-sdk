@@ -11,7 +11,7 @@
 steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
-translation_scope ||= "flex.application_forms.steps"
+translation_scope ||= "strata.application_forms.steps"
 step_indicators = steps.map.with_index do |step, index|
   {
     name: t("#{ step }", scope: translation_scope, default: step.to_s.humanize),

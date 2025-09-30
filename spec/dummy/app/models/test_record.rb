@@ -1,21 +1,21 @@
 class TestRecord < ApplicationRecord
   include Strata::Attributes
 
-  flex_attribute :address, :address
-  flex_attribute :date_of_birth, :memorable_date
-  flex_attribute :weekly_wage, :money
-  flex_attribute :name, :name
-  flex_attribute :adopted_on, :us_date
-  flex_attribute :period, :us_date, range: true
-  flex_attribute :tax_id, :tax_id
-  flex_attribute :reporting_period, :year_quarter
-  flex_attribute :base_period, :year_quarter, range: true
-  flex_attribute :activity_reporting_period, :year_month
+  strata_attribute :address, :address
+  strata_attribute :date_of_birth, :memorable_date
+  strata_attribute :weekly_wage, :money
+  strata_attribute :name, :name
+  strata_attribute :adopted_on, :us_date
+  strata_attribute :period, :us_date, range: true
+  strata_attribute :tax_id, :tax_id
+  strata_attribute :reporting_period, :year_quarter
+  strata_attribute :base_period, :year_quarter, range: true
+  strata_attribute :activity_reporting_period, :year_month
 
   # Array types
-  flex_attribute :addresses, :address, array: true
-  flex_attribute :leave_periods, [ :us_date, range: true ], array: true
-  flex_attribute :names, :name, array: true
-  flex_attribute :reporting_periods, :year_quarter, array: true
-  flex_attribute :activity_reporting_periods, :year_month, array: true
+  strata_attribute :addresses, :address, array: true
+  strata_attribute :leave_periods, [ :us_date, range: true ], array: true
+  strata_attribute :names, :name, array: true
+  strata_attribute :reporting_periods, :year_quarter, array: true
+  strata_attribute :activity_reporting_periods, :year_month, array: true
 end
