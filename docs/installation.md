@@ -6,36 +6,36 @@ This template requires the use of the [Rails template](https://github.com/navapb
 
 ## Instructions
 
-1. Since Flex SDK is a private gem, for use by non-Nava developers you'll need
+1. Since Strata SDK is a private gem, for use by non-Nava developers you'll need
    to create a personal access token (PAT) with read access to the contents of
-   the `navapbc/flex-sdk` repository. To generate this PAT:
+   the `navapbc/strata-sdk` repository. To generate this PAT:
    - Log into the `nava-platform-readonly` bot account (password in Platform vault in 1password)
    - Go to https://github.com/settings/personal-access-tokens/new
-   - Name it `<repo name>-flex-sdk-readonly`
+   - Name it `<repo name>-strata-sdk-readonly`
      - Note GitHub tokens names can only be 40 characters long, so tweak
        accordingly if the repo has a long name. The exact format doesn't matter,
        but make it obvious what it's for.
    - For "Resource owner" select `navapbc`
    - Expiration set as far as you can, note the expiration date to comment later
-   - Choose "Only select repositories" and choose `navapbc/flex-sdk`
+   - Choose "Only select repositories" and choose `navapbc/strata-sdk`
    - Then click "Add Permissions" and select "Contents"
    - File ticket with IT to approve the PAT
 
 1. Add the following to your `Gemfile` using the PAT you created in step 1:
 
     ```ruby
-    # Flex Government Digital Services SDK Rails engine
-    gem "flex", git: "https://<PERSONAL_ACCESS_TOKEN>:x-oauth-basic@github.com/navapbc/flex-sdk.git"
+    # Strata Government Digital Services SDK Rails engine
+    gem "strata", git: "https://<PERSONAL_ACCESS_TOKEN>:x-oauth-basic@github.com/navapbc/strata-sdk.git"
     ```
 
-1. You can then `bundle install` or `gem install flex` (after the PAT has been
+1. You can then `bundle install` or `gem install strata` (after the PAT has been
    approved by IT).
 
 1. If using the infrastructure template, this token will trigger a vulnerability scan error in Trivy. You'll want to update trivy-secret.yml and add the following entry to ignore this token.
 
     ```yml
-    - id: flex-sdk-pat
-      description: Skip personal access token to access Flex SDK Gem from navapbc/flex-sdk
+    - id: strata-sdk-pat
+      description: Skip personal access token to access Strata SDK Gem from navapbc/strata-sdk
       regex: <PERSONAL_ACCESS_TOKEN>
       path: /rails/Gemfile
     ```

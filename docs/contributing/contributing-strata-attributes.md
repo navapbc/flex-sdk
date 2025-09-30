@@ -1,11 +1,11 @@
-# Contributing new Flex attributes
+# Contributing new Strata attributes
 
-This document describes how to create new Flex attributes
+This document describes how to create new Strata attributes
 
 ## Design
 
-1. Decide whether or not to create a new value object in app/models/flex/
-   By default, Flex attributes will require creating a new value object. The exception is if the type of the attribute is already a native Ruby type, such as the memorable_date attribute which represents a Date object.
+1. Decide whether or not to create a new value object in app/models/strata/
+   By default, Strata attributes will require creating a new value object. The exception is if the type of the attribute is already a native Ruby type, such as the memorable_date attribute which represents a Date object.
 
 2. Determine if the attribute is composed of multiple nested attributes:
 
@@ -67,19 +67,19 @@ This document describes how to create new Flex attributes
    ```
 
 3. Decide if there are validations that need to be added by default.
-   Note: Do not add presence option or validation. By default all Flex attributes allow nil.
+   Note: Do not add presence option or validation. By default all Strata attributes allow nil.
 
 ## Implementation
 
 1. Create the value object
-2. Create a Concern `{FlexAttributeType}Attribute` in `app/lib/strata/attributes/` with a class method `{flex_attribute_type}_attribute` that takes the attribute `name` and an `options` hash and defines the new flex_attribute type on the including class, then include the module in Strata::Attributes in `app/lib/strata/attributes.rb`
-   1. **Important**: The `flex_attribute` method in `app/lib/strata/attributes.rb` dynamically calls `#{type}_attribute`, so following the naming convention for the class method is required for the attribute to work properly.
-3. Extend the `flex:migration` generator in `migration_generator.rb` to include the new Flex attribute.
-4. For testing, add the new flex attribute to TestRecord in `spec/dummy/app/models/test_record.rb`. Try using the flex migration generator to generate this migration by running `cd spec/dummy && bin/rails generate flex:migration Add<AttributeName>ToTestRecords <attribute_name>:<flex_attribute_type>` and then run the migration with `bin/rails db:migrate`
-5. Add tests to spec/dummy/spec/lib/flex/attributes_spec.rb leveraging the new flex attribute. Make sure to test:
+2. Create a Concern `{StrataAttributeType}Attribute` in `app/lib/strata/attributes/` with a class method `{strata_attribute_type}_attribute` that takes the attribute `name` and an `options` hash and defines the new strata_attribute type on the including class, then include the module in Strata::Attributes in `app/lib/strata/attributes.rb`
+   1. **Important**: The `strata_attribute` method in `app/lib/strata/attributes.rb` dynamically calls `#{type}_attribute`, so following the naming convention for the class method is required for the attribute to work properly.
+3. Extend the `strata:migration` generator in `migration_generator.rb` to include the new Strata attribute.
+4. For testing, add the new strata attribute to TestRecord in `spec/dummy/app/models/test_record.rb`. Try using the strata migration generator to generate this migration by running `cd spec/dummy && bin/rails generate strata:migration Add<AttributeName>ToTestRecords <attribute_name>:<strata_attribute_type>` and then run the migration with `bin/rails db:migrate`
+5. Add tests to spec/dummy/spec/lib/strata/attributes_spec.rb leveraging the new strata attribute. Make sure to test:
   a. Assign a Hash to the attribute and make sure the attribute is cast to the value object type and has the correct value
   b. Load the attribute from the database and make sure the attribute is correctly cast from the database record to the value object type and has the correct value
   c. Test validation logic if relevant. When testing validation logic, check that the appropriate error objects are present and that the original uncast values are present so that they can be shown to the user to be fixed.
-1. Create the associated FormBuilder helper method for rendering the form fields associated with the Flex attribute. (See [Contributing FormBuilder helper methods](/docs/contributing/contributing-form-builder-helper-methods.md))
+1. Create the associated FormBuilder helper method for rendering the form fields associated with the Strata attribute. (See [Contributing FormBuilder helper methods](/docs/contributing/contributing-form-builder-helper-methods.md))
 
 See the existing attribute tests in the codebase for examples.

@@ -3,7 +3,7 @@
 The Multi-Page Form Builder enables developers to create complex forms that span multiple pages using field-tested design patterns from government applications. It provides a DSL for defining forms that follow best practices for accessibility, user experience, and data collection.
 
 > [!NOTE]  
-> The Flex Rules Engine is still a work in progress, and detailed documentation will be provided as the feature matures.
+> The Strata Rules Engine is still a work in progress, and detailed documentation will be provided as the feature matures.
 
 ## Key Features
 
