@@ -1,12 +1,12 @@
-require "flex/version"
-require "flex/engine"
+require "strata/version"
+require "strata/engine"
 
-# Flex is the main namespace for the Flex SDK.
+# Strata is the main namespace for the Strata SDK.
 # It provides a framework for building government benefit applications
 # with standardized components and workflows.
 #
-# The Flex SDK includes models, views, and controllers for common
+# The Strata SDK includes models, views, and controllers for common
 # application patterns such as forms, workflows, and case management.
 #
-module Flex
+module Strata
 end
