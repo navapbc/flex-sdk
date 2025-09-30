@@ -1,5 +1,5 @@
-module Flex
-  # Task is the base class for all tasks in the Flex SDK.
+module Strata
+  # Task is the base class for all tasks in the Strata SDK.
   # It provides common functionality for task management including
   # assignment, status tracking, and due date handling.
   #
@@ -7,7 +7,7 @@ module Flex
   # that need to be completed, either by staff or automated systems.
   #
   # @example Creating a task subclass
-  #   class MyTask < Flex::Task
+  #   class MyTask < Strata::Task
   #     # Add custom attributes or behavior
   #   end
   #

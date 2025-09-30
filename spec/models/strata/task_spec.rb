@@ -1,7 +1,7 @@
 require 'rails_helper'
 require "support/matchers/publish_event_with_payload"
 
-RSpec.describe Flex::Task, type: :model do
+RSpec.describe Strata::Task, type: :model do
   let(:kase) { create(:test_case) }
   let(:task) { kase.create_task(described_class, description: Faker::Quote.yoda) }
 
@@ -93,7 +93,7 @@ RSpec.describe Flex::Task, type: :model do
       end
 
       it 'emits an event as completed' do
-        expect { task.completed! }.to publish_event_with_payload("Flex::TaskCompleted", { task_id: task.id, case_id: task.case_id })
+        expect { task.completed! }.to publish_event_with_payload("Strata::TaskCompleted", { task_id: task.id, case_id: task.case_id })
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe Flex::Task, type: :model do
       it 'emits an event as pending' do
         task.completed! # Set it to completed first to ensure a status change
 
-        expect { task.pending! }.to publish_event_with_payload("Flex::TaskPending", { task_id: task.id, case_id: task.case_id })
+        expect { task.pending! }.to publish_event_with_payload("Strata::TaskPending", { task_id: task.id, case_id: task.case_id })
       end
     end
   end
