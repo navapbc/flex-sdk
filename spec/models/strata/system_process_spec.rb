@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::SystemProcess do
+RSpec.describe Strata::SystemProcess do
   describe '#initialize' do
     let(:valid_name) { "Test Process" }
     let(:valid_callback) { ->(kase) { true } }

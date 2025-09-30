@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # SystemProcess represents an automated task that doesn't require human interaction.
   # It is used in business processes to perform tasks automatically through a provided callback.
   #
@@ -6,7 +6,7 @@ module Flex
   #
   # @example Defining a system process in a business process
   #   bp.step('process_data',
-  #     Flex::SystemProcess.new("Process Data", ->(kase) {
+  #     Strata::SystemProcess.new("Process Data", ->(kase) {
   #       DataProcessor.new(kase).process
   #     }))
   #

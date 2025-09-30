@@ -1,17 +1,17 @@
-module Flex
+module Strata
   # BusinessProcess is a class that allows you to define and execute business workflows with steps and event-driven transitions.
   #
   # Business process definitions should be placed in app/business_processes/ with the naming convention
   # *_business_process.rb (e.g. passport_business_process.rb, approval_business_process.rb)
   #
   # @example Defining a basic business process in app/business_processes/my_business_process.rb
-  #   MyBusinessProcess = Flex::BusinessProcess.define(:my_process, MyCase) do |bp|
+  #   MyBusinessProcess = Strata::BusinessProcess.define(:my_process, MyCase) do |bp|
   #     # Define steps - can be StaffTask or SystemProcess
   #     bp.step('collect_info',
-  #       Flex::StaffTask.new("Collect Information", TaskCreationService))
+  #       Strata::StaffTask.new("Collect Information", TaskCreationService))
   #
   #     bp.step('process_data',
-  #       Flex::SystemProcess.new("Process Data", ->(kase) {
+  #       Strata::SystemProcess.new("Process Data", ->(kase) {
   #         DataProcessor.new(kase).process
   #       }))
   #
@@ -33,8 +33,8 @@ module Flex
   #
   # Event payloads must contain either case_id or application_form_id to identify the case.
   #
-  # @see Flex::StaffTask
-  # @see Flex::SystemProcess
+  # @see Strata::StaffTask
+  # @see Strata::SystemProcess
   #
   # Key Methods:
   # - start_listening_for_events: Starts listening for events that trigger transitions
@@ -99,12 +99,12 @@ module Flex
       def start_listening_for_events
         @listening ||= false
         if @listening
-          Rails.logger.debug "Flex::BusinessProcess with name #{name} already listening for events"
+          Rails.logger.debug "Strata::BusinessProcess with name #{name} already listening for events"
           return
         end
 
         get_event_names.each do |event_name|
-          Rails.logger.debug "Flex::BusinessProcess with name #{name} subscribing to event: #{event_name}"
+          Rails.logger.debug "Strata::BusinessProcess with name #{name} subscribing to event: #{event_name}"
           subscriptions[event_name] = Strata::EventManager.subscribe(event_name, method(:handle_event))
         end
 
@@ -112,10 +112,10 @@ module Flex
       end
 
       def stop_listening_for_events
-        Rails.logger.debug "Flex::BusinessProcess with name #{name} stopping listening for events"
+        Rails.logger.debug "Strata::BusinessProcess with name #{name} stopping listening for events"
 
         subscriptions.each do |event_name, subscription|
-          Rails.logger.debug "Flex::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
+          Rails.logger.debug "Strata::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
           Strata::EventManager.unsubscribe(subscription)
         end
         subscriptions.clear

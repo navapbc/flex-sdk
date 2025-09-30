@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::BusinessProcess do
+RSpec.describe Strata::BusinessProcess do
   let(:application_form) { TestApplicationForm.new }
   let(:kase) { TestCase.find_by(application_form_id: application_form.id) }
   let(:business_process_instance) { kase.business_process_instance }
@@ -52,11 +52,11 @@ RSpec.describe Flex::BusinessProcess do
       end
 
       it 'does not re-execute the current step' do
-        allow(Flex::TaskService.get).to receive(:create_task)
+        allow(Strata::TaskService.get).to receive(:create_task)
         [ 'event2', 'event3', 'event4' ].each do |event|
           Strata::EventManager.publish(event, { case_id: kase.id })
         end
-        expect(Flex::TaskService.get).not_to have_received(:create_task)
+        expect(Strata::TaskService.get).not_to have_received(:create_task)
       end
     end
   end

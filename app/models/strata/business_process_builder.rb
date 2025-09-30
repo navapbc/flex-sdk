@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # BusinessProcessBuilder is a DSL for defining business processes.
   # It provides methods for adding steps, defining transitions, and
   # setting the start step of a business process.
@@ -6,9 +6,9 @@ module Flex
   # This class is used by BusinessProcess.define to create new process definitions.
   #
   # @@example Creating a business process definition
-  #   MyBusinessProcess = Flex::BusinessProcess.define(:my_process, MyCase) do |bp|
-  #     bp.step('collect_info', Flex::StaffTask.new(...))
-  #     bp.step('process_data', Flex::SystemProcess.new(...))
+  #   MyBusinessProcess = Strata::BusinessProcess.define(:my_process, MyCase) do |bp|
+  #     bp.step('collect_info', Strata::StaffTask.new(...))
+  #     bp.step('process_data', Strata::SystemProcess.new(...))
   #     bp.start('collect_info')
   #     bp.transition('collect_info', 'form_submitted', 'process_data')
   #   end
@@ -64,19 +64,19 @@ module Flex
       end
 
       def staff_task(name, task_class)
-        step(name, Flex::StaffTask.new(task_class, Flex::TaskService.get))
+        step(name, Strata::StaffTask.new(task_class, Strata::TaskService.get))
       end
 
       def system_process(name, callable)
-        step(name, Flex::SystemProcess.new(name, callable))
+        step(name, Strata::SystemProcess.new(name, callable))
       end
 
       def applicant_task(name)
-        step(name, Flex::ApplicantTask.new(name))
+        step(name, Strata::ApplicantTask.new(name))
       end
 
       def third_party_task(name)
-        step(name, Flex::ThirdPartyTask.new(name))
+        step(name, Strata::ThirdPartyTask.new(name))
       end
 
       def transition(from, event_name, to)

@@ -1,12 +1,12 @@
-module Flex
-  # ApplicationForm is the base class for all form models in the Flex SDK.
+module Strata
+  # ApplicationForm is the base class for all form models in the Strata SDK.
   # It provides functionality for tracking form status (in_progress/submitted)
   # and prevents modification of submitted forms.
   #
   # Form models should inherit from this class and add their specific fields.
   #
   # @example Creating a form model
-  #   class MyApplicationForm < Flex::ApplicationForm
+  #   class MyApplicationForm < Strata::ApplicationForm
   #     attribute :name, :string
   #     attribute :email, :string
   #   end

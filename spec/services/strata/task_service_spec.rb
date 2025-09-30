@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Flex::TaskService do
+RSpec.describe Strata::TaskService do
   let(:test_case) { TestCase.create! }
 
   describe '#get' do
@@ -10,7 +10,7 @@ RSpec.describe Flex::TaskService do
 
     it 'returns the default Database adapter when no service is set' do
       service = described_class.get
-      expect(service).to be_a(Flex::TaskService::Database)
+      expect(service).to be_a(Strata::TaskService::Database)
     end
 
     it 'returns the same service instance on subsequent calls' do
@@ -22,7 +22,7 @@ RSpec.describe Flex::TaskService do
 
   describe '#set' do
     let(:salesforce_service) do
-      Class.new(Flex::TaskService::Base) do
+      Class.new(Strata::TaskService::Base) do
         def create_task(kase)
         end
       end.new

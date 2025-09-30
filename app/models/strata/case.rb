@@ -1,11 +1,11 @@
-module Flex
+module Strata
   # Case represents an instance of a business process workflow.
   # It tracks the current step in the process and the overall status.
   #
   # Case models should inherit from this class and add their specific fields.
   #
   # @example Creating a case model
-  #   class MyCase < Flex::Case
+  #   class MyCase < Strata::Case
   #     # Add custom attributes or associations
   #   end
   #
@@ -17,7 +17,7 @@ module Flex
   class Case < ApplicationRecord
     self.abstract_class = true
 
-    has_many :tasks, as: :case, class_name: "Flex::Task"
+    has_many :tasks, as: :case, class_name: "Strata::Task"
 
     # Returns the base attributes that should be included in all case migrations.
     # IMPORTANT: When adding new attributes to the Case model, add them here as well
@@ -89,12 +89,12 @@ module Flex
 
     # Creates a new task associated with this case.
     #
-    # @param task_class [Class] The class of the task to create (must be a subclass of Flex::Task)
+    # @param task_class [Class] The class of the task to create (must be a subclass of Strata::Task)
     # @param attributes [Hash] Additional attributes to set on the task
-    # @return [Flex::Task] The newly created task
-    # @raise [ArgumentError] If task_class is not a subclass of Flex::Task
+    # @return [Strata::Task] The newly created task
+    # @raise [ArgumentError] If task_class is not a subclass of Strata::Task
     def create_task(task_class, **attributes)
-      raise ArgumentError, "task_class must be Flex::Task or a subclass of it" unless task_class <= Flex::Task
+      raise ArgumentError, "task_class must be Strata::Task or a subclass of it" unless task_class <= Strata::Task
 
       task_class.create!(case: self, **attributes)
     end

@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # A generic rules engine that evaluates facts based on defined rules.
   # Uses dependency injection for rule sets and maintains a fact cache.
   class RulesEngine

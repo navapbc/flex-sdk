@@ -1,4 +1,4 @@
-module Flex
+module Strata
   # BusinessProcessInstance represents the runtime state and behavior of a business process
   # for a specific case. It manages the current step in the process flow and handles transitions
   # between steps based on events.
@@ -17,8 +17,8 @@ module Flex
   # - Executes the current step's logic (staff tasks, system processes, etc.)
   # - Closes the case when reaching the end step
   #
-  # @see Flex::BusinessProcess
-  # @see Flex::Case
+  # @see Strata::BusinessProcess
+  # @see Strata::Case
   #
   class BusinessProcessInstance
     attr_reader :case
