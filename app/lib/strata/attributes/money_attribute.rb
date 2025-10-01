@@ -5,7 +5,7 @@ module Strata
     # US dollar amounts stored as cents.
     #
     # @example Adding a money attribute to a form model
-    #   class MyForm < Flex::ApplicationForm
+    #   class MyForm < Strata::ApplicationForm
     #     include Strata::Attributes
     #
     #     strata_attribute :salary, :money

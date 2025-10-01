@@ -20,7 +20,7 @@ module Strata
     # - Stores arrays of value objects in a single jsonb column
     # - Automatic serialization and deserialization of array items
     # - Built-in validation of array items
-    # - Support for various Flex value object types
+    # - Support for various Strata value object types
     #
     module ArrayAttribute
       extend ActiveSupport::Concern

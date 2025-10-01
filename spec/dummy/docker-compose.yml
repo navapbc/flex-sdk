@@ -1,5 +1,5 @@
 services:
-  flex-dummy-database:
+  strata-dummy-database:
     image: postgres:14-alpine
     command: postgres -c "log_lock_waits=on" -N 1000 -c "fsync=off"
     env_file: .env

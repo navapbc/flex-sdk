@@ -4,7 +4,7 @@ module Strata
     # that can be entered as separate year, month, and day fields.
     #
     # @example Adding a memorable date attribute to a form model
-    #   class MyForm < Flex::ApplicationForm
+    #   class MyForm < Strata::ApplicationForm
     #     include Strata::Attributes
     #
     #     strata_attribute :birth_date, :memorable_date
@@ -25,7 +25,7 @@ module Strata
       # A custom ActiveRecord type that allows storing a date. It behaviors the same
       # as the default Date type, but it allows setting the attribute using a hash
       # with keys :year, :month, and :day. This is meant to be used in conjunction
-      # with the memorable_date method in the Flex form builder
+      # with the memorable_date method in the Strata form builder
       class MemorableDate < ActiveModel::Type::Date
         # Override cast to allow setting the date via a Hash with keys :year, :month, :day.
         def cast(value)

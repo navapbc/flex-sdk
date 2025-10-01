@@ -1,4 +1,4 @@
-# Contributing to Flex SDK
+# Contributing to Strata SDK
 
 ## 💻 Getting started with local development
 
@@ -15,7 +15,7 @@ Run setup. This will:
 
 1. Install dependencies
 2. Create a `.env` file in the dummy app (`./spec/dummy/.env`) based on the template at `./spec/dummy/local.env.example`
-3. Create the database for working locally with Flex
+3. Create the database for working locally with Strata
 
 ```bash
 make setup

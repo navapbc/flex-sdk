@@ -3,9 +3,9 @@
 #
 # @param steps [Array<String, Symbol>] An array of step identifiers that will be displayed in order
 # @param current_step [String, Symbol] The identifier of the current active step
-# @param translation_scope [String] - I18n scope prefix, defaulting to 'flex.application_forms.steps'
+# @param translation_scope [String] - I18n scope prefix, defaulting to 'strata.application_forms.steps'
 #
-# Each step's display name is fetched from the i18n translations under flex.application_forms.steps
+# Each step's display name is fetched from the i18n translations under strata.application_forms.steps
 # Steps before and including the current step are marked as complete.
 
 steps = steps.map(&:to_sym)
