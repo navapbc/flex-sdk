@@ -30,16 +30,12 @@ module Strata
 
     # Helper method. Given a type, return the corresponding class in the Strata module.
     # If the class is not found in the Strata module, it will try to find it
-    # in the Flex module, then in the global namespace.
+    # in the Strata module, then in the global namespace.
     def self.resolve_class(type)
       begin
         "Strata::#{type.to_s.camelize}".constantize
       rescue NameError
-        begin
-          "Flex::#{type.to_s.camelize}".constantize
-        rescue NameError
-          type.to_s.camelize.constantize
-        end
+        type.to_s.camelize.constantize
       end
     end
 

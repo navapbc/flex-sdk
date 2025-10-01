@@ -1,8 +1,8 @@
-# Copilot Agent Instructions for Flex SDK
+# Copilot Agent Instructions for Strata SDK
 
 ## Repository Overview
 
-This repository contains the Flex SDK, a Ruby on Rails engine designed to help create intuitive, accessible, and effective digital-native government services. The SDK provides components for:
+This repository contains the Strata SDK, a Ruby on Rails engine designed to help create intuitive, accessible, and effective digital-native government services. The SDK provides components for:
 
 - Multi-page intake application forms
 - Case management workflows
@@ -17,9 +17,9 @@ This repository contains the Flex SDK, a Ruby on Rails engine designed to help c
 - **Project Type**: Ruby Gem/Rails Engine
 - **Key Dependencies**:
   - validates_timeliness
-    - Version can be found in `flex.gemspec`
+    - Version can be found in `strata.gemspec`
   - Rails
-    - Version can be found in `flex.gemspec`
+    - Version can be found in `strata.gemspec`
 
 ## Build and Test Instructions
 
@@ -70,18 +70,18 @@ make test-watch # Watch mode for development
 
 ### Key Directories
 
-- `/app`: Core Flex engine application code
-  - `/app/controllers/flex`: Controllers for tasks and staff
-  - `/app/models/flex`: Data models
-  - `/app/views/flex`: View templates
-  - `/app/helpers/flex`: Helper methods
-- `/config`: Flex engine configuration files
+- `/app`: Core Strata engine application code
+  - `/app/controllers/strata`: Controllers for tasks and staff
+  - `/app/models/strata`: Data models
+  - `/app/views/strata`: View templates
+  - `/app/helpers/strata`: Helper methods
+- `/config`: Strata engine configuration files
   - `/config/routes.rb`: Route definitions
   - `/config/initializers`: Rails initializers
-- `/db/migrate`: Flex engine database migrations
-- `/lib/flex`: Core Flex engine configuration code
+- `/db/migrate`: Strata engine database migrations
+- `/lib/strata`: Core Strata engine configuration code
 - `/spec`: Test files
-  - `/spec/dummy`: Test application that's used to test the Flex engine
+  - `/spec/dummy`: Test application that's used to test the Strata engine
 
 ### Important Files
 

@@ -3,7 +3,7 @@ module Strata
   # It allows components to communicate with each other asynchronously
   # through event publishing and subscription.
   #
-  # This class is used throughout the Flex SDK for handling transitions
+  # This class is used throughout the Strata SDK for handling transitions
   # between workflow steps and notifying components of state changes.
   #
   # @example Publishing an event
