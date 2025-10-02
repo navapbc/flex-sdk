@@ -8,17 +8,12 @@ gem "puma"
 
 gem "sprockets-rails"
 
-# Authorization
-gem "pundit"
-
-gem "validates_timeliness", ">= 7.0.0"
-
-
 # Start debugger with binding.b [https://github.com/ruby/debug]
 # gem "debug", ">= 1.0.0"
 
 group :development, :test do
   gem "pg", "~> 1.1"
+  gem "pundit"
   gem "guard-rspec", require: false
   gem "rspec-rails", "~> 7.0.0"
   gem "shoulda-matchers", "~> 6.0"

@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.1.5.1"
-  spec.add_dependency "validates_timeliness", ">= 7.0.0"
   spec.add_dependency "pundit", ">= 2.5.0"
+  spec.add_dependency "validates_timeliness", ">= 7.0.0"
+  spec.add_dependency "view_component", ">= 4.0.2"
 end
