@@ -419,6 +419,7 @@ DEPENDENCIES
   lookbook (>= 2.3.9)
   pg (~> 1.1)
   puma
+  pundit
   pundit-matchers
   rails-controller-testing
   rspec-rails (~> 7.0.0)
