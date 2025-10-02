@@ -1,3 +1,6 @@
 ---
 en:
   view: View
+  case_id: Case ID
+  created: Created
+  action: Action
