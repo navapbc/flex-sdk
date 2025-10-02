@@ -13,6 +13,7 @@ gem "sprockets-rails"
 
 group :development, :test do
   gem "pg", "~> 1.1"
+  gem "pundit"
   gem "guard-rspec", require: false
   gem "rspec-rails", "~> 7.0.0"
   gem "shoulda-matchers", "~> 6.0"
