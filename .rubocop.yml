@@ -57,3 +57,6 @@ Style/Documentation:
     - "spec/**/*"
     - "test/**/*"
     - "db/migrate/**/*"
+
+Style/FrozenStringLiteralComment:
+  Enabled: true

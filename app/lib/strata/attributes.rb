@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Attributes is a module that extends ActiveRecord with custom attribute types.
   # It provides a consistent interface for defining specialized attributes like

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveFactsDefaultAndNotNullConstraint < ActiveRecord::Migration[8.0]
   def change
     # Remove the default value and NOT NULL constraint from the facts column in passport_cases

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Engine is the Rails engine for the Strata SDK.
   # It provides configuration for integrating Strata components into a Rails application.

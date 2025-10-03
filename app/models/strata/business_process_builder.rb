@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # BusinessProcessBuilder is a DSL for defining business processes.
   # It provides methods for adding steps, defining transitions, and

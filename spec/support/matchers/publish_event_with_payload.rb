@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :publish_event_with_payload do |event_name, expected_payload|
   supports_block_expectations
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # MoneyAttribute provides a DSL for defining money attributes in form models.

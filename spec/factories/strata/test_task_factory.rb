@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :test_task, class: 'TestTask' do
     association :case, factory: :test_case

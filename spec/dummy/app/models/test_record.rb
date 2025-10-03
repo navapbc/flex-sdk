@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestRecord < ApplicationRecord
   include Strata::Attributes
 

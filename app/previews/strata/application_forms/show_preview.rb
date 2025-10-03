@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module ApplicationForms
     # ShowPreview provides preview examples for the application form show view.

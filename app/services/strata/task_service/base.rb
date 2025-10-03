@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module TaskService
     # Strata::TaskService::Base is an abstract base class that defines the interface for services

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # YearMonthAttribute provides functionality for handling year and month fields.

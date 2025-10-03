@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSubmittedAtToPassportApplicationForms < ActiveRecord::Migration[8.0]
   def change
     add_column :passport_application_forms, :submitted_at, :datetime

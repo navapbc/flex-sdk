@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # YearMonth is a value object representing a year and month combination.
   #

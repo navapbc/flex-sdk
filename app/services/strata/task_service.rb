@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Service layer module that provides a unified interface for task management.
   # This module implements the Service Locator pattern to provide a configurable

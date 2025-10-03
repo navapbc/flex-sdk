@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # MemorableDatePreview provides preview examples for the memorable date component.
   # It demonstrates different states of the date input fields including empty,

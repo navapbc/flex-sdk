@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # Internal module used by other Strata attribute modules to implement attributes

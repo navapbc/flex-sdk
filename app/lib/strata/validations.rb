@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Validations is a module that provides nested validation support for value objects.
   # It extends ActiveModel::Validations to handle validation of nested attributes in a

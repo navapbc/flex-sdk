@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # BusinessProcess is a class that allows you to define and execute business workflows with steps and event-driven transitions.
   #

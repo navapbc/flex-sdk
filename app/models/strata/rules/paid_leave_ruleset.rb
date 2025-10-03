@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Rules
     # Implements eligibility rules for paid leave benefits based on Massachusetts PFML guidelines.

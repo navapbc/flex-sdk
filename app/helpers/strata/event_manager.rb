@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # EventManager is a pub/sub system for workflow events.
   # It allows components to communicate with each other asynchronously

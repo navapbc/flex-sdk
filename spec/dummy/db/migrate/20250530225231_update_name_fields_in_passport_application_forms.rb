@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateNameFieldsInPassportApplicationForms < ActiveRecord::Migration[8.0]
   def change
     rename_column :passport_application_forms, :first_name, :name_first

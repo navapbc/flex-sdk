@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ValueObject is a base class for immutable objects that represent a set of attributes.
   # It includes ActiveModel modules for attribute handling, validations, and JSON serialization.

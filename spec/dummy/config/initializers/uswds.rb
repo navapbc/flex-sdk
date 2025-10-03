@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Ensure the USWDS dist folder is compiled as part of assets.
 #
 # This serves a couple different purposes:

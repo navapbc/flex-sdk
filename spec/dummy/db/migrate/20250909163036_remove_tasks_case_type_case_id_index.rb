@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveTasksCaseTypeCaseIdIndex < ActiveRecord::Migration[8.0]
   def change
     remove_index :strata_tasks, [ :case_id, :case_type ]

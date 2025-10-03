@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'generators/strata/case/case_generator'
 require 'fileutils'

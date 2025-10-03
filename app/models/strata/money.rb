@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Money is a value object representing US dollar amounts stored as cents.
   # It uses composition instead of Integer inheritance due to Ruby's limitations

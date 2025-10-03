@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Address is a value object representing a physical address with street lines,
   # city, state, and zip code components.

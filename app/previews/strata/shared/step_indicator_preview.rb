@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Shared
     # StepIndicatorPreview provides preview examples for the step indicator component.

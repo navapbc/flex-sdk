@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ApplicationHelper provides view helpers for common tasks in Strata applications.
   # It includes the strata_form_with method.
