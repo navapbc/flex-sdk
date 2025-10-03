@@ -4,17 +4,17 @@ module Strata
   module Cases
     class IndexComponent < ViewComponent::Base
       def initialize(
-        case_row_component_class: CaseRowComponent,
         cases:,
         model_class:,
+        case_row_component_class: CaseRowComponent,
         path_func: method(:polymorphic_path),
-        title:
+        title: "Cases"
       )
         @cases = cases
-        @case_row_component_class = case_row_component_class
         @model_class = model_class
-        @path_func = path_func
         @title = title
+        @case_row_component_class = case_row_component_class
+        @path_func = path_func
       end
     end
   end
