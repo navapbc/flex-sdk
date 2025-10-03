@@ -1,6 +1,8 @@
 ---
 es-US:
-  view: Ver
-  case_id: ID de Caso
+  case_no: No. de caso
   created: Creado
-  action: Acción
+  assigned_to: Asignado a
+  step: Paso
+  due_on: Fecha de vencimiento
+  created_at: Fecha de creación

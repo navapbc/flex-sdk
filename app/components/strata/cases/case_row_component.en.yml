@@ -1,6 +1,8 @@
 ---
 en:
-  view: View
-  case_id: Case ID
+  case_no: Case no.
   created: Created
-  action: Action
+  assigned_to: Assigned to
+  step: Step
+  due_on: Due on
+  created_at: Created at
