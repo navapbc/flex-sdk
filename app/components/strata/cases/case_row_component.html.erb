@@ -1,7 +1,7 @@
 <tr>
-  <td><%= @case.id %></td>
+  <td><%= link_to @case.id, @path_func.call(@case) %></td>
+  <td></td>
+  <td><%= @case.business_process_instance.current_step %></td>
+  <td><%= due_on(@case) %></td>
   <td><%= @case.created_at.strftime('%m/%d/%Y') %></td>
-  <td>
-    <%= link_to t(".view"), @path_func.call(@case), class: "usa-button usa-button--outline" %>
-  </td>
 </tr>
