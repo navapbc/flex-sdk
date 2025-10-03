@@ -1,0 +1,33 @@
+<h1 class="usa-heading-xl"><%= @title %></h1>
+
+<% tabs = [
+  { name: "Open", path: @path_func.call(@model_class), active: action_name == "index" },
+  { name: "Closed", path: @path_func.call(@model_class, action: "closed"), active: action_name == "closed" }
+] %>
+
+<nav class="display-flex border-bottom-1px border-base-light">
+  <% tabs.each do |tab| %>
+    <%= render partial: "strata/cases/nav_tab", locals: tab %>
+  <% end %>
+</nav>
+
+<table class="usa-table usa-table--borderless usa-table--striped">
+  <thead>
+    <tr>
+      <% @case_row_component_class.headers.each do |header| %>
+        <th scope="col"><%= header %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @cases.any? %>
+      <% @cases.each do |kase| %>
+        <%= render @case_row_component_class.new(kase:, path_func: @path_func) %>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="3" class="text-center">No cases</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

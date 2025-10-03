@@ -1,0 +1,7 @@
+<tr>
+  <td><%= @case.id %></td>
+  <td><%= @case.created_at.strftime('%m/%d/%Y') %></td>
+  <td>
+    <%= link_to t(".view"), @path_func.call(@case), class: "usa-button usa-button--outline" %>
+  </td>
+</tr>

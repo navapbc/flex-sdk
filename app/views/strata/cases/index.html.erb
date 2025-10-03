@@ -1,43 +1,56 @@
-<%= content_for :title, model_class.name.titleize %>
-
-  <!-- Main content -->
-<h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Case', ' Cases') %></h1>
-
-<% tabs = [
-  { name: "Open", path: polymorphic_path(model_class), active: action_name == "index" },
-  { name: "Closed", path: polymorphic_path(model_class, action: "closed"), active: action_name == "closed" }
-] %>
-
-<nav class="display-flex border-bottom-1px border-base-light">
-  <% tabs.each do |tab| %>
-    <%= render partial: "strata/cases/nav_tab", locals: tab %>
-  <% end %>
-</nav>
-
-<!-- Cases -->
-<table class="usa-table usa-table--borderless usa-table--striped">
-  <thead>
-    <tr>
-      <th scope="col">Case ID</th>
-      <th scope="col">Created</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @cases.any? %>
-      <% @cases.each do |kase| %>
-        <tr>
-          <td><%= kase.id %></td>
-          <td><%= kase.created_at.strftime('%m/%d/%Y') %></td>
-          <td>
-            <%= link_to "View", polymorphic_path(kase), class: "usa-button usa-button--outline" %>
-          </td>
-        </tr>
-      <% end %>
-    <% else %>
-      <tr>
-        <td colspan="3" class="text-center">No cases</td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%#
+  Cases Index View
+  
+  Displays a list of cases with tab navigation for open/closed cases.
+  This view is designed to be used by any case controller that inherits from StaffController
+  and follows the Strata naming conventions.
+  
+  Required Instance Variables:
+  - @cases: Array of case objects to display in the table
+  - model_class: Class method that returns the case model class (e.g., PassportCase)
+  
+  Optional Local Variables:
+  - case_row_view: String path to a custom partial for rendering case rows (defaults to 'strata/cases/case_row')
+  
+  Required Controller Methods:
+  - model_class: Must return the case model class (typically implemented as controller_path.classify.constantize)
+  
+  Optional Controller Actions:
+  - closed: Action that sets @cases to closed cases and renders this same view
+  
+  Usage Example:
+    # In your case controller (e.g., PassportCasesController)
+    def index
+      @cases = PassportCase.order(created_at: :desc).all
+      # Optional: Use custom case row partial
+      render :index, locals: { case_row_view: 'passport_cases/case_row' }
+    end
+    
+    def closed
+      @cases = PassportCase.where(status: "closed").order(created_at: :desc)
+      render :index, locals: { case_row_view: 'passport_cases/case_row' }
+    end
+    
+    def model_class
+      controller_path.classify.constantize
+    end
+  
+  Rendered Output:
+  - Page title set to the model class name
+  - Main heading with pluralized model name
+  - Tab navigation for "Open" and "Closed" cases
+  - Table displaying case ID, creation date, and view action
+  - Empty state message when no cases are present
+  
+  Custom Case Row Partial:
+  - If case_row_view is provided, it will be used instead of the default 'strata/cases/case_row'
+  - The custom partial should accept a 'kase' local variable containing the case object
+  - The custom partial should render a complete table row (<tr>) with appropriate columns
+%>
+<%= render Strata::Cases::IndexComponent.new(
+  cases: @cases,
+  model_class: model_class,
+  case_row_component_class: Strata::Cases::CaseRowComponent,
+  path_func: method(:polymorphic_path),
+  title: model_class.name.titleize.sub('Case', 'Cases')
+) %>
