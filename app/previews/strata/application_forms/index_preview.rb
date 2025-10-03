@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module ApplicationForms
     # IndexPreview provides preview examples for the application forms index view.

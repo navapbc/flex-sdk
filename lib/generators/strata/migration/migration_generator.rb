@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Rails generator for creating migrations with Strata attribute columns
 module Strata
   module Generators

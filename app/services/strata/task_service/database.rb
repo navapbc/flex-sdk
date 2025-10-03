@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module TaskService
     # Service class responsible for creating and managing tasks

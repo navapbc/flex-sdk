@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ApplicationMailer is the base class for all mailers in the Strata SDK.
   # It provides default settings and layouts for email templates.

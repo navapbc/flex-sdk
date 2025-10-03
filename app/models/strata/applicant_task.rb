@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ApplicantTask represents a task that requires interaction from the applicant.
   # It is used in business processes to create tasks that applicants

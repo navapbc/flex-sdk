@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 users = 10.times.collect do |index|
   User.create!(
     first_name: Faker::Name.first_name,

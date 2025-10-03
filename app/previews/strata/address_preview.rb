@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # AddressPreview provides preview examples for the address component.
   # It demonstrates different states of the address input fields including empty,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Preview for the date_range form builder helper method
   class DateRangePreview < Lookbook::Preview

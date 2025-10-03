@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This migration comes from flex (originally 20250430160812)
 class CreateStrataTasks < ActiveRecord::Migration[8.0]
   def change

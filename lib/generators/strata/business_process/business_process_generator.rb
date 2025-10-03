@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails/generators"
 
 # Generator for creating business process files with standardized templates

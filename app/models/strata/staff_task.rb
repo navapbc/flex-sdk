@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # StaffTask represents a task that requires human interaction.
   # It is used in business processes to create tasks that staff members

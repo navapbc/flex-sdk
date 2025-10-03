@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Common policy for application forms
   #

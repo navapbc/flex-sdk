@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RefactorYearQuarterYearMonthToSingleColumns < ActiveRecord::Migration[8.0]
   def change
     # Remove old separate integer columns

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Case represents an instance of a business process workflow.
   # It tracks the current step in the process and the overall status.

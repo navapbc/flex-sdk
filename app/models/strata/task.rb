@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Task is the base class for all tasks in the Strata SDK.
   # It provides common functionality for task management including

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # YearQuarter is a value object representing a year and quarter combination.
   #

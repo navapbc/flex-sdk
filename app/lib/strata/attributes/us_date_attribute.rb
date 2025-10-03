@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # This module provides a custom ActiveRecord type for handling dates in a US format.

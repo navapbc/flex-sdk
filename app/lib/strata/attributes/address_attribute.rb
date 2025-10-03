@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # AddressAttribute provides a DSL for defining address attributes in form models.

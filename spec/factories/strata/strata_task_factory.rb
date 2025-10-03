@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :strata_task, class: 'Strata::Task' do
     association :case, factory: :test_case

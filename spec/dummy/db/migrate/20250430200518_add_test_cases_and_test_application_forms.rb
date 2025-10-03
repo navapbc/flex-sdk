@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddTestCasesAndTestApplicationForms < ActiveRecord::Migration[8.0]
   def change
     create_table :test_application_forms, id: :uuid do |t|

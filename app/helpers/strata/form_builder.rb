@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # FormBuilder is a custom form builder that provides USWDS-styled form components.
   # Beyond adding USWDS classes, this also supports setting the label, hint, and error

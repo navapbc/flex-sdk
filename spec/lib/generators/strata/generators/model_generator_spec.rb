@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'generators/strata/model/model_generator'
 require 'fileutils'

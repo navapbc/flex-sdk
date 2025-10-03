@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassportApplicationForm < Strata::ApplicationForm
   include Strata::Attributes
 

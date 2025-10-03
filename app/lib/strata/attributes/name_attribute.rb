@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # NameAttribute provides functionality for handling name fields with first, middle, and last components.

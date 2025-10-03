@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :strata do
   namespace :events do
     def fetch_required_args!(args, *required_keys)
