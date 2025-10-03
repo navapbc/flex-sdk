@@ -30,8 +30,8 @@ module Strata
 
       def due_on(kase)
         pending_tasks_with_due_date = kase.tasks.select { |task| task.pending? && task.due_on.present? }
-        pending_tasks_with_due_date.map(&:due_on).min&.strftime('%m/%d/%Y')
-      end 
+        pending_tasks_with_due_date.map(&:due_on).min&.strftime("%m/%d/%Y")
+      end
     end
   end
 end
