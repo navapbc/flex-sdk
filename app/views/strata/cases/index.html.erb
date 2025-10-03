@@ -47,40 +47,10 @@
   - The custom partial should accept a 'kase' local variable containing the case object
   - The custom partial should render a complete table row (<tr>) with appropriate columns
 %>
-<%= content_for :title, model_class.name.titleize %>
-
-  <!-- Main content -->
-<h1 class="usa-heading-xl"><%= model_class.name.titleize.sub('Case', 'Cases') %></h1>
-
-<% tabs = [
-  { name: "Open", path: polymorphic_path(model_class), active: action_name == "index" },
-  { name: "Closed", path: polymorphic_path(model_class, action: "closed"), active: action_name == "closed" }
-] %>
-
-<nav class="display-flex border-bottom-1px border-base-light">
-  <% tabs.each do |tab| %>
-    <%= render partial: "strata/cases/nav_tab", locals: tab %>
-  <% end %>
-</nav>
-
-<!-- Cases -->
-<table class="usa-table usa-table--borderless usa-table--striped">
-  <thead>
-    <tr>
-      <th scope="col">Case ID</th>
-      <th scope="col">Created</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @cases.any? %>
-      <% @cases.each do |kase| %>
-        <%= render partial: (local_assigns[:case_row_view] || 'strata/cases/case_row'), locals: { kase: kase } %>
-      <% end %>
-    <% else %>
-      <tr>
-        <td colspan="3" class="text-center">No cases</td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= render IndexComponent.new(
+  cases: @cases,
+  model_class: model_class,
+  case_row_component_class: CaseRowComponent,
+  path_func: method(:polymorphic_path),
+  title: model_class.name.titleize.sub('Case', 'Cases')
+) %>
