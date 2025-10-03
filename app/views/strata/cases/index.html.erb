@@ -47,10 +47,10 @@
   - The custom partial should accept a 'kase' local variable containing the case object
   - The custom partial should render a complete table row (<tr>) with appropriate columns
 %>
-<%= render IndexComponent.new(
+<%= render Strata::Cases::IndexComponent.new(
   cases: @cases,
   model_class: model_class,
-  case_row_component_class: CaseRowComponent,
+  case_row_component_class: Strata::Cases::CaseRowComponent,
   path_func: method(:polymorphic_path),
   title: model_class.name.titleize.sub('Case', 'Cases')
 ) %>
