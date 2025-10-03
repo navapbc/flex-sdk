@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassportCasesController < StaffController
   before_action :set_case, only: %i[ show application_details documents history notes tasks ]
 

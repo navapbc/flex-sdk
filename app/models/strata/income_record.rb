@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # IncomeRecord is a model for storing income records with different period types.
   # It uses a factory pattern to create specialized subclasses for different period types

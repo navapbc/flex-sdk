@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdentityVerificationService
   def initialize(kase)
     @kase = kase

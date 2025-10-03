@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassportBusinessProcess < Strata::BusinessProcess
   # Define steps
   applicant_task('submit_application')

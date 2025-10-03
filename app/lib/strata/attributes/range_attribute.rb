@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # RangeAttribute provides a DSL for defining attributes representing ranges

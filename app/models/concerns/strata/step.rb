@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Step is a concern that defines the interface for steps in a business process.
   # It requires implementing classes to define an execute method that takes a case

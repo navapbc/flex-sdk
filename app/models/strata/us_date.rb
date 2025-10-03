@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # A Date subclass that handles US-format dates (MM/DD/YYYY)
   # @example Creating a US date

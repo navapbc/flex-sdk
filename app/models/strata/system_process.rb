@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # SystemProcess represents an automated task that doesn't require human interaction.
   # It is used in business processes to perform tasks automatically through a provided callback.

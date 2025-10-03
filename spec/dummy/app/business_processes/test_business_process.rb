@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestBusinessProcess < Strata::BusinessProcess
   # Define steps
   staff_task('staff_task', PassportPhotoTask)

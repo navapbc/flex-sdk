@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TasksController < Strata::TasksController
   def task_class
     PassportTask

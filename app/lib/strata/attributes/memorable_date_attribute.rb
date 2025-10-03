@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # MemorableDateAttribute provides a DSL for defining date attributes in form models

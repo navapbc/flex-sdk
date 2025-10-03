@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # TaxId is a value object representing a tax identification number (e.g., SSN).
   # It inherits from String but adds formatting capabilities and validation.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'generators/strata/business_process/business_process_generator'
 require 'fileutils'

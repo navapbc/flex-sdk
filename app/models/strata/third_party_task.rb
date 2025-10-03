@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ThirdPartyTask represents a task that requires interaction from a third party.
   # It is used in business processes to create tasks that third parties

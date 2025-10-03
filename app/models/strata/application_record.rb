@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ApplicationRecord is the base class for all Active Record models in the Strata SDK.
   # It provides a common ancestor for all Strata models to inherit from.

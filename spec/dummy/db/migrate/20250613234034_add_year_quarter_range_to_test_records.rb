@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddYearQuarterRangeToTestRecords < ActiveRecord::Migration[8.0]
   def change
     add_column :test_records, :base_period_start_year, :integer

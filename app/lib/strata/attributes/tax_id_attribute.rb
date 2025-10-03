@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Attributes
     # TaxIdAttribute provides a DSL for defining tax ID attributes in form models.

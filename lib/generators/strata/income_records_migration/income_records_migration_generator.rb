@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   module Generators
     # Generator that creates migrations for income records with specified period types.

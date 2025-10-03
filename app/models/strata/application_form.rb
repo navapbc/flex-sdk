@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # ApplicationForm is the base class for all form models in the Strata SDK.
   # It provides functionality for tracking form status (in_progress/submitted)

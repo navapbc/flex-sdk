@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # Base controller for all staff-related functionality.
   # Sets the layout to the strata/staff layout

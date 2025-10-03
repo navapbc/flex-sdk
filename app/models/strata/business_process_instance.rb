@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Strata
   # BusinessProcessInstance represents the runtime state and behavior of a business process
   # for a specific case. It manages the current step in the process flow and handles transitions

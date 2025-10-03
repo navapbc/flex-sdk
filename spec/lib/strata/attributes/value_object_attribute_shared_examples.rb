@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "value object shared examples" do |
     attribute_module,
     value_class,

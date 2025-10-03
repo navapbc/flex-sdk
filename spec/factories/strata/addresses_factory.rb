@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :address, class: 'Strata::Address' do
     trait :base do

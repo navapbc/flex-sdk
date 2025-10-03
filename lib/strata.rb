@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "strata/version"
 require "strata/engine"
 
