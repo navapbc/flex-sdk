@@ -2,7 +2,11 @@
 
 module Strata
   module Cases
+    # Lookbook preview for theIndexComponent.
     class IndexComponentPreview < ViewComponent::Preview
+      # PreviewCase is a mock case object used for component previews.
+      # It implements the minimal interface required by the IndexComponent
+      # to render preview data without requiring a full database setup.
       class PreviewCase
         attr_reader :id, :created_at, :model_name
 
