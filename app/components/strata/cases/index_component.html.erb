@@ -26,7 +26,7 @@
       <% end %>
     <% else %>
       <tr>
-        <td colspan="3" class="text-center">No cases</td>
+        <td colspan="<%= @case_row_component_class.headers.count %>" class="text-center">No cases</td>
       </tr>
     <% end %>
   </tbody>
