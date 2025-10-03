@@ -8,12 +8,21 @@ module Strata
       # It implements the minimal interface required by the IndexComponent
       # to render preview data without requiring a full database setup.
       class PreviewCase
-        attr_reader :id, :created_at, :model_name
+        attr_reader :id, :created_at, :model_name, :business_process_current_step
 
         def initialize(id:)
           @id = id
           @created_at = Time.now
           @model_name = ActiveModel::Name.new(self, nil, "PreviewCase")
+          @business_process_current_step = "Review case"
+        end
+
+        def business_process_instance
+          BusinessProcessInstance.new(self, business_process_current_step)
+        end
+
+        def tasks
+          [ Task.new(due_on: Date.today + 1.day) ]
         end
 
         def to_model
