@@ -22,7 +22,7 @@ module Strata
       end
 
       def default
-        cases = [PreviewCase.new(id: "123"), PreviewCase.new(id: "456")]
+        cases = [ PreviewCase.new(id: "123"), PreviewCase.new(id: "456") ]
         render IndexComponent.new(
           cases:,
           model_class: PreviewCase,

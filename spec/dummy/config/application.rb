@@ -20,9 +20,9 @@ module Dummy
 
     config.generators.test_framework = :rspec
 
-    I18n.available_locales = ["en", "es-US"]
+    I18n.available_locales = [ "en", "es-US" ]
 
-    config.view_component.previews.paths = ["app/previews"]
+    config.view_component.previews.paths = [ "app/previews" ]
     config.view_component.generate.preview = true
     config.view_component.generate.locale = true
     config.view_component.generate.distinct_locale_files = true
