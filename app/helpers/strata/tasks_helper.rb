@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module Strata
+  # TasksHlerp provides view helpers for working with Strata::Task objects.
+  # This module is used in views to render task-related UI components.
   module TasksHelper
     def task_filter_params
       params.permit(:filter_date, :filter_type, :filter_status)
