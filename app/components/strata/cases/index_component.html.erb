@@ -1,8 +1,8 @@
 <h1 class="usa-heading-xl"><%= @title %></h1>
 
 <% tabs = [
-  { name: "Open", path: @path_func.call(@model_class), active: action_name == "index" },
-  { name: "Closed", path: @path_func.call(@model_class, action: "closed"), active: action_name == "closed" }
+  { name: "Open", path: polymorphic_path(@model_class), active: action_name == "index" },
+  { name: "Closed", path: polymorphic_path(@model_class, action: "closed"), active: action_name == "closed" }
 ] %>
 
 <nav class="display-flex border-bottom-1px border-base-light">
@@ -22,7 +22,7 @@
   <tbody>
     <% if @cases.any? %>
       <% @cases.each do |kase| %>
-        <%= render @case_row_component_class.new(kase:, path_func: @path_func) %>
+        <%= render @case_row_component_class.new(kase:) %>
       <% end %>
     <% else %>
       <tr>

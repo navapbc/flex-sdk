@@ -35,10 +35,10 @@ RSpec.describe Strata::Cases::IndexComponent, type: :component do
 
   describe "custom case_row_component_class functionality" do
     let(:cases) { [ build(:passport_case) ] }
-    let(:params) { base_params.merge(case_row_component_class: Strata::PassportCases::CaseRowComponent) }
+    let(:params) { base_params.merge(case_row_component_class: PassportCases::CaseRowComponent) }
 
     it "renders the custom case row content" do
-      expect(page).to have_text("Passport Case ID: #{cases.first.passport_id}")
+      expect(page).to have_text("PID#{cases.first.passport_id.to_s[0, 6]}")
     end
   end
 

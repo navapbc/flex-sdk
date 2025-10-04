@@ -1,1 +1,6 @@
-<%= render template: 'strata/cases/index', locals: { model_class: PassportCase } %>
+<%= render Strata::Cases::IndexComponent.new(
+  model_class: PassportCase,
+  cases: @cases,
+  title: t(".title"),
+  case_row_component_class: PassportCases::CaseRowComponent
+) %>
