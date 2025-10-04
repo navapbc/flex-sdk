@@ -11,7 +11,7 @@ module PassportCases
     protected
 
     def passport_id
-      @case.passport_id.to_s[-9, 9]
+      "PID#{@case.passport_id.to_s[0, 6]}"
     end
   end
 end
