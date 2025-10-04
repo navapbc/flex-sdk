@@ -11,9 +11,8 @@ module Strata
     #   <%= render CaseRowComponent.new(kase: @case) %>
     #
     class CaseRowComponent < ViewComponent::Base
-      def initialize(kase:, path_func: method(:polymorphic_path))
+      def initialize(kase:)
         @case = kase
-        @path_func = path_func
       end
 
       def self.columns
@@ -33,7 +32,7 @@ module Strata
       protected
 
       def case_no
-        link_to @case.id, @path_func.call(@case)
+        link_to @case.id, polymorphic_path(@case)
       end
 
       def assigned_to
@@ -49,7 +48,7 @@ module Strata
       end
 
       def created_at
-        @case.created_at.strftime("%m/%d/%Y")
+        @case.created_at&.strftime("%m/%d/%Y")
       end
     end
   end
