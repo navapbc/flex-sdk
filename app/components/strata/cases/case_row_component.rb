@@ -37,16 +37,15 @@ module Strata
       end
 
       def assigned_to
-        "—"
       end
 
       def step
-        @case.business_process_instance.current_step || "—"
+        @case.business_process_instance.current_step
       end
 
       def due_on
         pending_tasks_with_due_date = @case.tasks.select { |task| task.pending? && task.due_on.present? }
-        pending_tasks_with_due_date.map(&:due_on).min&.strftime("%m/%d/%Y") || "—"
+        pending_tasks_with_due_date.map(&:due_on).min&.strftime("%m/%d/%Y")
       end
 
       def created_at

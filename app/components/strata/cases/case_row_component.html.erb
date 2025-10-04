@@ -1,5 +1,5 @@
 <tr>
   <% self.class.columns.each do |column| %>
-    <td><%= send(column) %></td>
+    <td><%= send(column) || "—" %></td>
   <% end %>
 </tr>
