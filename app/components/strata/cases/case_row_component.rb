@@ -49,7 +49,7 @@ module Strata
       end
 
       def created_at
-        @case.created_at.strftime('%m/%d/%Y')
+        @case.created_at.strftime("%m/%d/%Y")
       end
     end
   end
