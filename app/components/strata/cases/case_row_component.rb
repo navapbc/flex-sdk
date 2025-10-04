@@ -16,21 +16,40 @@ module Strata
         @path_func = path_func
       end
 
-      def self.headers
+      def self.columns
         [
-          t(".case_no"),
-          t(".assigned_to"),
-          t(".step"),
-          t(".due_on"),
-          t(".created_at")
+          :case_no,
+          :assigned_to,
+          :step,
+          :due_on,
+          :created_at
         ]
       end
 
-      private
+      def self.headers
+        self.columns.map { |column| t(".#{column}") }
+      end
 
-      def due_on(kase)
-        pending_tasks_with_due_date = kase.tasks.select { |task| task.pending? && task.due_on.present? }
+      protected
+
+      def case_no
+        link_to @case.id, @path_func.call(@case)
+      end
+
+      def assigned_to
+      end
+
+      def step
+        @case.business_process_instance.current_step
+      end
+
+      def due_on
+        pending_tasks_with_due_date = @case.tasks.select { |task| task.pending? && task.due_on.present? }
         pending_tasks_with_due_date.map(&:due_on).min&.strftime("%m/%d/%Y")
+      end
+
+      def created_at
+        @case.created_at.strftime("%m/%d/%Y")
       end
     end
   end

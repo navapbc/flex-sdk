@@ -1,7 +1,5 @@
 <tr>
-  <td><%= link_to @case.id, @path_func.call(@case) %></td>
-  <td></td>
-  <td><%= @case.business_process_instance.current_step %></td>
-  <td><%= due_on(@case) %></td>
-  <td><%= @case.created_at.strftime('%m/%d/%Y') %></td>
+  <% self.class.columns.each do |column| %>
+    <td><%= send(column) || "—" %></td>
+  <% end %>
 </tr>
