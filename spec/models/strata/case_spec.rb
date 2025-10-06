@@ -68,7 +68,7 @@ RSpec.describe Strata::Case, type: :model do
     context 'when event has case_id' do
       it 'returns cases with matching case_id' do
         event = { payload: { case_id: test_case.id } }
-        expect(TestCase.for_event(event)).to be_a(ActiveRecord::Relation)
+        expect(TestCase.for_event(event).to_a).to eq([test_case])
       end
 
       it 'raises ArgumentError when case_id is nil' do
@@ -82,7 +82,7 @@ RSpec.describe Strata::Case, type: :model do
     context 'when event has application_form_id' do
       it 'returns cases with matching application_form_id' do
         event = { payload: { application_form_id: test_case.application_form_id } }
-        expect(TestCase.for_event(event)).to be_a(ActiveRecord::Relation)
+        expect(TestCase.for_event(event).to_a).to eq([test_case])
       end
 
       it 'raises ArgumentError when application_form_id is nil' do
