@@ -40,10 +40,10 @@
     </div>
 
     
-    <nav aria-label="Primary navigation" class="usa-nav">
+    <nav aria-label="Primary navigation" class="usa-nav padding-bottom-05">
       <div class="usa-nav__inner">
         <button type="button" class="usa-nav__close">
-          <img src="<%= asset_path('@uswds/uswds/dist/img/usa-icons/close.svg') %>" alt="<%= t 'header.close' %>" />
+          <img src="<%= asset_path('@uswds/uswds/dist/img/usa-icons/close.svg') %>" alt="<%= t('strata.layouts.staff.header.close') %>" />
         </button>
       </div>
       <ul class="usa-nav__primary usa-accordion">
@@ -54,7 +54,7 @@
         <% end %>
         
         <li class="usa-nav__primary-item">
-          <% # TODO replace this with the actual path helper %>
+          <%# TODO replace this with the actual path helper %>
           <%= link_to "Tasks", '/staff/tasks', class: { 'usa-current' => request.path.start_with?('/staff/tasks') } %>
         </li>
       </ul>
