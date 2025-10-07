@@ -98,6 +98,7 @@ en:
     layouts:
       staff:
         header:
+          close: "Close"
           title: "Case Management System"
   tasks:
     statuses:

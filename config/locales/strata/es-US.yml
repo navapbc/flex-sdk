@@ -95,6 +95,7 @@ es-US:
   layouts:
     staff:
       header:
+        close: "Cerrar"
         title: "Sistema de Gestión de Casos"
   tasks:
     statuses:
