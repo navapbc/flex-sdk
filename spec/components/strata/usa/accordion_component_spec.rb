@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Strata::USA::AccordionComponent, type: :component do
+RSpec.describe Strata::US::AccordionComponent, type: :component do
   def render_accordion(is_bordered: false, is_multiselectable: false, &block)
     render_inline(described_class.new(
       is_bordered: is_bordered,
