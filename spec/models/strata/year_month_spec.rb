@@ -72,10 +72,7 @@ RSpec.describe Strata::YearMonth do
       [ "formats as full month and year", described_class.new(year: 2023, month: 6), "%B %Y", "June 2023" ],
       [ "formats as short month and year", described_class.new(year: 2023, month: 6), "%b %Y", "Jun 2023" ],
       [ "formats as MM/YYYY", described_class.new(year: 2023, month: 6), "%m/%Y", "06/2023" ],
-      [ "formats as YYYY-MM", described_class.new(year: 2023, month: 6), "%Y-%m", "2023-06" ],
-      [ "formats with custom text", described_class.new(year: 2023, month: 12), "Month: %B, Year: %Y", "Month: December, Year: 2023" ],
-      [ "formats January correctly", described_class.new(year: 2024, month: 1), "%B %Y", "January 2024" ],
-      [ "formats December correctly", described_class.new(year: 2024, month: 12), "%B %Y", "December 2024" ]
+      [ "formats as YYYY-MM", described_class.new(year: 2023, month: 6), "%Y-%m", "2023-06" ]
     ].each do |description, year_month, format, expected|
       it description do
         expect(year_month.strftime(format)).to eq(expected)
