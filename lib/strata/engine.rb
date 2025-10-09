@@ -33,6 +33,7 @@ module Strata
     initializer "strata.inflections" do
       ActiveSupport::Inflector.inflections(:en) do |inflect|
         inflect.acronym "US"
+        inflect.acronym "USA"
       end
     end
 
