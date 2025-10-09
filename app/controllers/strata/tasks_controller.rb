@@ -42,27 +42,7 @@ module Strata
       end
     end
 
-    private
-
-    def set_task
-      @task = Strata::Task.find(params[:id]) if params[:id].present?
-    end
-
-    def set_case
-      @case = @task.case if @task.present?
-    end
-
-    def set_application_form
-      @application_form = @case.class.application_form_class.constantize.find(@case.application_form_id) if @case.present?
-    end
-
-    def add_task_details_view_path
-      prepend_view_path "app/views/#{controller_path}"
-    end
-
-    def index_filter_params
-      params.permit(:filter_date, :filter_type, :filter_status)
-    end
+    protected
 
     def filter_tasks
       tasks = filter_tasks_by_date(Strata::Task.all, index_filter_params[:filter_date])
@@ -97,6 +77,28 @@ module Strata
       status == "completed" \
         ? tasks.completed
         : tasks.incomplete
+    end
+
+    private
+
+    def set_task
+      @task = Strata::Task.find(params[:id]) if params[:id].present?
+    end
+
+    def set_case
+      @case = @task.case if @task.present?
+    end
+
+    def set_application_form
+      @application_form = @case.class.application_form_class.constantize.find(@case.application_form_id) if @case.present?
+    end
+
+    def add_task_details_view_path
+      prepend_view_path "app/views/#{controller_path}"
+    end
+
+    def index_filter_params
+      params.permit(:filter_date, :filter_type, :filter_status)
     end
   end
 end

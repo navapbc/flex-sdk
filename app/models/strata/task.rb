@@ -44,6 +44,8 @@ module Strata
     scope :incomplete, -> { where.not(status: :completed) }
     scope :unassigned, -> { where(assignee_id: nil) }
     scope :with_type, ->(type) { where(type: type) }
+    scope :with_status, ->(status) { where(status: status) }
+    scope :without_status, ->(status) { where.not(status: status) }
 
     def self.next_unassigned
       incomplete.unassigned.first
