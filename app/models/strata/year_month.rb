@@ -60,6 +60,10 @@ module Strata
       Strata::DateRange.new(start: first_day, end: last_day)
     end
 
+    def strftime(format)
+      USDate.new(year, month, 1).strftime(format)
+    end
+
     def to_s
       "#{year}-#{month.to_s.rjust(2, '0')}"
     end
