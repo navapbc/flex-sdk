@@ -2,6 +2,7 @@
 
 require "strata/version"
 require "strata/engine"
+require "usa"
 
 # Strata is the main namespace for the Strata SDK.
 # It provides a framework for building government benefit applications
