@@ -12,6 +12,6 @@ class StaffController < Strata::StaffController
   end
 
   def header_links
-    [{ name: "Search", path: search_path }] + super
+    [ { name: "Search", path: search_path } ] + super
   end
 end

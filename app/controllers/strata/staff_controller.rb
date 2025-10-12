@@ -22,7 +22,7 @@ module Strata
     end
 
     def header_links
-      (cases_links + [tasks_link]).compact
+      (cases_links + [ tasks_link ]).compact
     end
 
     def tasks_link
