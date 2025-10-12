@@ -1,0 +1,3 @@
+<li class="usa-nav__primary-item">
+  <%= link_to link[:name], link[:path], class: { 'usa-current' => request.path.start_with?(link[:path]) } %>
+</li>

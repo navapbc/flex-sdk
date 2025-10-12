@@ -6,10 +6,7 @@ module Strata
   class StaffController < ApplicationController
     layout "strata/staff"
 
-    before_action :set_header_cases_links
-
-    attr_reader :cases_links
-    helper_method :cases_links
+    helper_method :header_links
 
     def index
     end
@@ -20,8 +17,16 @@ module Strata
       []
     end
 
-    def set_header_cases_links
-      @cases_links = case_classes.map { |klass| cases_link_or_nil(klass) }.compact
+    def cases_links
+      case_classes.map { |klass| cases_link_or_nil(klass) }.compact
+    end
+
+    def header_links
+      (cases_links + [tasks_link]).compact
+    end
+
+    def tasks_link
+      { name: t("strata.staff.header.tasks"), path: main_app.tasks_path }
     end
 
     private
