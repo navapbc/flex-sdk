@@ -22,11 +22,11 @@ module Strata
     end
 
     def header_links
-      (cases_links + [ tasks_link ]).compact
+      (cases_links + tasks_links).compact
     end
 
-    def tasks_link
-      { name: t("strata.staff.header.tasks"), path: main_app.tasks_path }
+    def tasks_links
+      [ { name: t("strata.staff.header.tasks"), path: main_app.tasks_path } ]
     end
 
     private
