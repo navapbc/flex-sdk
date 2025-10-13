@@ -32,19 +32,6 @@ step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] =
   class="usa-step-indicator <%= step_indicator_class %>"
   aria-label="progress"
 >
-  <% if show_header %>
-    <div class="usa-step-indicator__header">
-      <h4 class="usa-step-indicator__heading">
-        <span class="usa-step-indicator__heading-counter">
-          <span class="usa-sr-only">Step</span>
-          <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
-          <span class="usa-step-indicator__total-steps">of <%= steps.length %></span>
-        </span>
-        <span class="usa-step-indicator__heading-text"><%= current_step_name %></span>
-      </h4>
-    </div>
-  <% end %>
-  
   <ol class="usa-step-indicator__segments">
     <% step_indicators.each do |step_indicator| %>
       <li
@@ -67,4 +54,17 @@ step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] =
         </li>
     <% end %>
   </ol>
+  
+  <% if show_header %>
+    <div class="usa-step-indicator__header">
+      <h4 class="usa-step-indicator__heading">
+        <span class="usa-step-indicator__heading-counter">
+          <span class="usa-sr-only">Step</span>
+          <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
+          <span class="usa-step-indicator__total-steps">of <%= steps.length %></span>
+        </span>
+        <span class="usa-step-indicator__heading-text"><%= current_step_name %></span>
+      </h4>
+    </div>
+  <% end %>
 </div>
