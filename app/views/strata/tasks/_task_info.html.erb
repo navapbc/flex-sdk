@@ -1,0 +1,15 @@
+<% if content_for?(:task_info) %>
+  <%= yield :task_info %>
+<% else %>
+  <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
+    <div class="grid-container">
+      <div class="grid-row grid-gap-2">
+        <% task_info.each do |info| %>
+          <div class="grid-col-auto flex-align-self-center">
+            <strong><%= info[:label] %>:</strong>&nbsp;<%= info[:value] %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -28,7 +28,7 @@ ten_days_ago = Date.current - 10.days
     case: passport_cases.sample
   )
 
-  task.assign(users.sample.id)
+  task.assign(users.sample.id) if rand(0..1) == 0
   task.completed! if rand(0..2) == 0
 end
 
@@ -39,7 +39,7 @@ end
     case: passport_cases.sample
   )
 
-  task.assign(users.sample.id)
+  task.assign(users.sample.id) if rand(0..1) == 0
   task.completed! if rand(0..5) == 0
 end
 
