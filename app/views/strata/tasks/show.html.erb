@@ -30,18 +30,17 @@
       ]
     %>
     <%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: } %>
-
     <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
     <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
       <div class="grid-container">
         <div class="grid-row grid-gap-2">
-          <div class="grid-col-auto">
+          <div class="grid-col-auto flex-align-self-center">
             <strong><%= t("strata.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
           </div>
-          <div class="grid-col-auto">
+          <div class="grid-col-auto flex-align-self-center">
             <strong><%= t("strata.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
           </div>
-          <div class="grid-col-auto">
+          <div class="grid-col-auto flex-align-self-center">
             <strong><%= t("strata.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
           </div>
         </div>
