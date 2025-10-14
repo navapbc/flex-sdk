@@ -77,8 +77,6 @@ en:
           col_case_id: "Case ID"
           col_created_date: "Task created date"
       show:
-        headers:
-          task_details: "Task Details"
         details:
           status: "Task status:"
           due_on: "Due on:"
