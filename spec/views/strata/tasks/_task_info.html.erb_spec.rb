@@ -9,13 +9,13 @@ RSpec.describe "strata/tasks/_task_info.html.erb", type: :view do
 
     before do
       view.content_for(:task_info) do
-        "<div class=\"grid-col-auto\"><strong>#{custom_label}:</strong> #{custom_value}</div>".html_safe
+        "<div class=\"grid-col-auto\"><strong>#{custom_label}</strong> #{custom_value}</div>".html_safe
       end
       render partial: "strata/tasks/task_info"
     end
 
     it "renders the custom task info content" do
-      expect(rendered).to include("#{custom_label}:")
+      expect(rendered).to include(custom_label)
       expect(rendered).to include(custom_value)
     end
   end
