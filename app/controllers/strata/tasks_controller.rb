@@ -44,6 +44,18 @@ module Strata
 
     protected
 
+    def set_task
+      @task = Strata::Task.find(params[:id]) if params[:id].present?
+    end
+
+    def set_case
+      @case = @task.case if @task.present?
+    end
+
+    def set_application_form
+      @application_form = @case.class.application_form_class.constantize.find(@case.application_form_id) if @case.present?
+    end
+
     def filter_tasks
       tasks = filter_tasks_by_date(Strata::Task.all, index_filter_params[:filter_date])
       tasks = filter_tasks_by_type(tasks, index_filter_params[:filter_type])
@@ -80,18 +92,6 @@ module Strata
     end
 
     private
-
-    def set_task
-      @task = Strata::Task.find(params[:id]) if params[:id].present?
-    end
-
-    def set_case
-      @case = @task.case if @task.present?
-    end
-
-    def set_application_form
-      @application_form = @case.class.application_form_class.constantize.find(@case.application_form_id) if @case.present?
-    end
 
     def add_task_details_view_path
       prepend_view_path "app/views/#{controller_path}"
