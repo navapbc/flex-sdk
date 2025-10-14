@@ -97,6 +97,9 @@ es-US:
       header:
         close: "Cerrar"
         title: "Sistema de Gestión de Casos"
+  staff:
+    header:
+      tasks: "Tareas"
   tasks:
     statuses:
       pending: "Pendiente"

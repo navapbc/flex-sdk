@@ -54,6 +54,9 @@ en:
         end_label: "End date"
         start_hint: "Enter the start date"
         end_hint: "Enter the end date"
+    staff:
+      header:
+        tasks: "Tasks"
     tasks:
       actions:
         pick_next: "Pick up next task"
