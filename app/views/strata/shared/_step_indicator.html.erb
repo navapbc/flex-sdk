@@ -4,7 +4,6 @@
 # @param steps [Array<String, Symbol>] An array of step identifiers that will be displayed in order
 # @param current_step [String, Symbol] The identifier of the current active step
 # @param translation_scope [String] - I18n scope prefix, defaulting to 'strata.application_forms.steps'
-# @param show_header [Boolean] - Whether to show the "Step X of Y" header (default: true)
 #
 # Each step's display name is fetched from the i18n translations under strata.application_forms.steps
 # Steps before and including the current step are marked as complete.
@@ -13,7 +12,6 @@ steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
 translation_scope ||= "strata.application_forms.steps"
-show_header = local_assigns.fetch(:show_header, true)
 
 step_indicators = steps.map.with_index do |step, index|
   {
@@ -55,16 +53,14 @@ step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] =
     <% end %>
   </ol>
   
-  <% if show_header %>
-    <div class="usa-step-indicator__header">
-      <h4 class="usa-step-indicator__heading">
-        <span class="usa-step-indicator__heading-counter">
-          <span class="usa-sr-only">Step</span>
-          <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
-          <span class="usa-step-indicator__total-steps">of <%= steps.length %></span>
-        </span>
-        <span class="usa-step-indicator__heading-text"><%= current_step_name %></span>
-      </h4>
-    </div>
-  <% end %>
+  <div class="usa-step-indicator__header">
+    <h4 class="usa-step-indicator__heading">
+      <span class="usa-step-indicator__heading-counter">
+        <span class="usa-sr-only">Step</span>
+        <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
+        <span class="usa-step-indicator__total-steps">of <%= steps.length %></span>
+      </span>
+      <span class="usa-step-indicator__heading-text"><%= current_step_name %></span>
+    </h4>
+  </div>
 </div>
