@@ -5,11 +5,21 @@
 
     Optional locals:
     - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
+    - task_info: Array - An array of hashes containing task information to display. See examples below.
     
     Example usage:
       render template: 'strata/tasks/default/show', locals: {
         task: @task,
         assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
+      }
+
+      # OR
+
+      render template: 'strata/tasks/default/show', locals: {
+        task: @task,
+        task_info: [
+          { label: "Custom Label", value: "Custom Value" }
+        ]
       }
 %>
 <main class="usa-section">
@@ -30,23 +40,24 @@
       ]
     %>
     <%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: } %>
-
     <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
-    <div class="border-bottom-1px margin-bottom-1 padding-bottom-1">
-      <div class="grid-container">
-        <div class="grid-row grid-gap-2">
-          <div class="grid-col-auto">
-            <strong><%= t("strata.tasks.show.details.status") %>:</strong> <%= t("tasks.statuses.#{task.status}") %>
-          </div>
-          <div class="grid-col-auto">
-            <strong><%= t("strata.tasks.show.details.due_on") %>:</strong> <%= local_en_us task.due_on %>
-          </div>
-          <div class="grid-col-auto">
-            <strong><%= t("strata.tasks.show.details.assigned_to") %>:</strong> <%= assigned_user_display_text %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%
+      task_info = local_assigns[:task_info] || [
+        {
+          label: t("strata.tasks.show.details.status"),
+          value: t("tasks.statuses.#{task.status}")
+        },
+        {
+          label: t("strata.tasks.show.details.due_on"),
+          value: local_en_us(task.due_on)
+        },
+        {
+          label: t("strata.tasks.show.details.assigned_to"),
+          value: assigned_user_display_text
+        }
+      ]
+    %>
+    <%= render partial: "strata/tasks/task_info", locals: { task_info: } %>
     <section class="usa-section padding-top-2">
       <% if flash["task-message"] %>
         <div class="usa-alert usa-alert--info usa-alert--no-icon">
