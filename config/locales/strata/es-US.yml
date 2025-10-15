@@ -71,8 +71,6 @@ es-US:
           col_case_id: "ID del caso"
           col_created_date: "Fecha de creación de la tarea"
       show:
-        headers:
-          task_details: "Detalles de la tarea"
         details:
           status: "Estado de la tarea:"
           due_on: "Fecha de vencimiento:"
