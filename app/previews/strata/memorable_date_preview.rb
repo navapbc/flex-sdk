@@ -13,7 +13,7 @@ module Strata
   #   # Navigate to Strata > MemorableDatePreview > filled
   #
   class MemorableDatePreview < Lookbook::Preview
-    layout "component_preview"
+    layout "strata/component_preview"
 
     def empty
       render template: "strata/previews/_memorable_date", locals: { model: new_model }

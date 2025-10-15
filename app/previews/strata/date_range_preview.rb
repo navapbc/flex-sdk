@@ -3,7 +3,7 @@
 module Strata
   # Preview for the date_range form builder helper method
   class DateRangePreview < Lookbook::Preview
-    layout "component_preview"
+    layout "strata/component_preview"
 
     def empty
       render template: "strata/previews/_date_range", locals: { model: TestRecord.new }

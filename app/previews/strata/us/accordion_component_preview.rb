@@ -4,7 +4,7 @@ module Strata
   module US
     # AccordionComponentPreview provides preview examples for the Strata::US::AccordionComponent.
     class AccordionComponentPreview < Lookbook::Preview
-      layout "component_preview"
+      layout "strata/component_preview"
 
       def borderless
         render Strata::US::AccordionComponent.new(heading_tag: :h4) do |component|

@@ -14,7 +14,7 @@ module Strata
     #   # Navigate to Strata > StepIndicatorPreview > submitted
     #
     class StepIndicatorPreview < Lookbook::Preview
-      layout "component_preview"
+      layout "strata/component_preview"
 
       def default
         render template: "strata/shared/_step_indicator", locals: {

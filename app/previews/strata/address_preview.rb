@@ -13,7 +13,7 @@ module Strata
   #   # Navigate to Strata > AddressPreview > filled
   #
   class AddressPreview < Lookbook::Preview
-    layout "component_preview"
+    layout "strata/component_preview"
 
     def empty
       render template: "strata/previews/_address", locals: { model: new_model }
