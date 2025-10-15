@@ -1,0 +1,16 @@
+<div class="<%= class_names(
+  "usa-accordion",
+  "usa-accordion--bordered": @is_bordered,
+  "usa-accordion--multiselectable": @is_multiselectable
+) %>"<%= ' data-allow-multiple' if @is_multiselectable %>>
+  <% headings.zip(bodies).each_with_index do |(heading, body), idx| %>
+    <%= content_tag @heading_tag, class: "usa-accordion__heading" do %>
+      <button type="button" class="usa-accordion__button" aria-expanded="false" aria-controls="<%= item_id(idx) %>">
+        <%= heading %>
+      </button>
+    <% end %>
+    <div id="<%= item_id(idx) %>" class="usa-accordion__content usa-prose">
+      <%= body %>
+    </div>
+  <% end %>
+</div>
