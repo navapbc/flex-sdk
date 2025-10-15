@@ -67,6 +67,19 @@ RSpec.describe Strata::YearMonth do
     end
   end
 
+  describe "strftime" do
+    [
+      [ "formats as full month and year", described_class.new(year: 2023, month: 6), "%B %Y", "June 2023" ],
+      [ "formats as short month and year", described_class.new(year: 2023, month: 6), "%b %Y", "Jun 2023" ],
+      [ "formats as MM/YYYY", described_class.new(year: 2023, month: 6), "%m/%Y", "06/2023" ],
+      [ "formats as YYYY-MM", described_class.new(year: 2023, month: 6), "%Y-%m", "2023-06" ]
+    ].each do |description, year_month, format, expected|
+      it description do
+        expect(year_month.strftime(format)).to eq(expected)
+      end
+    end
+  end
+
   describe "<=>" do
     it "allows sorting year months" do
       ym1 = described_class.new(year: 2023, month: 1)

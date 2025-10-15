@@ -12,6 +12,7 @@ steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
 translation_scope ||= "strata.application_forms.steps"
+
 step_indicators = steps.map.with_index do |step, index|
   {
     name: t("#{ step }", scope: translation_scope, default: step.to_s.humanize),
@@ -19,6 +20,8 @@ step_indicators = steps.map.with_index do |step, index|
     current: step == current_step
   }
 end
+
+current_step_name = step_indicators[current_step_index]&.dig(:name) || current_step.to_s.humanize
 step_indicator_class = ""
 step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] == :counters
 %>
@@ -49,4 +52,15 @@ step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] =
         </li>
     <% end %>
   </ol>
+  
+  <div class="usa-step-indicator__header">
+    <h4 class="usa-step-indicator__heading">
+      <span class="usa-step-indicator__heading-counter">
+        <span class="usa-sr-only">Step</span>
+        <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
+        <span class="usa-step-indicator__total-steps">of <%= steps.length %></span>
+      </span>
+      <span class="usa-step-indicator__heading-text"><%= current_step_name %></span>
+    </h4>
+  </div>
 </div>

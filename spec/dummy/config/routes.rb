@@ -27,6 +27,8 @@ Rails.application.routes.draw do
         post :pick_up_next_task
       end
     end
+
+    get "search", to: "staff#search"
   end
 
   get "staff", to: "staff#index"

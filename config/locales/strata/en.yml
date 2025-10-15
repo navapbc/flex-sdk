@@ -1,6 +1,6 @@
 en:
   attributes:
-    tax_id: "Tax ID"    
+    tax_id: "Tax ID"
   errors:
     messages:
       integer_range_start_greater_than_end: "start cannot be greater than end"
@@ -54,6 +54,9 @@ en:
         end_label: "End date"
         start_hint: "Enter the start date"
         end_hint: "Enter the end date"
+    staff:
+      header:
+        tasks: "Tasks"
     tasks:
       actions:
         pick_next: "Pick up next task"
@@ -77,9 +80,9 @@ en:
         headers:
           task_details: "Task Details"
         details:
-          status: "Task status"
-          due_on: "Due on"
-          assigned_to: "Assigned to"
+          status: "Task status:"
+          due_on: "Due on:"
+          assigned_to: "Assigned to:"
       partials:
         due_date_filter:
           label: "Filter by due date"

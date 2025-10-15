@@ -1,6 +1,6 @@
 es-US:
   attributes:
-    tax_id: "Número de identificación fiscal"    
+    tax_id: "Número de identificación fiscal"
   errors:
     messages:
       integer_range_start_greater_than_end: "el valor inicial no puede ser mayor que el valor final"
@@ -74,9 +74,9 @@ es-US:
         headers:
           task_details: "Detalles de la tarea"
         details:
-          status: "Estado de la tarea"
-          due_on: "Fecha de vencimiento"
-          assigned_to: "Asignado a"
+          status: "Estado de la tarea:"
+          due_on: "Fecha de vencimiento:"
+          assigned_to: "Asignado a:"
       partials:
         due_date_filter:
           label: "Filtrar por fecha de vencimiento"
@@ -97,6 +97,9 @@ es-US:
       header:
         close: "Cerrar"
         title: "Sistema de Gestión de Casos"
+  staff:
+    header:
+      tasks: "Tareas"
   tasks:
     statuses:
       pending: "Pendiente"
