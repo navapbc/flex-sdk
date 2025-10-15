@@ -6,7 +6,7 @@
       <div class="grid-row grid-gap-2">
         <% task_info.each do |info| %>
           <div class="grid-col-auto flex-align-self-center">
-            <strong><%= info[:label] %></strong>&nbsp;<%= info[:value] %>
+            <strong><%= info[:label] %></strong> <%= info[:value] %>
           </div>
         <% end %>
       </div>
