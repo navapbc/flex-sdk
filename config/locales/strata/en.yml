@@ -41,6 +41,7 @@ en:
         middle_label: "Middle name"
         last_label: "Last or family name"
         last_hint: "For example, Martinez Gonzalez, Gu, or Smith"
+        suffix_label: "Suffix"
       address:
         legend: "Address"
         street_line_1_label: "Street address"

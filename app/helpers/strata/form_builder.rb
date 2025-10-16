@@ -306,6 +306,17 @@ module Strata
               class: "usa-input usa-input--xl",
               autocomplete: "family-name"
             )
+          end +
+
+          # Suffix field (optional)
+          @template.content_tag(:div, class: "usa-form-group") do
+            text_field(
+              "#{attribute}_suffix",
+              label: I18n.t("strata.form_builder.name.suffix_label"),
+              class: "usa-input usa-input--xl",
+              optional: true,
+              autocomplete: "honorific-suffix"
+            )
           end
         end
       end

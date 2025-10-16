@@ -52,7 +52,8 @@ module Strata
           [
             "#{name}_first:string",
             "#{name}_middle:string",
-            "#{name}_last:string"
+            "#{name}_last:string",
+            "#{name}_suffix:string"
           ]
         when :tax_id
           [ "#{name}:string" ]
