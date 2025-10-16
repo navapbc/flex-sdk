@@ -45,7 +45,11 @@ module Strata
     end
 
     def tasks_links
-      [ { name: t("strata.staff.header.tasks"), path: main_app.tasks_path } ]
+      if main_app.respond_to?(:tasks_path)
+        [ { name: t("strata.staff.header.tasks"), path: main_app.tasks_path } ]
+      else
+        []
+      end
     end
 
     private
