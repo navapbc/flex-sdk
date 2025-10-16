@@ -344,20 +344,23 @@ RSpec.describe Strata::FormBuilder do
     let(:result) { builder.name(:name) }
     let(:object) { TestRecord.new }
 
-    it 'includes first, middle, and last name fields' do
+    it 'includes first, middle, last, and suffix name fields' do
       expect(result).to have_element(:input, name: 'object[name_first]')
       expect(result).to have_element(:input, name: 'object[name_middle]')
       expect(result).to have_element(:input, name: 'object[name_last]')
+      expect(result).to have_element(:input, name: 'object[name_suffix]')
     end
 
     it 'applies the usa-input--xl class to all input fields' do
       expect(result).to have_element(:input, name: 'object[name_first]', class: /usa-input--xl/)
       expect(result).to have_element(:input, name: 'object[name_middle]', class: /usa-input--xl/)
       expect(result).to have_element(:input, name: 'object[name_last]', class: /usa-input--xl/)
+      expect(result).to have_element(:input, name: 'object[name_suffix]', class: /usa-input--xl/)
     end
 
-    it 'marks the middle name as optional' do
+    it 'marks the middle name and suffix as optional' do
       expect(result).to have_element(:label, text: /Middle name.*optional/i)
+      expect(result).to have_element(:label, text: /Suffix.*optional/i)
     end
 
     it 'includes hints for first and last name' do
@@ -375,15 +378,17 @@ RSpec.describe Strata::FormBuilder do
       expect(result).to have_element(:input, name: 'object[name_first]', autocomplete: 'given-name')
       expect(result).to have_element(:input, name: 'object[name_middle]', autocomplete: 'additional-name')
       expect(result).to have_element(:input, name: 'object[name_last]', autocomplete: 'family-name')
+      expect(result).to have_element(:input, name: 'object[name_suffix]', autocomplete: 'honorific-suffix')
     end
 
     context 'with an existing name value' do
-      let(:object) { TestRecord.new(name: Strata::Name.new(first: "John", middle: "Adams", last: "Doe")) }
+      let(:object) { TestRecord.new(name: Strata::Name.new(first: "John", middle: "Adams", last: "Doe", suffix: "Jr.")) }
 
       it 'pre-fills the name fields' do
         expect(result).to have_element(:input, name: 'object[name_first]', value: 'John')
         expect(result).to have_element(:input, name: 'object[name_middle]', value: 'Adams')
         expect(result).to have_element(:input, name: 'object[name_last]', value: 'Doe')
+        expect(result).to have_element(:input, name: 'object[name_suffix]', value: 'Jr.')
       end
     end
 

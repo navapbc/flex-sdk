@@ -2,17 +2,17 @@
 
 module Strata
   # Name is a value object representing a person's name with first, middle,
-  # and last components.
+  # last, and suffix components.
   #
   # This class is used with NameAttribute to provide structured name handling
   # in form models.
   #
   # @example Creating a name
-  #   name = Strata::Name.new("John", "A", "Doe")
-  #   puts name.full_name  # => "John A Doe"
+  #   name = Strata::Name.new("John", "A", "Doe", "Jr.")
+  #   puts name.full_name  # => "John A Doe Jr."
   #
   # Key features:
-  # - Stores first, middle, and last name components
+  # - Stores first, middle, last, and suffix name components
   # - Provides comparison between name objects
   # - Formats full name with appropriate spacing
   #
@@ -22,17 +22,18 @@ module Strata
     attribute :first, :string
     attribute :middle, :string
     attribute :last, :string
+    attribute :suffix, :string
 
     def blank?
-      [ first, middle, last ].all?(&:blank?)
+      [ first, middle, last, suffix ].all?(&:blank?)
     end
 
     def empty?
-      [ first, middle, last ].all? { |component| component.nil? || component.empty? }
+      [ first, middle, last, suffix ].all? { |component| component.nil? || component.empty? }
     end
 
     def full_name
-      [ first, middle, last ].compact.join(" ")
+      [ first, middle, last, suffix ].compact.join(" ")
     end
 
     def to_s
@@ -48,7 +49,7 @@ module Strata
     end
 
     def <=>(other)
-      [ last, first, middle ] <=> [ other.last, other.first, other.middle ]
+      [ last, first, middle, suffix ] <=> [ other.last, other.first, other.middle, other.suffix ]
     end
   end
 end

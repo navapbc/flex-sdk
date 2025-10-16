@@ -48,6 +48,7 @@ RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
           "full_name_first:string",
           "full_name_middle:string",
           "full_name_last:string",
+          "full_name_suffix:string",
           "home_address_street_line_1:string",
           "home_address_street_line_2:string",
           "home_address_city:string",
@@ -68,6 +69,7 @@ RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
           "full_name_first:string",
           "full_name_middle:string",
           "full_name_last:string",
+          "full_name_suffix:string",
           "email:string",
           "birth_date:date"
         )
@@ -202,6 +204,7 @@ RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
         "person_name_first:string",
         "person_name_middle:string",
         "person_name_last:string",
+        "person_name_suffix:string",
         "contact_address_street_line_1:string",
         "contact_address_street_line_2:string",
         "contact_address_city:string",

@@ -38,6 +38,7 @@ es-US:
         middle_label: "Segundo nombre"
         last_label: "Apellido"
         last_hint: "Por ejemplo, Martinez Gonzalez, Gu, o Smith"
+        suffix_label: "Sufijo"
       address:
         legend: "Dirección"
         street_line_1_label: "Dirección"
