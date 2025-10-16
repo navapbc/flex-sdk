@@ -1,24 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "strata_task_helpers"
+
 namespace :strata do
   namespace :events do
-    def fetch_required_args!(args, *required_keys)
-      missing = required_keys.select { |k| args[k].blank? }
-      if missing.any?
-        verb = missing.size == 1 ? "is" : "are"
-        raise "Error: #{missing.to_sentence} #{verb} required"
-      end
-
-      required_keys.map { |k| args[k] }
-    end
-
-    def constantize_case_class(case_class)
-      begin
-        case_class.constantize
-      rescue NameError
-        raise "Error: case_class '#{case_class}' is not a valid constant."
-      end
-    end
+    extend StrataTaskHelpers
 
     desc "Publish a specified Strata event"
     task :publish_event, [ :event_name ] => [ :environment ] do |t, args|
