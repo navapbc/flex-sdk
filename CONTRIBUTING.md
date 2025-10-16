@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to Strata SDK! We welcome contributions from the community and are excited to work with you to make government digital services more accessible and effective.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
 - [How Can I Contribute?](#how-can-i-contribute)
@@ -13,11 +13,11 @@ Thank you for your interest in contributing to Strata SDK! We welcome contributi
 - [Development Guidelines](#development-guidelines)
 - [Additional Resources](#additional-resources)
 
-## 📜 Code of Conduct
+## Code of Conduct
 
 This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [strata@navapbc.com](mailto:strata@navapbc.com).
 
-## 🤝 How Can I Contribute?
+## How Can I Contribute?
 
 There are many ways to contribute to Strata SDK:
 
@@ -25,7 +25,6 @@ There are many ways to contribute to Strata SDK:
 - **Suggest enhancements**: Have ideas for new features? [Open an issue](https://github.com/navapbc/strata-sdk/issues/new?template=feature_request.md) to discuss it
 - **Improve documentation**: Help make our docs clearer and more comprehensive
 - **Submit code changes**: Fix bugs, add features, or improve performance
-- **Review pull requests**: Help review and provide feedback on open PRs
 
 ### Good First Issues
 
@@ -45,39 +44,6 @@ Before you begin, ensure you have the following installed:
 - **Ruby 3.4.2** - As specified in [`.ruby-version`](./.ruby-version)
 - **Ruby Version Manager** (Required for most users): 
   - [rbenv](https://github.com/rbenv/rbenv) (recommended)
-  - [mise](https://mise.jdx.dev/getting-started.html)
-  - [frum](https://github.com/TaKO8Ki/frum)
-  - See [Comparison of ruby version managers](https://github.com/rbenv/rbenv/wiki/Comparison-of-version-managers) for more options
-
-#### Installing Ruby 3.4.2
-
-If you don't already have Ruby 3.4.2 installed, we recommend using rbenv:
-
-1. Install rbenv and ruby-build (macOS with Homebrew):
-   ```bash
-   brew install rbenv ruby-build
-   ```
-
-2. Initialize rbenv in your shell:
-   ```bash
-   # For zsh (default on macOS)
-   echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
-   source ~/.zshrc
-   
-   # For bash
-   echo 'eval "$(rbenv init - bash)"' >> ~/.bashrc
-   source ~/.bashrc
-   ```
-
-3. Install Ruby 3.4.2:
-   ```bash
-   rbenv install 3.4.2
-   ```
-
-4. Verify the installation:
-   ```bash
-   ruby --version  # Should show: ruby 3.4.2
-   ```
 
 ### Initial Setup
 
@@ -122,36 +88,6 @@ For a full list of available commands, run:
 ```bash
 make help
 ```
-
-### Troubleshooting
-
-#### Port 5432 Already in Use
-
-If you encounter an error during `make setup` about port 5432 being already allocated:
-
-```
-Error response from daemon: Bind for 0.0.0.0:5432 failed: port is already allocated
-```
-
-This means another PostgreSQL instance is using the default port. To fix this:
-
-1. Check what's using port 5432:
-   ```bash
-   lsof -i :5432
-   ```
-
-2. Either stop the conflicting service, or change the port in `spec/dummy/.env`:
-   ```bash
-   # Edit spec/dummy/.env and change:
-   DB_PORT=5432
-   # to:
-   DB_PORT=5433
-   ```
-
-3. Restart the setup:
-   ```bash
-   make init-db
-   ```
 
 ## 🔧 Making Your First Contribution
 
@@ -233,7 +169,7 @@ git rebase upstream/main
 git push origin feature/your-feature-name
 ```
 
-## 🔄 Pull Request Process
+## Pull Request Process
 
 ### Opening a Pull Request
 
@@ -258,7 +194,7 @@ Before submitting your PR, ensure:
 - [ ] Commit messages are clear and descriptive
 - [ ] Branch is up to date with `main`
 
-## 👀 Code Review Process
+## Code Review Process
 
 ### What to Expect
 
@@ -287,73 +223,4 @@ Reviewers will evaluate:
 - Mark conversations as resolved once addressed
 - Be patient and respectful
 
-### After Your PR is Merged
-
-1. Delete your feature branch:
-   ```bash
-   git branch -d feature/your-feature-name
-   git push origin --delete feature/your-feature-name
-   ```
-
-2. Update your local main branch:
-   ```bash
-   git checkout main
-   git pull upstream main
-   ```
-
-3. Celebrate! 🎉 You've contributed to Strata SDK!
-
-## 📝 Development Guidelines
-
-### Writing Tests
-
-All business logic should be thoroughly tested. When writing tests:
-
-- Test multiple scenarios to ensure comprehensive coverage
-- Consider creating data-driven tests for similar test cases with different inputs
-- Use [Faker](https://github.com/faker-ruby/faker) to generate randomized test data
-- Cover edge cases including:
-  - `nil` inputs
-  - Inputs that exceed expected length or size
-  - Error scenarios and exception handling
-  - Boundary conditions
-
-See our [testing contribution guide](docs/contributing/testing.md) for more details.
-
-### Code Style
-
-- Follow Ruby community style guidelines
-- Run `make lint` to check and auto-fix style issues
-- Use descriptive variable and method names
-- Keep methods focused and single-purpose
-- Add comments for complex logic
-
-### Documentation
-
-- Update relevant documentation when adding features
-- Include code examples where helpful
-- Keep README and guides up to date
-- Add inline comments for complex algorithms
-
-## 📚 Additional Resources
-
-### For Contributors
-- [Testing Guidelines](docs/contributing/testing.md) - How to write good tests
-
-### For Users
-- [Getting Started Guide](docs/getting-started.md) - Learn how to use Strata SDK
-- [Installation Guide](docs/installation.md) - Detailed installation instructions
-- [Documentation Hub](docs/README.md) - All available documentation
-
-## 🆘 Getting Help
-
-If you have questions or need help:
-
-- **Documentation**: Check the [docs](docs/README.md) folder
-- **Issues**: Search [existing issues](https://github.com/navapbc/strata-sdk/issues) or open a new one
-- **Discussions**: Start a [discussion](https://github.com/navapbc/strata-sdk/discussions) for broader topics
-- **Email**: Contact us at [strata@navapbc.com](mailto:strata@navapbc.com)
-
----
-
-Thank you for contributing to Strata SDK! Your efforts help make government digital services better for everyone. 💙
+Thank you for contributing to Strata SDK! Your efforts help make government digital services better for everyone. 

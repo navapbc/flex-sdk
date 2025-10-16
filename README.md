@@ -21,9 +21,6 @@
   <a href="https://github.com/navapbc/strata-sdk/issues">
     <img src="https://img.shields.io/github/commit-activity/m/navapbc/strata-sdk" alt="git commit activity" />
   </a>
-  <a href="https://github.com/navapbc/strata-sdk/repos/">
-    <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/navapbc/strata-sdk/total">
-  </a>
 </h4>
 
 <img src="/img/Strata_github_repo.png" width="100%" alt="Dashboard" />
