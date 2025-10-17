@@ -20,63 +20,52 @@ RSpec.describe StrataTaskHelpers do
 
         expect(result).to eq([ 'value1', 'value2', 'value3' ])
       end
-
-      it 'returns a single value when only one argument is required' do
-        args = OpenStruct.new(arg1: 'value1')
-
-        result = test_class.fetch_required_args!(args, :arg1)
-
-        expect(result).to eq([ 'value1' ])
-      end
     end
 
-    context 'when one required argument is missing (nil)' do
-      it 'raises an error with singular verb' do
-        args = OpenStruct.new(arg1: 'value1', arg2: nil)
+    describe 'error handling for missing arguments' do
+      test_cases = [
+        {
+          description: 'when one required argument is missing (nil)',
+          args: { arg1: 'value1', arg2: nil },
+          required_args: [:arg1, :arg2],
+          expected_error: /arg2 is required/
+        },
+        {
+          description: 'when one required argument is an empty string',
+          args: { arg1: 'value1', arg2: '' },
+          required_args: [:arg1, :arg2],
+          expected_error: /arg2 is required/
+        },
+        {
+          description: 'when multiple required arguments are missing',
+          args: { arg1: nil, arg2: nil, arg3: 'value3' },
+          required_args: [:arg1, :arg2, :arg3],
+          expected_error: /arg1 and arg2 are required/
+        },
+        {
+          description: 'when all required arguments are missing',
+          args: { arg1: nil, arg2: nil, arg3: nil },
+          required_args: [:arg1, :arg2, :arg3],
+          expected_error: /arg1, arg2, and arg3 are required/
+        },
+        {
+          description: 'when a single argument is missing',
+          args: { only_arg: nil },
+          required_args: [:only_arg],
+          expected_error: /only_arg is required/
+        }
+      ]
 
-        expect {
-          test_class.fetch_required_args!(args, :arg1, :arg2)
-        }.to raise_error(/arg2 is required/)
-      end
-    end
+      test_cases.each do |test_case|
+        context test_case[:description] do
+          it 'raises an error with appropriate message' do
+            args = OpenStruct.new(test_case[:args])
 
-    context 'when one required argument is an empty string' do
-      it 'raises an error treating empty string as blank' do
-        args = OpenStruct.new(arg1: 'value1', arg2: '')
-
-        expect {
-          test_class.fetch_required_args!(args, :arg1, :arg2)
-        }.to raise_error(/arg2 is required/)
-      end
-    end
-
-    context 'when multiple required arguments are missing' do
-      it 'raises an error with plural verb' do
-        args = OpenStruct.new(arg1: nil, arg2: nil, arg3: 'value3')
-
-        expect {
-          test_class.fetch_required_args!(args, :arg1, :arg2, :arg3)
-        }.to raise_error(/arg1 and arg2 are required/)
-      end
-    end
-
-    context 'when all required arguments are missing' do
-      it 'raises an error listing all arguments' do
-        args = OpenStruct.new(arg1: nil, arg2: nil, arg3: nil)
-
-        expect {
-          test_class.fetch_required_args!(args, :arg1, :arg2, :arg3)
-        }.to raise_error(/arg1, arg2, and arg3 are required/)
-      end
-    end
-
-    context 'when a single argument is missing' do
-      it 'raises an error with singular verb' do
-        args = OpenStruct.new(only_arg: nil)
-
-        expect {
-          test_class.fetch_required_args!(args, :only_arg)
-        }.to raise_error(/only_arg is required/)
+            expect {
+              test_class.fetch_required_args!(args, *test_case[:required_args])
+            }.to raise_error(test_case[:expected_error])
+          end
+        end
       end
     end
   end
