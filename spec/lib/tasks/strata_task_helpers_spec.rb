@@ -27,31 +27,31 @@ RSpec.describe StrataTaskHelpers do
         {
           description: 'when one required argument is missing (nil)',
           args: { arg1: 'value1', arg2: nil },
-          required_args: [:arg1, :arg2],
+          required_args: [ :arg1, :arg2 ],
           expected_error: /arg2 is required/
         },
         {
           description: 'when one required argument is an empty string',
           args: { arg1: 'value1', arg2: '' },
-          required_args: [:arg1, :arg2],
+          required_args: [ :arg1, :arg2 ],
           expected_error: /arg2 is required/
         },
         {
           description: 'when multiple required arguments are missing',
           args: { arg1: nil, arg2: nil, arg3: 'value3' },
-          required_args: [:arg1, :arg2, :arg3],
+          required_args: [ :arg1, :arg2, :arg3 ],
           expected_error: /arg1 and arg2 are required/
         },
         {
           description: 'when all required arguments are missing',
           args: { arg1: nil, arg2: nil, arg3: nil },
-          required_args: [:arg1, :arg2, :arg3],
+          required_args: [ :arg1, :arg2, :arg3 ],
           expected_error: /arg1, arg2, and arg3 are required/
         },
         {
           description: 'when a single argument is missing',
           args: { only_arg: nil },
-          required_args: [:only_arg],
+          required_args: [ :only_arg ],
           expected_error: /only_arg is required/
         }
       ]
