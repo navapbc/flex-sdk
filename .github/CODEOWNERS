@@ -2,7 +2,7 @@
 
 * @lorenyu # project lead
 
-/docs/  @navapbc/platform-admins @navapbc/platform-frontend @navapbc/platform-infra @navapbc/platform-backend @navapbc/sdk
+/docs/  @navapbc/platform-admins @navapbc/technology-solutions-and-services/platform-frontend @navapbc/platform-infra @navapbc/platform-backend @navapbc/sdk
 
 /e2e/               @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
 /documentation/e2e/ @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
