@@ -6,6 +6,11 @@ module Strata
     # It provides a reusable interface for displaying lists of cases
     # with customizable row components and URL path generation.
     #
+    # ## Step Descriptions
+    #
+    # Step descriptions in the table can be customized through locale keys.
+    # See CaseRowComponent documentation for more information.
+    #
     # @example Basic usage
     #   <%= render IndexComponent.new(cases: @cases, model_class: MyCase) %>
     #

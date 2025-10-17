@@ -3,6 +3,10 @@ en:
   case_no: Case no.
   created: Created
   assigned_to: Assigned to
-  step: Step
+  step: Next step
   due_on: Due on
   created_at: Created at
+  applicant_task: "User: %{step_name}"
+  staff_task: "%{step_name}"
+  system_process: "System: %{step_name}"
+  third_party_task: "User: %{step_name}"

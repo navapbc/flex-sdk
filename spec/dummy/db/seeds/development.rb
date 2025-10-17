@@ -13,37 +13,8 @@ end
     name_last: Faker::Name.last_name,
     date_of_birth: Faker::Date.birthday(min_age: 0, max_age: 130),
   )
-
-  PassportCase.create!(
-    application_form_id: application_form.id,
-  )
 end
 
-passport_cases = PassportCase.all
-ten_days_ago = Date.current - 10.days
-20.times do |index|
-  task = PassportVerifyInfoTask.create!(
-    description: "Task description for #{index}",
-    due_on: ten_days_ago + index.days,
-    case: passport_cases.sample
-  )
-
-  task.assign(users.sample.id) if rand(0..1) == 0
-  task.completed! if rand(0..2) == 0
-end
-
-20.times do |index|
-  task = PassportPhotoTask.create!(
-    description: "Task description for #{index}",
-    due_on: ten_days_ago + index.days,
-    case: passport_cases.sample
-  )
-
-  task.assign(users.sample.id) if rand(0..1) == 0
-  task.completed! if rand(0..5) == 0
-end
-
-5.times do
-  # Create tasks without a due_on date
-  passport_cases.sample.create_task(PassportVerifyInfoTask)
+PassportApplicationForm.order('RANDOM()').limit(10).each do |application_form|
+  application_form.submit_application
 end

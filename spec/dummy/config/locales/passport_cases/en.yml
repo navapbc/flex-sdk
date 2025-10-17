@@ -2,3 +2,6 @@ en:
   passport_cases:
     index:
       title: "Passport Cases"
+    case_row_component:
+      steps:
+        submit_application: "Awaiting application submission"

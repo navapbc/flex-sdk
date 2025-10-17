@@ -2,3 +2,6 @@ es-US:
   passport_cases:
     index:
       title: "Casos de Pasaporte"
+    case_row_component:
+      steps:
+        submit_application: "Aplicación pendiente de envío"
