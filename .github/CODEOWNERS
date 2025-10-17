@@ -1,17 +1,14 @@
 # More generic / higher level paths should be listed first.
 
-* @lorenyu # project lead
+* @navapbc/platform-admins # project lead
 
-/docs/  @navapbc/platform-admins @navapbc/platform-infra @navapbc/platform-backend @navapbc/sdk
+/docs/  @navapbc/platform-admins @navapbc/platform-backend @navapbc/sdk @navapbc/platform-frontend
 
-/e2e/               @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
-/documentation/e2e/ @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
+/e2e/               @navapbc/platform-admins  @navapbc/platform-backend @navapbc/sdk @navapbc/platform-frontend
+/documentation/e2e/ @navapbc/platform-admins  @navapbc/platform-backend @navapbc/sdk @navapbc/platform-frontend
 
-/infra/               @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
-/documentation/infra/ @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
+/app/               @navapbc/platform-admins @navapbc/platform-backend @navapbc/sdk @navapbc/platform-frontend
+/documentation/app/ @navapbc/platform-admins @navapbc/platform-backend @navapbc/sdk @navapbc/platform-frontend
 
-/reporting-app/               @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
-/documentation/reporting-app/ @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
-
-/.github/                  @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
-/bin/                      @lorenyu @doshitan @baonguyenNava @MichaelCrawfordNava @abbas-nava @giverm @nkutub
+/.github/           @navapbc/platform-admins
+/bin/               @navapbc/platform-admins
