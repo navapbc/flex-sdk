@@ -39,7 +39,20 @@ module Strata
       end
 
       def step
-        @case.business_process_instance.current_step
+        step = @case.class.business_process.get_step(@case.business_process_instance.current_step)
+        step_name = step.name&.humanize
+        case step
+        when Strata::ApplicantTask
+          t(".applicant_task", step_name:)
+        when Strata::StaffTask
+          t(".staff_task", step_name:)
+        when Strata::SystemProcess
+          t(".system_process", step_name:)
+        when Strata::ThirdPartyTask
+          t(".third_party_task", step_name:)
+        else
+          step_name
+        end
       end
 
       def due_on

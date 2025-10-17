@@ -36,5 +36,9 @@ module Dummy
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.after_initialize do
+      PassportBusinessProcess.start_listening_for_events
+    end
   end
 end

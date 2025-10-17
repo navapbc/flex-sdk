@@ -64,6 +64,10 @@ module Strata
       self.name.sub("BusinessProcess", "Case").constantize
     end
 
+    def self.get_step(name)
+      steps[name]
+    end
+
     def self.to_mermaid
       diagram = "flowchart TD\n"
 
