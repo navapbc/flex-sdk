@@ -6,5 +6,6 @@ class IdentityVerificationService
   end
 
   def verify_identity
+    Strata::EventManager.publish("IdentityVerified", { case_id: @kase.id })
   end
 end
