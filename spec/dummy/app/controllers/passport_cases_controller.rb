@@ -4,7 +4,8 @@ class PassportCasesController < StaffController
   before_action :set_case, only: %i[ show application_details documents history notes tasks ]
 
   def index
-    @cases = PassportCase.order(created_at: :desc)
+    @cases = PassportCase.actionable
+                         .order(created_at: :desc)
                          .all
   end
 
