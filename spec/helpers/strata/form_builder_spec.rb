@@ -225,11 +225,24 @@ RSpec.describe Strata::FormBuilder do
       expect(result).to have_element(:input, type: 'radio', class: 'usa-radio__input', name: 'object[first_name]', value: 'yes')
     end
 
+    it 'defaults to tile style' do
+      expect(result).to have_element(:input, type: 'radio', class: 'usa-radio__input--tile')
+    end
+
     context 'with hint' do
       let(:result) { builder.radio_button(:first_name, 'yes', hint: 'Select yes') }
 
       it 'outputs a hint' do
         expect(result).to have_element(:span, text: 'Select yes', class: 'usa-radio__label-description')
+      end
+    end
+
+    context 'with tile option false' do
+      let(:result) { builder.radio_button(:first_name, 'yes', tile: false) }
+
+      it 'outputs a radio button without the tile class' do
+        expect(result).to have_element(:input, type: 'radio', class: 'usa-radio__input')
+        expect(result).not_to have_element(:input, type: 'radio', class: 'usa-radio__input--tile')
       end
     end
   end

@@ -93,6 +93,9 @@ module Strata
       label_text = options.delete(:label)
       label_options = { for: field_id(attribute, tag_value) }.merge(options)
 
+      tile = options.key?(:tile) ? options.delete(:tile) : true
+      append_to_option(options, :class, " usa-radio__input--tile") if tile
+
       @template.content_tag(:div, class: "usa-radio") do
         super(attribute, tag_value, options) + us_toggle_label("radio", attribute, label_text, label_options)
       end
@@ -569,7 +572,7 @@ module Strata
       when :file_field
         "usa-file-input"
       when :radio_button
-        "usa-radio__input usa-radio__input--tile"
+        "usa-radio__input"
       when :text_area
         "usa-textarea"
       else
