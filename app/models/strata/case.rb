@@ -44,6 +44,17 @@ module Strata
       # Method call will need to constantize downstream.
       name.sub("Case", "ApplicationForm")
     end
+
+    # Migrates business_process_current_step from one step name to another.
+    # Updates all cases where business_process_current_step matches from_step_name.
+    #
+    # @param from_step_name [String] The current step name to migrate from
+    # @param to_step_name [String] The new step name to migrate to
+    # @return [Integer] The number of records updated
+    def self.migrate_business_process_current_step(from_step_name:, to_step_name:)
+      where(business_process_current_step: from_step_name)
+        .update_all(business_process_current_step: to_step_name)
+    end
     attribute :application_form_id, :uuid
 
     attribute :status, :integer, default: 0
