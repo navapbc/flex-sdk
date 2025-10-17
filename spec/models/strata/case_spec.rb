@@ -100,4 +100,58 @@ RSpec.describe Strata::Case, type: :model do
       end
     end
   end
+
+  describe '.migrate_business_process_current_step' do
+    let(:from_step) { Faker::Alphanumeric.alpha(number: rand(5..15)) }
+    let(:to_step) { Faker::Alphanumeric.alpha(number: rand(5..15)) }
+    let(:other_step) { Faker::Alphanumeric.alpha(number: rand(5..15)) }
+
+    it 'updates all cases with matching business_process_current_step' do
+      case1 = create(:test_case)
+      case1.update!(business_process_current_step: from_step)
+      case2 = create(:test_case)
+      case2.update!(business_process_current_step: from_step)
+      case3 = create(:test_case)
+      case3.update!(business_process_current_step: other_step)
+
+      updated_count = TestCase.migrate_business_process_current_step(
+        from_step_name: from_step,
+        to_step_name: to_step
+      )
+
+      expect(updated_count).to eq(2)
+      expect(case1.reload.business_process_current_step).to eq(to_step)
+      expect(case2.reload.business_process_current_step).to eq(to_step)
+      expect(case3.reload.business_process_current_step).to eq(other_step)
+    end
+
+    it 'returns 0 when no cases match' do
+      case1 = create(:test_case)
+      case1.update!(business_process_current_step: other_step)
+
+      updated_count = TestCase.migrate_business_process_current_step(
+        from_step_name: from_step,
+        to_step_name: to_step
+      )
+
+      expect(updated_count).to eq(0)
+      expect(case1.reload.business_process_current_step).to eq(other_step)
+    end
+
+    it 'does not update cases with nil business_process_current_step' do
+      case1 = create(:test_case)
+      case1.update!(business_process_current_step: nil)
+      case2 = create(:test_case)
+      case2.update!(business_process_current_step: from_step)
+
+      updated_count = TestCase.migrate_business_process_current_step(
+        from_step_name: from_step,
+        to_step_name: to_step
+      )
+
+      expect(updated_count).to eq(1)
+      expect(case1.reload.business_process_current_step).to be_nil
+      expect(case2.reload.business_process_current_step).to eq(to_step)
+    end
+  end
 end

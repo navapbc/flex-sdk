@@ -18,7 +18,7 @@ namespace :strata do
     desc "Publish a specified Strata event for a given case with a given ID"
     task :publish_case_event, [ :event_name, :case_class, :case_id ] => [ :environment ] do |t, args|
       event_name, case_class, case_id = *fetch_required_args!(args, :event_name, :case_class, :case_id)
-      constantized_case_class = constantize_case_class(case_class)
+      constantized_case_class = case_class.constantize
 
       kase = constantized_case_class.find(case_id)
       Strata::EventManager.publish(event_name, { kase: kase })

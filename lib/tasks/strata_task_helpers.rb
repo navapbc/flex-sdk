@@ -11,12 +11,4 @@ module StrataTaskHelpers
 
     required_keys.map { |k| args[k] }
   end
-
-  def constantize_case_class(case_class)
-    begin
-      case_class.constantize
-    rescue NameError
-      raise "Error: case_class '#{case_class}' is not a valid constant."
-    end
-  end
 end

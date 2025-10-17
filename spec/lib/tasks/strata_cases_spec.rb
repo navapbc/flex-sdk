@@ -29,12 +29,6 @@ RSpec.describe 'strata:cases', type: :task do
           }.to raise_error(error_pattern)
         end
       end
-
-      it 'raises error if case_class_name is not a valid constant' do
-        expect {
-          task.invoke("InvalidCaseClass", "from_step", "to_step")
-        }.to raise_error(/case_class 'InvalidCaseClass' is not a valid constant/)
-      end
     end
 
     describe 'successful migration' do
