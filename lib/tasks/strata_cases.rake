@@ -12,8 +12,8 @@ namespace :strata do
       case_class = case_class_name.constantize
 
       updated_count = case_class.migrate_business_process_current_step(
-        from_step_name: from_step_name,
-        to_step_name: to_step_name
+        from_step_name:,
+        to_step_name:
       )
 
       Rails.logger.info "Updated #{updated_count} #{case_class_name} record(s) from '#{from_step_name}' to '#{to_step_name}'"
