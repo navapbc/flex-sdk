@@ -18,4 +18,3 @@ end
 PassportApplicationForm.order('RANDOM()').limit(10).each do |application_form|
   application_form.submit_application
 end
-
