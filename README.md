@@ -23,8 +23,6 @@
   </a>
 </h4>
 
-<img src="/img/Strata_github_repo.png" width="100%" alt="Dashboard" />
-
 ## Installation
 
 See [Installation](./docs/installation.md) for instructions
