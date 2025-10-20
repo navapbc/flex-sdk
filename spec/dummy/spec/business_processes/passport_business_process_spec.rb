@@ -29,20 +29,10 @@ RSpec.describe PassportBusinessProcess, type: :model do
     test_form.save!
     test_form.submit_application
     kase.reload
-    expect(kase.business_process_instance.current_step).to eq ("verify_identity")
-
-    # verify identity (simulate action that an adjudicator takes)
-    Strata::EventManager.publish("identity_verified", { case_id: kase.id })
-    kase.reload
     expect(kase.business_process_instance.current_step).to eq ("review_passport_photo")
 
     # approve passport photo
-    Strata::EventManager.publish("passport_photo_approved", { case_id: kase.id })
-    kase.reload
-    expect(kase.business_process_instance.current_step).to eq ("notify_user_passport_approved")
-
-    # notify user
-    Strata::EventManager.publish("notification_completed", { case_id: kase.id })
+    Strata::EventManager.publish("PassportPhotoApproved", { case_id: kase.id })
 
     # check case status
     kase.reload
