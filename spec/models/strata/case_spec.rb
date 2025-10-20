@@ -101,6 +101,31 @@ RSpec.describe Strata::Case, type: :model do
     end
   end
 
+  describe '.actionable scope' do
+    it 'returns cases that are in staff task steps' do
+      # Create cases in different steps
+      staff_case1 = create(:test_case)
+      staff_case1.update!(business_process_current_step: 'staff_task')
+
+      staff_case2 = create(:test_case)
+      staff_case2.update!(business_process_current_step: 'staff_task_2')
+
+      system_case = create(:test_case)
+      system_case.update!(business_process_current_step: 'system_process')
+
+      applicant_case = create(:test_case)
+      applicant_case.update!(business_process_current_step: 'applicant_task')
+
+      third_party_case = create(:test_case)
+      third_party_case.update!(business_process_current_step: 'third_party_task')
+
+      actionable_cases = TestCase.actionable.to_a
+
+      expect(actionable_cases).to include(staff_case1, staff_case2)
+      expect(actionable_cases).not_to include(system_case, applicant_case, third_party_case)
+    end
+  end
+
   describe '.migrate_business_process_current_step' do
     let(:from_step) { Faker::Alphanumeric.alpha(number: rand(5..15)) }
     let(:to_step) { Faker::Alphanumeric.alpha(number: rand(5..15)) }
