@@ -72,11 +72,11 @@ RSpec.describe Strata::Case, type: :model do
 
     it 'raises an error when save fails' do
       test_case.save!
-      
+
       # Make the case invalid by stubbing validation
       allow(test_case).to receive(:valid?).and_return(false)
-      allow(test_case.errors).to receive(:full_messages).and_return(['Validation failed'])
-      
+      allow(test_case.errors).to receive(:full_messages).and_return([ 'Validation failed' ])
+
       expect { test_case.close! }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
@@ -93,11 +93,11 @@ RSpec.describe Strata::Case, type: :model do
     it 'raises an error when save fails' do
       test_case.save!
       test_case.close!
-      
+
       # Make the case invalid by stubbing validation
       allow(test_case).to receive(:valid?).and_return(false)
-      allow(test_case.errors).to receive(:full_messages).and_return(['Validation failed'])
-      
+      allow(test_case.errors).to receive(:full_messages).and_return([ 'Validation failed' ])
+
       expect { test_case.reopen! }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
