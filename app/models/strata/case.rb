@@ -96,12 +96,32 @@ module Strata
       save
     end
 
+    # Closes the case, changing its status to 'closed'.
+    # Raises an exception if the save fails.
+    #
+    # @return [Boolean] True if the save was successful
+    # @raise [ActiveRecord::RecordInvalid] If the record is invalid
+    def close!
+      self[:status] = :closed
+      save!
+    end
+
     # Reopens a closed case, changing its status to 'open'.
     #
     # @return [Boolean] True if the save was successful
     def reopen
       self[:status] = :open
       save
+    end
+
+    # Reopens a closed case, changing its status to 'open'.
+    # Raises an exception if the save fails.
+    #
+    # @return [Boolean] True if the save was successful
+    # @raise [ActiveRecord::RecordInvalid] If the record is invalid
+    def reopen!
+      self[:status] = :open
+      save!
     end
 
     def business_process_instance
