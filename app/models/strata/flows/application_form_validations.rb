@@ -22,7 +22,9 @@ module Strata::Flows
       #
       def validate_flow(flow_class, validate_on_submit: true)
         flow_class.contexts.each do |context|
-          Flow.const_set(context.upcase.to_sym, context)
+          unless Flow.const_defined?(context.upcase.to_sym)
+            Flow.const_set(context.upcase.to_sym, context)
+          end
         end
 
         if validate_on_submit
