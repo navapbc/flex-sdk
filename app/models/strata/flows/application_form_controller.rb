@@ -53,7 +53,7 @@ module Strata::Flows
             flow_record.assign_attributes(form_params)
 
             if flow_record.valid? && flow_record.save(context: page.name)
-              redirect_to @flow_task.next_path || @flow.start_path
+              redirect_to @flow_task.next_path || @flow.start_path || @flow.end_path
             else
               # Allow custom error-handling behaviors by defining :on_flow_update_invalid
               if respond_to?(:on_flow_update_invalid)
