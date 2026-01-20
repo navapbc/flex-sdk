@@ -2,47 +2,24 @@
 
 module Strata
   # ApiAuthenticator is a service that authenticates API requests.
-  # It uses a secret key to sign the request body and verify the signature.
+  # It uses a strategy to verify the request.
   #
   # @example
-  #   api_authenticator = Strata::ApiAuthenticator.new
+  #   strategy = Strata::Auth::Strategies::Hmac.new(secret_key: ENV['API_SECRET_KEY'])
+  #   api_authenticator = Strata::ApiAuthenticator.new(strategy: strategy)
   #   api_authenticator.authenticate!(request)
   #
   class ApiAuthenticator
-    class AuthenticationError < StandardError; end
-    class MissingCredentials < AuthenticationError; end
-    class InvalidSignature < AuthenticationError; end
+    attr_reader :strategy
 
-    HEADER_FORMAT = /\AHMAC sig=(.+)\z/
+    def initialize(strategy:)
+      @strategy = strategy
+    end
 
     def authenticate!(request)
-      auth_header = request.headers["Authorization"]
-      raise MissingCredentials, "Missing Authorization header" if auth_header.blank?
+      return true if strategy.authenticate!(request)
 
-      match = auth_header.match(HEADER_FORMAT)
-      raise MissingCredentials, "Invalid Authorization header format" unless match
-
-      provided_signature = match[1]
-      expected_signature = sign(body: request.body.read)
-      request.body.rewind # Ensure the body can be read again if needed
-
-      unless ActiveSupport::SecurityUtils.secure_compare(provided_signature, expected_signature)
-        raise InvalidSignature, "Signature verification failed"
-      end
-
-      true
-    end
-
-    def sign(body:)
-      Base64.strict_encode64(
-        OpenSSL::HMAC.digest("sha256", secret_key, body)
-      )
-    end
-
-    private
-
-    def secret_key
-      ENV.fetch("API_SECRET_KEY")
+      raise Auth::AuthenticationError, "No authentication provided"
     end
   end
 end
