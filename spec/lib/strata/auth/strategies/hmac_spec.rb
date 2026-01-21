@@ -10,14 +10,14 @@ RSpec.describe Strata::Auth::Strategies::Hmac do
   describe "#authenticate!" do
     context "with valid signature" do
       it "returns true" do
-        headers = api_auth_headers(body: body, secret: secret)
+        headers = hmac_auth_headers(body: body, secret: secret)
         request = mock_api_request(body: body, headers: headers)
 
         expect(strategy.authenticate!(request)).to be true
       end
 
       it "allows the request body to be read again" do
-        headers = api_auth_headers(body: body, secret: secret)
+        headers = hmac_auth_headers(body: body, secret: secret)
         request = mock_api_request(body: body, headers: headers)
 
         strategy.authenticate!(request)
@@ -53,7 +53,7 @@ RSpec.describe Strata::Auth::Strategies::Hmac do
 
     context "with invalid signature" do
       it "raises InvalidSignature error" do
-        headers = api_auth_headers(body: body, secret: "wrong_secret")
+        headers = hmac_auth_headers(body: body, secret: "wrong_secret")
         request = mock_api_request(body: body, headers: headers)
 
         expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::InvalidSignature, "Signature verification failed")
@@ -62,7 +62,7 @@ RSpec.describe Strata::Auth::Strategies::Hmac do
 
     context "with tampered body" do
       it "raises InvalidSignature error" do
-        headers = api_auth_headers(body: body, secret: secret)
+        headers = hmac_auth_headers(body: body, secret: secret)
         request = mock_api_request(body: "tampered body", headers: headers)
 
         expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::InvalidSignature, "Signature verification failed")
