@@ -126,18 +126,31 @@ The `authenticate!` method will raise one of the following exceptions defined in
 
 ## Testing with ApiAuthHelpers
 
-The Strata SDK includes helpers to simplify testing authenticated API endpoints. You can include `ApiAuthHelpers` in your RSpec configuration or directly in your specs.
+The Strata SDK includes helpers to simplify testing authenticated API endpoints. These are provided by the `Strata::Testing::ApiAuthHelpers` module.
+
+### Setup in RSpec
+
+You can include the helpers globally in your `rails_helper.rb`:
 
 ```ruby
-# spec/support/api_auth_helpers.rb usage example
+require "strata/testing/api_auth_helpers"
+
+RSpec.configure do |config|
+  config.include Strata::Testing::ApiAuthHelpers
+end
+```
+
+Or include them directly in specific specs:
+
+```ruby
 RSpec.describe "My API Endpoint", type: :request do
-  include ApiAuthHelpers
+  include Strata::Testing::ApiAuthHelpers
 
   let(:secret) { "test-secret" }
   let(:body) { { foo: "bar" }.to_json }
 
   it "successfully authenticates" do
-    headers = api_auth_headers(body: body, secret: secret)
+    headers = hmac_auth_headers(body: body, secret: secret)
     post "/api/my-endpoint", params: body, headers: headers
     
     expect(response).to have_http_status(:ok)
@@ -147,5 +160,5 @@ end
 
 ### Provided Helpers
 
-- `api_auth_headers(body:, secret:)`: Returns a hash containing the correctly formatted `Authorization` header.
+- `hmac_auth_headers(body:, secret:)`: Returns a hash containing the correctly formatted `Authorization` header for HMAC authentication.
 - `mock_api_request(body:, headers: {})`: Creates a mock `ActionDispatch::Request` object for unit testing services that depend on a request.

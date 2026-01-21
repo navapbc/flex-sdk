@@ -27,7 +27,7 @@ require "capybara/rspec"
 require_relative 'support/factory_bot'
 
 # API Authentication helpers
-require_relative 'support/api_auth_helpers'
+require "strata/testing/api_auth_helpers"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -55,7 +55,7 @@ end
 
 RSpec.configure do |config|
   # API Authentication helpers
-  config.include ApiAuthHelpers
+  config.include Strata::Testing::ApiAuthHelpers
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
