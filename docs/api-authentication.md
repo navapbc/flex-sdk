@@ -56,6 +56,43 @@ signature = Base64.strict_encode64(
 headers = { "Authorization" => "HMAC sig=#{signature}" }
 ```
 
+## Creating a Custom Strategy
+
+You can create your own authentication strategy by inheriting from `Strata::Auth::Strategies::Base` and implementing the `authenticate!` method.
+
+```ruby
+class MyCustomStrategy < Strata::Auth::Strategies::Base
+  def initialize(api_key:)
+    @api_key = api_key
+  end
+
+  def authenticate!(request)
+    provided_key = request.headers["X-API-KEY"]
+
+    if provided_key.blank?
+      fail_auth!(Strata::Auth::MissingCredentials, "Missing X-API-KEY header")
+    end
+
+    unless ActiveSupport::SecurityUtils.secure_compare(provided_key, @api_key)
+      fail_auth!(Strata::Auth::AuthenticationError, "Invalid API Key")
+    end
+
+    true
+  end
+end
+```
+
+### Using the Custom Strategy
+
+Once defined, pass your custom strategy instance into the `ApiAuthenticator`.
+
+```ruby
+custom_strategy = MyCustomStrategy.new(api_key: "my-secret-key")
+authenticator = Strata::ApiAuthenticator.new(strategy: custom_strategy)
+
+authenticator.authenticate!(request)
+```
+
 ## Usage in Rails Controllers
 
 The most common way to use `ApiAuthenticator` is within a `before_action` in your controllers.
