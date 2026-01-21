@@ -26,6 +26,9 @@ require "capybara/rspec"
 # FactoryBot
 require_relative 'support/factory_bot'
 
+# API Authentication helpers
+require_relative 'support/api_auth_helpers'
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -51,6 +54,9 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  # API Authentication helpers
+  config.include ApiAuthHelpers
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     File.join(SPEC_DIR, 'fixtures')
