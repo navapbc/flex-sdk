@@ -20,7 +20,8 @@ module Strata
           fail_auth!(Strata::Auth::MissingCredentials, "Invalid Authorization header format") unless match
 
           provided_signature = match[1]
-          expected_signature = sign(body: request.body.read)
+          body = request.body&.read || ""
+          expected_signature = sign(body: body)
           request.body.rewind # Ensure the body can be read again if needed
 
           unless ActiveSupport::SecurityUtils.secure_compare(provided_signature, expected_signature)
