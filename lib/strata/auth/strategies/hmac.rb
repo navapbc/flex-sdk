@@ -22,7 +22,7 @@ module Strata
           provided_signature = match[1]
           body = request.body&.read || ""
           expected_signature = sign(body: body)
-          request.body.rewind # Ensure the body can be read again if needed
+          request.body&.rewind # Ensure the body can be read again if needed
 
           unless ActiveSupport::SecurityUtils.secure_compare(provided_signature, expected_signature)
             fail_auth!(Strata::Auth::InvalidSignature, "Signature verification failed")
