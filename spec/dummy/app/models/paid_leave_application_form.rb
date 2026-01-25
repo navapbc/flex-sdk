@@ -1,16 +1,10 @@
-class PaidLeaveApplication
-  include ActiveModel::Model
+class PaidLeaveApplicationForm < Strata::ApplicationForm
   include Strata::Flows::ApplicationFormValidations
-
   validate_flow PaidLeaveFlow
 
-  attr_accessor :id,
-                :name,
-                :date_of_birth,
-                :employer_name,
-                :leave_type
+  strata_attribute :date_of_birth, :memorable_date
 
-  validates :name, presence: true, on: Flow::NAME
+  validates :applicant_name_first, presence: true, on: Flow::NAME
   validates :date_of_birth, presence: true, on: Flow::DATE_OF_BIRTH
   validates :employer_name, presence: true, on: Flow::EMPLOYER_NAME
   validates :leave_type, presence: true, on: Flow::LEAVE_TYPE

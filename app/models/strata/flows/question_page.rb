@@ -6,7 +6,7 @@ module Strata::Flows
     include Rails.application.routes.url_helpers
     attr_accessor :name, :fields
 
-    def initialize(name, if:, fields: nil)
+    def initialize(name, if: nil, fields: nil)
       reserved_attributes = { if: }
 
       @name = name
@@ -19,7 +19,7 @@ module Strata::Flows
     end
 
     def completed?(record)
-      record.valid?(@name)
+      record.valid?(@name.to_sym)
     end
 
     def edit_pathname

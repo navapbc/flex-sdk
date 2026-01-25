@@ -90,13 +90,19 @@ question_page :employment_details, fields: [
 ]
 ```
 
+For conditionally-rendered pages, provide an `if` option:
+
+```ruby
+question_page :supporting_documents, if: ->(record) { record.leave_type_medical? }
+```
+
 ### Generating Routes
 
 Routes can be generated for your application form's controller:
 
 ```ruby
 class LeaveApplicationFormsController
-    include Flows::ApplicationFormController
+    include Strata::Flows::ApplicationFormController
 
     # Generate edit/update actions for each of the question pages in your flow
     flow Flows::LeaveApplicationFormFlow
