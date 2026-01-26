@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       end
 
       get :review
+      patch :submit
     end
   end
 

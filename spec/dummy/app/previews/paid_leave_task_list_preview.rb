@@ -4,7 +4,7 @@
 class PaidLeaveTaskListPreview < Lookbook::Preview
   def default
     flow = PaidLeaveFlow.new(FactoryBot.build_stubbed(
-      :paid_leave_application,
+      :paid_leave_application_form,
       name: "Name",
       leave_type: "medical"
     ))
@@ -15,7 +15,7 @@ class PaidLeaveTaskListPreview < Lookbook::Preview
 
   def with_step_label
     flow = PaidLeaveFlow.new(FactoryBot.build_stubbed(
-      :paid_leave_application,
+      :paid_leave_application_form,
       name: "Name",
       leave_type: "medical"
     ))

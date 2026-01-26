@@ -1,7 +1,6 @@
 <%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
   <%= f.text_field :leave_type, { 
     legend: t(".leave_type_title"),
-    hint: t(".leave_type_hint"),
     large_legend: true
   } %>
 

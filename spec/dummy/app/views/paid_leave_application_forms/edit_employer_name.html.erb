@@ -1,7 +1,6 @@
 <%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
   <%= f.text_field :employer_name, { 
     legend: t(".employer_name_title"),
-    hint: t(".employer_name_hint"),
     large_legend: true
   } %>
 

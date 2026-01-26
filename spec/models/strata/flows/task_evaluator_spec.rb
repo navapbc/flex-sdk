@@ -47,12 +47,12 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "returns the previous path" do
         record.first_name = "John"
-        allow(task.pages[1]).to receive("edit_middle_name_test_model_path").and_return("edit_path")
+        # allow(task.pages[1]).to receive(:edit_middle_name_test_model_path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
 
       it "ignores unnecessary pages" do
-        # allow(task.pages[0]).to receive("edit_first_name_test_model_path").and_return("edit_path")
+        allow(task.pages[0]).to receive(:edit_first_name_test_model_path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
     end
