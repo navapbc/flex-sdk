@@ -2,15 +2,15 @@
 
 module Strata
   module Flows
-    # TaskListComponent renders a collection of tasks as an unordered list.
+    # TaskListComponent renders a collection of tasks as a list.
     #
     # ## Step Descriptions
     #
     # Step descriptions in the table can be customized through locale keys.
-    # See CaseRowComponent documentation for more information.
+    # See TaskSectionComponent documentation for more information.
     #
     # @example Basic usage
-    #   <%= render IndexComponent.new(cases: @cases, model_class: MyCase) %>
+    #   <%= render TaskListComponent.new(flow: @flow) %>
     #
     class TaskListComponent < ViewComponent::Base
       def initialize(

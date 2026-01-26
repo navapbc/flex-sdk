@@ -2,15 +2,16 @@
 
 module Strata
   module Flows
-    # TaskListComponent renders a collection of tasks as an unordered list.
+    # TaskSectionComponent renders the status of an individual section (task) within a task list.
     #
-    # ## Step Descriptions
+    # ## Customizing Step Descriptions
     #
-    # Step descriptions in the table can be customized through locale keys.
-    # See CaseRowComponent documentation for more information.
+    # Step descriptions can be customized by setting locale keys in the format:
+    #   `{application_form_class_plural}.task_section_component.{task_name}`
+    #    Example: `paid_leave_application_forms.task_section_component.personal_information`
     #
     # @example Basic usage
-    #   <%= render IndexComponent.new(cases: @cases, model_class: MyCase) %>
+    #   <%= render TaskSectionComponent.new(flow: @flow, task: @task) %>
     #
     class TaskSectionComponent < ViewComponent::Base
       def initialize(
