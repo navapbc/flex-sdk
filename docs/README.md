@@ -10,6 +10,7 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 
 - [Strata SDK components](./strata-sdk-components.md) - Overview of available SDK components
 - [Authorization](./authorization.md) - Built-in base policies for secure authorization patterns
+- [API Authentication](./api-authentication.md) - Secure API endpoints using the ApiAuthenticator and HMAC strategies
 - [Strata Data Modeler](./strata-data-modeler.md) - Learn how to define data models using Strata Attributes and generate migrations using the Strata Migration Generator.
 - [Multi-Page Form Builder](./multi-page-form-builder.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
