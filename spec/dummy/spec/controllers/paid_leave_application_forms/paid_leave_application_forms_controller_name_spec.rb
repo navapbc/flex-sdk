@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe PaidLeaveApplicationFormsController do
@@ -9,7 +11,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
     it "renders the form" do
       get :edit_name, params: { id: leave_application.id, locale: 'en' }
 
-      expect(response.body).to have_selector("legend", text: /What's your name?/i)
+      expect(response.body).to have_selector("h2", text: /What's your name?/i)
       expect(response.body).to have_field("paid_leave_application_form[applicant_name_first]")
     end
   end
@@ -54,7 +56,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
 
       it "renders the form again" do
         patch :update_name, params: invalid_params
-        expect(response.body).to have_field("leave_application[applicant_name_first]")
+        expect(response.body).to have_field("paid_leave_application_form[applicant_name_first]")
       end
 
       it "sets flash errors" do

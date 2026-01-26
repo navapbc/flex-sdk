@@ -33,7 +33,7 @@ class PaidLeaveApplicationFormsController < ApplicationController
     if @paid_leave_application_form.submit_application
       redirect_to paid_leave_application_form_path(@paid_leave_application_form)
     elsif @paid_leave_application_form.errors.full_messages
-      flash.now[:errors] = @paid_leave_application_form.formatted_errors
+      flash.now[:errors] = @paid_leave_application_form.errors.full_messages
       render :review, status: :unprocessable_entity
     else
       raise StandardError.new("The leave application could not be submitted.")

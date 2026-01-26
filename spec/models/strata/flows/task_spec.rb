@@ -23,12 +23,12 @@ RSpec.describe Strata::Flows::Task do
     let(:task) { described_class.new("name", pages: [ incomplete_page ]) }
 
     it "is not started or completed" do
-      expect(task.started?(record)).to be_falsey
-      expect(task.completed?(record)).to be_falsey
+      expect(task).not_to be_started(record)
+      expect(task).not_to be_completed(record)
     end
 
     it "returns the first page path" do
-      allow(incomplete_page).to receive("edit_first_name_test_model_path").and_return("edit_path")
+      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
@@ -37,12 +37,12 @@ RSpec.describe Strata::Flows::Task do
     let(:task) { described_class.new("name", pages: [ complete_page, incomplete_page ]) }
 
     it "is started but not completed" do
-      expect(task.started?(record)).to be_truthy
-      expect(task.completed?(record)).to be_falsey
+      expect(task).to be_started(record)
+      expect(task).not_to be_completed(record)
     end
 
     it "returns the first incomplete page path" do
-      allow(incomplete_page).to receive("edit_first_name_test_model_path").and_return("edit_path")
+      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
@@ -51,12 +51,12 @@ RSpec.describe Strata::Flows::Task do
     let(:task) { described_class.new("name", pages: [ complete_page ]) }
 
     it "is started and completed" do
-      expect(task.started?(record)).to be_truthy
-      expect(task.completed?(record)).to be_truthy
+      expect(task).to be_started(record)
+      expect(task).to be_completed(record)
     end
 
     it "returns the first page path" do
-      allow(complete_page).to receive("edit_last_name_test_model_path").and_return("edit_path")
+      allow(complete_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end

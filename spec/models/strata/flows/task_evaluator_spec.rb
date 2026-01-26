@@ -47,12 +47,12 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "returns the previous path" do
         record.first_name = "John"
-        # allow(task.pages[1]).to receive(:edit_middle_name_test_model_path).and_return("edit_path")
+        allow(task.pages[1]).to receive(:edit_path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
 
       it "ignores unnecessary pages" do
-        allow(task.pages[0]).to receive(:edit_first_name_test_model_path).and_return("edit_path")
+        allow(task.pages[0]).to receive(:edit_path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
     let(:current_page_idx) { 0 }
 
     it "returns the update path for the current page" do
-      # allow(task.pages[0]).to receive("update_first_name_test_model_path").and_return("update_path")
+      allow(task.pages[0]).to receive(:update_path).and_return("update_path")
       expect(eval.update_path).to eq("update_path")
     end
   end
@@ -81,13 +81,13 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "returns the next path" do
         record.first_name = "John"
-        # allow(task.pages[1]).to receive("edit_middle_name_test_model_path").and_return("edit_path")
-        expect(eval.prev_path).to eq("edit_path")
+        allow(task.pages[1]).to receive(:edit_path).and_return("edit_path")
+        expect(eval.next_path).to eq("edit_path")
       end
 
       it "ignores unnecessary pages" do
-        # allow(task.pages[2]).to receive("edit_last_name_test_model_path").and_return("edit_path")
-        expect(eval.prev_path).to eq("edit_path")
+        allow(task.pages[2]).to receive(:edit_path).and_return("edit_path")
+        expect(eval.next_path).to eq("edit_path")
       end
     end
   end

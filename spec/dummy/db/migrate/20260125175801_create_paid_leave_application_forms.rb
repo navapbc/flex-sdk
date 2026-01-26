@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePaidLeaveApplicationForms < ActiveRecord::Migration[8.0]
   def change
     create_table :paid_leave_application_forms do |t|

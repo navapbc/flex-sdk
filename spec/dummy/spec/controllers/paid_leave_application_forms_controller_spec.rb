@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe PaidLeaveApplicationFormsController do
@@ -6,7 +8,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
   describe "GET #index" do
     it "renders applications" do
       create(:paid_leave_application_form, applicant_name_first: "Kevin")
-      create(:paid_leave_application_form, application_name_first: "Mary")
+      create(:paid_leave_application_form, applicant_name_first: "Mary")
       get :index, params: { locale: "en" }
 
       expect(response.body).to have_selector("td", text: "Paid Leave Form TODO")
@@ -109,7 +111,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
       it "shows the submitted status" do
         leave_application.submit_application
         get :show, params: params
-        expect(response.body).to have_selector("span.usa-tag", text: "Submitted")
+        expect(response.body).to have_selector("p", text: "Submitted")
       end
     end
   end

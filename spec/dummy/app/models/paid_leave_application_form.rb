@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PaidLeaveApplicationForm < Strata::ApplicationForm
   include Strata::Flows::ApplicationFormValidations
   validate_flow PaidLeaveFlow

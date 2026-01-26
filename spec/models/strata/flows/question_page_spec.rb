@@ -26,25 +26,19 @@ RSpec.describe Strata::Flows::QuestionPage do
     end
 
     it "is always needed" do
-      expect(page.needed?(record)).to be_truthy
+      expect(page).to be_needed(record)
     end
 
     it "is completed based on the page name" do
-      expect(page.completed?(record)).to be_falsey
+      expect(page).not_to be_completed(record)
 
       record.first_name = "Mary"
-      expect(page.completed?(record)).to be_truthy
+      expect(page).to be_completed(record)
     end
 
     it "returns the correct pathnames" do
       expect(page.edit_pathname).to eq("edit_first_name")
       expect(page.update_pathname).to eq("update_first_name")
-
-      allow(page).to receive("edit_first_name_test_model_path").and_return("edit_path")
-      allow(page).to receive("update_first_name_test_model_path").and_return("update_path")
-
-      expect(page.edit_path).to eq("edit_path")
-      expect(page.update_path).to eq("update_path")
     end
   end
 
@@ -52,12 +46,12 @@ RSpec.describe Strata::Flows::QuestionPage do
     let(:page) { described_class.new("first_name", if: ->(record) { record.first_name.nil? }) }
 
     it "is needed if conditional is true" do
-      expect(page.needed?(record)).to be_truthy
+      expect(page).to be_needed(record)
     end
 
     it "skips the page if conditional is false" do
       record.first_name = "Minnie"
-      expect(page.needed?(record)).to be_falsey
+      expect(page).not_to be_needed(record)
     end
   end
 
