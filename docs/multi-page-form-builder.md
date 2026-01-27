@@ -169,6 +169,14 @@ Example:
 <% end %>
 ```
 
+### Rendering a task list
+
+If you are following a tasklist pattern, the SDK offers a TaskListComponent for rendering the status of the flow based on the flow_record:
+
+```rb
+<%= render Strata::Flows::TaskListComponent.new(flow: @flow, show_step_label: true) %>
+```
+
 ### Defining Model Validations
 
 Multi-page form builder logic is centered around applying updates to a central record based on validation contexts. Each question page sets attributes based on the defined fields and runs validation, e.g. the `name` question page will run with the `:name` validation context.

@@ -14,7 +14,5 @@
     <% content_for :title, t(".in_progress_title") %>
     <h1><%= t(".in_progress_title") %></h1>
     <p><%= t(".in_progress_description") %></p>
-    <ul class="usa-collection">
-        <%= render Strata::Flows::TaskListComponent.new(flow: @flow, show_step_label: true) %>
-    </ul>
+    <%= render Strata::Flows::TaskListComponent.new(flow: @flow, show_step_label: true) %>
 <% end %>
