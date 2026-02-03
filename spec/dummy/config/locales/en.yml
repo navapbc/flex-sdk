@@ -29,3 +29,6 @@
 
 en:
   hello: "Hello world"
+  actions:
+    back: "Back"
+    save_and_continue: "Save and continue"

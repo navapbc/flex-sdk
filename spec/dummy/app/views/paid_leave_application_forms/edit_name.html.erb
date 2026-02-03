@@ -1,0 +1,9 @@
+<%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
+  <h2 class="usa-form-heading"><%= t(".applicant_name_title") %></h2>
+  <%= f.text_field :applicant_name_first, { 
+    hint: t(".applicant_name_hint"),
+    large_legend: true
+  } %>
+
+  <%= render partial: "form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>
+<% end %>

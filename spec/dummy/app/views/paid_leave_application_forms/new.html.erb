@@ -1,0 +1,16 @@
+<%= strata_form_with(model: @paid_leave_application_form) do |f| %>
+  <h1 class="margin-top-0"><%= t(".title") %></h1>
+  <ul class="usa-button-group">
+    <li>
+      <%= link_to(
+        t("actions.back"),
+        paid_leave_application_forms_path,
+        class: "usa-button usa-button--outline"
+      ) %>
+    </li>
+    <li>
+      <%= f.submit t(".agree_button"), class: "usa-button" %>
+    </li>
+  </ul>
+<% end %>
+ 

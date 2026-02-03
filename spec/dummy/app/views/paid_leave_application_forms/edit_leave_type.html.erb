@@ -1,0 +1,8 @@
+<%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
+  <%= f.text_field :leave_type, { 
+    legend: t(".leave_type_title"),
+    large_legend: true
+  } %>
+
+  <%= render partial: "form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>
+<% end %>

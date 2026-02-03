@@ -1,0 +1,5 @@
+<%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
+  <h2 id="date-of-birth-heading" class="usa-form-heading"><%= t(".date_of_birth_title") %></h2>
+  <%= f.memorable_date :date_of_birth, aria: { labelledby: "date_of_birth_heading" } %>
+  <%= render partial: "form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>
+<% end %>

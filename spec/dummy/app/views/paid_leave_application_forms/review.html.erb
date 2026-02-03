@@ -1,0 +1,56 @@
+<% if @paid_leave_application_form.submitted? %>
+<div class="margin-bottom-4">
+<%= link_to paid_leave_application_form_path(@paid_leave_application_form), class: "usa-link" do %>
+  <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+    <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#" + "arrow_back") %>"></use>
+  </svg>
+  <%= t("actions.back") %>
+<% end %>
+<% end %>
+</div>
+
+<div class="grid-col-12">
+  <h1><%= t(".title.#{@paid_leave_application_form.submitted? ? "submitted" : "unsubmitted"}") %></h1>
+  <% unless @paid_leave_application_form.submitted? %>
+  <p><%= t(".description") %></p>
+  <% end %>
+
+  <div class="margin-top-4">
+    <div class="border-top border-base-light padding-top-2 margin-top-2">
+              <div class="padding-bottom-2 border-bottom border-base-light">
+          <h3 class="font-sans-md"><%= t(".name") %></h3>
+          <p class="margin-top-1"><%= @paid_leave_application_form.applicant_name_first || "-" %></p>
+        </div>
+              <div class="padding-top-2 padding-bottom-2 border-bottom border-base-light">
+        <h3 class="font-sans-md"><%= t(".date_of_birth") %></h3>
+        <p class="margin-top-1">
+          <% if @paid_leave_application_form.date_of_birth.present? %>
+            <%= @paid_leave_application_form.date_of_birth.strftime(t("formats.date.full")) %>
+          <% else %>
+            -
+          <% end %>
+        </p>
+      </div>
+                <div class="padding-bottom-2 border-bottom border-base-light">
+          <h3 class="font-sans-md"><%= t(".employer_name") %></h3>
+          <p class="margin-top-1"><%= @paid_leave_application_form.employer_name || "-" %></p>
+        </div>
+                <div class="padding-bottom-2 border-bottom border-base-light">
+          <h3 class="font-sans-md"><%= t(".leave_type") %></h3>
+          <p class="margin-top-1"><%= @paid_leave_application_form.leave_type || "-" %></p>
+        </div>
+    </div>
+  </div>
+
+  <% if @paid_leave_application_form.submitted? %>
+    <%= link_to "Back", paid_leave_application_form_path(@paid_leave_application_form), class: "usa-button usa-button--outline margin-top-4" %>
+  <% else %>
+    <%= form_with url: submit_paid_leave_application_form_path(@paid_leave_application_form), method: :patch, local: true do |f| %>
+      <div class="usa-button-group margin-top-4">
+        <%= link_to "Back", paid_leave_application_form_path(@paid_leave_application_form), class: "usa-button usa-button--outline" %>
+        <%= f.submit t(".submit_application"), class: "usa-button" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+

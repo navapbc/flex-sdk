@@ -1,0 +1,18 @@
+<% if @paid_leave_application_form.submitted? %>
+<%= render template: "strata/application_forms/show", locals: {
+  title: t(".title"),
+  back_link_text: t(".back"),
+  index_path: paid_leave_application_forms_path,
+  created_at: @paid_leave_application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+  submitted_at: @paid_leave_application_form&.submitted_at&.strftime("%B %d, %Y at %I:%M %p"),
+  current_status: @paid_leave_application_form.status,
+  next_step: t(".next_step.status.#{@paid_leave_application_form.status}"),
+  submitted_on_text: t(".submitted_on")
+} %>
+
+<% else %>
+    <% content_for :title, t(".in_progress_title") %>
+    <h1><%= t(".in_progress_title") %></h1>
+    <p><%= t(".in_progress_description") %></p>
+    <%= render Strata::Flows::TaskListComponent.new(flow: @flow, show_step_label: true) %>
+<% end %>

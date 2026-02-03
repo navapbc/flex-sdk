@@ -1,0 +1,12 @@
+<%# locals: (back_path:, f:) %>
+
+<hr class="border-base-lightest margin-top-4">
+
+<ul class="usa-button-group">
+  <li>
+    <%= link_to t("actions.back"), back_path, class: "usa-button usa-button--outline" %>
+  </li>
+  <li>
+    <%= f.submit t("actions.save_and_continue") %>
+  </li>
+</ul>

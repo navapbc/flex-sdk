@@ -1,0 +1,37 @@
+en:
+  paid_leave_application_forms:
+    task_section_component:
+      personal_information:
+        title: Personal Information
+        description: Tell us about yourself. You’ll need to enter your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN).
+      employment_details:
+        title: Employment
+        description: Tell us about your employer. You’ll need to enter their legal name and their 9 digit federal employer identification number (FEIN or EIN).
+      leave_details:
+        title: Leave Details
+        description: Tell us about the type of leave you’re taking (Parental, Medical, Family Caregiving, or Military Exigency). You’ll need to enter your leave dates and provide supporting documentation.
+    new:
+      title: "Begin your leave application"
+      agree_button: "Get started"
+    show:
+      in_progress_title: "Your in-progress application"
+      in_progress_description: "Your progress is automatically saved as you complete the application. You can edit any information you enter until your application is submitted."
+    edit_name:
+      applicant_name_title: What's your name?
+      applicant_name_hint: Fill out your name as it appears on official documents like your driver's license or W‑2.
+    edit_date_of_birth:
+      date_of_birth_title: When were you born?
+    edit_employer_name:
+      employer_name_title: Who is your employer?
+    edit_leave_type:
+      leave_type_title: Why do you need to take leave?
+    review:
+      title:
+        unsubmitted: "Review your application"
+        submitted: "Your application"
+      description: "Please review the information below before submitting your application."
+      name: "Name"
+      date_of_birth: "Date of birth"
+      employer_name: "Employer name"
+      leave_type: "Leave type"
+      submit_application: "Submit application"
