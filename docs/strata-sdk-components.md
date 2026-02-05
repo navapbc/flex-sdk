@@ -45,9 +45,7 @@ See [Strata Data Modeler](./strata-data-modeler.md) for more information on how 
 
 ## Multi-Page Form Builder
 
-Use Strata Form Builder to create multi-page forms with ease. The Form Builder leverages the [task list design pattern](https://navasage.atlassian.net/wiki/spaces/PL/pages/445382671/Task+list) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).
-
-[The Multi-Page Form Builder is on the roadmap in Linear](https://linear.app/nava-platform/project/multi-page-application-form-flow-99f38344c043)
+Use [Strata Form Builder](./multi-page-form-builder.md) to create multi-page forms with ease. The Form Builder leverages [the task list design pattern](https://designsystem.digital.gov/components/process-list/) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).
 
 ## Business Process Modeler
 
