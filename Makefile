@@ -17,6 +17,7 @@ RAILS_CMD := cd spec/dummy && bundle exec rails
 
 install:
 	npm install --prefix spec/dummy
+	rbenv install --skip-existing
 	bundle install
 
 spec/dummy/.env: spec/dummy/local.env.example
