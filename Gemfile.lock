@@ -103,7 +103,7 @@ GEM
     crass (1.0.6)
     css_parser (1.21.1)
       addressable
-    date (3.4.1)
+    date (3.5.1)
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -191,7 +191,7 @@ GEM
     minitest (6.0.1)
       prism (~> 1.5)
     nenv (0.3.0)
-    net-imap (0.5.6)
+    net-imap (0.5.7)
       date
       net-protocol
     net-pop (0.1.2)
