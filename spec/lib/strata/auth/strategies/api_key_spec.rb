@@ -3,10 +3,9 @@
 require "rails_helper"
 
 RSpec.describe Strata::Auth::Strategies::ApiKey do
-  let(:salt) { "test_salt" }
   let(:api_key) { "super_secret_api_key" }
-  let(:digest) { api_key_digest(salt: salt, api_key: api_key) }
-  let(:strategy) { described_class.new(salt: salt, api_key_digest: digest) }
+  let(:digest) { api_key_digest(api_key: api_key) }
+  let(:strategy) { described_class.new(api_key_digest: digest) }
 
   describe "#authenticate!" do
     context "with valid API key" do

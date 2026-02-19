@@ -15,8 +15,8 @@ module Strata
         { "X-API-Key" => api_key }
       end
 
-      def api_key_digest(salt:, api_key:)
-        Digest::SHA256.hexdigest("#{salt}#{api_key}")
+      def api_key_digest(api_key:)
+        Digest::SHA256.hexdigest(api_key)
       end
 
       def mock_api_request(body:, headers: {})
