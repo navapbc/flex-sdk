@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "strata/auth/strategies/base"
+require "strata/auth/strategies/api_key"
 require "strata/auth/strategies/hmac"
 
 module Strata

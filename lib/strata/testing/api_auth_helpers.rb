@@ -11,6 +11,14 @@ module Strata
         { "Authorization" => "HMAC sig=#{signature}" }
       end
 
+      def api_key_auth_headers(api_key:)
+        { "X-API-Key" => api_key }
+      end
+
+      def api_key_digest(salt:, api_key:)
+        Digest::SHA256.hexdigest("#{salt}#{api_key}")
+      end
+
       def mock_api_request(body:, headers: {})
         env = {
           "rack.input" => StringIO.new(body)
