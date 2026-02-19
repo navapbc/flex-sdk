@@ -6,28 +6,28 @@ module Strata
   # Business process definitions should be placed in app/business_processes/ with the naming convention
   # *_business_process.rb (e.g. passport_business_process.rb, approval_business_process.rb)
   #
-  # @example Defining a basic business process in app/business_processes/my_business_process.rb
-  #   MyBusinessProcess = Strata::BusinessProcess.define(:my_process, MyCase) do |bp|
-  #     # Define steps - can be StaffTask or SystemProcess
-  #     bp.step('collect_info',
-  #       Strata::StaffTask.new("Collect Information", TaskCreationService))
+  # @example Defining a passport business process in app/business_processes/passport_business_process.rb
+  # class PassportBusinessProcess < Strata::BusinessProcess
+  #   # Define steps
+  #   applicant_task('submit_application')
   #
-  #     bp.step('process_data',
-  #       Strata::SystemProcess.new("Process Data", ->(kase) {
-  #         DataProcessor.new(kase).process
-  #       }))
+  #   system_process('verify_identity', ->(kase) {
+  #     IdentityVerificationService.new(kase).verify_identity
+  #   })
   #
-  #     # Set the starting step
-  #     bp.start('collect_info')
+  #   staff_task('review_application', PassportTask)
   #
-  #     # Define transitions between steps based on events
-  #     bp.transition('collect_info', 'form_submitted', 'process_data')
-  #     bp.transition('process_data', 'processing_complete', 'end')
-  #   end
+  #   # Define start step
+  #   start_on_application_form_created('submit_application')
   #
-  # Steps can be either:
-  # - StaffTask: Tasks that require human interaction, created through a TaskCreationService
-  # - SystemProcess: Automated tasks that run without user intervention, defined with a callable
+  #   # Define transitions
+  #   transition('submit_application', 'PassportApplicationFormSubmitted', 'verify_identity')
+  #   transition('verify_identity', 'IdentityVerified', 'review_application')
+  #   transition('review_application', 'DecisionMade', 'end')
+  # end
+  #
+  # See app/models/strata/business_process_builder.rb for more step options
+  # and docs/case-management-business-process.md for more details.
   #
   # The process automatically listens for events and transitions between steps
   # based on the defined transitions. Events can be triggered by either user actions
