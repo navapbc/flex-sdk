@@ -27,33 +27,33 @@ Beyond adding USWDS classes, this also supports:
 
 These helper methods override standard Rails form helpers to use accessible USWDS markup with labels, hints, and conditional error styling.
 
-- [email_field](#email-field)
-- [file_field](#file-field)
-- [password_field](#password-field)
-- [text_area](#text-area)
-- [text_field](#text-field)
-- [check_box](#checkbox-check_box)
-- [radio_button](#radio-button-radio_button)
-- [select](#select-select)
-- [submit](#submit-submit)
+- [Email (email_field)](#email-field-email_field)
+- [File (file_field)](#file-field-file_field)
+- [Password (password_field)](#password-field-password_field)
+- [Text Area (text_area)](#text-area-text_area)
+- [Text (text_field)](#text-field-text_field)
+- [Checkbox (check_box)](#checkbox-check_box)
+- [Radio Button (radio_button)](#radio-button-radio_button)
+- [Select (select)](#select-select)
+- [Submit (submit)](#submit-submit)
 
 ## Basic Helpers
 
-- [fieldset](#fieldset-fieldset)
-- [form_group](#form-group-form_group)
-- [hint](#hint-hint)
-- [honeypot_field](#honeypot-field-honeypot_field)
+- [Fieldset (fieldset)](#fieldset-fieldset)
+- [Form Group (form_group)](#form-group-form_group)
+- [Hint (hint)](#hint-hint)
+- [Honeypot (honeypot_field)](#honeypot-field-honeypot_field)
 
 ### Complex Helpers
 
-- [address_fields](#address-fields-address_fields)
-- [date_picker](#date-picker-date_picker)
-- [date_range](#date-range-date_range)
-- [memorable_date](#memorable-date-memorable_date)
-- [money_field](#money-field-money_field)
-- [name](#name-name)
-- [tax_id_field](#tax-id-field-tax_id_field)
-- [yes_no](#yesno-yes_no)
+- [Address (address_fields)](#address-fields-address_fields)
+- [Date Picker (date_picker)](#date-picker-date_picker)
+- [Date Range (date_range)](#date-range-date_range)
+- [Memorable Date (memorable_date)](#memorable-date-memorable_date)
+- [Money (money_field)](#money-field-money_field)
+- [Name (name)](#name-name)
+- [Tax ID (tax_id_field)](#tax-id-field-tax_id_field)
+- [Yes/No (yes_no)](#yesno-yes_no)
 
 ## Email Field (email_field)
 
