@@ -71,7 +71,7 @@ Returns a text_field of type “email”.
 - `label_class`: Custom class for the label tag
 - `group_options`: Options to pass into the wrapping form_group
 - `skip_form_group`: Renders tag without a wrapping form_group
-- Accepts standard Rails `email_field` HTML options.
+- Accepts standard Rails [email_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-email_field) HTML options.
 
 ## File Field (file_field)
 
@@ -93,7 +93,7 @@ Returns a file upload input tag.
 - `label_class`: Custom class for the label tag
 - `group_options`: Options to pass into the wrapping form_group
 - `skip_form_group`: Renders tag without a wrapping form_group
-- Accepts standard Rails `file_field` HTML options.
+- Accepts standard Rails [file_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-file_field) HTML options.
 
 ## Password Field (password_field)
 
@@ -115,7 +115,7 @@ Returns a text field of type "password".
 - `label_class`: Custom class for the label tag
 - `group_options`: Options to pass into the wrapping form_group
 - `skip_form_group`: Renders tag without a wrapping form_group
-- Accepts standard Rails `password_field` HTML options.
+- Accepts standard Rails [password_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-password_field) HTML options.
 
 ## Text Area (text_area)
 
@@ -137,7 +137,7 @@ Returns a multi-line text input.
 - `label_class`: Custom class for the label tag
 - `group_options`: Options to pass into the wrapping form_group
 - `skip_form_group`: Renders tag without a wrapping form_group
-- Accepts standard Rails `text_area` HTML options.
+- Accepts standard Rails [text_area](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-text_area) HTML options.
 
 ## Text Field (text_field)
 
@@ -159,7 +159,7 @@ Returns a single-line text input.
 - `label_class`: Custom class for the label tag
 - `group_options`: Options to pass into the wrapping form_group
 - `skip_form_group`: Renders tag without a wrapping form_group
-- Accepts standard Rails `text_field` HTML options.
+- Accepts standard Rails [text_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-text_field) HTML options.
 
 ## Checkbox (check_box)
 
@@ -174,7 +174,7 @@ Renders a checkbox tag.
 ### Options
 
 - `label`: Custom label text
-- Accepts standard Rails `check_box` options (e.g. `checked_value`, `unchecked_value`) as well as any HTML options.
+- Accepts standard Rails [check_box](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-check_box) options (e.g. `checked_value`, `unchecked_value`) as well as any HTML options.
 
 ## Radio Button (radio_button)
 
@@ -191,11 +191,11 @@ Renders a radio button with USWDS styling, optionally as a tile.
 
 - `label`: Custom label text
 - `tile`: When `true` (default), renders the radio as a USWDS tile; when `false`, renders as a standard radio control.
-- Accepts standard Rails `radio_button` HTML options.
+- Accepts standard Rails [radio_button](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-radio_button) HTML options.
 
 ## Submit (submit)
 
-Renders a submit button with USWDS button styling.
+Renders a submit button.
 
 ### Usage in form
 
@@ -206,8 +206,8 @@ Renders a submit button with USWDS button styling.
 
 ### Options
 
-- `big`: When `true`, applies large button styling (`usa-button--big margin-y-6`).
-- Accepts standard Rails `submit`/button HTML options.
+- `big`: When `true`, applies large USWDS button styling.
+- Accepts standard Rails [submit](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-submit)/button HTML options.
 
 ## Fieldset (fieldset)
 
