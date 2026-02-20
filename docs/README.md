@@ -12,7 +12,8 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 - [Authorization](./authorization.md) - Built-in base policies for secure authorization patterns
 - [API Authentication](./api-authentication.md) - Secure API endpoints using the ApiAuthenticator and HMAC strategies
 - [Strata Data Modeler](./strata-data-modeler.md) - Learn how to define data models using Strata Attributes and generate migrations using the Strata Migration Generator.
-- [Multi-Page Form Builder](./multi-page-form-builder.md) - Create complex forms that span multiple pages
+- [Strata Form Builder](./strata-form-builder.md) - Build frontend form views with USWDS markup.
+- [Multi-Page Form Flows](./multi-page-form-flows.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
 - [Strata Rules Engine](./strata-rules-engine.md) - Introduction to the rules engine for business logic
 
