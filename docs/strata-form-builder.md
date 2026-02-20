@@ -37,7 +37,7 @@ These helper methods override standard Rails form helpers to use accessible USWD
 - [Select (select)](#select-select)
 - [Submit (submit)](#submit-submit)
 
-## Basic Helpers
+### Basic Helpers
 
 - [Fieldset (fieldset)](#fieldset-fieldset)
 - [Form Group (form_group)](#form-group-form_group)
