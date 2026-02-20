@@ -17,20 +17,20 @@ RSpec.describe Strata::Auth::Strategies::ApiKey do
       end
     end
 
-    context "with missing X-API-Key header" do
+    context "with missing API-Key header" do
       it "raises MissingCredentials error" do
         request = mock_api_request(body: "", headers: {})
 
-        expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::MissingCredentials, "Missing X-API-Key header")
+        expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::MissingCredentials, "Missing API-Key header")
       end
     end
 
-    context "with empty X-API-Key header" do
+    context "with empty API-Key header" do
       it "raises MissingCredentials error" do
-        headers = { "X-API-Key" => "" }
+        headers = { "API-Key" => "" }
         request = mock_api_request(body: "", headers: headers)
 
-        expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::MissingCredentials, "Missing X-API-Key header")
+        expect { strategy.authenticate!(request) }.to raise_error(Strata::Auth::MissingCredentials, "Missing API-Key header")
       end
     end
 

@@ -12,7 +12,7 @@ module Strata
       end
 
       def api_key_auth_headers(api_key:)
-        { "X-API-Key" => api_key }
+        { "API-Key" => api_key }
       end
 
       def api_key_digest(api_key:)
