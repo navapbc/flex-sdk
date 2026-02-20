@@ -2,7 +2,11 @@
 
 The Strata Form builder is a custom form builder that provides USWDS-styled form components.
 
-Beyond adding USWDS classes, this also supports setting labels and hints using the field helpers; automatically displays inline error messages and styling, and adds additional helpers for both basic elements, like fieldset and hint, and complex Strata elements, like names and addresses.
+Beyond adding USWDS classes, this also supports:
+
+- Setting labels and hints using the field helpers
+- Automatically displaying inline error messages and styling
+- Additional helpers for both basic elements, like fieldset and hint, and complex Strata elements, like names and addresses.
 
 ## Basic usage
 
@@ -30,26 +34,26 @@ These helper methods override standard Rails form helpers to use accessible USWD
 - [text_field](#text-field)
 - [check_box](#checkbox-check_box)
 - [radio_button](#radio-button-radio_button)
+- [select](#select-select)
 - [submit](#submit-submit)
 
-## Nonstandard Rails Helpers
+## Basic Helpers
 
-- [fieldset]
-- [form_group]
-- [hint]
-- [honeypot_field]
-- [select]
+- [fieldset](#fieldset-fieldset)
+- [form_group](#form-group-form_group)
+- [hint](#hint-hint)
+- [honeypot_field](#honeypot-field-honeypot_field)
 
-### Custom Attribute Helpers
+### Complex Helpers
 
-- [address_fields]
-- [date_picker]
-- [date_range]
-- [memorable_date]
-- [money_field]
-- [name]
-- [tax_id_field]
-- [yes_no]
+- [address_fields](#address-fields-address_fields)
+- [date_picker](#date-picker-date_picker)
+- [date_range](#date-range-date_range)
+- [memorable_date](#memorable-date-memorable_date)
+- [money_field](#money-field-money_field)
+- [name](#name-name)
+- [tax_id_field](#tax-id-field-tax_id_field)
+- [yes_no](#yesno-yes_no)
 
 ## Email Field (email_field)
 
@@ -183,8 +187,10 @@ Renders a radio button with USWDS styling, optionally as a tile.
 ### Usage in form
 
 ```erb
-<%= f.radio_button :choice, "option_a", { label: "Option A" } %>
-<%= f.radio_button :choice, "option_b", { label: "Option B", tile: false } %>
+<%= f.fieldset "Choose one", { attribute: :favorite_fruit, hint: "Pick the best fruit" } do %>
+  <%= f.radio_button :choice, "option_a", { label: "Option A" } %>
+  <%= f.radio_button :choice, "option_b", { label: "Option B", tile: false } %>
+%>
 ```
 
 ### Options
@@ -192,6 +198,26 @@ Renders a radio button with USWDS styling, optionally as a tile.
 - `label`: Custom label text
 - `tile`: When `true` (default), renders the radio as a USWDS tile; when `false`, renders as a standard radio control.
 - Accepts standard Rails [radio_button](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-radio_button) HTML options.
+
+## Select (select)
+
+Renders a select input.
+
+### Usage in form
+
+```erb
+<%= f.select :favorite_fruit, fruit_options, {
+  label: "Favorite Fruit",
+  hint: "Choose your favorite"
+} %>
+```
+
+### Options
+
+- `label`: Custom label text
+- `hint`: Custom hint text
+- `skip_form_group`: Renders the select without a wrapping form group
+- Accepts standard Rails [select](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-select) options for choices and HTML attributes
 
 ## Submit (submit)
 
@@ -211,26 +237,190 @@ Renders a submit button.
 
 ## Fieldset (fieldset)
 
+Renders a fieldset (`usa-fieldset`) with a required legend. Use it to group related inputs (e.g. radio buttons or custom composite fields).
+
+### Usage in form
+
+```erb
+<%= f.fieldset "Choose one", { attribute: :favorite_fruit, hint: "Pick the best fruit" } do %>
+  <%= f.radio_button :choice, "orange", { label: "Orange" } %>
+  <%= f.radio_button :choice, "dragonfruit", { label: "Dragonfruit" } %>
+<% end %>
+```
+
+### Options
+
+- Legend text is the first argument (required).
+- `attribute`: Attribute name
+- `hint`: Hint text rendered below the legend.
+- `large_legend`: When `true`, applies the large legend class (`usa-legend--large`).
+- `group_options`: Options passed to the wrapping form group div.
+
 ## Form Group (form_group)
+
+Wraps content in a USWDS form group div (`usa-form-group`).
+
+### Usage in form
+
+```erb
+<%= f.form_group :email do %>
+  <%= f.email_field :email, { label: "Email", skip_form_group: true } %>
+<% end %>
+```
+
+### Options
+
+- `attribute`: Attribute name
+- `show_error`: When `true`, forces error styling to be rendered.
 
 ## Hint (hint)
 
+Renders a block of hint text in a USWDS hint div (`usa-hint`).
+
+### Usage in form
+
+```erb
+<%= f.hint "Enter your full legal name as it appears on your ID." %>
+```
+
 ## Honeypot Field (honeypot_field)
 
-## Select (select)
+Renders a hidden “honeypot” field intended to detect bots. The field is visually hidden and should be left empty by users; submissions that fill it can be treated as spam.
+
+### Usage in form
+
+```erb
+<%= f.honeypot_field %>
+```
 
 ## Address Fields (address_fields)
 
+Renders a fieldset for Strata Address attribute fields.
+
+### Usage in form
+
+```erb
+<%= f.address_fields :home_address %>
+<%= f.address_fields :work_address, { legend: "Work address" } %>
+```
+
+### Options
+
+- `legend`: Custom legend text for the fieldset
+- Accepts `fieldset` options
+
 ## Date Picker (date_picker)
+
+Renders a single date input with USWDS date picker styling.
+
+### Usage in form
+
+```erb
+<%= f.date_picker :start_date, { label: "Start date" } %>
+```
+
+### Options
+
+- Supports the same options as [text_field](#text-field-text_field) (e.g. `label`, `hint`, `label_class`, `group_options`, `skip_form_group`).
 
 ## Date Range (date_range)
 
+Renders a fieldset for a Strata Range attribute.
+
+### Usage in form
+
+```erb
+<%= f.date_range :employment_period %>
+<%= f.date_range :leave_dates, { legend: "Cool Leave Dates" } %>
+```
+
+### Options
+
+- `legend`: Custom legend text for the fieldset
+- Accepts `fieldset` options
+
 ## Memorable Date (memorable_date)
+
+Renders a fieldset for Strata Memorable Date attributes with month, day, and year inputs.
+
+### Usage in form
+
+```erb
+<%= f.memorable_date :date_of_birth %>
+```
+
+### Options
+
+- `legend`: Custom legend text
+- `hint`: Custom hint text
+- Accepts `fieldset` options
 
 ## Money Field (money_field)
 
+Renders a text input for dollar amounts stored in a Strata Money attribute.
+
+### Usage in form
+
+```erb
+<%= f.money_field :salary, { label: "Annual salary", hint: "Enter whole dollars" } %>
+```
+
+### Options
+
+- `label`: Custom label text
+- `hint`: Custom hint text
+- `inputmode`: defaults to `"decimal"` if not set.
+- `group_options`: Options passed to the wrapping form group
+- Other options supported by [text_field](#text-field-text_field) (e.g. `class`, `placeholder`).
+
 ## Name (name)
+
+Renders a fieldset for a Strata Name attribute.
+
+### Usage in form
+
+```erb
+<%= f.name :applicant_name %>
+```
+
+### Options
+
+- `legend`: Custom legend text
+- `first_hint`: Hint for the first name field.
+- `last_hint`: Hint for the last name field.
 
 ## Tax ID Field (tax_id_field)
 
+Renders a masked text input suitable for SSN/TIN stored in a Strata Tax ID attribute.
+
+### Usage in form
+
+```erb
+<%= f.tax_id_field :tax_identifier %>
+```
+
+### Options
+
+- Same as [text_field](#text-field-text_field) (e.g. `label`, `hint`, `label_class`, `group_options`, `skip_form_group`)
+
 ## Yes/No (yes_no)
+
+Renders a fieldset with two radio options for a boolean field.
+
+### Usage in form
+
+```erb
+<%= f.yes_no :is_citizen, { legend: "Are you a U.S. citizen?" } %>
+<%= f.yes_no :withhold_taxes, {
+  legend: "Do you wish to withhold your taxes?",
+  yes_options: { label: "Yes, withhold my taxes" },
+  no_options: { label: "No, do not withhold my taxes" }
+} %>
+```
+
+### Options
+
+- `legend`: Legend text for the fieldset (defaults to the humanized attribute name).
+- `yes_options`: Options passed to the “yes” radio (e.g. `label`)
+- `no_options`: Options passed to the “no” radio (e.g. `label`)
+- Accepts `fieldset` options
