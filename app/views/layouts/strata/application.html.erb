@@ -6,6 +6,7 @@
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= yield :head if content_for?(:head) %>
 </head>
 <body>
 

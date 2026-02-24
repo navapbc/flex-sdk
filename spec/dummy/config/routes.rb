@@ -44,4 +44,12 @@ Rails.application.routes.draw do
   end
 
   get "staff", to: "staff#index"
+
+  # Test routes for layout yield :head verification (test environment only)
+  if Rails.env.test?
+    get "layout_test/staff_layout_without_head"
+    get "layout_test/staff_layout_with_head"
+    get "layout_test/application_layout_without_head"
+    get "layout_test/application_layout_with_head"
+  end
 end
