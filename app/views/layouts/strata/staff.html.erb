@@ -7,6 +7,7 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag '@uswds/uswds/dist/js/uswds-init.min.js' %>
+    <%= yield :head if content_for?(:head) %>
   </head>
   <body>
     <div class="display-flex flex-column minh-viewport">
