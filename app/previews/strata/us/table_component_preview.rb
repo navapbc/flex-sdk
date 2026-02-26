@@ -139,6 +139,7 @@ module Strata
       # @label Sortable Table
       def sortable
         render Strata::US::TableComponent.new(sortable: true, scrollable: true) do |table|
+          table.with_caption { "List of planets in our solar system" }
           table.with_header(sortable: true, aria_sort: "ascending") { "Name" }
           table.with_header(sortable: true) { "Mass (10^24 kg)" }
           table.with_header(sortable: true) { "Date" }
@@ -181,7 +182,8 @@ module Strata
 
       # @label Scrollable Sticky Header
       def scrollable_sticky
-        render Strata::US::TableComponent.new(scrollable: true, sticky_header: true, width_full: true) do |table|
+        render Strata::US::TableComponent.new(sticky_header: true) do |table|
+          table.with_caption { "Sticker header table" }
           table.with_header { "Fixed Header 1" }
           table.with_header { "Fixed Header 2" }
           table.with_header { "Fixed Header 3" }
