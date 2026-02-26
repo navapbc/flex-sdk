@@ -43,9 +43,10 @@
   <% if tasks&.any? %>
     <!-- Tasks -->
     <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
+      <caption class="usa-sr-only"><%= t("strata.tasks.index.title") %></caption>
       <thead>
         <tr>
-          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
+          <th data-sortable scope="col" role="columnheader" >
             <%= t("strata.tasks.index.columns.col_due_date") %>
           </th>
           <th data-sortable scope="col" role="columnheader">
@@ -54,7 +55,7 @@
           <th data-sortable scope="col" role="columnheader">
             <%= t("strata.tasks.index.columns.col_case_id") %>
           </th>
-          <th data-sortable scope="col" role="columnheader">
+          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
             <%= t("strata.tasks.index.columns.col_created_date") %>
           </th>
         </tr>
