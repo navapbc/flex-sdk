@@ -108,7 +108,11 @@ module Strata
 
         def call
           content_tag :tr, class: @classes, **@html_attributes do
-            cells.each { |cell| concat(cell) }
+            if cells.any?
+              cells.each { |cell| concat(cell) }
+            else
+              concat(content)
+            end
           end
         end
       end

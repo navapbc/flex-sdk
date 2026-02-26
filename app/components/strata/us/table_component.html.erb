@@ -1,7 +1,7 @@
 <% if @scrollable %>
   <div class="usa-table-container--scrollable" tabindex="0">
 <% end %>
-<table class="<%= table_classes %>" <%= tag.attributes(@html_attributes) %>>
+<table class="<%= table_classes %>" <%= "data-sortable" if @sortable %> <%= tag.attributes(@html_attributes) %>>
   <% if caption? %>
     <caption><%= caption %></caption>
   <% end %>

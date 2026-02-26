@@ -40,29 +40,22 @@
   <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>
 
   <section class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
-    <table class="usa-table usa-table--borderless width-full">
-      <thead>
-        <tr>
-          <th scope="col">
-            <%= t("strata.application_forms.index.col_created_at") %>
-          </th>
-          <th scope="col">
-            <%= t("strata.application_forms.index.col_status") %>
-          </th>
-          <th scope="col">
-            <%= t("strata.application_forms.index.col_actions") %>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% application_forms.each do |application_form| %>
-          <% if local_assigns.key?(:row_view) %>
-            <%= render partial: row_view, locals: { application_form: } %>
-          <% else %>
-            <%= render partial: "strata/application_forms/row", locals: { application_form: } %>
+    <%= render Strata::US::TableComponent.new(borderless: true, classes: "width-full") do |table| %>
+      <% table.with_header { t("strata.application_forms.index.col_created_at") } %>
+      <% table.with_header { t("strata.application_forms.index.col_status") } %>
+      <% table.with_header { t("strata.application_forms.index.col_actions") } %>
+
+      <% application_forms.each do |application_form| %>
+        <% table.with_row do |row| %>
+          <% row.with_cell do %>
+            <%= link_to application_form[:created_at], application_form[:path] %>
           <% end %>
+          <% row.with_cell do %>
+            <%= t("strata.application_forms.statuses.#{application_form[:status]}") %>
+          <% end %>
+          <% row.with_cell { "TODO" } %>
         <% end %>
-      </tbody>
-    </table>
+      <% end %>
+    <% end %>
   </section>
 <% end %>
