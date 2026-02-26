@@ -66,6 +66,7 @@ module Strata
         )
       end
 
+      # Renders a table header cell (<th>) within the table's <thead>.
       class HeaderComponent < ViewComponent::Base
         def initialize(scope: "col", sortable: nil, aria_sort: nil, classes: nil, **html_attributes)
           @scope = scope
@@ -98,6 +99,7 @@ module Strata
         end
       end
 
+      # Renders a table row (<tr>) containing one or more CellComponents.
       class RowComponent < ViewComponent::Base
         renders_many :cells, "Strata::US::TableComponent::CellComponent"
 
@@ -117,6 +119,7 @@ module Strata
         end
       end
 
+      # Renders a table cell (<td>) or row header (<th>) within a RowComponent.
       class CellComponent < ViewComponent::Base
         def initialize(header: false, scope: nil, label: nil, sort_value: nil, classes: nil, **html_attributes)
           @header = header
