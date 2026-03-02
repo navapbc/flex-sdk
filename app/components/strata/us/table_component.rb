@@ -68,30 +68,25 @@ module Strata
 
       # Renders a table header cell (<th>) within the table's <thead>.
       class HeaderComponent < ViewComponent::Base
+        attr_reader :attributes
+
         def initialize(scope: "col", sortable: nil, aria_sort: nil, classes: nil, **html_attributes)
-          @scope = scope
           @sortable = sortable
-          @aria_sort = aria_sort || (@sortable ? "none" : nil)
-          @classes = classes
-          @html_attributes = html_attributes
+          aria_sort = aria_sort || (@sortable ? "none" : nil)
+          @attributes = html_attributes.merge(
+            role: "columnheader",
+            scope: scope,
+            class: classes
+          )
+          @attributes[:"aria-sort"] = aria_sort if aria_sort
         end
 
         def call
-          # This component is manually rendered in the parent template to support boolean data-sortable attribute
           content
         end
 
         def sortable?
           @sortable
-        end
-
-        def attributes
-          attrs = @html_attributes.deep_dup
-          attrs[:role] = "columnheader"
-          attrs[:scope] = @scope
-          attrs[:class] = @classes
-          attrs[:"aria-sort"] = @aria_sort if @aria_sort
-          attrs
         end
       end
 
