@@ -81,16 +81,12 @@ module Strata
           content
         end
 
-        def header_content
-          content
-        end
-
         def sortable?
           @sortable
         end
 
         def attributes
-          attrs = @html_attributes.dup
+          attrs = @html_attributes.deep_dup
           attrs[:role] = "columnheader"
           attrs[:scope] = @scope
           attrs[:class] = @classes
@@ -132,7 +128,7 @@ module Strata
 
         def call
           tag_name = @header ? :th : :td
-          attrs = @html_attributes.dup
+          attrs = @html_attributes.deep_dup
           attrs[:role] = "rowheader" if @header
           attrs[:data] ||= {}
           attrs[:data][:label] = @label if @label
