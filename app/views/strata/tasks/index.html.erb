@@ -42,43 +42,24 @@
   </div>
   <% if tasks&.any? %>
     <!-- Tasks -->
-    <table class="usa-table usa-table--striped usa-table--sticky-header width-full">
-      <thead>
-        <tr>
-          <th data-sortable scope="col" role="columnheader" aria-sort="descending">
-            <%= t("strata.tasks.index.columns.col_due_date") %>
-          </th>
-          <th data-sortable scope="col" role="columnheader">
-            <%= t("strata.tasks.index.columns.col_type") %>
-          </th>
-          <th data-sortable scope="col" role="columnheader">
-            <%= t("strata.tasks.index.columns.col_case_id") %>
-          </th>
-          <th data-sortable scope="col" role="columnheader">
-            <%= t("strata.tasks.index.columns.col_created_date") %>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% tasks.each do |task| %>
-          <tr>
-            <td data-sort-value="<%= time_since_epoch task.due_on %>">
-              <%= local_en_us task.due_on %>
-            </td>
-            <td data-sort-value="<%= task.type %>">
-              <%= link_to t("tasks.types.#{task.type.underscore}"), url_for(only_path: true, action: :show, id: task.id.to_s) %>
-            </td>
-            <td data-sort-value="<%= task.case_id %>">
-              <%= task.case_id %>
-            </td>
-            <td data-sort-value="<%= time_since_epoch task.created_at %>">
-              <%= local_en_us task.created_at.to_date %>
-            </td>
-          </tr>
+    <%= render Strata::US::TableComponent.new(striped: true, sticky_header: true, sortable: true, classes: "width-full") do |table| %>
+      <% table.with_caption do %><span class="usa-sr-only"><%= t("strata.tasks.index.title") %></span><% end %>
+      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_due_date") } %>
+      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_type") } %>
+      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_case_id") } %>
+      <% table.with_header(sortable: true, aria_sort: "descending") { t("strata.tasks.index.columns.col_created_date") } %>
+
+      <% tasks.each do |task| %>
+        <% table.with_row do |row| %>
+          <% row.with_cell(sort_value: time_since_epoch(task.due_on)) { local_en_us(task.due_on) } %>
+          <% row.with_cell(sort_value: task.type) do %>
+            <%= link_to t("tasks.types.#{task.type.underscore}"), url_for(only_path: true, action: :show, id: task.id.to_s) %>
+          <% end %>
+          <% row.with_cell(sort_value: task.case_id) { task.case_id } %>
+          <% row.with_cell(sort_value: time_since_epoch(task.created_at)) { local_en_us(task.created_at.to_date) } %>
         <% end %>
-      </tbody>
-    </table>
-    <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
+      <% end %>
+    <% end %>
   <% else %>
     <%= render partial: 'strata/tasks/no_tasks_alert' %>
   <% end %>

@@ -11,7 +11,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
       create(:paid_leave_application_form, applicant_name_first: "Mary")
       get :index, params: { locale: "en" }
 
-      expect(response.body).to have_selector("td", text: "Paid Leave Form TODO")
+      expect(response.body).to have_selector("td", text: "TODO")
     end
   end
 

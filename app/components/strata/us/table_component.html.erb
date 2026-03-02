@@ -1,0 +1,28 @@
+<% if @scrollable %>
+  <div class="usa-table-container--scrollable" tabindex="0">
+<% end %>
+<table class="<%= table_classes %>" <%= "data-sortable" if @sortable %> <%= tag.attributes(@html_attributes) %>>
+  <% if caption? %>
+    <caption><%= caption %></caption>
+  <% end %>
+  <% if headers.any? %>
+    <thead>
+      <tr>
+        <% headers.each do |header| %>
+          <th <%= "data-sortable" if header.sortable? %> <%= tag.attributes(header.attributes) %>><%= header %></th>
+        <% end %>
+      </tr>
+    </thead>
+  <% end %>
+  <tbody>
+    <% rows.each do |row| %>
+      <%= row %>
+    <% end %>
+  </tbody>
+</table>
+<% if @sortable %>
+  <div class="usa-sr-only usa-table__announcement-region" aria-live="polite"></div>
+<% end %>
+<% if @scrollable %>
+  </div>
+<% end %>

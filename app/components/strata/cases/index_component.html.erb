@@ -11,23 +11,20 @@
   <% end %>
 </nav>
 
-<table class="usa-table usa-table--borderless width-full">
-  <thead>
-    <tr>
-      <% @case_row_component_class.headers.each do |header| %>
-        <th scope="col"><%= header %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @cases.any? %>
-      <% @cases.each do |kase| %>
+<%= render Strata::US::TableComponent.new(borderless: true, classes: "width-full") do |table| %>
+  <% @case_row_component_class.headers.each do |header| %>
+    <% table.with_header { header } %>
+  <% end %>
+
+  <% if @cases.any? %>
+    <% @cases.each do |kase| %>
+      <% table.with_row do %>
         <%= render @case_row_component_class.new(kase:) %>
       <% end %>
-    <% else %>
-      <tr>
-        <td colspan="<%= @case_row_component_class.columns.count %>" class="text-center">No cases</td>
-      </tr>
     <% end %>
-  </tbody>
-</table>
+  <% else %>
+    <% table.with_row do %>
+      <td colspan="<%= @case_row_component_class.columns.count %>" class="text-center">No cases</td>
+    <% end %>
+  <% end %>
+<% end %>
