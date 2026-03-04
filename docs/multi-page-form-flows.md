@@ -8,7 +8,7 @@ Multi-Page Form Flows enable developers to define and build complex forms that s
 - **Automatically defined routes and controller actions**—Routes and controller actions for each of the form's pages are automatically generated.
 - **View components** for rendering unordered task lists and section states.
 - **Customizable**—Routes, controller actions, and views are all customizable if the default behavior does not meet the application's needs.
-- **[FUTURE] **Built-in views\*\*—Prebuilt views that show the current page, current task/section, and overall progress of the form.
+- **[FUTURE] Built-in views**—Prebuilt views that show the current page, current task/section, and overall progress of the form.
 - **[FUTURE] Supports looping pattern**—Supports gathering information about multiple people or items in a single or multi-page loop.
 
 ## Design Principles
