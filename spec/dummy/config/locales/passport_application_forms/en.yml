@@ -10,6 +10,8 @@ en:
       back: "Back to passport applications"
       title: "Passport Application"
       submitted_on: "Date submitted"
+      name: "Name"
+      date_of_birth: "Date of birth"
       next_step:
         status:
           in_progress: "Your application is in progress."

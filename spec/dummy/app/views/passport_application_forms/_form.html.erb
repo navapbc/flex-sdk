@@ -1,6 +1,7 @@
 <%= strata_form_with(model: passport_application_form) do |f| %>
   <%= f.name :name %>
-  
+  <%= f.memorable_date :date_of_birth %>
+
   <%= f.submit "Save", value: "Save", big: true %>
   <%= f.submit t(".submit"), value: "Submit", big: true %>
 <% end %>

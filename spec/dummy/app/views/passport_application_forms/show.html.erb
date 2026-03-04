@@ -1,10 +1,47 @@
-<%= render template: "strata/application_forms/show", locals: {
-  title: t(".title"),
-  back_link_text: t(".back"),
-  index_path: passport_application_forms_path,
-  created_at: @passport_application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
-  submitted_at: @passport_application_form&.submitted_at&.strftime("%B %d, %Y at %I:%M %p"),
-  current_status: @passport_application_form.status,
-  next_step: t(".next_step.status.#{@passport_application_form.status}"),
-  submitted_on_text: t(".submitted_on")
-} %>
+<% if @passport_application_form.submitted? %>
+  <%= render template: "strata/application_forms/show", locals: {
+    title: t(".title"),
+    back_link_text: t(".back"),
+    index_path: passport_application_forms_path,
+    created_at: @passport_application_form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+    submitted_at: @passport_application_form&.submitted_at&.strftime("%B %d, %Y at %I:%M %p"),
+    current_status: @passport_application_form.status,
+    next_step: t(".next_step.status.#{@passport_application_form.status}"),
+    submitted_on_text: t(".submitted_on")
+  } %>
+<% else %>
+  <% content_for :title, t(".title") %>
+
+  <%= link_to t(".back"), passport_application_forms_path, class: "usa-link" %>
+
+  <h1><%= t(".title") %></h1>
+
+  <%= render partial: "strata/shared/step_indicator", locals: {
+    type: :counters,
+    steps: [:in_progress, :submitted, :decision_made],
+    current_step: @passport_application_form.status
+  } %>
+
+  <div class="margin-top-4">
+    <div class="border-top border-base-light padding-top-2 margin-top-2">
+      <div class="padding-bottom-2 border-bottom border-base-light">
+        <h3 class="font-sans-md"><%= t(".name") %></h3>
+        <p class="margin-top-1">
+          <%= [@passport_application_form.name_first, @passport_application_form.name_middle, @passport_application_form.name_last].compact_blank.join(" ").presence || "-" %>
+        </p>
+      </div>
+      <div class="padding-top-2 padding-bottom-2 border-bottom border-base-light">
+        <h3 class="font-sans-md"><%= t(".date_of_birth") %></h3>
+        <p class="margin-top-1">
+          <% if @passport_application_form.date_of_birth.present? %>
+            <%= @passport_application_form.date_of_birth.strftime("%B %-d, %Y") %>
+          <% else %>
+            -
+          <% end %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <%= link_to "Edit application", edit_passport_application_form_path(@passport_application_form), class: "usa-button margin-top-4" %>
+<% end %>
