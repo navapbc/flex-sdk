@@ -622,6 +622,26 @@ RSpec.describe Strata::FormBuilder do
         expect(result).to have_css('[data-controller="strata--conditional-field"][hidden]', visible: :all)
       end
     end
+
+    context 'with clear: true' do
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true", clear: true) { "<p>Content</p>".html_safe }
+      end
+
+      it 'sets the clear data attribute to true' do
+        expect(result).to have_css('[data-strata--conditional-field-clear-value="true"]', visible: :all)
+      end
+    end
+
+    context 'without clear option (default)' do
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true") { "<p>Content</p>".html_safe }
+      end
+
+      it 'sets the clear data attribute to false' do
+        expect(result).to have_css('[data-strata--conditional-field-clear-value="false"]', visible: :all)
+      end
+    end
   end
 
   describe '#money_field' do

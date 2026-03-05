@@ -18,10 +18,11 @@ module Strata
   #   <% end %>
   #
   class ConditionalFieldComponent < ViewComponent::Base
-    def initialize(source:, match:, initially_visible: false)
+    def initialize(source:, match:, initially_visible: false, clear: false)
       @source = source
       @match = Array(match).map(&:to_s).join(",")
       @initially_visible = initially_visible
+      @clear = clear
     end
   end
 end
