@@ -1,16 +1,14 @@
-# Multi-Page Form Builder
+# Multi-Page Form Flows
 
-The Multi-Page Form Builder enables developers to create complex forms that span multiple pages using field-tested design patterns from government applications. It provides a DSL for defining forms that follow best practices for accessibility, user experience, and data collection.
-
-> [!NOTE]  
-> The Strata Rules Engine is still a work in progress, and detailed documentation will be provided as the feature matures.
+Multi-Page Form Flows enable developers to define and build complex forms that span multiple pages using field-tested design patterns from government applications. It provides a DSL for defining forms that follow best practices for accessibility, user experience, and data collection.
 
 ## Key Features
 
 - **Easy to define and read**—Form flows are designed to be readable and maintainable, allowing developers to easily see how all the pages on the form are organized.
 - **Automatically defined routes and controller actions**—Routes and controller actions for each of the form's pages are automatically generated.
-- **Built-in views**—Prebuilt views that show the current page, current task/section, and overall progress of the form.
+- **View components** for rendering unordered task lists and section states.
 - **Customizable**—Routes, controller actions, and views are all customizable if the default behavior does not meet the application's needs.
+- **[FUTURE] Built-in views**—Prebuilt views that show the current page, current task/section, and overall progress of the form.
 - **[FUTURE] Supports looping pattern**—Supports gathering information about multiple people or items in a single or multi-page loop.
 
 ## Design Principles

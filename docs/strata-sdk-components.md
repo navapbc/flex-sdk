@@ -1,11 +1,12 @@
 # Strata SDK Components
 
-1. Strata Data Modeler
-2. Multi-Page Form Builder
-3. Business Process Modeler
-4. Task Management System
-5. Policy as Code Rules Engine
-6. Master Person Record
+1. [Strata Data Modeler](#strata-data-modeler)
+2. [Strata Form Builder](#strata-form-builder)
+3. [Multi-Page Form Flow](#multi-page-form-flow)
+4. [Business Process Modeler](#business-process-modeler)
+5. [Task Management System](#task-management-system)
+6. [Policy as Code Rules Engine](#policy-as-code-rules-engine)
+7. [Master Person Record](#master-person-record)
 
 ## Strata Data Modeler
 
@@ -43,13 +44,17 @@ strata_attribute :mailing_address, :address
 
 See [Strata Data Modeler](./strata-data-modeler.md) for more information on how to define your data model.
 
-## Multi-Page Form Builder
+## Strata Form Builder
 
-Use [Strata Form Builder](./multi-page-form-builder.md) to create multi-page forms with ease. The Form Builder leverages [the task list design pattern](https://designsystem.digital.gov/components/process-list/) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).
+Use the [Strata Form Builder](./strata-form-builder.md) to render accessible frontend forms with USWDS markup. The Form Builder sets default labels and hints for fields, displays inline error messages and styling, and provides additional helpers on top of the standard Rails Form Builder like `fieldset`, `hint`, and Strata-specific attribute helpers like `name` and `address_fields`.
+
+## Multi-Page Form Flow
+
+Use the [Multi-page Form Flow](./multi-page-form-flows.md) to create multi-page forms with ease. The Form Flow leverages [the task list design pattern](https://designsystem.digital.gov/components/process-list/) to create more complex forms with multiple chapters or sections (see also [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/)).
 
 ## Business Process Modeler
 
-Use Strata Business Process Modeler to define business processes for managing cases. 
+Use Strata Business Process Modeler to define business processes for managing cases.
 
 - Define applicant tasks, staff tasks, and automated system processes
 - Define custom task types for your staff tasks
@@ -88,19 +93,19 @@ end
 graph TD
     Start(Start) --> SubmitApp[Submit Application]
     SubmitApp -->|MedicaidApplicationFormSubmitted| CalcPrelim[Calculate Preliminary Eligibility]
-    
+
     CalcPrelim -->|PreliminaryEligibilityCalculated| CheckIncElig[Check Income Eligibility]
     CalcPrelim -->|DeterminedIneligibleForMedicaid| End
-    
+
     CheckIncElig -->|IncomeDeterminedEligible| CheckBD[Check Blind and Disabled]
     CheckIncElig -->|IncomeDeterminedIneligible| MakeFinal[Make Final Decision]
-    
+
     CheckBD -->|DeterminedBlindAndDisabled| MakeFinal
     CheckBD -->|DeterminedNotBlindAndDisabled| MakeFinal
-    
+
     MakeFinal -->|DeterminedEligibleForMedicaid| End
     MakeFinal -->|DeterminedIneligibleForMedicaid| End
-    
+
     End(End)
 
     classDef systemProcess fill:#a0d8ef,stroke:#333,stroke-width:2px;

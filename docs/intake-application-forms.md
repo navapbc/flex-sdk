@@ -12,7 +12,7 @@ While most intake processes are application forms, there are some important exce
 - **Reporting**: Some programs require periodic reporting for compliance. For example:
   - Businesses submitting wage reports for unemployment insurance programs
   - Medicaid beneficiaries submitting activity reports to maintain coverage.
-  
+
   These reports can also be implemented as subclasses of ApplicationForm.
 
 ## Key Concepts
@@ -114,4 +114,5 @@ form.save
 
 ## Next Steps
 
-[Create a case management business process](./docs/case-management-business-process.md)
+- Explore the [Strata Form Builder](./strata-form-builder.md) or [Multi-page Form Flow](./multi-page-form-flows.md) for rendering your form
+- [Create a case management business process](./docs/case-management-business-process.md)
