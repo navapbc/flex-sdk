@@ -17,5 +17,6 @@ Ready to begin? Proceed to [Create an application form](./intake-application-for
 After creating your application form, you can:
 
 1. [Learn about the Strata attributes you can add to your form](./strata-attributes.md)
-2. [Explore the Form Builder for rendering the form](./multi-page-form-builder.md)
-3. [Create a case management business process](./docs/case-management-business-process.md)
+2. [Explore the Form Builder for rendering the form](./strata-form-builder.md)
+3. [Explore Multi-page Form Flows for generating complex forms spanning multiple pages](./multi-page-form-flows.md)
+4. [Create a case management business process](./docs/case-management-business-process.md)
