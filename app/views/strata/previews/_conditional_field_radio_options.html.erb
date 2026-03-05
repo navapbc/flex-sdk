@@ -1,4 +1,4 @@
-<%= strata_form_with model: @paid_leave_application_form, url: @flow_task.update_path, method: :patch do |f| %>
+<%= strata_form_with(model: model, url: false) do |f| %>
   <%= f.fieldset "What type of leave are you requesting?", attribute: :leave_type do %>
     <%= f.radio_button :leave_type, "medical", label: "Medical" %>
     <%= f.radio_button :leave_type, "family", label: "Family" %>
@@ -12,6 +12,4 @@
   <%= f.conditional(:leave_type, eq: "other") do %>
     <%= f.text_field :other_reason, label: "Please describe your reason for leave" %>
   <% end %>
-
-  <%= render partial: "form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>
 <% end %>

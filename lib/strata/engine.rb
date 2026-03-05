@@ -37,6 +37,10 @@ module Strata
       end
     end
 
+    initializer "strata.assets" do |app|
+      app.config.assets.paths << Engine.root.join("app/components")
+    end
+
     config.after_initialize do
       Rails.autoloaders.main.on_unload("Strata::EventManager") do |klass|
         klass.unsubscribe_all
