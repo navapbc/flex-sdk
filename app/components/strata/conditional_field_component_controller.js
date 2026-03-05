@@ -15,7 +15,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     source: String,
-    match: String
+    match: String,
+    clear: { type: Boolean, default: false }
   }
 
   connect() {
@@ -50,12 +51,29 @@ export default class extends Controller {
   show() {
     this.element.hidden = false
     this.element.removeAttribute("aria-hidden")
+    this.enableInputs()
   }
 
   hide() {
     this.element.hidden = true
     this.element.setAttribute("aria-hidden", "true")
-    this.clearInputs()
+    this.disableInputs()
+
+    if (this.clearValue) {
+      this.clearInputs()
+    }
+  }
+
+  enableInputs() {
+    this.element.querySelectorAll("input, select, textarea").forEach((input) => {
+      input.disabled = false
+    })
+  }
+
+  disableInputs() {
+    this.element.querySelectorAll("input, select, textarea").forEach((input) => {
+      input.disabled = true
+    })
   }
 
   clearInputs() {

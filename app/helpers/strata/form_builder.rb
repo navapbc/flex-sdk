@@ -526,7 +526,7 @@ module Strata
       end
     end
 
-    def conditional(attribute, eq:, &block)
+    def conditional(attribute, eq:, clear: false, &block)
       match_values = Array(eq).map(&:to_s)
       source_name = "#{@object_name}[#{attribute}]"
 
@@ -537,7 +537,8 @@ module Strata
         Strata::ConditionalFieldComponent.new(
           source: source_name,
           match: match_values,
-          initially_visible: initially_visible
+          initially_visible: initially_visible,
+          clear: clear
         ),
         &block
       )
