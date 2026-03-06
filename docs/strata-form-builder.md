@@ -42,6 +42,7 @@ These helper methods override standard Rails form helpers to use accessible USWD
 - [Fieldset (fieldset)](#fieldset-fieldset)
 - [Form Group (form_group)](#form-group-form_group)
 - [Hint (hint)](#hint-hint)
+- [Conditional (conditional)](#conditional-conditional)
 - [Honeypot (honeypot_field)](#honeypot-field-honeypot_field)
 
 ### Complex Helpers
@@ -292,6 +293,59 @@ Renders a hidden “honeypot” field intended to detect bots. The field is visu
 ```erb
 <%= f.honeypot_field %>
 ```
+
+## Conditional (conditional)
+
+Conditionally shows or hides form fields based on a radio button's selected value. When the source radio button's value matches, the wrapped content is shown; otherwise it is hidden. Hidden inputs are automatically disabled so they are not submitted with the form.
+
+### Usage in form
+
+Show a text field when a yes/no radio is set to "yes":
+
+```erb
+<%= f.yes_no :has_employer, legend: "Do you currently have an employer?" %>
+
+<%= f.conditional(:has_employer, eq: "true") do %>
+  <%= f.text_field :employer_name, label: "Employer name" %>
+<% end %>
+```
+
+Match against multiple radio options:
+
+```erb
+<%= f.fieldset "What type of leave are you requesting?", attribute: :leave_type do %>
+  <%= f.radio_button :leave_type, "medical", label: "Medical" %>
+  <%= f.radio_button :leave_type, "family", label: "Family" %>
+  <%= f.radio_button :leave_type, "other", label: "Other" %>
+<% end %>
+
+<%= f.conditional(:leave_type, eq: "medical") do %>
+  <%= f.text_field :medical_provider, label: "Medical provider" %>
+<% end %>
+
+<%= f.conditional(:leave_type, eq: "other") do %>
+  <%= f.text_field :other_reason, label: "Please describe your reason for leave" %>
+<% end %>
+```
+
+Match multiple values with an array:
+
+```erb
+<%= f.conditional(:leave_type, eq: ["medical", "family"]) do %>
+  <%= f.text_field :provider_name, label: "Provider name" %>
+<% end %>
+```
+
+### Options
+
+- `eq`: **(required)** The value(s) to match against the source radio button. Accepts a single string or an array of strings. The conditional content is shown when the selected radio value matches any of the provided values.
+- `clear`: When `true`, resets all inputs inside the conditional block (clears text values, unchecks radios/checkboxes) whenever the section is hidden. Defaults to `false`.
+
+### Behavior
+
+- **Initial state**: If the model already has a value that matches `eq`, the conditional content is shown on page load. Otherwise it starts hidden.
+- **Disabled inputs**: When hidden, all inputs inside the conditional block are disabled so they are excluded from form submission.
+- **Clearing values**: When `clear: true` is set, hiding the section also resets input values. This is useful when the conditional fields should not retain stale data after a user changes their selection.
 
 ## Address Fields (address_fields)
 
