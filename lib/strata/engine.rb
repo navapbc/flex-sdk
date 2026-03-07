@@ -37,6 +37,12 @@ module Strata
       end
     end
 
+    initializer "strata.importmap", before: "importmap" do |app|
+      if app.config.respond_to?(:importmap)
+        app.config.importmap.paths << Engine.root.join("config/importmap.rb")
+      end
+    end
+
     initializer "strata.assets" do |app|
       app.config.assets.paths << Engine.root.join("app/components")
       app.config.assets.precompile += Dir[Engine.root.join("app/components/strata/**/*.js")].map { |f| f.sub(%r{.*/app/components/}, "") }
