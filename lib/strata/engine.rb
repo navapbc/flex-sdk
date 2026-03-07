@@ -39,6 +39,7 @@ module Strata
 
     initializer "strata.assets" do |app|
       app.config.assets.paths << Engine.root.join("app/components")
+      app.config.assets.precompile += Dir[Engine.root.join("app/components/strata/**/*.js")].map { |f| f.sub(%r{.*/app/components/}, "") }
     end
 
     config.after_initialize do
