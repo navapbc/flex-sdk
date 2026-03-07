@@ -4,6 +4,6 @@ export { ConditionalFieldComponentController }
 
 // As we add more components with Stimulus, add the Controller to this function to make
 // importing easier
-export default function registerControllers(application) {
+export function registerControllers(application) {
   application.register("strata--conditional-field", ConditionalFieldComponentController)
 }
