@@ -526,6 +526,24 @@ module Strata
       end
     end
 
+    def conditional(attribute, eq:, clear: false, &block)
+      match_values = Array(eq).map(&:to_s)
+      source_name = "#{@object_name}[#{attribute}]"
+
+      current_value = object&.send(attribute)
+      initially_visible = current_value.present? && match_values.include?(current_value.to_s)
+
+      @template.render(
+        Strata::ConditionalFieldComponent.new(
+          source: source_name,
+          match: match_values,
+          initially_visible: initially_visible,
+          clear: clear
+        ),
+        &block
+      )
+    end
+
     def us_states_and_territories
       [
         [ "", "" ],

@@ -1,0 +1,7 @@
+<%= strata_form_with(model: model, url: false) do |f| %>
+  <%= f.yes_no :has_employer, legend: "Do you currently have an employer?" %>
+
+  <%= f.conditional(:has_employer, eq: "true") do %>
+    <%= f.text_field :employer_name, label: "Employer name", hint: "Enter the legal name of your employer" %>
+  <% end %>
+<% end %>

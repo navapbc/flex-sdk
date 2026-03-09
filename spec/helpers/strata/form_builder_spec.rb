@@ -11,6 +11,8 @@ RSpec.describe Strata::FormBuilder do
 
       attribute :first_name, :string
       attribute :start_date, :date  # for date_picker
+      attribute :has_employer, :string
+      attribute :leave_type, :string
     end
 
     stub_const("TestForm", test_form_class)
@@ -554,6 +556,90 @@ RSpec.describe Strata::FormBuilder do
 
       it 'displays error messages for both fields' do
         expect(result).to have_element(:span, text: 'Period start date cannot be after end date')
+      end
+    end
+  end
+
+  describe '#conditional' do
+    context 'with a yes_no source and eq: string value' do
+      let(:result) do
+        builder.yes_no(:has_employer) +
+          builder.conditional(:has_employer, eq: "true") { "<p>Conditional content</p>".html_safe }
+      end
+
+      it 'renders a wrapper div with Stimulus controller data attribute' do
+        expect(result).to have_element(:div, visible: :all, "data-controller": "strata--conditional-field")
+      end
+
+      it 'sets the source value to the full input name' do
+        expect(result).to have_element(:div, visible: :all, "data-strata--conditional-field-source-value": "object[has_employer]")
+      end
+
+      it 'sets the match value' do
+        expect(result).to have_element(:div, visible: :all, "data-strata--conditional-field-match-value": "true")
+      end
+
+      it 'renders the block content inside the wrapper' do
+        expect(result).to have_element(:div, visible: :all, "data-controller": "strata--conditional-field") do |wrapper|
+          expect(wrapper).to have_text("Conditional content")
+        end
+      end
+
+      it 'sets hidden attribute for progressive enhancement' do
+        expect(result).to have_css('[data-controller="strata--conditional-field"][hidden]', visible: :all)
+      end
+    end
+
+    context 'with eq: array of values' do
+      let(:result) do
+        builder.conditional(:leave_type, eq: [ "medical", "family" ]) { "<p>Content</p>".html_safe }
+      end
+
+      it 'sets comma-separated match values' do
+        expect(result).to have_element(:div, visible: :all, "data-strata--conditional-field-match-value": "medical,family")
+      end
+    end
+
+    context 'when source field has a matching pre-selected value' do
+      let(:object) { TestForm.new(has_employer: "true") }
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true") { "<p>Shown</p>".html_safe }
+      end
+
+      it 'does not set the hidden attribute when value matches' do
+        expect(result).to have_element(:div, "data-controller": "strata--conditional-field")
+        expect(result).not_to have_css('[data-controller="strata--conditional-field"][hidden]', visible: :all)
+      end
+    end
+
+    context 'when source field has a non-matching pre-selected value' do
+      let(:object) { TestForm.new(has_employer: "false") }
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true") { "<p>Hidden</p>".html_safe }
+      end
+
+      it 'sets the hidden attribute when value does not match' do
+        expect(result).to have_css('[data-controller="strata--conditional-field"][hidden]', visible: :all)
+      end
+    end
+
+    context 'with clear: true' do
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true", clear: true) { "<p>Content</p>".html_safe }
+      end
+
+      it 'sets the clear data attribute to true' do
+        expect(result).to have_css('[data-strata--conditional-field-clear-value="true"]', visible: :all)
+      end
+    end
+
+    context 'without clear option (default)' do
+      let(:result) do
+        builder.conditional(:has_employer, eq: "true") { "<p>Content</p>".html_safe }
+      end
+
+      it 'sets the clear data attribute to false' do
+        expect(result).to have_css('[data-strata--conditional-field-clear-value="false"]', visible: :all)
       end
     end
   end

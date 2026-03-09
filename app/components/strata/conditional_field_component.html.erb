@@ -1,0 +1,7 @@
+<div data-controller="strata--conditional-field"
+     data-strata--conditional-field-source-value="<%= @source %>"
+     data-strata--conditional-field-match-value="<%= @match %>"
+     data-strata--conditional-field-clear-value="<%= @clear %>"
+     <%= "hidden" unless @initially_visible %>>
+  <%= content %>
+</div>
