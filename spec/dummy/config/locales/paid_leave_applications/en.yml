@@ -10,12 +10,26 @@ en:
       leave_details:
         title: Leave Details
         description: Tell us about the type of leave you’re taking (Parental, Medical, Family Caregiving, or Military Exigency). You’ll need to enter your leave dates and provide supporting documentation.
+    index:
+      title: "Apply for Paid Leave"
+      intro: "Apply for paid leave benefits. You may be eligible for up to 12 weeks of paid leave."
+      new_button: "Start a new application"
+      in_progress_applications:
+        heading: "Your applications"
     new:
       title: "Begin your leave application"
       agree_button: "Get started"
     show:
+      title: "Your Paid Leave Application"
+      back: "Back to applications"
       in_progress_title: "Your in-progress application"
       in_progress_description: "Your progress is automatically saved as you complete the application. You can edit any information you enter until your application is submitted."
+      submitted_on: "Submitted on"
+      next_step:
+        status:
+          submitted: "Your application is being reviewed. You will be notified when a decision has been made."
+          approved: "Your application has been approved."
+          denied: "Your application has been denied."
     edit_name:
       applicant_name_title: What's your name?
       applicant_name_hint: Fill out your name as it appears on official documents like your driver's license or W‑2.

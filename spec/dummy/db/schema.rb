@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_25_175801) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_04_210857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_175801) do
     t.datetime "updated_at", null: false
     t.datetime "submitted_at"
     t.string "name_middle"
+    t.string "name_suffix"
   end
 
   create_table "passport_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

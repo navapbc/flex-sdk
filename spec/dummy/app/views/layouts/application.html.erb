@@ -1,15 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Dummy</title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | Strata App" : "Strata App" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag '@uswds/uswds/dist/js/uswds-init.min.js' %>
+    <%= yield :head if content_for?(:head) %>
   </head>
   <body>
-    <%= yield %>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <div class="display-flex flex-column minh-viewport">
+      <div class="usa-overlay"></div>
+      <header class="usa-header usa-header--basic">
+        <div class="usa-nav-container">
+          <div class="usa-navbar">
+            <div class="usa-logo">
+              <em class="usa-logo__text">
+                <a href="/" class="usa-logo__link">Strata App</a>
+              </em>
+            </div>
+            <button class="usa-menu-btn" type="button">Menu</button>
+          </div>
+          <nav aria-label="Primary navigation" class="usa-nav">
+            <div class="usa-nav__inner">
+              <button type="button" class="usa-nav__close">
+                <img src="<%= asset_path('@uswds/uswds/dist/img/usa-icons/close.svg') %>" alt="Close" />
+              </button>
+            </div>
+            <ul class="usa-nav__primary usa-accordion"></ul>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-content" class="grid-col-fill display-flex flex-column">
+        <div class="grid-col-fill">
+          <section class="usa-section">
+            <div class="grid-container">
+              <div class="grid-row grid-gap">
+                <div class="grid-col-12" id="content">
+                  <%= content_for?(:content) ? yield(:content) : yield %>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
     <%= javascript_include_tag '@uswds/uswds/dist/js/uswds.min.js' %>
   </body>
 </html>

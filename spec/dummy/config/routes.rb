@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   mount Lookbook::Engine, at: "/lookbook"
 
-  resources :passport_application_forms, only: [ :index, :new, :show, :create ]
+  resources :passport_application_forms, only: [ :index, :new, :show, :create, :edit, :update ]
 
   resources :paid_leave_application_forms, only: [ :index, :new, :show, :create ] do
     member do
