@@ -67,7 +67,7 @@ wait-on-db:
 ##################################################
 
 lint: ## Run the linter with auto-fixing
-	bundle exec rubocop -a
+	bundle exec rubocop -A
 
 lint-ci: ## Run the linter, but don't fix anything
 	bundle exec rubocop
