@@ -151,6 +151,10 @@ GEM
     htmlentities (4.3.4)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
+    importmap-rails (2.2.3)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.8.1)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -419,6 +423,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   guard-rspec
+  importmap-rails
   listen
   lookbook (>= 2.3.9)
   pg (~> 1.1)

@@ -1,4 +1,4 @@
-import ConditionalFieldComponentController from "./conditional_field_component_controller"
+import ConditionalFieldComponentController from "strata/conditional_field_component_controller"
 
 export { ConditionalFieldComponentController }
 

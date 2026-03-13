@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag '@uswds/uswds/dist/js/uswds-init.min.js' %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body>
@@ -17,22 +18,6 @@
         </div>
       </main>
     </div>
-    <script type="importmap">
-      {
-        "imports": {
-          "@hotwired/stimulus": "https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.js"
-        }
-      }
-    </script>
-
-    <script type="module">
-      import { Application } from "@hotwired/stimulus"
-      import { registerControllers } from "<%= asset_path('strata/index.js') %>"
-
-      const application = Application.start()
-      registerControllers(application)
-    </script>
-
     <%= javascript_include_tag '@uswds/uswds/dist/js/uswds.min.js' %>
   </body>
 </html>
