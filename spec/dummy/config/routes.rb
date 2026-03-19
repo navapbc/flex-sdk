@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  root "home#index"
+
   mount Strata::Engine => "/"
 
   mount Lookbook::Engine, at: "/lookbook"
