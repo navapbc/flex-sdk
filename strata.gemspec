@@ -5,7 +5,7 @@ require_relative "lib/strata/version"
 Gem::Specification.new do |spec|
   spec.name        = "strata"
   spec.version     = Strata::VERSION
-  spec.authors     = [ "Strata Team" ]
+  spec.authors     = [ "Nava PBC" ]
   spec.email       = [ "strata@example.com" ]
   spec.homepage    = "https://example.com/strata"
   spec.summary     = "Strata SDK for Rails"
