@@ -1,0 +1,38 @@
+<div class="grid-container padding-y-5">
+  <h1 class="font-sans-2xl">Strata SDK Dummy App</h1>
+  <p class="measure-4 line-height-sans-4">
+    This app demonstrates the features of the Strata SDK for Rails.
+  </p>
+
+  <div class="grid-row grid-gap margin-top-4">
+    <div class="grid-col-6 margin-bottom-3">
+      <div class="border border-base-light radius-md padding-3">
+        <h2 class="font-sans-lg">Application Forms</h2>
+        <ul class="usa-list">
+          <li><%= link_to "Paid Leave Application", paid_leave_application_forms_path, class: "usa-link" %></li>
+          <li><%= link_to "Passport Application", passport_application_forms_path, class: "usa-link" %></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-col-6 margin-bottom-3">
+      <div class="border border-base-light radius-md padding-3">
+        <h2 class="font-sans-lg">Staff</h2>
+        <ul class="usa-list">
+          <li><%= link_to "Staff Dashboard", staff_path, class: "usa-link" %></li>
+          <li><%= link_to "Task Queue", tasks_path, class: "usa-link" %></li>
+          <li><%= link_to "Passport Cases", passport_cases_path, class: "usa-link" %></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-col-6 margin-bottom-3">
+      <div class="border border-base-light radius-md padding-3">
+        <h2 class="font-sans-lg">Developer Tools</h2>
+        <ul class="usa-list">
+          <li><%= link_to "Lookbook (Component Previews)", lookbook_path, class: "usa-link" %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

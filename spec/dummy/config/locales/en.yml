@@ -29,6 +29,9 @@
 
 en:
   hello: "Hello world"
+  formats:
+    date:
+      full: "%B %-d, %Y"
   actions:
     back: "Back"
     save_and_continue: "Save and continue"
