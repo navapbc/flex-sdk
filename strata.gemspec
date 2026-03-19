@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://example.com"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://example.com/strata"
+  spec.metadata["source_code_uri"] = "https://github.com/navapbc/strata-paidleave"
   spec.metadata["changelog_uri"] = "https://example.com/strata/changelog"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
