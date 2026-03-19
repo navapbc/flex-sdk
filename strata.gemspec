@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name        = "strata"
   spec.version     = Strata::VERSION
   spec.authors     = [ "Nava PBC" ]
-  spec.email       = [ "strata@example.com" ]
+  spec.email       = [ "strata@navapbc.com" ]
   spec.homepage    = "https://example.com/strata"
   spec.summary     = "Strata SDK for Rails"
   spec.description = "Strata SDK for building government digital services with Rails."
