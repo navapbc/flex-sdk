@@ -3,10 +3,11 @@
 module Strata::Flows
   # Represents a set of related questions as a task within a flow.
   class Task
-    attr_accessor :name, :pages
+    attr_accessor :name, :pages, :depends_on
 
-    def initialize(name, pages: [])
+    def initialize(name, depends_on: nil, pages: [])
       @name = name
+      @depends_on = depends_on
       @pages = pages
     end
 
@@ -16,6 +17,10 @@ module Strata::Flows
 
     def completed?(record)
       @pages.all? { |page| page.completed?(record) }
+    end
+
+    def dependencies_met?(flow)
+      flow.dependencies_met?(@depends_on, exclude: @name)
     end
 
     # Returns the current workable page if in-progress, or the first page otherwise.

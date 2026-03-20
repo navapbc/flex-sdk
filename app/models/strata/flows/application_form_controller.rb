@@ -27,6 +27,7 @@ module Strata::Flows
       def flow(flow_class)
         before_action :set_flow
         before_action :set_flow_task, only: flow_class.generated_routes
+        before_action :enforce_task_dependencies, only: flow_class.generated_routes
 
         # Set a @flow instance that can be evaluated against the current form record.
         # This is primarily useful in rendering progress within a task list or step indicator.
@@ -37,6 +38,15 @@ module Strata::Flows
         # Set a @flow_task instance that can provide completion methods and routing helpers.
         define_method(:set_flow_task) do
           @flow_page, @flow_task = flow_class.find_page_and_task_by_action(flow_record, request.path_parameters[:action])
+        end
+
+        # Redirect to start_path if the current page's task has unmet dependencies.
+        define_method(:enforce_task_dependencies) do
+          return unless @flow_task
+
+          unless @flow.task_dependencies_met?(@flow_task.task)
+            redirect_to @flow.start_path
+          end
         end
 
         # For each question page, define the edit and update paths.

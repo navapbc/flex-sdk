@@ -30,6 +30,10 @@ module Strata
 
       # Renders the correct content within the task list to indicate the completion status of a step list task.
       def task_action
+        unless @flow.task_dependencies_met?(@task)
+          return content_tag(:span, t(".actions.cannot_start_yet"), class: "text-base")
+        end
+
         if @task.completed?(@flow.record)
           content_tag(
             :div,
