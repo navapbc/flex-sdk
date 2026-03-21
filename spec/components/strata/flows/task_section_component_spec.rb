@@ -3,30 +3,36 @@
 require "rails_helper"
 
 RSpec.describe Strata::Flows::TaskSectionComponent, type: :component do
-  let(:page) { Strata::Flows::QuestionPage.new("first_name") }
+  let(:flow) { PaidLeaveFlow.new(build_stubbed(:paid_leave_application_form)) }
+  let(:task) { flow.tasks.first }
 
-  describe "#task_action" do
-    context "when task dependencies are not met" do
-      let(:task) { Strata::Flows::Task.new(:review, depends_on: :all, pages: [ page ]) }
-      let(:flow) do
-        fake_record = Struct.new(:class).new(Struct.new(:name).new("TestModel"))
-        flow_task = task
+  describe "when task dependencies are not met" do
+    before do
+      allow(task).to receive(:dependencies_met?).and_return(false)
+      render_inline(described_class.new(flow:, task:))
+    end
 
-        flow_obj = Object.new
-        flow_obj.define_singleton_method(:record) { fake_record }
-        flow_obj.define_singleton_method(:task_counter) { |_| 0 }
-        flow_obj.define_singleton_method(:tasks) { [ flow_task ] }
-        flow_obj.define_singleton_method(:dependencies_met?) { |_, **| false }
-        flow_obj
-      end
+    it "renders 'Cannot start yet'" do
+      expect(page).to have_text("Cannot start yet")
+    end
 
-      it "renders a greyed-out 'Cannot start yet' label with no link" do
-        component = described_class.new(flow: flow, task: task)
-        rendered = render_inline(component)
+    it "does not render any links" do
+      expect(page).not_to have_link
+    end
+  end
 
-        expect(rendered.text).to include("Cannot start yet")
-        expect(rendered.css("a")).to be_empty
-      end
+  describe "when task dependencies are met" do
+    before do
+      allow(task).to receive(:dependencies_met?).and_return(true)
+      render_inline(described_class.new(flow:, task:))
+    end
+
+    it "renders a 'Start' link" do
+      expect(page).to have_link("Start")
+    end
+
+    it "does not render 'Cannot start yet'" do
+      expect(page).not_to have_text("Cannot start yet")
     end
   end
 end
