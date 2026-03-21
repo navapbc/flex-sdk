@@ -44,7 +44,7 @@ module Strata::Flows
         define_method(:enforce_task_dependencies) do
           return unless @flow_task
 
-          unless @flow.task_dependencies_met?(@flow_task.task)
+          unless @flow_task.task.dependencies_met?(@flow)
             redirect_to @flow.start_path
           end
         end

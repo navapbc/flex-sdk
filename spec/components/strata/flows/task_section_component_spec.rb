@@ -16,7 +16,7 @@ RSpec.describe Strata::Flows::TaskSectionComponent, type: :component do
         flow_obj.define_singleton_method(:record) { fake_record }
         flow_obj.define_singleton_method(:task_counter) { |_| 0 }
         flow_obj.define_singleton_method(:tasks) { [ flow_task ] }
-        flow_obj.define_singleton_method(:task_dependencies_met?) { |_| false }
+        flow_obj.define_singleton_method(:dependencies_met?) { |_, **| false }
         flow_obj
       end
 

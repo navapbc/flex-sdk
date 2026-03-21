@@ -91,29 +91,6 @@ RSpec.describe Strata::Flows::ApplicationFormFlow do
       expect(personal_task.depends_on).to be_nil
     end
 
-    describe "#task_dependencies_met?" do
-      let(:record) { TestModel.new }
-      let(:flow) { FlowWithDeps.new(record) }
-
-      it "returns true for tasks with no dependencies" do
-        personal_task = flow.tasks.find { |t| t.name == :personal_information }
-        expect(flow.task_dependencies_met?(personal_task)).to be true
-      end
-
-      it "returns false when dependent tasks are incomplete" do
-        leave_task = flow.tasks.find { |t| t.name == :leave_details }
-        expect(flow.task_dependencies_met?(leave_task)).to be false
-      end
-
-      it "returns true when named dependencies are complete" do
-        record.applicant_name_first = "Jane"
-        record.applicant_name_last = "Doe"
-
-        leave_task = flow.tasks.find { |t| t.name == :leave_details }
-        expect(flow.task_dependencies_met?(leave_task)).to be true
-      end
-    end
-
     describe "invalid depends_on references" do
       it "raises an error when task depends_on references a non-existent task" do
         expect {

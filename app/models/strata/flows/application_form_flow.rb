@@ -175,10 +175,6 @@ module Strata::Flows
       tasks.find_index(task)
     end
 
-    def task_dependencies_met?(task)
-      task.dependencies_met?(self)
-    end
-
     # Evaluates whether the given depends_on constraint is satisfied.
     # Returns true if depends_on is nil, otherwise checks that all
     # referenced tasks (or all tasks for :all) are completed.
