@@ -12,11 +12,6 @@ RSpec.describe Strata::Flows::ApplicationFormFlow do
       attribute :applicant_name_last, :string
       attribute :date_of_birth, :string
       attribute :leave_type, :string
-
-      validates :applicant_name_first, presence: true, on: :name
-      validates :applicant_name_last, presence: true, on: :name
-      validates :date_of_birth, presence: true, on: :date_of_birth
-      validates :leave_type, presence: true, on: :leave_type
     end
 
     test_flow_class = Class.new do

@@ -62,54 +62,49 @@ RSpec.describe Strata::Flows::Task do
   end
 
   describe "#dependencies_met?" do
-    let(:page_a) { Strata::Flows::QuestionPage.new("first_name") }
-    let(:page_b) { Strata::Flows::QuestionPage.new("last_name") }
+    let(:complete_task) { described_class.new(:personal_info) }
+    let(:incomplete_task) { described_class.new(:contact_info) }
+    let(:flow) { PaidLeaveFlow.new(build_stubbed(:paid_leave_application_form)) }
 
-    let(:task_a) { described_class.new(:personal_info, pages: [ page_b ]) }
-    let(:task_b) { described_class.new(:contact_info, pages: [ incomplete_page ]) }
-
-    def build_flow(all_tasks)
-      flow_class = Class.new do
-        include Strata::Flows::ApplicationFormFlow
-      end
-      flow_class.instance_variable_set(:@tasks, all_tasks)
-      flow_class.new(record)
+    before do
+      allow(complete_task).to receive(:completed?).and_return(true)
+      allow(incomplete_task).to receive(:completed?).and_return(false)
     end
 
     context "with no depends_on" do
-      let(:task) { described_class.new(:review, pages: [ page_a ]) }
+      let(:task) { described_class.new(:review) }
 
       it "returns true" do
-        flow = build_flow([ task_a, task_b, task ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
         expect(task.dependencies_met?(flow)).to be true
       end
     end
 
     context "with depends_on: :all" do
-      let(:task) { described_class.new(:review, depends_on: :all, pages: [ page_a ]) }
+      let(:task) { described_class.new(:review, depends_on: :all) }
 
       it "returns true when all other tasks are complete" do
-        flow = build_flow([ task_a, task ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, task ])
         expect(task.dependencies_met?(flow)).to be true
       end
 
       it "returns false when any other task is incomplete" do
-        flow = build_flow([ task_a, task_b, task ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
         expect(task.dependencies_met?(flow)).to be false
       end
     end
 
     context "with depends_on: [:specific_tasks]" do
-      let(:task) { described_class.new(:review, depends_on: [ :personal_info ], pages: [ page_a ]) }
+      let(:task) { described_class.new(:review, depends_on: [ :personal_info ]) }
 
       it "returns true when named dependencies are complete" do
-        flow = build_flow([ task_a, task_b, task ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
         expect(task.dependencies_met?(flow)).to be true
       end
 
       it "returns false when a named dependency is incomplete" do
-        task_with_dep = described_class.new(:review, depends_on: [ :contact_info ], pages: [ page_a ])
-        flow = build_flow([ task_a, task_b, task_with_dep ])
+        task_with_dep = described_class.new(:review, depends_on: [ :contact_info ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task_with_dep ])
         expect(task_with_dep.dependencies_met?(flow)).to be false
       end
     end
