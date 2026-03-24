@@ -15,6 +15,7 @@ module Strata
       @task_types = Strata::Task.distinct(:type).unscope(:order).pluck(:type) # Postgres does not support using `order` with `distinct`, thus we have to unscope `order` here.
       @tasks = filter_tasks
       @unassigned_tasks = Strata::Task.incomplete.unassigned
+      render "strata/tasks/index", locals: tasks_index_locals
     end
 
     def show
@@ -43,6 +44,16 @@ module Strata
     end
 
     protected
+
+    def tasks_index_locals
+      {
+        tasks: @tasks,
+        task_types: @task_types,
+        unassigned_tasks: @unassigned_tasks,
+        task_row_component_class: Strata::Tasks::TaskRowComponent,
+        task_row_component_options: {}
+      }
+    end
 
     def set_task
       @task = Strata::Task.find(params[:id]) if params[:id].present?

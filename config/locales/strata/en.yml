@@ -69,6 +69,7 @@ en:
         tasks: "Tasks"
       index:
         title: "Tasks"
+        actions_label: "Actions:"
         tabs:
           assigned: "Assigned"
           completed: "Completed"

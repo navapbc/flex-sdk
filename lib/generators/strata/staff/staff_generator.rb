@@ -20,7 +20,6 @@ module Strata
 
       def create_views
         template "staff_index.html.erb", "app/views/staff/index.html.erb"
-        template "tasks_index.html.erb", "app/views/tasks/index.html.erb"
         template "task_show.html.erb", "app/views/tasks/show.html.erb"
       end
 
