@@ -13,54 +13,54 @@ graph LR
 
 ## Program specific business processes
 
-Specific programs will inherit from the foundational business process but will elaborate on the specifics aspects of the process. For example, a paid leave program's "Decision" subprocess may involve calculating financial eligibility, determining the amount of leave available, and calculating the weekly benefit amount. An unemployment insurance program's "Decision" subprocess may be different.
+Specific programs will inherit from the foundational business process but will elaborate on the specifics aspects of the process. For example, a licensing program's "Decision" subprocess may involve verifying credentials, checking background results, and issuing the license. A benefits program's "Decision" subprocess may involve calculating financial eligibility and determining the benefit amount.
 
-The following diagram shows the inheritance of business processes for different programs, such as paid leave and unemployment insurance, from the foundational business process.
+The following diagram shows the inheritance of business processes for different programs from the foundational business process.
 
 ```mermaid
 graph TD
-  F[Foundational Business Process] --> PFML[Paid Leave]
-  F[Foundational Business Process] --> UI[Unemployment Insurance]
+  F[Foundational Business Process] --> L[Licensing]
+  F[Foundational Business Process] --> B[Benefits]
 ```
 
 ```mermaid
 graph LR
-  subgraph Paid Leave
+  subgraph Licensing
     direction LR
 
-    subgraph PFMLDecision [PFML Decision]
+    subgraph LicensingDecision [Licensing Decision]
       direction LR
-      PFMLFinancialEligibility[Calculate Financial Eligibility] --> PFMLLeaveAvailable[Determine Amount of Leave Available] --> PFMLWeeklyBenefit[Calculate Weekly Benefit Amount]
+      LicensingCredentials[Verify Credentials] --> LicensingBackground[Check Background] --> LicensingIssue[Issue License]
     end
 
-    PFMLIntake[Intake] --> PFMLVerification[Verification]
-    PFMLVerification[Verification] --> PFMLDecision
-    PFMLDecision -->  PFMLAppeal[Appeal]  
+    LicensingIntake[Intake] --> LicensingVerification[Verification]
+    LicensingVerification[Verification] --> LicensingDecision
+    LicensingDecision -->  LicensingAppeal[Appeal]
   end
 
-  subgraph Unemployment Insurance
+  subgraph Benefits
     direction LR
 
-    subgraph UIDecision [UI Decision]
+    subgraph BenefitsDecision [Benefits Decision]
       direction LR
-      UIFinancialEligibility[Calculate Financial Eligibility] --> UIWeeklyBenefit[Calculate Weekly Benefit Amount]
+      BenefitsFinancialEligibility[Calculate Financial Eligibility] --> BenefitsAmount[Calculate Benefit Amount]
     end
 
-    UIIntake[Intake] --> UIVerification[Verification]
-    UIVerification[Verification] --> UIDecision
-    UIDecision --> UIAppeal[Appeal]
+    BenefitsIntake[Intake] --> BenefitsVerification[Verification]
+    BenefitsVerification[Verification] --> BenefitsDecision
+    BenefitsDecision --> BenefitsAppeal[Appeal]
   end
 ```
 
 ## State specific business processes
 
-State specific business processes will inherit from the program specific business processes. For example, paid leave programs for Massachusetts, Minnesota, and Maryland can all inherit from the base paid leave program's business process and add, remove, change, or replace steps in the business process.
+State specific business processes will inherit from the program specific business processes. For example, licensing programs for Massachusetts, Minnesota, and Maryland can all inherit from the base licensing program's business process and add, remove, change, or replace steps in the business process.
 
 ```mermaid
 graph TD
-  PL[Paid Leave Process] --> MA[Massachusetts Paid Leave Process]
-  PL[Paid Leave Process] --> MN[Minnesota Paid Leave Process]
-  PL[Paid Leave Process] --> MD[Maryland Paid Leave Process]
+  LP[Licensing Process] --> MA[Massachusetts Licensing Process]
+  LP[Licensing Process] --> MN[Minnesota Licensing Process]
+  LP[Licensing Process] --> MD[Maryland Licensing Process]
 ```
 
 ## Family trees for subprocesses

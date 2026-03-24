@@ -137,8 +137,8 @@ Use the Strata Task Management System to define custom tasks for your staff.
 
 Use Strata Rules Engine to encode policy as code.
 
-- Use the same rules to power both official determinations as well as public calculators. For example the [Massachusetts Paid Family and Medical Leave Benefits Calculator](https://calculator.eol.mass.gov/pfml/yourbenefits/) provides a way for applicants to estimate their weekly benefits before creating an account or applying. Going forward we can use the same rules to power both the calculator and the official determination to ensure accuracy of these estimates.
-- Leverage shared rules across programs. For example, Paid Leave eligibility in Massachusetts cites minimum wages earned as defined by Unemployment Insurance policy. Use the unemployment insurance rules directly rather than re-implementing them.
+- Use the same rules to power both official determinations as well as public-facing calculators and estimators. This ensures accuracy by having a single source of truth for policy logic.
+- Leverage shared rules across programs. When one program's eligibility criteria reference rules defined in another program, use those rules directly rather than re-implementing them.
 
 ## Master Person Record
 

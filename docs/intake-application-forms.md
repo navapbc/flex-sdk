@@ -10,8 +10,8 @@ While most intake processes are application forms, there are some important exce
 
 - **Appeals**: When someone wants to contest a decision, they submit an appeal. While we don't typically call it an "application form" in domain language, an appeal can be implemented as a subclass of ApplicationForm.
 - **Reporting**: Some programs require periodic reporting for compliance. For example:
-  - Businesses submitting wage reports for unemployment insurance programs
-  - Medicaid beneficiaries submitting activity reports to maintain coverage.
+  - Businesses submitting periodic compliance reports
+  - Beneficiaries submitting activity reports to maintain coverage.
 
   These reports can also be implemented as subclasses of ApplicationForm.
 

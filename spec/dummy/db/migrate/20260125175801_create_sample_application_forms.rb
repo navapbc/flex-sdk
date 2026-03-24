@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreatePaidLeaveApplicationForms < ActiveRecord::Migration[8.0]
+class CreateSampleApplicationForms < ActiveRecord::Migration[8.0]
   def change
-    create_table :paid_leave_application_forms do |t|
+    create_table :sample_application_forms do |t|
       t.uuid :user_id
       t.integer :status
       t.datetime :submitted_at

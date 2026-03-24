@@ -28,39 +28,39 @@ If you update entities directly, you risk skipping important checks or breaking 
 **Bad:** (updates entity directly)
 
 ```ruby
-LeavePeriod.find(leave_period_id).update(start:, end:)
+ServicePeriod.find(service_period_id).update(start:, end:)
 ```
 
 **Good:** (routes change through aggregate root)
 
 ```ruby
-PaidLeave.transaction do
-  paid_leave = PaidLeave.lock.find(paid_leave_id)
-  paid_leave.leave_periods.find { |lp| lp.id == leave_period_id }.attributes = { start:, end: }
-  paid_leave.save!
+BenefitApplication.transaction do
+  application = BenefitApplication.lock.find(application_id)
+  application.service_periods.find { |sp| sp.id == service_period_id }.attributes = { start:, end: }
+  application.save!
 end
 ```
 
-Here, the `PaidLeave` aggregate root can enforce rules and wrap changes in a transaction. For example,
+Here, the `BenefitApplication` aggregate root can enforce rules and wrap changes in a transaction. For example,
 
 ```ruby
-class PaidLeave < ApplicationRecord
-  has_many :leave_periods
-  accepts_nested_attributes_for :leave_periods
-  validate :leave_periods_have_no_overlap
-  
+class BenefitApplication < ApplicationRecord
+  has_many :service_periods
+  accepts_nested_attributes_for :service_periods
+  validate :service_periods_have_no_overlap
+
   private
-  
-  def leave_periods_have_no_overlap
+
+  def service_periods_have_no_overlap
     # check that periods don't overlap each other
   end
 end
 
 # then in code making the updates, e.g., POST handlers
-PaidLeave.transaction do
-  paid_leave = PaidLeave.lock.find(id)
-  paid_leave.leave_periods = # updates from request
-  paid_leave.save!
+BenefitApplication.transaction do
+  application = BenefitApplication.lock.find(id)
+  application.service_periods = # updates from request
+  application.save!
 end
 ```
 
@@ -70,9 +70,9 @@ end
 - Load aggregates as a whole. Use `includes` or `preload` when fetching so the aggregate root and its related entities come in one query. This avoids hidden queries and keeps the aggregate consistent. For example.
 
   ```ruby
-  class PaidLeave < ApplicationRecord
-    has_many :leave_periods
-    default_scope { preload(:leave_periods) }
+  class BenefitApplication < ApplicationRecord
+    has_many :service_periods
+    default_scope { preload(:service_periods) }
   end
   ```
 

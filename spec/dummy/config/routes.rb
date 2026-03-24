@@ -9,9 +9,9 @@ Rails.application.routes.draw do
 
   resources :passport_application_forms, only: [ :index, :new, :show, :create, :edit, :update ]
 
-  resources :paid_leave_application_forms, only: [ :index, :new, :show, :create ] do
+  resources :sample_application_forms, only: [ :index, :new, :show, :create ] do
     member do
-      PaidLeaveFlow.pages.each do |page|
+      SampleFlow.pages.each do |page|
         get page.edit_pathname
         patch page.update_pathname
       end

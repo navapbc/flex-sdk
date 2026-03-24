@@ -2,13 +2,13 @@
 
 require 'rails_helper'
 
-RSpec.describe PaidLeaveApplicationFormsController do
+RSpec.describe SampleApplicationFormsController do
   render_views
 
   describe "GET #index" do
     it "renders applications" do
-      create(:paid_leave_application_form, applicant_name_first: "Kevin")
-      create(:paid_leave_application_form, applicant_name_first: "Mary")
+      create(:sample_application_form, applicant_name_first: "Kevin")
+      create(:sample_application_form, applicant_name_first: "Mary")
       get :index, params: { locale: "en" }
 
       expect(response.body).to have_selector("td", text: "TODO")
@@ -18,29 +18,29 @@ RSpec.describe PaidLeaveApplicationFormsController do
   describe "GET #new" do
     it "renders" do
       get :new, params: { locale: "en" }
-      expect(response.body).to have_selector("h1", text: /Begin your leave application/i)
+      expect(response.body).to have_selector("h1", text: /Begin your application/i)
     end
   end
 
   describe "POST #create" do
-    it "creates a new leave application and redirects to the next page" do
+    it "creates a new application and redirects to the next page" do
       post :create, params: { locale: "en" }
-      expect(PaidLeaveApplicationForm.all.length).to eq(1)
-      leave_application = PaidLeaveApplicationForm.first
-      expect(response).to redirect_to(paid_leave_application_form_path(leave_application))
+      expect(SampleApplicationForm.all.length).to eq(1)
+      application = SampleApplicationForm.first
+      expect(response).to redirect_to(sample_application_form_path(application))
     end
   end
 
   describe "GET #review" do
-    let(:leave_application) { create(:paid_leave_application_form, :submittable) }
+    let(:application) { create(:sample_application_form, :submittable) }
     let(:params) do
       {
-        id: leave_application.id,
+        id: application.id,
         locale: "en"
       }
     end
 
-    it "renders leave application details" do
+    it "renders application details" do
       get :review, params: params
       expect(response.body).to have_selector("h1", text: "Review your application")
       expect(response.body).to have_selector("input[type=submit]")
@@ -48,7 +48,7 @@ RSpec.describe PaidLeaveApplicationFormsController do
 
     context "with a submitted application" do
       it "hides submission buttons" do
-        leave_application.submit_application
+        application.submit_application
         get :review, params: params
         expect(response.body).not_to have_selector("input[type=submit]")
       end
@@ -58,18 +58,18 @@ RSpec.describe PaidLeaveApplicationFormsController do
   describe "PATCH #submit" do
     let(:params) do
       {
-        id: leave_application.id,
+        id: application.id,
         locale: "en"
       }
     end
 
     context "when the application cannot be submitted" do
-      let(:leave_application) { create(:paid_leave_application_form) }
+      let(:application) { create(:sample_application_form) }
 
-      it "does not update the leave application" do
+      it "does not update the application" do
         expect {
           patch :submit, params: params
-        }.not_to change { leave_application.reload.attributes }
+        }.not_to change { application.reload.attributes }
       end
 
       it "renders the review form again" do
@@ -84,14 +84,14 @@ RSpec.describe PaidLeaveApplicationFormsController do
     end
 
     context "when the application can be submitted" do
-      let(:leave_application) { create(:paid_leave_application_form, :submittable) }
+      let(:application) { create(:sample_application_form, :submittable) }
 
-      it "updates the leave application and redirects to the next page" do
+      it "updates the application and redirects to the next page" do
         patch :submit, params: params
-        leave_application.reload
+        application.reload
 
-        expect(leave_application.submitted?).to be(true)
-        expect(response).to redirect_to(paid_leave_application_form_path(leave_application))
+        expect(application.submitted?).to be(true)
+        expect(response).to redirect_to(sample_application_form_path(application))
       end
     end
   end
@@ -99,17 +99,17 @@ RSpec.describe PaidLeaveApplicationFormsController do
   describe "GET #show" do
     let(:params) do
       {
-        id: leave_application.id,
+        id: application.id,
         locale: "en"
       }
     end
 
 
     context "with a submitted application" do
-      let(:leave_application) { create(:paid_leave_application_form, :submittable) }
+      let(:application) { create(:sample_application_form, :submittable) }
 
       it "shows the submitted status" do
-        leave_application.submit_application
+        application.submit_application
         get :show, params: params
         expect(response.body).to have_selector("p", text: "Submitted")
       end

@@ -23,7 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_04_210857) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "paid_leave_application_forms", force: :cascade do |t|
+  create_table "sample_application_forms", force: :cascade do |t|
     t.uuid "user_id"
     t.integer "status"
     t.datetime "submitted_at"

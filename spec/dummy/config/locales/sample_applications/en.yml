@@ -1,26 +1,26 @@
 en:
-  paid_leave_application_forms:
+  sample_application_forms:
     task_section_component:
       personal_information:
         title: Personal Information
-        description: Tell us about yourself. You’ll need to enter your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN).
+        description: Tell us about yourself. You'll need to enter your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN).
       employment_details:
         title: Employment
-        description: Tell us about your employer. You’ll need to enter their legal name and their 9 digit federal employer identification number (FEIN or EIN).
+        description: Tell us about your employer. You'll need to enter their legal name and their 9 digit federal employer identification number (FEIN or EIN).
       leave_details:
         title: Leave Details
-        description: Tell us about the type of leave you’re taking (Parental, Medical, Family Caregiving, or Military Exigency). You’ll need to enter your leave dates and provide supporting documentation.
+        description: Tell us about the type of leave you're taking (Parental, Medical, Family Caregiving, or Military Exigency). You'll need to enter your leave dates and provide supporting documentation.
     index:
-      title: "Apply for Paid Leave"
-      intro: "Apply for paid leave benefits. You may be eligible for up to 12 weeks of paid leave."
+      title: "Sample Application"
+      intro: "Submit a sample application to see the Strata SDK in action."
       new_button: "Start a new application"
       in_progress_applications:
         heading: "Your applications"
     new:
-      title: "Begin your leave application"
+      title: "Begin your application"
       agree_button: "Get started"
     show:
-      title: "Your Paid Leave Application"
+      title: "Your Sample Application"
       back: "Back to applications"
       in_progress_title: "Your in-progress application"
       in_progress_description: "Your progress is automatically saved as you complete the application. You can edit any information you enter until your application is submitted."
