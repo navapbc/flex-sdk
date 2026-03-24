@@ -46,9 +46,22 @@ module Strata::Flows
         end
       end
 
+      # Validates that an explicit depends_on array only references existing task names.
+      def validate_depends_on!(depends_on)
+        return unless depends_on.is_a?(Array)
+
+        existing_names = tasks.map(&:name)
+        invalid = depends_on - existing_names
+        return unless invalid.any?
+
+        raise ArgumentError, "depends_on references unknown task(s): #{invalid.join(', ')}"
+      end
+
       # Defines a new task block
-      def task(task_name, &block)
-        @current_task = Task.new(task_name)
+      def task(task_name, depends_on: nil, &block)
+        validate_depends_on!(depends_on)
+
+        @current_task = Task.new(task_name, depends_on: depends_on)
         tasks.push(@current_task)
         block.call
         @current_task = nil
@@ -160,6 +173,21 @@ module Strata::Flows
 
     def task_counter(task)
       tasks.find_index(task)
+    end
+
+    # Evaluates whether the given depends_on constraint is satisfied.
+    # Returns true if depends_on is nil, otherwise checks that all
+    # referenced tasks (or all tasks for :all) are completed.
+    def dependencies_met?(depends_on, exclude: nil)
+      return true if depends_on.nil?
+
+      dependent_tasks = if depends_on == :all
+        exclude ? tasks.reject { |t| t.name == exclude } : tasks
+      else
+        tasks.select { |t| depends_on.include?(t.name) }
+      end
+
+      dependent_tasks.all? { |t| t.completed?(@record) }
     end
 
     # Returns the full, parameterized path to the start_page

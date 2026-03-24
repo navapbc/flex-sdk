@@ -56,4 +56,52 @@ RSpec.describe Strata::Flows::ApplicationFormFlow do
       expect(task.current_page_idx).to eq(0)
     end
   end
+
+  describe "task dependencies" do
+    before do
+      flow_with_deps = Class.new do
+        include Strata::Flows::ApplicationFormFlow
+
+        task :personal_information do
+          question_page :name, fields: [ :applicant_name_first, :applicant_name_last ]
+        end
+
+        task :leave_details, depends_on: [ :personal_information ] do
+          question_page :leave_type
+        end
+
+        end_page :review
+      end
+
+      stub_const("FlowWithDeps", flow_with_deps)
+    end
+
+    it "stores depends_on on the task" do
+      leave_task = FlowWithDeps.tasks.find { |t| t.name == :leave_details }
+      expect(leave_task.depends_on).to eq([ :personal_information ])
+    end
+
+    it "stores nil depends_on when not specified" do
+      personal_task = FlowWithDeps.tasks.find { |t| t.name == :personal_information }
+      expect(personal_task.depends_on).to be_nil
+    end
+
+    describe "invalid depends_on references" do
+      it "raises an error when task depends_on references a non-existent task" do
+        expect {
+          Class.new do
+            include Strata::Flows::ApplicationFormFlow
+
+            task :personal_information do
+              question_page :name, fields: [ :applicant_name_first ]
+            end
+
+            task :review, depends_on: [ :nonexistent_task ] do
+              question_page :date_of_birth
+            end
+          end
+        }.to raise_error(ArgumentError, /nonexistent_task/)
+      end
+    end
+  end
 end
