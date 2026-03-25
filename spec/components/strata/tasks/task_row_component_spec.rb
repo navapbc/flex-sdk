@@ -6,6 +6,8 @@ RSpec.describe Strata::Tasks::TaskRowComponent, type: :component do
   let(:task) { create(:strata_task, :with_due_on) }
 
   before do
+    vc_test_controller.request.path_parameters[:controller] = "tasks"
+    vc_test_controller.request.path_parameters[:action] = "index"
     render_inline(described_class.new(task: task))
   end
 

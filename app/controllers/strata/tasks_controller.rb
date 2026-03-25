@@ -4,8 +4,6 @@ module Strata
   # Controller for managing Strata::Task records. Handles listing, filtering, showing, and updating tasks.
   # This controller helps a parent application manage tasks by not forcing the parent application to implement the same functionality.
   class TasksController < ::StaffController
-    helper DateHelper
-
     before_action :set_task, only: %i[ show update ]
     before_action :set_case, only: %i[ show update ]
     before_action :set_application_form, only: %i[ show update]

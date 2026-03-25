@@ -42,9 +42,9 @@ RSpec.describe Strata::Generators::StaffGenerator, type: :generator do
       expect(File.exist?(staff_view_path)).to be true
     end
 
-    it "creates tasks index view" do
-      tasks_index_path = "#{destination_root}/app/views/tasks/index.html.erb"
-      expect(File.exist?(tasks_index_path)).to be true
+    it "uses Strata::TasksController so tasks index is rendered from the engine" do
+      tasks_controller_content = File.read("#{destination_root}/app/controllers/tasks_controller.rb")
+      expect(tasks_controller_content).to include("< Strata::TasksController")
     end
 
     it "creates task show view" do
