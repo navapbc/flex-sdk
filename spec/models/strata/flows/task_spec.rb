@@ -60,4 +60,53 @@ RSpec.describe Strata::Flows::Task do
       expect(task.path(record)).to eq("edit_path")
     end
   end
+
+  describe "#dependencies_met?" do
+    let(:complete_task) { described_class.new(:personal_info) }
+    let(:incomplete_task) { described_class.new(:contact_info) }
+    let(:flow) { PaidLeaveFlow.new(build_stubbed(:paid_leave_application_form)) }
+
+    before do
+      allow(complete_task).to receive(:completed?).and_return(true)
+      allow(incomplete_task).to receive(:completed?).and_return(false)
+    end
+
+    context "with no depends_on" do
+      let(:task) { described_class.new(:review) }
+
+      it "returns true" do
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
+        expect(task.dependencies_met?(flow)).to be true
+      end
+    end
+
+    context "with depends_on: :all" do
+      let(:task) { described_class.new(:review, depends_on: :all) }
+
+      it "returns true when all other tasks are complete" do
+        allow(flow).to receive(:tasks).and_return([ complete_task, task ])
+        expect(task.dependencies_met?(flow)).to be true
+      end
+
+      it "returns false when any other task is incomplete" do
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
+        expect(task.dependencies_met?(flow)).to be false
+      end
+    end
+
+    context "with depends_on: [:specific_tasks]" do
+      let(:task) { described_class.new(:review, depends_on: [ :personal_info ]) }
+
+      it "returns true when named dependencies are complete" do
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task ])
+        expect(task.dependencies_met?(flow)).to be true
+      end
+
+      it "returns false when a named dependency is incomplete" do
+        task_with_dep = described_class.new(:review, depends_on: [ :contact_info ])
+        allow(flow).to receive(:tasks).and_return([ complete_task, incomplete_task, task_with_dep ])
+        expect(task_with_dep.dependencies_met?(flow)).to be false
+      end
+    end
+  end
 end

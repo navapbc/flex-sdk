@@ -9,10 +9,10 @@ class PaidLeaveFlow
       date_of_birth: [ :month, :day, :year ]
     ]
   end
-  task :employment_details do
+  task :employment_details, depends_on: [ :personal_information ] do
     question_page :employer_name
   end
-  task :leave_details do
+  task :leave_details, depends_on: [ :employment_details ] do
     question_page :leave_type
   end
   end_page :review
