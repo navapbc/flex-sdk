@@ -115,4 +115,4 @@ form.save
 ## Next Steps
 
 - Explore the [Strata Form Builder](./strata-form-builder.md) or [Multi-page Form Flow](./multi-page-form-flows.md) for rendering your form
-- [Create a case management business process](./docs/case-management-business-process.md)
+- [Create a case management business process](./case-management-business-process.md)
