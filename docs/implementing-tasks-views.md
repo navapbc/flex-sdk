@@ -1,38 +1,39 @@
 # Implementing Task Views
 
-This guide explains how to implement and customize the task views in the Strata engine, with a focus on the `index.html.erb` template.
+This guide explains how to implement and customize the task views in the Strata engine, with a focus on the tasks index.
 
 ## Quick Start Implementation
 
-To implement the tasks index view in your application, create an `index.html.erb` file in your views directory with the following content:
+`Strata::TasksController#index` renders the engine template `strata/tasks/index` and passes locals from `tasks_index_locals`. Host applications normally **do not** add `app/views/tasks/index.html.erb`; override `tasks_index_locals` (or `index`) in your `TasksController` subclass to customize behavior.
 
-```erb
-<%= render template: 'strata/tasks/index', locals: {
-  tasks: @tasks,
-  task_types: @task_types,
-  unassigned_tasks: @unassigned_tasks
-} %>
-```
+### Default locals
 
-### Required Local Variables
+The engine supplies:
 
-The view requires the following local variables to be passed:
+- `tasks`, `task_types`, `unassigned_tasks` (from instance variables)
+- `task_row_component_class` (defaults to `Strata::Tasks::TaskRowComponent`)
+- `task_row_component_options` (defaults to `{}`)
 
-- `tasks`: An array of `Strata::Task` objects to display in the list
-- `task_types`: An array of available task types for filtering
-- `unassigned_tasks`: An array of `Strata::Task` objects used to determine the state of the "Pick Next Task" button
+### Custom task columns
 
-### Controller Setup
+Subclass `Strata::Tasks::TaskRowComponent` and pass your class in `tasks_index_locals`, following the same pattern as `Strata::Cases::CaseRowComponent` for the cases index.
 
-In your controller, ensure you have the following instance variables set:
+### Controller setup
+
+Override `tasks_index_locals` when you need extra row options or a custom row component:
 
 ```ruby
-def index
-  @tasks = Strata::Task.where(assignee_id: current_user.id) # or your task retrieval logic
-  @task_types = ["MyCustomTask", "OtherTask", Strata::Task.name]
-  @unassigned_tasks = Strata::Task.where(assignee_id: nil) # or your unassigned tasks logic
+protected
+
+def tasks_index_locals
+  super.merge(
+    task_row_component_class: MyApp::TaskRowComponent,
+    task_row_component_options: { my_data: @my_data }
+  )
 end
 ```
+
+The default `Strata::TasksController#index` sets `@task_types`, `@tasks`, and `@unassigned_tasks` before rendering.
 
 ## Internationalization (i18n)
 

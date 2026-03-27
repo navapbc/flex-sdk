@@ -14,7 +14,6 @@ This will create:
 
     Views:
         app/views/staff/index.html.erb - Staff dashboard index page
-        app/views/tasks/index.html.erb - Tasks listing page that renders strata/tasks/index template
         app/views/tasks/show.html.erb - Task detail page that renders strata/tasks/show template
 
     Tests:
@@ -31,6 +30,6 @@ This will create:
 Notes:
     - The generated staff controller includes TODO comments for implementing authentication and authorization
     - The tasks controller includes TODO comments for setting up case and application form relationships
-    - The generated views render existing strata/tasks templates with appropriate locals
+    - Strata::TasksController renders the tasks index from the engine; override tasks_index_locals to customize row components
     - You'll need to customize the case_classes method in the staff controller to match your application's case models
     - The generated spec file includes TODO placeholders for implementing comprehensive tests

@@ -3,6 +3,8 @@
   # @param tasks [Array<Strata::Task>] Array of tasks to display
   # @param unassigned_tasks [Array<Strata::Task>] Array of unassigned tasks for button state
   # @param task_types [Array<String>] Array of task types for filtering
+  # @param task_row_component_class [Class] ViewComponent subclass of {Strata::Tasks::TaskRowComponent}
+  # @param task_row_component_options [Hash] Extra keyword arguments passed to each row component
   #
   # @example Task types array
   #   ["Strata::Task", "Strata::OtherTask", "MyCustomTask"]
@@ -13,6 +15,8 @@
   #   - strata.tasks.index.tabs.completed: Label for the completed tasks tab
   #
  %>
+<% task_row_component_class = local_assigns.fetch(:task_row_component_class, Strata::Tasks::TaskRowComponent) %>
+<% task_row_component_options = local_assigns.fetch(:task_row_component_options, {}) %>
 <!-- Main content -->
 <div class="grid-container">
   <h1 class="usa-heading-xl"><%= t("strata.tasks.index.title") %></h1>
@@ -31,7 +35,7 @@
       <%= render partial: 'strata/tasks/due_date_filter' %>
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
-      <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem">Actions:</label>
+      <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem"><%= t("strata.tasks.index.actions_label") %></label>
       <%= button_to t("strata.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task),
                       id: "next-task-button",
                       disabled: !unassigned_tasks&.any?,
@@ -44,19 +48,16 @@
     <!-- Tasks -->
     <%= render Strata::US::TableComponent.new(striped: true, sticky_header: true, sortable: true, classes: "width-full") do |table| %>
       <% table.with_caption do %><span class="usa-sr-only"><%= t("strata.tasks.index.title") %></span><% end %>
-      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_due_date") } %>
-      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_type") } %>
-      <% table.with_header(sortable: true) { t("strata.tasks.index.columns.col_case_id") } %>
-      <% table.with_header(sortable: true, aria_sort: "descending") { t("strata.tasks.index.columns.col_created_date") } %>
+      <% task_row_component_class.columns.each do |column| %>
+        <% table.with_header(sortable: true, **task_row_component_class.header_options_for(column)) do %>
+          <%= task_row_component_class.header_translation_for(column) %>
+        <% end %>
+      <% end %>
 
       <% tasks.each do |task| %>
-        <% table.with_row do |row| %>
-          <% row.with_cell(sort_value: time_since_epoch(task.due_on)) { local_en_us(task.due_on) } %>
-          <% row.with_cell(sort_value: task.type) do %>
-            <%= link_to t("tasks.types.#{task.type.underscore}"), url_for(only_path: true, action: :show, id: task.id.to_s) %>
-          <% end %>
-          <% row.with_cell(sort_value: task.case_id) { task.case_id } %>
-          <% row.with_cell(sort_value: time_since_epoch(task.created_at)) { local_en_us(task.created_at.to_date) } %>
+        <% row_component = task_row_component_class.new(task: task, **task_row_component_options) %>
+        <% table.with_row(classes: row_component.row_classes) do %>
+          <%= render row_component %>
         <% end %>
       <% end %>
     <% end %>

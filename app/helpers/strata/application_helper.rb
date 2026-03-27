@@ -7,6 +7,8 @@ module Strata
   # @see Strata::FormBuilder for more information about available form helpers
   #
   module ApplicationHelper
+    include DateHelper
+
     def strata_form_with(model: false, scope: nil, url: nil, format: nil, **options, &block)
       options[:builder] = Strata::FormBuilder
       args = { scope: scope, url: url, format: format, **options }

@@ -1,0 +1,5 @@
+<% self.class.columns.each do |column| %>
+  <%= tag.td(**cell_html_options(column)) do %>
+    <%= send(column) || "—" %>
+  <% end %>
+<% end %>
