@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_04_210857) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_164643) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,18 +19,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_04_210857) do
     t.string "business_process_current_step"
     t.uuid "application_form_id"
     t.jsonb "facts", default: {}
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "paid_leave_application_forms", force: :cascade do |t|
-    t.uuid "user_id"
-    t.integer "status"
-    t.datetime "submitted_at"
-    t.string "applicant_name_first"
-    t.date "date_of_birth"
-    t.string "employer_name"
-    t.string "leave_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,6 +44,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_04_210857) do
     t.string "application_form_id"
     t.jsonb "facts"
     t.index ["application_form_id"], name: "index_passport_cases_on_application_form_id"
+  end
+
+  create_table "sample_application_forms", force: :cascade do |t|
+    t.uuid "user_id"
+    t.integer "status"
+    t.datetime "submitted_at"
+    t.string "applicant_name_first"
+    t.date "date_of_birth"
+    t.string "employer_name"
+    t.string "leave_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "reviewed", default: false
   end
 
   create_table "strata_determinations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

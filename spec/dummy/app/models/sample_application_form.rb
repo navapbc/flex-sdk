@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class PaidLeaveApplicationForm < Strata::ApplicationForm
+class SampleApplicationForm < Strata::ApplicationForm
   include Strata::Flows::ApplicationFormValidations
-  validate_flow PaidLeaveFlow
+  validate_flow SampleFlow
 
   strata_attribute :date_of_birth, :memorable_date
 

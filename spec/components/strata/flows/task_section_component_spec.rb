@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Strata::Flows::TaskSectionComponent, type: :component do
-  let(:flow) { PaidLeaveFlow.new(build_stubbed(:paid_leave_application_form)) }
+  let(:flow) { SampleFlow.new(build_stubbed(:sample_application_form)) }
   let(:task) { flow.tasks.first }
 
   describe "when task dependencies are not met" do

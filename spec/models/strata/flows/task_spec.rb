@@ -64,7 +64,7 @@ RSpec.describe Strata::Flows::Task do
   describe "#dependencies_met?" do
     let(:complete_task) { described_class.new(:personal_info) }
     let(:incomplete_task) { described_class.new(:contact_info) }
-    let(:flow) { PaidLeaveFlow.new(build_stubbed(:paid_leave_application_form)) }
+    let(:flow) { SampleFlow.new(build_stubbed(:sample_application_form)) }
 
     before do
       allow(complete_task).to receive(:completed?).and_return(true)

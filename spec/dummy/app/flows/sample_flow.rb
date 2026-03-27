@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Dummy paid leave flow
-class PaidLeaveFlow
+# Dummy sample flow
+class SampleFlow
   include Strata::Flows::ApplicationFormFlow
   task :personal_information do
     question_page :name, fields: [ :applicant_name_first ]

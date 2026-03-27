@@ -8,7 +8,7 @@ module Strata
     #
     # Step descriptions can be customized by setting locale keys in the format:
     #   `{application_form_class_plural}.task_section_component.{task_name}`
-    #    Example: `paid_leave_application_forms.task_section_component.personal_information`
+    #    Example: `sample_application_forms.task_section_component.personal_information`
     #
     # @example Basic usage
     #   <%= render TaskSectionComponent.new(flow: @flow, task: @task) %>
