@@ -26,11 +26,15 @@ module Strata
         flow_class = flow_name.constantize
         form_class = form_name.constantize
 
+        @locale_data = {}
+
         flow_class.tasks.each do |task|
           task.pages.each do |page|
             create_view_for_page(page, form_class)
           end
         end
+
+        create_or_update_locale_file
       end
 
       private
@@ -43,6 +47,7 @@ module Strata
         fields = resolve_fields(page.fields, form_class)
         content = build_view_content(page.name, fields)
         create_file "#{views_directory}/edit_#{page.name}.html.erb", content
+        collect_locale_data(page.name, fields)
       end
 
       def resolve_fields(raw_fields, form_class)
@@ -211,6 +216,49 @@ module Strata
         end
         lines << "  <% end %>"
         lines.join("\n")
+      end
+
+      def collect_locale_data(page_name, fields)
+        page_translations = {}
+        page_translations["#{page_name}_title"] = "What is your #{page_name.to_s.humanize(capitalize: false)}?"
+
+        fields.each do |field_info|
+          next unless field_info[:helper] == :enum
+
+          page_translations["#{field_info[:field]}_legend"] = "What is your #{field_info[:field].to_s.humanize(capitalize: false)}?"
+          field_info[:values].each do |value|
+            page_translations["#{field_info[:field]}_#{value}"] = value.humanize
+          end
+        end
+
+        @locale_data["edit_#{page_name}"] = page_translations
+      end
+
+      def locale_file_path
+        "config/locales/#{form_name.underscore.pluralize}/en.yml"
+      end
+
+      def create_or_update_locale_file
+        new_translations = { "en" => { form_name.underscore.pluralize => @locale_data } }
+        full_path = File.join(destination_root, locale_file_path)
+
+        if File.exist?(full_path)
+          existing = YAML.safe_load(File.read(full_path)) || {}
+          merged = deep_merge(existing, new_translations)
+          create_file locale_file_path, merged.to_yaml, force: true
+        else
+          create_file locale_file_path, new_translations.to_yaml
+        end
+      end
+
+      def deep_merge(base, override)
+        base.merge(override) do |_key, old_val, new_val|
+          if old_val.is_a?(Hash) && new_val.is_a?(Hash)
+            deep_merge(old_val, new_val)
+          else
+            new_val
+          end
+        end
       end
     end
   end

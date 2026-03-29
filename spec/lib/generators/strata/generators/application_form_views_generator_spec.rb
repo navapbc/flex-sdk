@@ -511,6 +511,138 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
     end
   end
 
+  describe "locale file generation" do
+    let(:locale_path) { "#{destination_root}/config/locales/test_form_application_forms/en.yml" }
+
+    def locale_yaml
+      YAML.safe_load(File.read(locale_path))
+    end
+
+    context "with a simple text field page" do
+      let(:question_page) { Strata::Flows::QuestionPage.new(:full_name, fields: [ :full_name ]) }
+      let(:task) { instance_double(Strata::Flows::Task, pages: [ question_page ]) }
+
+      before do
+        allow(flow_class).to receive(:tasks).and_return([ task ])
+        allow(form_class).to receive_messages(attribute_types: { "full_name" => ActiveModel::Type::String.new }, column_names: [ "full_name" ], columns_hash: { "full_name" => OpenStruct.new(type: :string) })
+        generator.invoke_all
+      end
+
+      it "creates a locale file" do
+        expect(File.exist?(locale_path)).to be true
+      end
+
+      it "nests translations under the form name and edit page" do
+        translations = locale_yaml.dig("en", "test_form_application_forms", "edit_full_name")
+        expect(translations).to be_a(Hash)
+      end
+
+      it "generates a question-format title for the page" do
+        title = locale_yaml.dig("en", "test_form_application_forms", "edit_full_name", "full_name_title")
+        expect(title).to eq("What is your full name?")
+      end
+    end
+
+    context "with an enum field" do
+      let(:question_page) { Strata::Flows::QuestionPage.new(:leave_type, fields: [ :leave_type ]) }
+      let(:task) { instance_double(Strata::Flows::Task, pages: [ question_page ]) }
+
+      before do
+        allow(flow_class).to receive(:tasks).and_return([ task ])
+        allow(form_class).to receive_messages(defined_enums: {
+          "leave_type" => { "medical" => 0, "family" => 1, "military" => 2 }
+        }, attribute_types: {
+          "leave_type" => ActiveModel::Type::Integer.new
+        }, column_names: [ "leave_type" ])
+        generator.invoke_all
+      end
+
+      it "generates a legend translation for the enum fieldset" do
+        legend = locale_yaml.dig("en", "test_form_application_forms", "edit_leave_type", "leave_type_legend")
+        expect(legend).to be_a(String)
+        expect(legend).not_to be_empty
+      end
+
+      it "generates translations for each enum value" do
+        translations = locale_yaml.dig("en", "test_form_application_forms", "edit_leave_type")
+        expect(translations["leave_type_medical"]).to eq("Medical")
+        expect(translations["leave_type_family"]).to eq("Family")
+        expect(translations["leave_type_military"]).to eq("Military")
+      end
+    end
+
+    context "with multiple pages across tasks" do
+      let(:page_one) { Strata::Flows::QuestionPage.new(:first_name, fields: [ :first_name ]) }
+      let(:page_two) { Strata::Flows::QuestionPage.new(:date_of_birth, fields: [ :date_of_birth ]) }
+      let(:task_one) { instance_double(Strata::Flows::Task, pages: [ page_one ]) }
+      let(:task_two) { instance_double(Strata::Flows::Task, pages: [ page_two ]) }
+
+      before do
+        allow(flow_class).to receive(:tasks).and_return([ task_one, task_two ])
+        allow(form_class).to receive_messages(attribute_types: {
+          "first_name" => ActiveModel::Type::String.new,
+          "date_of_birth" => Strata::Attributes::MemorableDateAttribute::MemorableDate.new
+        }, column_names: %w[first_name date_of_birth], columns_hash: {
+          "first_name" => OpenStruct.new(type: :string)
+        })
+        generator.invoke_all
+      end
+
+      it "includes translations for all pages in a single locale file" do
+        yaml = locale_yaml
+        expect(yaml.dig("en", "test_form_application_forms", "edit_first_name", "first_name_title")).to be_a(String)
+        expect(yaml.dig("en", "test_form_application_forms", "edit_date_of_birth", "date_of_birth_title")).to be_a(String)
+      end
+    end
+
+    context "when an existing locale file is present" do
+      let(:question_page) { Strata::Flows::QuestionPage.new(:full_name, fields: [ :full_name ]) }
+      let(:task) { instance_double(Strata::Flows::Task, pages: [ question_page ]) }
+
+      before do
+        allow(flow_class).to receive(:tasks).and_return([ task ])
+        allow(form_class).to receive_messages(attribute_types: { "full_name" => ActiveModel::Type::String.new }, column_names: [ "full_name" ], columns_hash: { "full_name" => OpenStruct.new(type: :string) })
+
+        # Create an existing locale file with pre-existing content
+        FileUtils.mkdir_p(File.dirname(locale_path))
+        File.write(locale_path, <<~YAML)
+          en:
+            test_form_application_forms:
+              index:
+                title: "Existing Title"
+        YAML
+
+        generator.invoke_all
+      end
+
+      it "preserves existing translations" do
+        existing_title = locale_yaml.dig("en", "test_form_application_forms", "index", "title")
+        expect(existing_title).to eq("Existing Title")
+      end
+
+      it "adds new page translations" do
+        new_title = locale_yaml.dig("en", "test_form_application_forms", "edit_full_name", "full_name_title")
+        expect(new_title).to eq("What is your full name?")
+      end
+    end
+
+    context "with a multi-word page name" do
+      let(:question_page) { Strata::Flows::QuestionPage.new(:employer_name, fields: [ :employer_name ]) }
+      let(:task) { instance_double(Strata::Flows::Task, pages: [ question_page ]) }
+
+      before do
+        allow(flow_class).to receive(:tasks).and_return([ task ])
+        allow(form_class).to receive_messages(attribute_types: { "employer_name" => ActiveModel::Type::String.new }, column_names: [ "employer_name" ], columns_hash: { "employer_name" => OpenStruct.new(type: :string) })
+        generator.invoke_all
+      end
+
+      it "humanizes the page name in question format" do
+        title = locale_yaml.dig("en", "test_form_application_forms", "edit_employer_name", "employer_name_title")
+        expect(title).to eq("What is your employer name?")
+      end
+    end
+  end
+
   describe "error handling" do
     context "when the flow class cannot be found" do
       it "raises an error" do
