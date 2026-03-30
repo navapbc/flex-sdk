@@ -43,7 +43,7 @@ This will create:
 
     A form layout at app/views/layouts/<form_name>.html.erb that renders into
     the application layout's :content block. The layout includes:
-        - A breadcrumb exit link (via strata/shared/breadcrumbs) pointing to @flow.start_path
+        - An exit link (via strata/shared/exit_link) pointing to @flow.start_path
         - A step indicator (via strata/shared/step_indicator) driven by @flow_task
 
     A config/locales/<form_name_pluralized>/en.yml file with default translations

@@ -668,9 +668,9 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
       expect(content).to include('render template: "layouts/application"')
     end
 
-    it "renders the breadcrumbs partial with an exit link" do
+    it "renders the exit_link partial" do
       content = File.read(layout_path)
-      expect(content).to include('strata/shared/breadcrumbs')
+      expect(content).to include('strata/shared/exit_link')
       expect(content).to include("@flow.start_path")
     end
 
