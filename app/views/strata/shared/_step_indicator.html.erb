@@ -14,6 +14,8 @@ steps = steps.map(&:to_sym)
 current_step = current_step.to_sym
 current_step_index = steps.index(current_step) || -1
 translation_scope ||= "strata.application_forms.steps"
+large_header ||= false
+header_first ||= false
 
 step_indicators = steps.map.with_index do |step, index|
   {
@@ -30,7 +32,7 @@ step_indicator_class += "usa-step-indicator--counters" if local_assigns[:type] =
 
 <% header_content = capture do %>
   <div class="<%= class_names("usa-step-indicator__header", "margin-bottom-2": header_first) %>">
-    <h4 class="usa-step-indicator__heading">
+    <h4 class="usa-step-indicator__heading display-flex flex-align-center">
       <span class="usa-step-indicator__heading-counter">
         <span class="usa-sr-only">Step</span>
         <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
