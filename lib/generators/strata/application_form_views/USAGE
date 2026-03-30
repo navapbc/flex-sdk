@@ -41,6 +41,11 @@ This will create:
     app/views/<form_name_pluralized>/. Each view uses strata_form_with, includes
     an i18n heading, the detected form fields, and a form_buttons partial.
 
+    A form layout at app/views/layouts/<form_name>.html.erb that renders into
+    the application layout's :content block. The layout includes:
+        - A breadcrumb exit link (via strata/shared/breadcrumbs) pointing to @flow.start_path
+        - A step indicator (via strata/shared/step_indicator) driven by @flow_task
+
     A config/locales/<form_name_pluralized>/en.yml file with default translations
-    for page titles and enum labels. If the locale file already exists, new
-    translations are merged without overwriting existing entries.
+    for page titles, enum labels, and the exit link. If the locale file already
+    exists, new translations are merged without overwriting existing entries.
