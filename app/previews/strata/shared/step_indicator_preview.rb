@@ -58,15 +58,6 @@ module Strata
       end
 
       # @!endgroup
-
-      def large_header_first
-        render template: "strata/shared/_step_indicator", locals: {
-          steps: [ :in_progress, :submitted, :decision_made ],
-          current_step: :submitted,
-          large_header: true,
-          header_first: true
-        }
-      end
     end
   end
 end
