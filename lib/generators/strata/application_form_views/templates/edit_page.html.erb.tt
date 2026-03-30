@@ -1,0 +1,5 @@
+<%%= strata_form_with model: flow_record, url: @flow_task.update_path, method: :patch do |f| %>
+  <h2 class="usa-form-heading"><%%= t(".<%= @current_page_name %>_title") %></h2>
+<%= @fields_content %>
+  <%%= render partial: "strata/shared/form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>
+<%% end %>

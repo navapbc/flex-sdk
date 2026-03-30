@@ -1,0 +1,13 @@
+<%%= content_for :content do %>
+  <%%= render partial: "strata/shared/exit_link", locals: {
+    exit_path: @flow.start_path,
+    exit_text: t("<%= form_name.underscore.pluralize %>.actions.exit")
+  } %>
+  <%%= render partial: "strata/shared/step_indicator", locals: {
+    steps: @flow_task.pages.map(&:name),
+    current_step: @flow_task.current_page.name
+  } %>
+  <%%= yield %>
+<%% end %>
+
+<%%= render template: "layouts/application" %>

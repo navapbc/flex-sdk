@@ -56,7 +56,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_164643) do
     t.string "leave_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "reviewed", default: false
   end
 
   create_table "strata_determinations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

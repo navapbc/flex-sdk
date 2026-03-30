@@ -79,7 +79,7 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
 
     it "includes the form_buttons partial" do
       content = view_content(:full_name)
-      expect(content).to include('render partial: "form_buttons"')
+      expect(content).to include('render partial: "strata/shared/form_buttons"')
       expect(content).to include("back_path: @flow_task.prev_path || @flow.start_path")
     end
 

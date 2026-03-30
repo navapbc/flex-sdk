@@ -27,6 +27,9 @@ en:
         submitted: "In review"
         decision_made: "Determination made"
     form_builder:
+      actions:
+        back: "Back"
+        save_and_continue: "Save and continue"
       boolean_true: "Yes"
       boolean_false: "No"
       date_picker_format: "Format: mm/dd/yyyy"

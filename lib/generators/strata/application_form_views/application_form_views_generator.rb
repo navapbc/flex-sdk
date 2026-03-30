@@ -12,6 +12,8 @@ module Strata
     # @example
     #   rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
     class ApplicationFormViewsGenerator < Rails::Generators::Base
+      source_root File.expand_path("templates", __dir__)
+
       argument :flow_name, type: :string, desc: "The ApplicationFormFlow class name"
       argument :form_name, type: :string, desc: "The ApplicationForm class name"
 
@@ -50,32 +52,15 @@ module Strata
       end
 
       def create_layout_file
-        form_scope = form_name.underscore.pluralize
         @locale_data["actions"] = { "exit" => "Exit" }
-
-        content = <<~ERB
-          <%= content_for :content do %>
-            <%= render partial: "strata/shared/exit_link", locals: {
-              exit_path: @flow.start_path,
-              exit_text: t("#{form_scope}.actions.exit")
-            } %>
-            <%= render partial: "strata/shared/step_indicator", locals: {
-              steps: @flow_task.pages.map(&:name),
-              current_step: @flow_task.current_page.name
-            } %>
-            <%= yield %>
-          <% end %>
-
-          <%= render template: "layouts/application" %>
-        ERB
-
-        create_file "app/views/layouts/#{layout_name}.html.erb", content
+        template "layout.html.erb.tt", "app/views/layouts/#{layout_name}.html.erb"
       end
 
       def create_view_for_page(page, form_class)
         fields = resolve_fields(page.fields, form_class)
-        content = build_view_content(page.name, fields)
-        create_file "#{views_directory}/edit_#{page.name}.html.erb", content
+        @current_page_name = page.name
+        @fields_content = fields.map { |f| render_field(f) }.join("\n") + "\n"
+        template "edit_page.html.erb.tt", "#{views_directory}/edit_#{page.name}.html.erb"
         collect_locale_data(page.name, fields)
       end
 
@@ -204,21 +189,6 @@ module Strata
         else
           { helper: :text_field, field: field_name.to_sym }
         end
-      end
-
-      def build_view_content(page_name, fields)
-        lines = []
-        lines << "<%= strata_form_with model: flow_record, url: @flow_task.update_path, method: :patch do |f| %>"
-        lines << "  <h2 class=\"usa-form-heading\"><%= t(\".#{page_name}_title\") %></h2>"
-
-        fields.each do |field_info|
-          lines << render_field(field_info)
-        end
-
-        lines << ""
-        lines << '  <%= render partial: "form_buttons", locals: { back_path: @flow_task.prev_path || @flow.start_path, f: f } %>'
-        lines << "<% end %>"
-        lines.join("\n") + "\n"
       end
 
       def render_field(field_info)
