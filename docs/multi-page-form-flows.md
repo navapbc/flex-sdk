@@ -129,16 +129,26 @@ resources "leave_application_forms" do
 end
 ```
 
-### Adding Views
+### Generating Views
 
-Default views are currently not auto-generated. You must add views for every question page in order for them to render correctly.
+Views can be generated using the `generate strata:application_form_views` command. Views must exist for every question page in order for them to render correctly.
 
-For a given question page, you will need to add an `edit_*.html.erb` file that renders the form. For example:
+```
+bin/rails generate strata:application_form_views LeaveApplicationFormFlow LeaveApplicationForm
+```
+
+This will generate a layout for your application form along with an `edit_*.html.erb` file that renders each question page:
 
 ```
 app/views/leave_application_forms/edit_name.html.erb
 app/views/leave_application_forms/edit_date_of_birth.html.erb
 ...
+```
+
+The following file is created or updated with default translation strings for each of the fields on your question page:
+
+```
+config/locales/leave_application_forms/en.yml
 ```
 
 Strata provides each controller action with the following instance variables for use within your layouts and templates:
@@ -160,7 +170,7 @@ Example:
     large_legend: true
   } %>
 
-  <%= render partial: "leave_applications/shared/form_buttons", locals: {
+  <%= render partial: "form_buttons", locals: {
     back_path: @flow_task.prev_path || @flow.start_path,
     f: f
   } %>
