@@ -21,6 +21,14 @@ Creates a new application form model that extends `Strata::ApplicationForm`. Thi
 bin/rails generate strata:application_form NAME [attribute:type attribute:type] [options]
 ```
 
+### strata:application_form_views
+
+Creates views for a multi-page form flow based on an ApplicationForm and ApplicationFormFlow. [See full usage guide](../lib/generators/strata/application_form_views/USAGE)
+
+```bash
+bin/rails generate strata:application_form_views FLOW_CLASS_NAME FORM_CLASS_NAME [options]
+```
+
 ### strata:case
 
 Generates a Strata::Case model with optional business process and application form integration. Cases are the core models that represent your business entities. [See full usage guide](../lib/generators/strata/case/USAGE)

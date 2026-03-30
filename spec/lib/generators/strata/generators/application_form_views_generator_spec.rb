@@ -643,6 +643,67 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
     end
   end
 
+  describe "form layout generation" do
+    let(:layout_path) { "#{destination_root}/app/views/layouts/test_form_application_form.html.erb" }
+    let(:question_page) { Strata::Flows::QuestionPage.new(:full_name, fields: [ :full_name ]) }
+    let(:task) { instance_double(Strata::Flows::Task, pages: [ question_page ]) }
+
+    before do
+      allow(flow_class).to receive(:tasks).and_return([ task ])
+      allow(form_class).to receive_messages(attribute_types: { "full_name" => ActiveModel::Type::String.new }, column_names: [ "full_name" ], columns_hash: { "full_name" => OpenStruct.new(type: :string) })
+      generator.invoke_all
+    end
+
+    it "creates a layout file" do
+      expect(File.exist?(layout_path)).to be true
+    end
+
+    it "renders into the :content content_for block" do
+      content = File.read(layout_path)
+      expect(content).to include("content_for :content")
+    end
+
+    it "renders the application layout template" do
+      content = File.read(layout_path)
+      expect(content).to include('render template: "layouts/application"')
+    end
+
+    it "renders the breadcrumbs partial with an exit link" do
+      content = File.read(layout_path)
+      expect(content).to include('strata/shared/breadcrumbs')
+      expect(content).to include("@flow.start_path")
+    end
+
+    it "uses a translation key for the exit text" do
+      content = File.read(layout_path)
+      expect(content).to include('t("test_form_application_forms.actions.exit")')
+    end
+
+    it "renders the step indicator partial" do
+      content = File.read(layout_path)
+      expect(content).to include('strata/shared/step_indicator')
+    end
+
+    it "passes step indicator locals from @flow_task" do
+      content = File.read(layout_path)
+      expect(content).to include("@flow_task.pages.map(&:name)")
+      expect(content).to include("@flow_task.current_page.name")
+    end
+
+    it "yields the page content" do
+      content = File.read(layout_path)
+      expect(content).to include("<%= yield %>")
+    end
+
+    it "adds exit translation to locale file" do
+      locale_path = "#{destination_root}/config/locales/test_form_application_forms/en.yml"
+      yaml = YAML.safe_load(File.read(locale_path))
+      exit_text = yaml.dig("en", "test_form_application_forms", "actions", "exit")
+      expect(exit_text).to be_a(String)
+      expect(exit_text).not_to be_empty
+    end
+  end
+
   describe "error handling" do
     context "when the flow class cannot be found" do
       it "raises an error" do

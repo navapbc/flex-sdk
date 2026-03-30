@@ -34,6 +34,7 @@ module Strata
           end
         end
 
+        create_layout_file
         create_or_update_locale_file
       end
 
@@ -41,6 +42,30 @@ module Strata
 
       def views_directory
         "app/views/#{form_name.underscore.pluralize}"
+      end
+
+      def create_layout_file
+        form_scope = form_name.underscore.pluralize
+        @locale_data["actions"] = { "exit" => "Exit application" }
+
+        content = <<~ERB
+          <%= content_for :content do %>
+            <%= render partial: "strata/shared/breadcrumbs", locals: {
+              breadcrumbs: [
+                { text: t("#{form_scope}.actions.exit"), link: @flow.start_path }
+              ]
+            } %>
+            <%= render partial: "strata/shared/step_indicator", locals: {
+              steps: @flow_task.pages.map(&:name),
+              current_step: @flow_task.current_page.name
+            } %>
+            <%= yield %>
+          <% end %>
+
+          <%= render template: "layouts/application" %>
+        ERB
+
+        create_file "app/views/layouts/#{form_name.underscore}.html.erb", content
       end
 
       def create_view_for_page(page, form_class)
