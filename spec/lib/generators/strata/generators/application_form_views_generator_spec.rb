@@ -702,6 +702,19 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
       expect(exit_text).to be_a(String)
       expect(exit_text).not_to be_empty
     end
+
+    context "when form name does not end in 'form'" do
+      let(:form_class_name) { "LeaveApplication" }
+      let(:layout_path) { "#{destination_root}/app/views/layouts/leave_application_form.html.erb" }
+
+      before do
+        FileUtils.mkdir_p("#{destination_root}/app/views/leave_applications")
+      end
+
+      it "appends _form to the layout file name" do
+        expect(File.exist?(layout_path)).to be true
+      end
+    end
   end
 
   describe "error handling" do

@@ -40,6 +40,11 @@ module Strata
 
       private
 
+      def layout_name
+        base = form_name.underscore
+        base.end_with?("_form") ? base : "#{base}_form"
+      end
+
       def views_directory
         "app/views/#{form_name.underscore.pluralize}"
       end
@@ -64,7 +69,7 @@ module Strata
           <%= render template: "layouts/application" %>
         ERB
 
-        create_file "app/views/layouts/#{form_name.underscore}.html.erb", content
+        create_file "app/views/layouts/#{layout_name}.html.erb", content
       end
 
       def create_view_for_page(page, form_class)
