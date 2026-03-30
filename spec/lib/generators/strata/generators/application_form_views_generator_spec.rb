@@ -537,9 +537,9 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
         expect(translations).to be_a(Hash)
       end
 
-      it "generates a question-format title for the page" do
+      it "generates a humanized title for the page" do
         title = locale_yaml.dig("en", "test_form_application_forms", "edit_full_name", "full_name_title")
-        expect(title).to eq("What is your full name?")
+        expect(title).to eq("Full name")
       end
     end
 
@@ -622,7 +622,7 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
 
       it "adds new page translations" do
         new_title = locale_yaml.dig("en", "test_form_application_forms", "edit_full_name", "full_name_title")
-        expect(new_title).to eq("What is your full name?")
+        expect(new_title).to eq("Full name")
       end
     end
 
@@ -636,9 +636,9 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
         generator.invoke_all
       end
 
-      it "humanizes the page name in question format" do
+      it "humanizes the page name" do
         title = locale_yaml.dig("en", "test_form_application_forms", "edit_employer_name", "employer_name_title")
-        expect(title).to eq("What is your employer name?")
+        expect(title).to eq("Employer name")
       end
     end
   end

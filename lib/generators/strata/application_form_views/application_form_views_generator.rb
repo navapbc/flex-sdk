@@ -220,12 +220,12 @@ module Strata
 
       def collect_locale_data(page_name, fields)
         page_translations = {}
-        page_translations["#{page_name}_title"] = "What is your #{page_name.to_s.humanize(capitalize: false)}?"
+        page_translations["#{page_name}_title"] = page_name.to_s.humanize
 
         fields.each do |field_info|
           next unless field_info[:helper] == :enum
 
-          page_translations["#{field_info[:field]}_legend"] = "What is your #{field_info[:field].to_s.humanize(capitalize: false)}?"
+          page_translations["#{field_info[:field]}_legend"] = field_info[:field].to_s.humanize
           field_info[:values].each do |value|
             page_translations["#{field_info[:field]}_#{value}"] = value.humanize
           end
