@@ -85,14 +85,14 @@ RSpec.describe Strata::Flows::QuestionPage do
 
     it "expands name fields into component columns" do
       page = described_class.new("name", fields: [ :applicant_name ])
-      expect(page.attributes(record)).to eq([
+      expect(page.attributes(record.class)).to eq([
         :applicant_name_first, :applicant_name_middle, :applicant_name_last, :applicant_name_suffix
       ])
     end
 
     it "expands address fields into component columns" do
       page = described_class.new("address", fields: [ :home_address ])
-      expect(page.attributes(record)).to eq([
+      expect(page.attributes(record.class)).to eq([
         :home_address_street_line_1, :home_address_street_line_2,
         :home_address_city, :home_address_state, :home_address_zip_code
       ])
@@ -100,31 +100,31 @@ RSpec.describe Strata::Flows::QuestionPage do
 
     it "expands memorable_date fields into a multi-parameter hash" do
       page = described_class.new("dob", fields: [ :date_of_birth ])
-      expect(page.attributes(record)).to eq([
+      expect(page.attributes(record.class)).to eq([
         { date_of_birth: [ :month, :day, :year ] }
       ])
     end
 
     it "expands range fields into start and end columns" do
       page = described_class.new("period", fields: [ :period ])
-      expect(page.attributes(record)).to eq([
+      expect(page.attributes(record.class)).to eq([
         :period_start, :period_end
       ])
     end
 
     it "passes through single-column strata fields unchanged" do
       page = described_class.new("wage", fields: [ :weekly_wage ])
-      expect(page.attributes(record)).to eq([ :weekly_wage ])
+      expect(page.attributes(record.class)).to eq([ :weekly_wage ])
     end
 
     it "passes through non-strata fields unchanged" do
       page = described_class.new("misc", fields: [ :some_plain_field ])
-      expect(page.attributes(record)).to eq([ :some_plain_field ])
+      expect(page.attributes(record.class)).to eq([ :some_plain_field ])
     end
 
     it "handles a mix of strata and non-strata fields" do
       page = described_class.new("mixed", fields: [ :applicant_name, :tax_id, :date_of_birth ])
-      expect(page.attributes(record)).to eq([
+      expect(page.attributes(record.class)).to eq([
         :applicant_name_first, :applicant_name_middle, :applicant_name_last, :applicant_name_suffix,
         :tax_id,
         { date_of_birth: [ :month, :day, :year ] }
