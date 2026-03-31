@@ -5,6 +5,39 @@ require "rails_helper"
 RSpec.describe Strata::Attributes do
   let(:object) { TestRecord.new }
 
+  describe ".strata_attributes_registry" do
+    it "tracks multi-column strata attributes with their expanded fields" do
+      registry = TestRecord.strata_attributes_registry
+
+      expect(registry[:name]).to eq([ :name_first, :name_middle, :name_last, :name_suffix ])
+      expect(registry[:address]).to eq([
+        :address_street_line_1, :address_street_line_2,
+        :address_city, :address_state, :address_zip_code
+      ])
+      expect(registry[:period]).to eq([ :period_start, :period_end ])
+      expect(registry[:base_period]).to eq([ :base_period_start, :base_period_end ])
+      expect(registry[:date_of_birth]).to eq([ { date_of_birth: [ :month, :day, :year ] } ])
+    end
+
+    it "does not register single-column strata attributes" do
+      registry = TestRecord.strata_attributes_registry
+
+      expect(registry).not_to have_key(:weekly_wage)
+      expect(registry).not_to have_key(:tax_id)
+      expect(registry).not_to have_key(:adopted_on)
+      expect(registry).not_to have_key(:reporting_period)
+      expect(registry).not_to have_key(:activity_reporting_period)
+    end
+
+    it "does not register array strata attributes" do
+      registry = TestRecord.strata_attributes_registry
+
+      expect(registry).not_to have_key(:addresses)
+      expect(registry).not_to have_key(:names)
+      expect(registry).not_to have_key(:leave_periods)
+    end
+  end
+
   describe "persisting and loading from database" do
     it "preserves all attributes when saving and loading multiple value objects" do
       name = build(:name, :with_middle)

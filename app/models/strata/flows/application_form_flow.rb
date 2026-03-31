@@ -115,11 +115,11 @@ module Strata::Flows
         tasks.each do |task|
           task.pages.each do |page|
             node_name = page.name
-            fields = page.fields.flat_map do |field|
-              if field.is_a?(Hash)
-                field.keys.map do |key|
-                  if field[key].length > 0
-                    "<div style=\"border: 1px solid black; padding: 4px 8px\"><i style=\"text-decoration: underline\">#{key}</i><br>#{field[key].flatten.join("<br>")}</div>"
+            attribute = page.attributes.flat_map do |attribute|
+              if attribute.is_a?(Hash)
+                attribute.keys.map do |key|
+                  if attribute[key].length > 0
+                    "<div style=\"border: 1px solid black; padding: 4px 8px\"><i style=\"text-decoration: underline\">#{key}</i><br>#{attribute[key].flatten.join("<br>")}</div>"
                   else
                     key
                   end
@@ -128,7 +128,7 @@ module Strata::Flows
                 field
               end
             end
-            node_text = [ "<b>#{page.name}</b>", *fields ].join("<br>")
+            node_text = [ "<b>#{page.name}</b>", *attribute ].join("<br>")
             diagram += "  #{node_name}[#{node_text}]\n"
           end
 

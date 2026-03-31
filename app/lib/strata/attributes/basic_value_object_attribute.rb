@@ -30,6 +30,9 @@ module Strata
         # @return [void]
         # @param [Object] nested_attribute_types
         def basic_value_object_attribute(name, value_class, nested_attribute_types, options = {})
+          # Register expanded fields for params permitting
+          strata_attributes_registry[name] = nested_attribute_types.keys.map { |n| :"#{name}_#{n}" }
+
           # Define the base attribute with its subfields
           nested_attribute_types.each do |nested_attribute_name, nested_attribute_type|
             strata_attribute "#{name}_#{nested_attribute_name}", nested_attribute_type

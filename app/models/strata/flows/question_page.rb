@@ -37,5 +37,18 @@ module Strata::Flows
     def update_path(record)
       send("#{update_pathname}_#{record.class.name.underscore}_path", record)
     end
+
+    # Returns the list of permitted parameter keys for this page's fields,
+    # expanding strata attributes into their component columns.
+    #
+    # @param record [ActiveRecord::Base] a record whose class defines strata attributes
+    # @return [Array<Symbol, Hash>] flat parameter keys and multi-parameter hashes
+    def attributes(record)
+      registry = record.class.try(:strata_attributes_registry) || {}
+
+      @fields.flat_map do |field|
+        registry[field] || [ field ]
+      end
+    end
   end
 end

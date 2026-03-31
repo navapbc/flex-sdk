@@ -48,6 +48,9 @@ module Strata
 
       class_methods do
         def memorable_date_attribute(name, options)
+          # Register multi-parameter expansion for params permitting
+          strata_attributes_registry[name] = [ { name => [ :month, :day, :year ] } ]
+
           attribute name, MemorableDate.new
 
           validate :"validate_#{name}"
