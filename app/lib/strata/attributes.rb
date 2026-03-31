@@ -43,9 +43,17 @@ module Strata
 
     class_methods do
       # Returns the registry of strata attributes defined on this model.
-      # Each entry maps the attribute name to its type (e.g., :name, :address, :range, :array).
+      # Each entry maps the attribute name to a list of name keys.
       #
       # @return [Hash{Symbol => Symbol}]
+      #
+      # @example
+      #   { "applicant_name" => [
+      #       "applicant_name_first",
+      #       "applicant_name_middle",
+      #       "applicant_name_suffix",
+      #       "applicant_name_last"
+      #   ]}
       def strata_attributes_registry
         @strata_attributes_registry ||= {}
       end
