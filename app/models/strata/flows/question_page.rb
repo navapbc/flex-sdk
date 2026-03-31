@@ -43,7 +43,6 @@ module Strata::Flows
     #
     # @param record_klass [ActiveRecord::Base] a record whose class defines strata attributes
     # @return [Array<Symbol, Hash>] flat parameter keys and multi-parameter hashes
-    # @param [Object] record_klass
     def attributes(record_klass)
       registry = record_klass.try(:strata_attributes_registry) || {}
 
