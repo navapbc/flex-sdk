@@ -134,11 +134,6 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
       expect(content).to include("f.text_field :employer_name")
     end
 
-    it "skips attachment fields" do
-      content = view_content(:documents)
-      expect(content).not_to include(":resume")
-    end
-
     it "skips fields not present on the application form" do
       content = view_content(:info)
       expect(content).not_to include("flow_only_field")

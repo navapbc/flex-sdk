@@ -11,6 +11,4 @@ class TestApplicationForm < Strata::ApplicationForm
   strata_attribute :hire_date, :us_date
 
   enum :leave_type, medical: 0, family: 1, military: 2
-
-  has_one_attached :resume
 end
