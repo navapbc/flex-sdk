@@ -3,10 +3,12 @@
     exit_path: @flow.start_path,
     exit_text: t("<%= form_name.underscore.pluralize %>.actions.exit")
   } %>
-  <%%= render partial: "strata/shared/step_indicator", locals: {
-    steps: @flow_task.pages.map(&:name),
-    current_step: @flow_task.current_page.name
-  } %>
+  <div class="margin-y-2">
+    <%%= render partial: "strata/shared/step_indicator", locals: {
+      steps: @flow_task.pages.map(&:name),
+      current_step: @flow_task.current_page.name,
+    } %>
+  </div>
   <%%= yield %>
 <%% end %>
 
