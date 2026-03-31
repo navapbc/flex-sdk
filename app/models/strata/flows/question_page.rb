@@ -41,7 +41,7 @@ module Strata::Flows
     # Returns the list of permitted parameter keys for this page's fields,
     # expanding strata attributes into their component columns.
     #
-    # @param record_klass [ActiveRecord::Base] a record whose class defines strata attributes
+    # @param record_klass [Class<ActiveRecord::Base>] a model class that defines strata attributes
     # @return [Array<Symbol, Hash>] flat parameter keys and multi-parameter hashes
     def attributes(record_klass)
       registry = record_klass.try(:strata_attributes_registry) || {}
