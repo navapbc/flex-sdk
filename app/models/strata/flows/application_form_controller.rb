@@ -59,7 +59,7 @@ module Strata::Flows
           define_method(page.update_pathname) do
             # Permit attributes based on the fields defined on the question page
             record_class_name = flow_record.class.name.underscore.to_sym
-            form_params = params.require(record_class_name).permit(*(page.attributes))
+            form_params = params.require(record_class_name).permit(*(page.attributes(flow_record.class)))
             flow_record.assign_attributes(form_params)
 
             if flow_record.valid? && flow_record.save(context: page.name)
