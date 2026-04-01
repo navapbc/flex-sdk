@@ -42,6 +42,22 @@ module Strata
     end
 
     class_methods do
+      # Returns the registry of strata attributes defined on this model.
+      # Each entry maps the attribute name to its expanded parameter keys.
+      #
+      # @return [Hash{Symbol => Array<Symbol, Hash>}]
+      #
+      # @example
+      #   { applicant_name: [
+      #       :applicant_name_first,
+      #       :applicant_name_middle,
+      #       :applicant_name_last,
+      #       :applicant_name_suffix
+      #   ]}
+      def strata_attributes_registry
+        @strata_attributes_registry ||= {}
+      end
+
       # Defines a custom attribute with the specified type.
       #
       # @param [Symbol] name The name of the attribute
