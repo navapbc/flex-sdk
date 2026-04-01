@@ -1,0 +1,51 @@
+Description:
+    Generates view files for each question page defined in an ApplicationFormFlow.
+    Each view includes the appropriate form fields based on the ApplicationForm model's
+    attribute types, and an en.yml locale file with default translations.
+
+Usage:
+    bin/rails generate strata:application_form_views FLOW_NAME FORM_NAME
+
+Examples:
+    bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
+    bin/rails generate strata:application_form_views SampleFlow SampleApplicationForm
+    bin/rails generate strata:application_form_views PassportFlow PassportApplicationForm
+
+Field Type Detection:
+    The generator inspects the ApplicationForm model to determine the appropriate
+    form helper for each field:
+
+    Strata attributes:
+        memorable_date       - f.memorable_date
+        money                - f.money_field
+        tax_id               - f.tax_id_field
+        us_date              - f.date_picker
+        name                 - f.name
+        address              - f.address_fields
+
+    Standard types:
+        enum                 - f.fieldset with f.radio_button for each value
+        boolean              - f.yes_no
+        date / datetime      - f.date_picker
+        text                 - f.text_area
+        integer / decimal    - f.text_field with inputmode: "numeric"
+        string (default)     - f.text_field
+
+    Skipped/Unsupported fields:
+        Fields ending in _attributes (nested attributes)
+        Fields backed by has_one_attached or has_many_attached
+        Fields that exist on the flow but not on the ApplicationForm model
+
+This will create:
+    An edit_<page_name>.html.erb view file for each question page, placed in
+    app/views/<form_name_pluralized>/. Each view uses strata_form_with, includes
+    an i18n heading, the detected form fields, and a form_buttons partial.
+
+    A form layout at app/views/layouts/<form_name>.html.erb that renders into
+    the application layout's :content block. The layout includes:
+        - An exit link (via strata/shared/exit_link) pointing to @flow.start_path
+        - A step indicator (via strata/shared/step_indicator) driven by @flow_task
+
+    A config/locales/<form_name_pluralized>/en.yml file with default translations
+    for page titles, enum labels, and the exit link. If the locale file already
+    exists, new translations are merged without overwriting existing entries.

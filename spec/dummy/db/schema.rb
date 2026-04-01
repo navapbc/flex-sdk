@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_24_164643) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_31_144038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,7 +56,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_164643) do
     t.string "leave_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "reviewed", default: false
   end
 
   create_table "strata_determinations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -98,6 +97,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_164643) do
     t.datetime "updated_at", null: false
     t.datetime "submitted_at"
     t.uuid "user_id"
+    t.string "applicant_name_first"
+    t.string "applicant_name_middle"
+    t.string "applicant_name_last"
+    t.string "applicant_name_suffix"
+    t.string "mailing_address_street_line_1"
+    t.string "mailing_address_street_line_2"
+    t.string "mailing_address_city"
+    t.string "mailing_address_state"
+    t.string "mailing_address_zip_code"
+    t.date "date_of_birth"
+    t.integer "salary"
+    t.string "ssn"
+    t.date "hire_date"
+    t.integer "leave_type"
+    t.boolean "reviewed"
+    t.date "start_date"
+    t.text "notes"
+    t.integer "age"
+    t.string "employer_name"
   end
 
   create_table "test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

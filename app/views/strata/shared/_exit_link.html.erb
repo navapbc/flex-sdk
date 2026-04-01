@@ -1,0 +1,7 @@
+<%# locals: (exit_path:, exit_text:) %>
+<%= link_to exit_path, class: "usa-link" do %>
+  <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+    <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#arrow_back") %>"></use>
+  </svg>
+  <%= exit_text %>
+<% end %>
