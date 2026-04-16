@@ -1,0 +1,66 @@
+---
+paths:
+  - "app/models/**/*application_form*.rb"
+  - "app/models/**/*form*.rb"
+---
+
+# Strata SDK: Strata Attributes
+
+Full source and usage for the `Strata::Attributes` module and the `strata_attribute` DSL.
+
+## Attributes Module Source
+
+```ruby
+<%= read_sdk_file("app/lib/strata/attributes.rb") %>
+```
+
+## Column Mappings by Type
+
+| Attribute Type | Database Column(s) | Ruby Type |
+|---------------|-------------------|-----------|
+| `name` | `{attr}_first`, `{attr}_middle`, `{attr}_last`, `{attr}_suffix` | Hash → `Strata::Name` |
+| `address` | `{attr}_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code` | Hash → `Strata::Address` |
+| `memorable_date` | `{attr}_date` | Date (via hash: year/month/day) |
+| `money` | `{attr}` (integer, cents) | `Strata::Money` |
+| `tax_id` | `{attr}` (string) | String |
+| `array` | `{attr}` (jsonb) | Array of hashes |
+| `us_date` | `{attr}` (date) | Date |
+| `range` | `{attr}_min`, `{attr}_max` | Hash |
+| `year_month` | `{attr}_year`, `{attr}_month` | Hash (2 integers) |
+| `year_quarter` | `{attr}_year`, `{attr}_quarter` | Hash (2 integers) |
+
+## Address Attribute Source
+
+```ruby
+<%= read_sdk_file("app/lib/strata/attributes/address_attribute.rb") %>
+```
+
+## Name Attribute Source
+
+```ruby
+<%= read_sdk_file("app/lib/strata/attributes/name_attribute.rb") %>
+```
+
+## Memorable Date Attribute Source
+
+```ruby
+<%= read_sdk_file("app/lib/strata/attributes/memorable_date_attribute.rb") %>
+```
+
+## Declaration Pattern
+
+```ruby
+class MyForm < Strata::ApplicationForm
+  strata_attribute :applicant_name, :name        # 4 columns
+  strata_attribute :home_address, :address        # 5 columns
+  strata_attribute :birth_date, :memorable_date   # 1 column: birth_date_date
+  strata_attribute :salary, :money                # 1 column: salary (integer, cents)
+  strata_attribute :ssn, :tax_id                  # 1 column: ssn (string)
+end
+```
+
+## Migration Generation
+
+```bash
+bin/rails generate strata:migration AddFieldsToMyForm applicant_name:name salary:money
+```

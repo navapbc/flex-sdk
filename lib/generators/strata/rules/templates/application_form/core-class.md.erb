@@ -1,0 +1,59 @@
+---
+paths:
+  - "app/models/**/*application_form*.rb"
+  - "app/controllers/**/*application_forms*.rb"
+---
+
+# Strata SDK: ApplicationForm — Core Class
+
+Full source and implementation details for `Strata::ApplicationForm`.
+
+## Source Code
+
+```ruby
+<%= read_sdk_file("app/models/strata/application_form.rb") %>
+```
+
+## Creating a Form Model
+
+1. **Generate:**
+   ```bash
+   bin/rails generate strata:application_form PassportApplicationForm \
+     name:name birth_date:memorable_date ssn:tax_id residential_address:address
+   ```
+
+2. **Run migrations:**
+   ```bash
+   bin/rails db:migrate
+   ```
+
+3. **Add submission validations** (use `:submit` context):
+   ```ruby
+   class PassportApplicationForm < Strata::ApplicationForm
+     strata_attribute :applicant_name, :name
+     strata_attribute :birth_date, :memorable_date
+     strata_attribute :ssn, :tax_id
+     strata_attribute :residential_address, :address
+
+     validates :applicant_name_first, presence: true, on: :submit
+     validates :ssn, presence: true, on: :submit
+   end
+   ```
+
+## Events
+
+| Event | When | Payload |
+|-------|------|---------|
+| `{ClassName}Created` | After record created | `{ application_form_id: id }` |
+| `{ClassName}Submitted` | After `submit_application` succeeds | `{ application_form_id: id, submitted_at: timestamp }` |
+
+These events integrate with `Strata::BusinessProcess` via `start_on_application_form_created` and transition handlers.
+
+## Submission Internals
+
+`submit_application` does the following in order:
+1. Validates with `:submit` context — returns `false` if invalid
+2. Runs `:submit` callbacks (`before_submit`, `after_submit`)
+3. Sets `status` to `:submitted` and `submitted_at` to `Time.current`
+4. Saves the record
+5. Publishes `{ClassName}Submitted` event

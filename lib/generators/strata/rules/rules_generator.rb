@@ -26,7 +26,6 @@ module Strata
             app/lib/strata/attributes/address_attribute.rb
             app/lib/strata/attributes/name_attribute.rb
             app/lib/strata/attributes/memorable_date_attribute.rb
-            app/lib/strata/attributes/money_attribute.rb
             app/models/concerns/strata/determinable.rb
             docs/intake-application-forms.md
           ]
