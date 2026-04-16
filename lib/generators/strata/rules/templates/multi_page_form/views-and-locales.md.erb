@@ -30,7 +30,15 @@ This generates one ERB template per question page, a shared form layout with tas
 - `@flow_page` — the current `QuestionPage` instance.
 - `@flow_task.next_path` — URL to the next page in the task (used for back/continue links).
 - `@flow_task.prev_path` — URL to the previous page in the task.
-- `task_list_component` — renders the full task list sidebar with status badges (not started / in progress / complete / locked).
+## Task List Component
+
+`Strata::Flows::TaskListComponent` is a ViewComponent class (not a bare template helper) that renders the full task list sidebar with status badges (not started / in progress / complete / locked). Render it explicitly in templates or layouts:
+
+```erb
+<%%= render Strata::Flows::TaskListComponent.new(flow: @flow) %>
+```
+
+The `flow:` keyword argument must receive an instantiated flow object (e.g., `@flow` set by the controller). An optional `show_step_label:` boolean toggles the step-number label on each task section.
 
 ## Source Reference
 

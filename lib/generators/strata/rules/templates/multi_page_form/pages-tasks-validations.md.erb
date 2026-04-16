@@ -28,7 +28,7 @@ paths:
 
 ## Validation Contexts
 
-`ApplicationFormValidations#validate_flow(FlowClass)` introspects the flow and auto-generates a constant for each page name (e.g., `Flow::NAME`, `Flow::DATE_OF_BIRTH`). Consumers declare standard Rails validations scoped to these constants using `on:`. The controller then calls `record.valid?(Flow::PAGE_NAME)` inside each `update_<page>` action, so only the fields relevant to that page are validated on each step:
+`ApplicationFormValidations#validate_flow(FlowClass)` introspects the flow and auto-generates a constant for each page name (e.g., `Flow::NAME`, `Flow::DATE_OF_BIRTH`). Consumers declare standard Rails validations scoped to these constants using `on:`. In each `update_<page>` action the controller runs `flow_record.valid?` then `flow_record.save(context: page.name)` — scoped validators fire during the save, so only the fields relevant to that page are validated on each step:
 
 ```ruby
 class LeaveApplicationForm < Strata::ApplicationForm

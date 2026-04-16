@@ -40,4 +40,4 @@ This produces routes like `GET /leave_application_forms/:id/name` and `PATCH /le
 ## Auto-Generated Actions
 
 - `edit_<page_name>` — renders the form template for that page, loads the flow record via `flow_record`, sets `@flow`, `@flow_task`, and `@flow_page` instance variables for use in the view, and validates that the task is not locked by unfulfilled dependencies.
-- `update_<page_name>` — handles the POST/PATCH submission, runs `valid?` with the page's scoped validation context (e.g., `Flow::NAME`), saves the record on success and redirects to `@flow_task.next_path`, or re-renders the edit template with validation errors on failure.
+- `update_<page_name>` — handles the PATCH submission, runs `flow_record.valid?` then `flow_record.save(context: page.name)` with the page's scoped validation context (e.g., `Flow::NAME`), saves the record on success and redirects to `@flow_task.next_path`, or re-renders the edit template with validation errors on failure.
