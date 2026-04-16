@@ -13,7 +13,7 @@ module Strata
       source_root File.expand_path("templates", __dir__)
       include SourceExcerptHelper
 
-      SUPPORTED_FEATURES = %w[application_form].freeze
+      SUPPORTED_FEATURES = %w[application_form multi_page_form].freeze
 
       # Manifest of all SDK source files referenced by templates.
       # Specs validate these paths still exist, catching drift when
@@ -35,6 +35,18 @@ module Strata
             lib/generators/strata/application_form_views/templates/layout.html.erb.tt
             lib/generators/strata/application_form_views/templates/edit_page.html.erb.tt
             docs/intake-application-forms.md
+            docs/multi-page-form-flows.md
+          ]
+        },
+        "multi_page_form" => {
+          files: %w[
+            app/models/strata/flows/application_form_flow.rb
+            app/models/strata/flows/application_form_controller.rb
+            app/models/strata/flows/task_evaluator.rb
+            app/models/strata/flows/question_page.rb
+            app/models/strata/flows/task.rb
+            app/models/strata/flows/application_form_validations.rb
+            lib/generators/strata/application_form_views/application_form_views_generator.rb
             docs/multi-page-form-flows.md
           ]
         }
