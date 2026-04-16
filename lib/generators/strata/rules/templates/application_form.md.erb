@@ -1,0 +1,89 @@
+---
+paths:
+  - "app/models/**/*application_form*.rb"
+  - "app/controllers/**/*application_forms*.rb"
+---
+
+# Strata SDK: Application Forms
+
+Rules for building application forms with the Strata SDK. Application forms implement intake processes for government digital services.
+
+## What is an Application Form?
+
+<%= excerpt_doc_section("intake-application-forms.md", "What is an Application Form?") %>
+
+## ApplicationForm Base Class
+
+`Strata::ApplicationForm` is an abstract base class. All form models inherit from it.
+
+**Auto-included attributes:**
+- `status` (integer enum: `in_progress: 0`, `submitted: 1`) — write-protected after submission
+- `user_id` (uuid) — identifies the form owner
+- `submitted_at` (datetime) — set on submission
+
+**Key behaviors:**
+- Prevents modification after submission (`before_update :prevent_changes_if_submitted`)
+- Publishes `{ClassName}Created` event on create
+- Publishes `{ClassName}Submitted` event on `submit_application`
+- Validates with `:submit` context before submission
+
+**Usage pattern:**
+
+```ruby
+class PassportApplicationForm < Strata::ApplicationForm
+  strata_attribute :applicant_name, :name
+  strata_attribute :birth_date, :memorable_date
+  strata_attribute :ssn, :tax_id
+  strata_attribute :residential_address, :address
+
+  validates :applicant_name_first, presence: true, on: :submit
+  validates :ssn, presence: true, on: :submit
+end
+```
+
+## Strata Attributes Quick Reference
+
+| Type | Columns Created | Notes |
+|------|----------------|-------|
+| `name` | `_first`, `_middle`, `_last`, `_suffix` | 4 string columns |
+| `address` | `_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code` | 5 string columns |
+| `memorable_date` | `_date` | 1 date column |
+| `money` | (integer, cents) | Store as cents, display as dollars |
+| `tax_id` | (string) | SSN, EIN, ITIN |
+| `array` | (jsonb) | Collection of objects |
+| `us_date` | (date) | Standard US date |
+| `range` | `_min`, `_max` | 2 columns |
+| `year_month` | `_year`, `_month` | 2 integer columns |
+| `year_quarter` | `_year`, `_quarter` | 2 integer columns |
+
+## Generator
+
+```bash
+bin/rails generate strata:application_form NAME [attribute:type ...] [options]
+```
+
+Generates model, migration, and test files. Base attributes (`status`, `user_id`, `submitted_at`) are auto-included.
+
+## Submission Flow
+
+```ruby
+form = PassportApplicationForm.create(user_id: current_user.id)
+form.applicant_name = { first: "John", last: "Doe" }
+form.residential_address = {
+  street_line_1: "123 Main St", city: "Springfield", state: "IL", zip_code: "62701"
+}
+form.save
+
+# Submit — validates :submit context, publishes event, locks record
+form.submit_application
+```
+
+## Detailed Reference (Sub-rules)
+
+For implementation details, these sub-rules load automatically when working on application form files:
+
+| File | Contents |
+|------|----------|
+| `strata-sdk/strata-application-form/core-class.md` | Full ApplicationForm source, event system, submission internals |
+| `strata-sdk/strata-application-form/attributes.md` | Strata::Attributes module source, column mappings, attribute type details |
+| `strata-sdk/strata-application-form/determinable.md` | Strata::Determinable source, recording determinations |
