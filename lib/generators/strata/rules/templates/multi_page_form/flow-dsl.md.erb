@@ -1,0 +1,25 @@
+---
+paths:
+  - "**/app/flows/**/*_flow.rb"
+---
+
+# Strata SDK: Multi-Page Forms — Flow DSL
+
+`Strata::Flows::ApplicationFormFlow` is the mixin that turns a plain Ruby class into a multi-page intake flow, providing the `task`, `question_page`, `start_page`, and `end_page` DSL methods.
+
+## Source Code
+
+```ruby
+<%= read_sdk_file("app/models/strata/flows/application_form_flow.rb") %>
+```
+
+## DSL Reference
+
+- `task(name, depends_on: [...])` — groups one or more question pages into a named task. The optional `depends_on:` array lists task names that must be complete before this task is available.
+- `question_page(name, fields: [...], if: proc)` — declares a single page inside a `task` block. `fields:` defaults to `[name]` when omitted. The optional `if:` proc receives the form record and returns a boolean; when falsy the page is skipped during navigation.
+- `start_page(path)` — sets the entry route shown before any tasks begin (e.g., `:introduction`).
+- `end_page(path)` — sets the exit/confirmation route shown after all tasks are complete (e.g., `:confirmation`).
+
+## Dependency Validation
+
+When a task declares `depends_on: [:other_task]`, the flow marks that task as locked until every listed dependency is fully complete. From the applicant's perspective, locked tasks appear as "not yet available" in the task list and cannot be navigated to directly. The controller enforces this at the route level — attempting to load a locked task redirects back to the task list. Dependencies are evaluated lazily on each request using `TaskEvaluator`, so completing a prerequisite task immediately unlocks dependents on the next page load.

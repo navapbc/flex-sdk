@@ -1,0 +1,37 @@
+---
+paths:
+  - "**/app/views/**/*_forms/**/*.html.erb"
+  - "**/config/locales/**/*.yml"
+---
+
+# Strata SDK: Multi-Page Forms — Views & Locales
+
+The `strata:application_form_views` generator scaffolds all view templates, the shared layout, and locale files for a multi-page form flow in one command.
+
+## Views Generator Usage
+
+```bash
+bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
+```
+
+This generates one ERB template per question page, a shared form layout with task-list sidebar and progress indicator, and a locale file pre-populated with placeholder labels and hint text for every page.
+
+## Generated Files
+
+- `app/views/leave_application_forms/edit_<page_name>.html.erb` — one template per question page; renders the field(s) for that page inside `strata_form_with`.
+- `app/views/layouts/leave_application_form.html.erb` — shared layout wrapping all question-page views; includes the task-list sidebar and step progress component.
+- `config/locales/leave_application_forms/en.yml` — labels, hints, legend text, and error message keys for every page field, ready to customise.
+
+## Template Helpers
+
+- `strata_form_with` — form builder helper pre-scoped to the flow record and current page.
+- `@flow` — the flow class for the current request.
+- `@flow_task` — the current `Task` instance.
+- `@flow_page` — the current `QuestionPage` instance.
+- `@flow_task.next_path` — URL to the next page in the task (used for back/continue links).
+- `@flow_task.prev_path` — URL to the previous page in the task.
+- `task_list_component` — renders the full task list sidebar with status badges (not started / in progress / complete / locked).
+
+## Source Reference
+
+The generator source lives at `lib/generators/strata/application_form_views/application_form_views_generator.rb` (264 LOC) if deeper implementation detail is needed; it is not inlined here to keep this rule lean.

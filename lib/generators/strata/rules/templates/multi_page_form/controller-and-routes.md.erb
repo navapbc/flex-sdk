@@ -1,0 +1,43 @@
+---
+paths:
+  - "**/app/controllers/**/*_forms_controller.rb"
+  - "**/config/routes.rb"
+---
+
+# Strata SDK: Multi-Page Forms — Controller & Routes
+
+`Strata::Flows::ApplicationFormController` is a Rails controller mixin that reads the flow definition and exposes auto-generated `edit_<page>` / `update_<page>` actions for every question page declared in the flow.
+
+## ApplicationFormController Source
+
+```ruby
+<%= read_sdk_file("app/models/strata/flows/application_form_controller.rb") %>
+```
+
+## TaskEvaluator Source
+
+```ruby
+<%= read_sdk_file("app/models/strata/flows/task_evaluator.rb") %>
+```
+
+## Route Generation
+
+Consumers declare a standard `resources` block and iterate over `Flow.pages` to register member routes for each page:
+
+```ruby
+resources :leave_application_forms, only: [:index, :new, :show, :create] do
+  member do
+    LeaveApplicationFlow.pages.each do |page|
+      get page.edit_pathname
+      patch page.update_pathname
+    end
+  end
+end
+```
+
+This produces routes like `GET /leave_application_forms/:id/name` and `PATCH /leave_application_forms/:id/name` for every question page defined in the flow.
+
+## Auto-Generated Actions
+
+- `edit_<page_name>` — renders the form template for that page, loads the flow record via `flow_record`, sets `@flow`, `@flow_task`, and `@flow_page` instance variables for use in the view, and validates that the task is not locked by unfulfilled dependencies.
+- `update_<page_name>` — handles the POST/PATCH submission, runs `valid?` with the page's scoped validation context (e.g., `Flow::NAME`), saves the record on success and redirects to `@flow_task.next_path`, or re-renders the edit template with validation errors on failure.
