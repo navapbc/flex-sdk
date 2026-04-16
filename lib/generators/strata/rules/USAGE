@@ -10,10 +10,13 @@ Examples:
     bin/rails generate strata:rules application_form
     bin/rails generate strata:rules application_form --agent claude
     bin/rails generate strata:rules application_form --agent cursor
+    bin/rails generate strata:rules multi_page_form
+    bin/rails generate strata:rules multi_page_form --agent claude
     bin/rails generate strata:rules all
 
 Supported features:
     application_form    Application form model, attributes, and determinable
+    multi_page_form     Multi-page form flow DSL, controller mixin, pages, tasks, validations, views generator
     all                 Generate rules for all supported features
 
 Agent directories:
