@@ -53,7 +53,7 @@ When working with SDK-specific features, consult these docs:
 | Strata attributes (Address, Array, MemorableDate, etc.) | [strata-attributes.md](docs/strata-attributes.md) |
 | Contributing new Strata attributes | [contributing-strata-attributes.md](docs/contributing/contributing-strata-attributes.md) |
 | Data modeler & migration generator | [strata-data-modeler.md](docs/strata-data-modeler.md) |
-| Multi-page form builder | [multi-page-form-builder.md](docs/multi-page-form-builder.md) |
+| Multi-page form builder | [multi-page-form-flows.md](docs/multi-page-form-flows.md) |
 | Intake application forms | [intake-application-forms.md](docs/intake-application-forms.md) |
 | Rules engine | [strata-rules-engine.md](docs/strata-rules-engine.md) |
 | Business process hierarchy | [business-process-family-tree.md](docs/business-process-family-tree.md) |
