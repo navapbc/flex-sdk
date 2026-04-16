@@ -56,7 +56,7 @@ module Strata
       end
 
       def generate_rules
-        features = name == "all" ? SUPPORTED_FEATURES : [name.underscore]
+        features = name == "all" ? SUPPORTED_FEATURES : [ name.underscore ]
         features.each do |feature|
           # Root rule file
           render_erb_template(
