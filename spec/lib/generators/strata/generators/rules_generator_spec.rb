@@ -230,6 +230,110 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
     end
   end
 
+  describe "generating multi_page_form" do
+    let(:generator) do
+      described_class.new([ "multi_page_form" ], { quiet: true, force: true }, destination_root: destination_root)
+    end
+
+    before { generator.invoke_all }
+
+    it "creates the root rule file in default .agents/rules/strata-sdk/" do
+      expect(File.exist?("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form.md")).to be true
+    end
+
+    it "root file is under 12,000 characters" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form.md")
+      expect(content.length).to be <= 12_000,
+        "Root file exceeds 12,000 chars (#{content.length})"
+    end
+
+    it "root file has path-scoped frontmatter" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form.md")
+      expect(content).to start_with("---\n")
+      expect(content).to include("paths:")
+      expect(content).to include("**/app/flows/**/*_flow.rb")
+      expect(content).to include("**/app/models/**/*_form.rb")
+      expect(content).to include("**/app/controllers/**/*_forms_controller.rb")
+      expect(content).to include("**/app/views/**/*_forms/**/*.html.erb")
+    end
+
+    it "root file has expected structure" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form.md")
+      expect(content).to include("# Strata SDK: Multi-Page Forms")
+      expect(content).to include("ApplicationFormFlow")
+      expect(content).to include("task")
+      expect(content).to include("question_page")
+      expect(content.length).to be > 500
+    end
+
+    it "root file references sub-files" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form.md")
+      expect(content).to include("strata-multi-page-form/")
+    end
+
+    it "creates a sub-file directory" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form"
+      expect(File.directory?(sub_dir)).to be true
+    end
+
+    it "creates expected sub-files" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form"
+      expect(File.exist?("#{sub_dir}/flow-dsl.md")).to be true
+      expect(File.exist?("#{sub_dir}/controller-and-routes.md")).to be true
+      expect(File.exist?("#{sub_dir}/pages-tasks-validations.md")).to be true
+      expect(File.exist?("#{sub_dir}/views-and-locales.md")).to be true
+    end
+
+    it "each sub-file is under 12,000 characters" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form"
+      Dir.glob("#{sub_dir}/*.md").each do |sub_file|
+        content = File.read(sub_file)
+        expect(content.length).to be <= 12_000,
+          "#{File.basename(sub_file)} exceeds 12,000 chars (#{content.length})"
+      end
+    end
+
+    it "sub-files contain path-scoped frontmatter" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form"
+      Dir.glob("#{sub_dir}/*.md").each do |sub_file|
+        content = File.read(sub_file)
+        expect(content).to start_with("---\n"),
+          "#{File.basename(sub_file)} missing frontmatter"
+        expect(content).to include("paths:"),
+          "#{File.basename(sub_file)} missing paths in frontmatter"
+      end
+    end
+
+    it "sub-files contain actual source code" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form"
+      combined = Dir.glob("#{sub_dir}/*.md").map { |f| File.read(f) }.join
+      expect(combined).to match(/\b(def|class|module)\s+\w+/)
+    end
+
+    it "flow-dsl sub-file contains ApplicationFormFlow module" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form/flow-dsl.md")
+      expect(content).to include("module ApplicationFormFlow")
+    end
+
+    it "controller-and-routes sub-file contains ApplicationFormController and TaskEvaluator" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form/controller-and-routes.md")
+      expect(content).to include("module ApplicationFormController")
+      expect(content).to include("class TaskEvaluator")
+    end
+
+    it "pages-tasks-validations sub-file contains QuestionPage, Task, and ApplicationFormValidations" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form/pages-tasks-validations.md")
+      expect(content).to include("class QuestionPage")
+      expect(content).to include("class Task")
+      expect(content).to include("module ApplicationFormValidations")
+    end
+
+    it "views-and-locales sub-file references strata:application_form_views generator" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-multi-page-form/views-and-locales.md")
+      expect(content).to include("strata:application_form_views")
+    end
+  end
+
   describe "generating all features" do
     let(:generator) do
       described_class.new([ "all" ], { quiet: true, force: true }, destination_root: destination_root)
