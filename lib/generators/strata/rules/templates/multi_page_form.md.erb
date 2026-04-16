@@ -1,0 +1,102 @@
+---
+paths:
+  - "**/app/flows/**/*_flow.rb"
+  - "**/app/models/**/*_form.rb"
+  - "**/app/controllers/**/*_forms_controller.rb"
+  - "**/app/views/**/*_forms/**/*.html.erb"
+---
+
+# Strata SDK: Multi-Page Forms
+
+Rules for building multi-page application forms with the Strata SDK. Multi-page forms define intake flows spanning several pages, organized into tasks, with automatically generated routes and controller actions.
+
+## Key Features
+
+<%= excerpt_doc_section("multi-page-form-flows.md", "Key Features") %>
+
+## DSL Quick Reference
+
+| Method | Purpose |
+|---|---|
+| `task(name, depends_on: [...])` | Define a task block grouping pages |
+| `question_page(name, fields: [...], if: proc)` | Define a page within a task |
+| `start_page(path)` | Set the flow's entry route |
+| `end_page(path)` | Set the flow's exit/confirmation route |
+
+## Consumer Example
+
+**Flow:**
+
+```ruby
+# app/flows/leave_application_flow.rb
+class LeaveApplicationFlow
+  include Strata::Flows::ApplicationFormFlow
+
+  task :personal_information do
+    question_page :name, fields: [:applicant_name_first, :applicant_name_last]
+    question_page :date_of_birth
+  end
+
+  task :leave_details, depends_on: [:personal_information] do
+    question_page :leave_type
+    question_page :leave_dates
+  end
+
+  start_page :introduction
+  end_page :confirmation
+end
+```
+
+**Controller:**
+
+```ruby
+# app/controllers/leave_application_forms_controller.rb
+class LeaveApplicationFormsController < ApplicationController
+  include Strata::Flows::ApplicationFormController
+  flow LeaveApplicationFlow
+  def flow_record; @leave_application; end
+end
+```
+
+**Model (validation context usage):**
+
+```ruby
+# app/models/leave_application_form.rb
+class LeaveApplicationForm < Strata::ApplicationForm
+  include Strata::Flows::ApplicationFormValidations
+  validate_flow LeaveApplicationFlow
+  validates :applicant_name_first, presence: true, on: Flow::NAME
+end
+```
+
+## Generating Views
+
+Run the views generator to scaffold view templates, layout, and locale files:
+
+```bash
+bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
+```
+
+This generates view templates for each question page, a shared layout, and locale files for labels and headings.
+
+## Navigation Helpers
+
+Inside views and controllers the following helpers are available:
+
+- `@flow` — the flow class for the current request
+- `@flow_task` — the current task instance
+- `@flow_page` — the current page instance
+- `@flow_task.next_path` — path to the next page in the task
+- `@flow_task.prev_path` — path to the previous page in the task
+- `strata_form_with` — form builder helper scoped to the flow record
+
+## Detailed Reference (Sub-rules)
+
+For implementation details, these sub-rules load automatically when working on multi-page form files:
+
+| File | Contents |
+|---|---|
+| `strata-sdk/strata-multi-page-form/flow-dsl.md` | Full `ApplicationFormFlow` source + task/question_page DSL + dependency rules |
+| `strata-sdk/strata-multi-page-form/controller-and-routes.md` | Full `ApplicationFormController` + `TaskEvaluator` source + route generation pattern |
+| `strata-sdk/strata-multi-page-form/pages-tasks-validations.md` | Full `QuestionPage`, `Task`, `ApplicationFormValidations` source + `Flow::CONTEXT` constants |
+| `strata-sdk/strata-multi-page-form/views-and-locales.md` | Views generator usage + template helpers + layout/locale conventions |
