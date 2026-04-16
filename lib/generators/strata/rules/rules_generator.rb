@@ -27,7 +27,15 @@ module Strata
             app/lib/strata/attributes/name_attribute.rb
             app/lib/strata/attributes/memorable_date_attribute.rb
             app/models/concerns/strata/determinable.rb
+            app/views/strata/application_forms/index.html.erb
+            app/views/strata/application_forms/show.html.erb
+            app/views/strata/shared/_form_buttons.html.erb
+            app/views/strata/shared/_exit_link.html.erb
+            app/views/strata/shared/_breadcrumbs.html.erb
+            lib/generators/strata/application_form_views/templates/layout.html.erb.tt
+            lib/generators/strata/application_form_views/templates/edit_page.html.erb.tt
             docs/intake-application-forms.md
+            docs/multi-page-form-flows.md
           ]
         }
       }.freeze

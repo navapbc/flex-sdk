@@ -102,6 +102,7 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(File.exist?("#{sub_dir}/core-class.md")).to be true
       expect(File.exist?("#{sub_dir}/attributes.md")).to be true
       expect(File.exist?("#{sub_dir}/determinable.md")).to be true
+      expect(File.exist?("#{sub_dir}/views.md")).to be true
     end
 
     it "sub-files contain path-scoped frontmatter" do
@@ -146,6 +147,20 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/determinable.md")
       expect(content).to include("module Determinable")
       expect(content).to include("record_determination!")
+    end
+
+    it "views sub-file contains embedded view source" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/views.md")
+      expect(content).to include("strata_form_with")
+      expect(content).to include("strata/shared/form_buttons")
+      expect(content).to include("strata/shared/step_indicator")
+      expect(content).to include("usa-breadcrumb")
+    end
+
+    it "views sub-file is scoped to view paths" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/views.md")
+      expect(content).to start_with("---\n")
+      expect(content).to include("app/views/**/*application_form")
     end
   end
 
