@@ -73,7 +73,7 @@ RSpec.describe PassportApplicationForm do
   it "persists and round-trips strata attributes" do
     reloaded = described_class.find(form.id)
     expect(reloaded.name_first).to eq("John")
-    expect(reloaded.birth_date_date).to eq(Date.new(1990, 1, 1))
+    expect(reloaded.birth_date).to eq(Date.new(1990, 1, 1))
   end
 
   it "publishes Submitted event on submission" do
@@ -86,7 +86,8 @@ RSpec.describe PassportApplicationForm do
 
   it "prevents writes after submission" do
     form.submit_application
-    expect { form.update(name_first: "Jane") }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(form.update(name_first: "Jane")).to be false
+    expect(form.errors[:base]).to include("Cannot modify a submitted application")
   end
 end
 ```
