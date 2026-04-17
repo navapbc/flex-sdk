@@ -162,6 +162,44 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to start_with("---\n")
       expect(content).to include("app/views/**/*application_form")
     end
+
+    it "creates the recipe sub-file" do
+      sub_dir = "#{destination_root}/.agents/rules/strata-sdk/strata-application-form"
+      expect(File.exist?("#{sub_dir}/recipe.md")).to be true
+    end
+
+    it "recipe sub-file has path-scoped frontmatter" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
+      expect(content).to start_with("---\n")
+      expect(content).to include("paths:")
+      expect(content).to include("app/models/**/*application_form*.rb")
+    end
+
+    it "recipe sub-file has title and overview table" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
+      expect(content).to include("# Strata SDK: ApplicationForm — Build Recipe")
+      expect(content).to include("| Step | Action |")
+    end
+
+    it "every generated rule file's paths begin with **/ (monorepo-safe)" do
+      root_dir = "#{destination_root}/.agents/rules/strata-sdk"
+      files = Dir.glob("#{root_dir}/**/*.md")
+      expect(files).not_to be_empty
+
+      files.each do |path|
+        content = File.read(path)
+        frontmatter = content[/\A---\n(.*?)\n---/m, 1]
+        expect(frontmatter).not_to be_nil, "#{path} missing frontmatter"
+
+        path_entries = frontmatter.scan(/^\s*-\s*"([^"]+)"/).flatten
+        expect(path_entries).not_to be_empty, "#{path} has no path entries"
+
+        path_entries.each do |entry|
+          expect(entry).to start_with("**/"),
+            "#{path} path entry #{entry.inspect} must start with **/ for monorepo scoping"
+        end
+      end
+    end
   end
 
   describe "generating all features" do

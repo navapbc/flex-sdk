@@ -1,0 +1,25 @@
+---
+paths:
+  - "**/app/models/**/*application_form*.rb"
+  - "**/app/controllers/**/*application_forms*.rb"
+  - "**/spec/models/**/*application_form*_spec.rb"
+  - "**/spec/requests/**/*application_forms*_spec.rb"
+  - "**/spec/system/**/*application_form*_spec.rb"
+---
+
+# Strata SDK: ApplicationForm — Build Recipe
+
+Step-by-step recipe for building a new application form end-to-end. Do steps in order. Each step: generate code, then test it, then commit.
+
+## Overview
+
+| Step | Action | Command / Deliverable |
+|------|--------|----------------------|
+| 1 | Generate model + migration | `bin/rails g strata:application_form NAME attr:type ...` |
+| 2 | Test model | `spec/models/<name>_application_form_spec.rb` |
+| 3 | Generate controller | `bin/rails g controller <Name>ApplicationForms ...` |
+| 4 | Test controller | `spec/requests/<name>_application_forms_spec.rb` |
+| 5 | Generate views | `bin/rails g strata:application_form_views Flow Form` |
+| 6 | Test views | `spec/system/<name>_application_form_spec.rb` |
+
+<!-- Step sections filled in subsequent tasks -->
