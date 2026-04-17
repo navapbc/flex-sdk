@@ -200,8 +200,8 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
 
     it "recipe sub-file has Step 5 (views) and Step 6 (view spec) and Recap" do
       content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
-      expect(content).to include("## Step 5: Generate Views")
-      expect(content).to include("strata:application_form_views")
+      expect(content).to include("## Step 5: Build Views")
+      expect(content).to include("strata_form_with")
       expect(content).to include("## Step 6: Test Views")
       expect(content).to include("type: :system")
       expect(content).to include("## Recap")

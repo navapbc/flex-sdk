@@ -480,8 +480,8 @@ Append inside `describe "generating application_form"`:
 ```ruby
 it "recipe sub-file has Step 5 (views) and Step 6 (view spec) and Recap" do
   content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
-  expect(content).to include("## Step 5: Generate Views")
-  expect(content).to include("strata:application_form_views")
+  expect(content).to include("## Step 5: Build Views")
+  expect(content).to include("strata_form_with")
   expect(content).to include("## Step 6: Test Views")
   expect(content).to include("type: :system")
   expect(content).to include("## Recap")
@@ -498,52 +498,64 @@ Expected: FAIL.
 Replace the trailing `<!-- Step sections filled in subsequent tasks -->` comment with:
 
 ````erb
-## Step 5: Generate Views
+## Step 5: Build Views
 
-Prerequisite: an `ApplicationFormFlow` class defining `question_page`s (see `multi-page-form-flows.md`). Generator walks each question page and writes:
+Write the standard Rails views for the form under `app/views/passport_application_forms/`. Use the SDK's `strata_form_with` form builder — it wires the strata field helpers (`name`, `address_fields`, `memorable_date`, `tax_id_field`, etc.) to the expanded columns automatically. Field-helper reference: `strata-application-form/views.md`.
 
-- `app/views/layouts/<form>_form.html.erb`
-- `app/views/<form_plural>/edit_<page_name>.html.erb` per question page
-- `config/locales/<form_plural>/en.yml` with `edit_<page>_title` keys + enum legend/option keys
+Minimum set:
 
-```bash
-bin/rails generate strata:application_form_views PassportApplicationFormFlow PassportApplicationForm
+- `index.html.erb` — list the user's in-progress and submitted forms
+- `new.html.erb` — render form for creating a record
+- `edit.html.erb` — render form for editing a saved record
+- `show.html.erb` — read-only summary after submission
+
+Example `app/views/passport_application_forms/edit.html.erb`:
+
+```erb
+<%= strata_form_with model: @passport_application_form do |f| %>
+  <%= f.name :name %>
+  <%= f.memorable_date :birth_date %>
+  <%= f.tax_id_field :ssn %>
+  <%= f.address_fields :residential_address %>
+
+  <%= f.submit "Save" %>
+  <%= f.submit "Submit" %>
+<% end %>
 ```
 
-Wire up the generated layout on `edit` action(s) in the controller:
+Two submit buttons: clicking "Submit" sends `params[:commit] == "Submit"`, which the controller (Step 3) routes through `submit_application`. Clicking "Save" persists without submission.
 
-```ruby
-class PassportApplicationFormsController < ApplicationController
-  layout "passport_application_form", only: [ :edit, :update ]
-  # ...
-end
-```
-
-Field-helper detection, shared partials (`strata/shared/_form_buttons`, `_step_indicator`, `_breadcrumbs`, `_exit_link`), and required I18n keys: see `strata-application-form/views.md`.
+> Multi-page flows (one question page per step, back/next navigation, step indicator) use `Strata::Flows::ApplicationFormController` and the `strata:application_form_views` generator — a different pattern than this recipe. See `strata-application-form/views.md` for that path.
 
 ## Step 6: Test Views
 
-File: `spec/system/passport_application_form_spec.rb`. System spec walks generated pages using Capybara. Cover: page renders, field per strata attribute present, save-and-continue advances state.
+File: `spec/system/passport_application_form_spec.rb`. Capybara system spec walks the edit page and verifies form fields render and save.
 
 ```ruby
 # frozen_string_literal: true
 
 require "rails_helper"
 
-RSpec.describe "PassportApplicationForm flow", type: :system do
-  let(:form) { PassportApplicationForm.create!(user_id: SecureRandom.uuid) }
+RSpec.describe "PassportApplicationForm", type: :system do
+  let(:form) do
+    PassportApplicationForm.create!(
+      user_id: SecureRandom.uuid,
+      name_first: "Jane",
+      name_last: "Doe",
+      birth_date: Date.new(1990, 1, 1)
+    )
+  end
 
-  it "renders the name question page with name fields" do
-    visit edit_passport_application_form_path(form, page: "name")
+  it "renders the edit page with form fields" do
+    visit edit_passport_application_form_path(form)
     expect(page).to have_field("passport_application_form[name_first]")
     expect(page).to have_field("passport_application_form[name_last]")
   end
 
-  it "saves name fields on save-and-continue" do
-    visit edit_passport_application_form_path(form, page: "name")
+  it "saves updates when Save is clicked" do
+    visit edit_passport_application_form_path(form)
     fill_in "passport_application_form[name_first]", with: "John"
-    fill_in "passport_application_form[name_last]", with: "Doe"
-    click_button I18n.t("strata.form_builder.actions.save_and_continue")
+    click_button "Save"
     expect(form.reload.name_first).to eq("John")
   end
 end
