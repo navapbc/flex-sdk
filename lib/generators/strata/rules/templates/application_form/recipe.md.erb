@@ -98,4 +98,152 @@ Run:
 bundle exec rspec spec/models/passport_application_form_spec.rb
 ```
 
+## Step 3: Generate Controller
+
+No Strata controller generator exists — use Rails' built-in generator, then customize actions to handle `submit_application` on `commit == "Submit"`. (Option C of the controller-generation design.)
+
+```bash
+bin/rails generate controller PassportApplicationForms index show new edit create update --skip-routes --no-helper
+```
+
+Add route in `config/routes.rb`:
+
+```ruby
+resources :passport_application_forms
+```
+
+Customize `app/controllers/passport_application_forms_controller.rb`:
+
+```ruby
+# frozen_string_literal: true
+
+class PassportApplicationFormsController < ApplicationController
+  def index
+    @passport_application_forms = PassportApplicationForm.all
+  end
+
+  def new
+    @passport_application_form = PassportApplicationForm.new
+  end
+
+  def show
+    @passport_application_form = PassportApplicationForm.find(params[:id])
+  end
+
+  def edit
+    @passport_application_form = PassportApplicationForm.find(params[:id])
+  end
+
+  def create
+    @passport_application_form = PassportApplicationForm.new(passport_application_form_params)
+
+    if @passport_application_form.save
+      redirect_to @passport_application_form, notice: "Application form was successfully saved."
+    else
+      flash.now[:errors] = @passport_application_form.errors.full_messages
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @passport_application_form = PassportApplicationForm.find(params[:id])
+
+    if @passport_application_form.update(passport_application_form_params)
+      if params[:commit] == "Submit"
+        if @passport_application_form.submit_application
+          redirect_to @passport_application_form, notice: "Application form was successfully submitted."
+        else
+          flash.now[:errors] = @passport_application_form.errors.full_messages
+          render :edit, status: :unprocessable_entity
+        end
+      else
+        redirect_to @passport_application_form, notice: "Application form was successfully updated."
+      end
+    else
+      flash.now[:errors] = @passport_application_form.errors.full_messages
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def passport_application_form_params
+    params.require(:passport_application_form).permit(
+      :name_first, :name_middle, :name_last, :name_suffix,
+      :ssn,
+      :residential_address_street_line_1, :residential_address_street_line_2,
+      :residential_address_city, :residential_address_state, :residential_address_zip_code,
+      birth_date: [ :month, :day, :year ]
+    )
+  end
+end
+```
+
+Strong-params note: strata attributes expand into underlying columns. Permit each underlying column (e.g., `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`; `address` → `_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code`). `memorable_date` uses a nested hash (`month`, `day`, `year`). See `strata-application-form/attributes.md` for the full column map.
+
+## Step 4: Test Controller
+
+File: `spec/requests/passport_application_forms_spec.rb`. Cover each action happy path + the submit branch of `update`.
+
+```ruby
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "PassportApplicationForms", type: :request do
+  let(:form) { PassportApplicationForm.create!(user_id: SecureRandom.uuid) }
+
+  describe "GET /index" do
+    it "renders" do
+      get passport_application_forms_path
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "GET /show" do
+    it "renders" do
+      get passport_application_form_path(form)
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "GET /edit" do
+    it "renders" do
+      get edit_passport_application_form_path(form)
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "PATCH /update" do
+    it "updates and redirects to show" do
+      patch passport_application_form_path(form),
+            params: { passport_application_form: { name_first: "Jane" } }
+      expect(response).to redirect_to(passport_application_form_path(form))
+      expect(form.reload.name_first).to eq("Jane")
+    end
+
+    it "submits when commit=Submit" do
+      patch passport_application_form_path(form),
+            params: { passport_application_form: { name_first: "Jane", name_last: "Doe" },
+                      commit: "Submit" }
+      expect(form.reload.status).to eq("submitted")
+    end
+
+    it "re-renders edit with 422 when update invalid" do
+      allow(PassportApplicationForm).to receive(:find).and_return(form)
+      allow(form).to receive(:update).and_return(false)
+      patch passport_application_form_path(form),
+            params: { passport_application_form: { name_first: "" } }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+end
+```
+
+Run:
+
+```bash
+bundle exec rspec spec/requests/passport_application_forms_spec.rb
+```
+
 <!-- Step sections filled in subsequent tasks -->
