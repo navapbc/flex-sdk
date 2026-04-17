@@ -12,6 +12,12 @@ Rules for building application forms with the Strata SDK. Application forms impl
 
 <%= excerpt_doc_section("intake-application-forms.md", "What is an Application Form?") %>
 
+## Build Recipe
+
+Building a new application form = 6 steps: generate model, test model, generate controller, test controller, build views, test views. Full recipe with commands + test templates:
+
+→ **`strata-application-form/recipe.md`** (auto-loads when editing any application form file)
+
 ## ApplicationForm Base Class
 
 `Strata::ApplicationForm` is an abstract base class. All form models inherit from it.
@@ -84,6 +90,7 @@ For implementation details, these sub-rules load automatically when working on a
 
 | File | Contents |
 |------|----------|
+| `strata-sdk/strata-application-form/recipe.md` | Build recipe: 6-step gen→test workflow with commands and test templates |
 | `strata-sdk/strata-application-form/core-class.md` | Full ApplicationForm source, event system, submission internals |
 | `strata-sdk/strata-application-form/attributes.md` | Strata::Attributes module source, column mappings, attribute type details |
 | `strata-sdk/strata-application-form/determinable.md` | Strata::Determinable source, recording determinations |

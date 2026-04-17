@@ -207,6 +207,12 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("## Recap")
     end
 
+    it "root file points to recipe as the build entry point" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form.md")
+      expect(content).to include("Build Recipe")
+      expect(content).to include("strata-application-form/recipe.md")
+    end
+
     it "every generated rule file's paths begin with **/ (monorepo-safe)" do
       root_dir = "#{destination_root}/.agents/rules/strata-sdk"
       files = Dir.glob("#{root_dir}/**/*.md")
