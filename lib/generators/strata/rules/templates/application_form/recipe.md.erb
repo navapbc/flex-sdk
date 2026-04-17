@@ -255,4 +255,70 @@ Run:
 bundle exec rspec spec/requests/passport_application_forms_spec.rb
 ```
 
-<!-- Step sections filled in subsequent tasks -->
+## Step 5: Generate Views
+
+Prerequisite: an `ApplicationFormFlow` class defining `question_page`s (see `multi-page-form-flows.md`). Generator walks each question page and writes:
+
+- `app/views/layouts/<form>_form.html.erb`
+- `app/views/<form_plural>/edit_<page_name>.html.erb` per question page
+- `config/locales/<form_plural>/en.yml` with `edit_<page>_title` keys + enum legend/option keys
+
+```bash
+bin/rails generate strata:application_form_views PassportApplicationFormFlow PassportApplicationForm
+```
+
+Wire up the generated layout on `edit` action(s) in the controller:
+
+```ruby
+class PassportApplicationFormsController < ApplicationController
+  layout "passport_application_form", only: [ :edit, :update ]
+  # ...
+end
+```
+
+Field-helper detection, shared partials (`strata/shared/_form_buttons`, `_step_indicator`, `_breadcrumbs`, `_exit_link`), and required I18n keys: see `strata-application-form/views.md`.
+
+## Step 6: Test Views
+
+File: `spec/system/passport_application_form_spec.rb`. System spec walks generated pages using Capybara. Cover: page renders, field per strata attribute present, save-and-continue advances state.
+
+```ruby
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "PassportApplicationForm flow", type: :system do
+  let(:form) { PassportApplicationForm.create!(user_id: SecureRandom.uuid) }
+
+  it "renders the name question page with name fields" do
+    visit edit_passport_application_form_path(form, page: "name")
+    expect(page).to have_field("passport_application_form[name_first]")
+    expect(page).to have_field("passport_application_form[name_last]")
+  end
+
+  it "saves name fields on save-and-continue" do
+    visit edit_passport_application_form_path(form, page: "name")
+    fill_in "passport_application_form[name_first]", with: "John"
+    fill_in "passport_application_form[name_last]", with: "Doe"
+    click_button I18n.t("strata.form_builder.actions.save_and_continue")
+    expect(form.reload.name_first).to eq("John")
+  end
+end
+```
+
+Run:
+
+```bash
+bundle exec rspec spec/system/passport_application_form_spec.rb
+```
+
+## Recap
+
+Each step: generate → test → commit. Repeat. For deep dives, load these sibling sub-rules (they auto-load by path scope):
+
+| Sub-rule | When it applies |
+|----------|-----------------|
+| `strata-application-form/core-class.md` | Editing model — submission internals, events |
+| `strata-application-form/attributes.md` | Declaring `strata_attribute` — column mappings |
+| `strata-application-form/views.md` | Editing views/layouts — field helpers, partials, I18n |
+| `strata-application-form/determinable.md` | Recording a determination on the form |
