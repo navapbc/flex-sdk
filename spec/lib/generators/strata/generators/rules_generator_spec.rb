@@ -188,21 +188,19 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("publish_event_with_payload")
     end
 
-    it "recipe sub-file has Step 3 (controller) and Step 4 (add routes)" do
+    it "recipe sub-file has Step 3 (controller) and Step 4 (request spec)" do
       content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
-      expect(content).to include("## Step 3: Generate Controller")
+      expect(content).to include("## Step 3: Generate Controller and Routes")
       expect(content).to include("bin/rails generate controller")
-      expect(content).to include("## Step 4: Add Routes")
-      expect(content).to include("config/routes.rb")
+      expect(content).to include("## Step 4: Test Controller")
+      expect(content).to include('type: :request')
     end
 
-    it "recipe sub-file has Step 5 (request spec), Step 6 (views) and Step 7 (view spec) and Recap" do
+    it "recipe sub-file has Step 5 (views) and Step 6 (view spec) and Recap" do
       content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
-      expect(content).to include("## Step 5: Test Controller")
-      expect(content).to include('type: :request')
-      expect(content).to include("## Step 6: Build Views")
+      expect(content).to include("## Step 5: Build Views")
       expect(content).to include("strata_form_with")
-      expect(content).to include("## Step 7: Test Views")
+      expect(content).to include("## Step 6: Test Views")
       expect(content).to include("type: :system")
       expect(content).to include("## Recap")
     end
