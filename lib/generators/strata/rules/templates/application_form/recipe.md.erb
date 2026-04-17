@@ -114,6 +114,8 @@ resources :passport_application_forms
 
 Customize `app/controllers/passport_application_forms_controller.rb`:
 
+The `create` action below does not handle submit-on-create — submission happens only on `update`, because a multi-page flow typically edits an existing `in_progress` record. If your flow lets users create-and-submit in one request, mirror the submit branch from `update` into `create`.
+
 ```ruby
 # frozen_string_literal: true
 
@@ -191,7 +193,14 @@ File: `spec/requests/passport_application_forms_spec.rb`. Cover each action happ
 require "rails_helper"
 
 RSpec.describe "PassportApplicationForms", type: :request do
-  let(:form) { PassportApplicationForm.create!(user_id: SecureRandom.uuid) }
+  let(:form) do
+    PassportApplicationForm.create!(
+      user_id: SecureRandom.uuid,
+      name_first: "Jane",
+      name_last: "Doe",
+      birth_date: Date.new(1990, 1, 1)
+    )
+  end
 
   describe "GET /index" do
     it "renders" do
