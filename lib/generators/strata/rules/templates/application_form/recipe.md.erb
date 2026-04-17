@@ -18,9 +18,10 @@ Step-by-step recipe for building a new application form end-to-end. Do steps in 
 | 1 | Generate model + migration | `bin/rails g strata:application_form NAME attr:type ...` |
 | 2 | Test model | `spec/models/<name>_application_form_spec.rb` |
 | 3 | Generate controller | `bin/rails g controller <Name>ApplicationForms ...` |
-| 4 | Test controller | `spec/requests/<name>_application_forms_spec.rb` |
-| 5 | Build views | `app/views/<name>_application_forms/*.html.erb` |
-| 6 | Test views | `spec/system/<name>_application_form_spec.rb` |
+| 4 | Add routes | `config/routes.rb` |
+| 5 | Test controller | `spec/requests/<name>_application_forms_spec.rb` |
+| 6 | Build views | `app/views/<name>_application_forms/*.html.erb` |
+| 7 | Test views | `spec/system/<name>_application_form_spec.rb` |
 
 ## Step 1: Generate Application Form Model
 
@@ -106,7 +107,9 @@ No Strata controller generator exists — use Rails' built-in generator, then cu
 bin/rails generate controller PassportApplicationForms index show new edit create update --skip-routes --no-helper
 ```
 
-Add route in `config/routes.rb`:
+## Step 4: Add Routes
+
+Add route in `config/routes.rb` so the routes to the controller endpoints are available for testing and building views:
 
 ```ruby
 resources :passport_application_forms
@@ -183,7 +186,7 @@ end
 
 Strong-params note: strata attributes expand into underlying columns. Permit each underlying column (e.g., `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`; `address` → `_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code`). `memorable_date` uses a nested hash (`month`, `day`, `year`). See `strata-application-form/attributes.md` for the full column map.
 
-## Step 4: Test Controller
+## Step 5: Test Controller
 
 File: `spec/requests/passport_application_forms_spec.rb`. Cover each action happy path + the submit branch of `update`.
 
@@ -255,7 +258,7 @@ Run:
 bundle exec rspec spec/requests/passport_application_forms_spec.rb
 ```
 
-## Step 5: Build Views
+## Step 6: Build Views
 
 Write the standard Rails views for the form under `app/views/passport_application_forms/`. Use the SDK's `strata_form_with` form builder — it wires the strata field helpers (`name`, `address_fields`, `memorable_date`, `tax_id_field`, etc.) to the expanded columns automatically. Field-helper reference: `strata-application-form/views.md`.
 
@@ -284,7 +287,7 @@ Two submit buttons: clicking "Submit" sends `params[:commit] == "Submit"`, which
 
 > Multi-page flows (one question page per step, back/next navigation, step indicator) use `Strata::Flows::ApplicationFormController` and the `strata:application_form_views` generator — a different pattern than this recipe. See `strata-application-form/views.md` for that path.
 
-## Step 6: Test Views
+## Step 7: Test Views
 
 File: `spec/system/passport_application_form_spec.rb`. Capybara system spec walks the edit page and verifies form fields render and save.
 
