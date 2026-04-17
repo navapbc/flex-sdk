@@ -22,4 +22,79 @@ Step-by-step recipe for building a new application form end-to-end. Do steps in 
 | 5 | Generate views | `bin/rails g strata:application_form_views Flow Form` |
 | 6 | Test views | `spec/system/<name>_application_form_spec.rb` |
 
+## Step 1: Generate Application Form Model
+
+Use `strata:application_form`. Appends `ApplicationForm` suffix if absent. Creates model file + migration. Merges base attributes (`status:integer`, `user_id:uuid`, `submitted_at:datetime`) automatically.
+
+```bash
+bin/rails generate strata:application_form Passport \
+  name:name birth_date:memorable_date ssn:tax_id residential_address:address
+```
+
+Generated `app/models/passport_application_form.rb`:
+
+```ruby
+class PassportApplicationForm < Strata::ApplicationForm
+  strata_attribute :name, :name
+  strata_attribute :birth_date, :memorable_date
+  strata_attribute :ssn, :tax_id
+  strata_attribute :residential_address, :address
+end
+```
+
+Column expansion per strata attribute: see `strata-application-form/attributes.md`.
+
+Run migration:
+
+```bash
+bin/rails db:migrate
+```
+
+## Step 2: Test Model
+
+File: `spec/models/passport_application_form_spec.rb`. Cover: persistence, round-trip read, submission publishes `{ClassName}Submitted` event, post-submission writes raise.
+
+```ruby
+# frozen_string_literal: true
+
+require "rails_helper"
+require "support/matchers/publish_event_with_payload"
+
+RSpec.describe PassportApplicationForm do
+  let(:form) { described_class.new(user_id: SecureRandom.uuid) }
+
+  before do
+    form.name_first = "John"
+    form.name_last = "Doe"
+    form.birth_date = { year: 1990, month: 1, day: 1 }
+    form.save!
+  end
+
+  it "persists and round-trips strata attributes" do
+    reloaded = described_class.find(form.id)
+    expect(reloaded.name_first).to eq("John")
+    expect(reloaded.birth_date_date).to eq(Date.new(1990, 1, 1))
+  end
+
+  it "publishes Submitted event on submission" do
+    expect { form.submit_application }
+      .to publish_event_with_payload(
+        "PassportApplicationFormSubmitted",
+        { application_form_id: form.id }
+      )
+  end
+
+  it "prevents writes after submission" do
+    form.submit_application
+    expect { form.update(name_first: "Jane") }.to raise_error(ActiveRecord::RecordInvalid)
+  end
+end
+```
+
+Run:
+
+```bash
+bundle exec rspec spec/models/passport_application_form_spec.rb
+```
+
 <!-- Step sections filled in subsequent tasks -->

@@ -181,6 +181,14 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("| Step | Action |")
     end
 
+    it "recipe sub-file has Step 1 (generate model) and Step 2 (test model)" do
+      content = File.read("#{destination_root}/.agents/rules/strata-sdk/strata-application-form/recipe.md")
+      expect(content).to include("## Step 1: Generate Application Form Model")
+      expect(content).to include("bin/rails generate strata:application_form")
+      expect(content).to include("## Step 2: Test Model")
+      expect(content).to include("publish_event_with_payload")
+    end
+
     it "every generated rule file's paths begin with **/ (monorepo-safe)" do
       root_dir = "#{destination_root}/.agents/rules/strata-sdk"
       files = Dir.glob("#{root_dir}/**/*.md")
