@@ -100,7 +100,7 @@ bundle exec rspec spec/models/passport_application_form_spec.rb
 
 ## Step 3: Generate Controller
 
-No Strata controller generator exists — use Rails' built-in generator, then customize actions to handle `submit_application` on `commit == "Submit"`. (Option C of the controller-generation design.)
+No Strata controller generator exists — use Rails' built-in generator, then customize actions to handle `submit_application` on `commit == "Submit"`.
 
 ```bash
 bin/rails generate controller PassportApplicationForms index show new edit create update --skip-routes --no-helper
