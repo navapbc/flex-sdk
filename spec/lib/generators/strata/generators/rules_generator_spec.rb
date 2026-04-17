@@ -226,10 +226,8 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
         path_entries = frontmatter.scan(/^\s*-\s*"([^"]+)"/).flatten
         expect(path_entries).not_to be_empty, "#{path} has no path entries"
 
-        path_entries.each do |entry|
-          expect(entry).to start_with("**/"),
-            "#{path} path entry #{entry.inspect} must start with **/ for monorepo scoping"
-        end
+        expect(path_entries).to all(start_with("**/")),
+          "#{path} has path entries not starting with **/ for monorepo scoping"
       end
     end
   end
