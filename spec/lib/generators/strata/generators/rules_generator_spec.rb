@@ -364,15 +364,21 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
     it "recipe Step 1 generates the application form model" do
       content = File.read("#{sub_dir}/recipe.md")
       expect(content).to include("## Step 1: Generate the Application Form Model")
-      expect(content).to include("bin/rails generate strata:application_form")
+      expect(content).to include("bin/rails generate strata:application_form Leave")
+      expect(content).to include("applicant_name:name")
+      expect(content).to include("bin/rails db:migrate")
     end
 
     it "recipe Step 2 defines the flow class by hand" do
       content = File.read("#{sub_dir}/recipe.md")
       expect(content).to include("## Step 2: Hand-Write the Flow Class")
+      expect(content).to include("class LeaveApplicationFlow")
       expect(content).to include("include Strata::Flows::ApplicationFormFlow")
-      expect(content).to include("task :")
-      expect(content).to include("question_page :")
+      expect(content).to include("task :personal_information")
+      expect(content).to include("task :leave_details, depends_on: [:personal_information]")
+      expect(content).to include("question_page :applicant_name")
+      expect(content).to include("start_page :introduction")
+      expect(content).to include("end_page :confirmation")
     end
   end
 

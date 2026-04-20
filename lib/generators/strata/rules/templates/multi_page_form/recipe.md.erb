@@ -35,14 +35,14 @@ Use `strata:application_form` for the backing record — same generator used for
 ```bash
 bin/rails generate strata:application_form Leave \
   applicant_name:name date_of_birth:memorable_date \
-  leave_type:integer leave_start_date:memorable_date leave_end_date:memorable_date
+  leave_type:string leave_start_date:memorable_date leave_end_date:memorable_date
 ```
 
 ```bash
 bin/rails db:migrate
 ```
 
-Column expansion rules (e.g. `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`): see `strata-application-form/attributes.md`.
+Column expansion rules (e.g. `applicant_name:name` → `applicant_name_first`, `applicant_name_middle`, `applicant_name_last`, `applicant_name_suffix`): see `strata-application-form/attributes.md`.
 
 ## Step 2: Hand-Write the Flow Class
 
@@ -68,7 +68,7 @@ class LeaveApplicationFlow
   end
 
   start_page :introduction
-  end_page   :confirmation
+  end_page :confirmation
 end
 ```
 
