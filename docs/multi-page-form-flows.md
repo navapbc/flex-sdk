@@ -11,6 +11,16 @@ Multi-Page Form Flows enable developers to define and build complex forms that s
 - **[FUTURE] Built-in views**—Prebuilt views that show the current page, current task/section, and overall progress of the form.
 - **[FUTURE] Supports looping pattern**—Supports gathering information about multiple people or items in a single or multi-page loop.
 
+## Build Recipe (Agent Rule)
+
+For an end-to-end, step-by-step walkthrough of building a multi-page form (model → flow → validations → views → controller → routes → start/end pages → tests), generate the Strata agent rules and open the recipe sub-rule:
+
+```bash
+bin/rails generate strata:rules multi_page_form
+```
+
+This writes `.agents/rules/strata-sdk/strata-multi-page-form/recipe.md`, which walks through a complete `LeaveApplicationForm` example including every command, file, and test needed. The recipe is the preferred entry point for building new flows; the sections below cover each primitive in isolation.
+
 ## Design Principles
 
 ### Limit questions to one per page, where possible
