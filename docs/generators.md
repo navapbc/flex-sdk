@@ -85,6 +85,21 @@ Creates a standard set of files required for implementing a staff dashboard in a
 bin/rails generate strata:staff
 ```
 
+### strata:rules
+
+Generates path-scoped agent rule files for Strata SDK features. Rules embed current SDK source code so re-running the generator updates rules to match the installed version. [See full usage guide](../lib/generators/strata/rules/USAGE)
+
+```bash
+bin/rails generate strata:rules FEATURE_NAME [--agent AGENT]
+```
+
+Supported features: `application_form`, `all`
+
+Output directory (defaults to `.agents/rules/strata-sdk/`):
+- `--agent claude` → `.claude/rules/strata-sdk/`
+- `--agent cursor` → `.cursor/rules/strata-sdk/`
+- `--agent copilot` → `.copilot/rules/strata-sdk/`
+
 ## Generator Dependencies
 
 - When generating a case, the generator will check for the existence of associated business process and application form classes

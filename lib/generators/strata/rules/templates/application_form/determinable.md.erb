@@ -1,0 +1,55 @@
+---
+paths:
+  - "**/app/models/**/*application_form*.rb"
+  - "**/app/models/**/*form*.rb"
+---
+
+# Strata SDK: Determinable
+
+Full source and usage for `Strata::Determinable`, included by default in `Strata::ApplicationForm`.
+
+## Source Code
+
+```ruby
+<%= read_sdk_file("app/models/concerns/strata/determinable.rb") %>
+```
+
+## Usage
+
+Any model including `Strata::Determinable` gets a `has_many :determinations` association and the `record_determination!` method.
+
+```ruby
+form = PassportApplicationForm.find(id)
+form.record_determination!(
+  decision_method: :automated,
+  reasons: ["identity_verified"],
+  outcome: :approved,
+  determination_data: { score: 95 },
+  determined_at: Time.current
+)
+
+# With staff review
+form.record_determination!(
+  decision_method: :staff_review,
+  reasons: ["manual_review_required"],
+  outcome: :requires_additional_info,
+  determination_data: { notes: "Need proof of address" },
+  determined_at: Time.current,
+  determined_by_id: current_user.id
+)
+```
+
+## Integration with Rules Engine
+
+Determinations pair with the Strata Rules Engine. The rules engine evaluates eligibility, and the result is recorded as a determination:
+
+```ruby
+result = ruleset.evaluate(form)
+form.record_determination!(
+  decision_method: :automated,
+  reasons: result.reasons,
+  outcome: result.outcome,
+  determination_data: result.output_data,
+  determined_at: Time.current
+)
+```

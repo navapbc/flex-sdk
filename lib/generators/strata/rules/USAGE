@@ -1,0 +1,23 @@
+Description:
+    Generates path-scoped agent rule files for Strata SDK features.
+    Rules embed current SDK source code excerpts so re-running the
+    generator updates rules to match the installed SDK version.
+
+    Output goes to .agents/rules/strata-sdk/ by default.
+    Use --agent to target a specific agent's rules directory.
+
+Examples:
+    bin/rails generate strata:rules application_form
+    bin/rails generate strata:rules application_form --agent claude
+    bin/rails generate strata:rules application_form --agent cursor
+    bin/rails generate strata:rules all
+
+Supported features:
+    application_form    Application form model, attributes, and determinable
+    all                 Generate rules for all supported features
+
+Agent directories:
+    --agent claude      .claude/rules/strata-sdk/
+    --agent cursor      .cursor/rules/strata-sdk/
+    --agent copilot     .copilot/rules/strata-sdk/
+    (default)           .agents/rules/strata-sdk/
