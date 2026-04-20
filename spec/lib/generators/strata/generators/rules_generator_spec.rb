@@ -394,6 +394,23 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("## Step 4: Generate Views, Layout, and Locales")
       expect(content).to include("bin/rails generate strata:application_form_views")
     end
+
+    it "recipe Step 5 defines the controller with ApplicationFormController mixin" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 5: Write the Controller")
+      expect(content).to include("include Strata::Flows::ApplicationFormController")
+      expect(content).to include("flow LeaveApplicationFlow")
+      expect(content).to include("def flow_record")
+    end
+
+    it "recipe Step 6 wires routes via Flow.pages iteration" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 6: Wire Routes")
+      expect(content).to include("resources :leave_application_forms")
+      expect(content).to include("LeaveApplicationFlow.pages.each")
+      expect(content).to include("page.edit_pathname")
+      expect(content).to include("page.update_pathname")
+    end
   end
 
   describe "generating all features" do
