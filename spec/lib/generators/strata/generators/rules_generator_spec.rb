@@ -419,6 +419,31 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("introduction.html.erb")
       expect(content).to include("confirmation.html.erb")
     end
+
+    it "recipe Step 8 has model, request, and system spec templates" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 8: Test the Flow")
+      expect(content).to include("type: :request")
+      expect(content).to include("type: :system")
+      expect(content).to include("spec/models/leave_application_form_spec.rb")
+      expect(content).to include("spec/requests/leave_application_forms_spec.rb")
+      expect(content).to include("spec/system/leave_application_form_spec.rb")
+    end
+
+    it "recipe ends with a Recap section pointing at sibling sub-rules" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Recap")
+      expect(content).to include("strata-multi-page-form/flow-dsl.md")
+      expect(content).to include("strata-multi-page-form/controller-and-routes.md")
+      expect(content).to include("strata-multi-page-form/pages-tasks-validations.md")
+      expect(content).to include("strata-multi-page-form/views-and-locales.md")
+    end
+
+    it "recipe sub-file is under 12,000 characters" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content.length).to be <= 12_000,
+        "recipe.md exceeds 12,000 chars (#{content.length})"
+    end
   end
 
   describe "generating all features" do

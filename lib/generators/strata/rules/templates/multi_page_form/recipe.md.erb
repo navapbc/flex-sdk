@@ -11,9 +11,7 @@ paths:
 
 # Strata SDK: Multi-Page Form — Build Recipe
 
-Step-by-step recipe for building a multi-page intake flow end-to-end. Do steps in order. Each step: generate or write code, then test, then commit.
-
-Unlike `strata:application_form`, there is no generator for the `ApplicationFormFlow` class itself — it is hand-written. Every other piece has a generator or an SDK mixin.
+Step-by-step recipe for a multi-page intake flow. Do steps in order: generate or write code, then test, then commit. The `ApplicationFormFlow` class is hand-written; everything else has a generator or SDK mixin.
 
 ## Overview
 
@@ -26,27 +24,24 @@ Unlike `strata:application_form`, there is no generator for the `ApplicationForm
 | 5 | Write controller | `include Strata::Flows::ApplicationFormController` |
 | 6 | Wire routes | `resources :..._forms { member { Flow.pages.each } }` |
 | 7 | Build start/end pages + submit | `start_page`, `end_page`, confirmation view |
-| 8 | Test: model + request + system | Three spec files per the templates below |
+| 8 | Test model + request + system | Three spec files per templates below |
 
 ## Step 1: Generate the Application Form Model
 
-Use `strata:application_form` for the backing record — same generator used for single-page forms. Attribute list should be the union of every field referenced by the flow's `question_page` declarations.
+Use `strata:application_form` — same generator as single-page forms. Attribute list should cover every field referenced by the flow's `question_page` declarations.
 
 ```bash
 bin/rails generate strata:application_form Leave \
   applicant_name:name date_of_birth:memorable_date \
   leave_type:string leave_start_date:memorable_date leave_end_date:memorable_date
-```
-
-```bash
 bin/rails db:migrate
 ```
 
-Column expansion rules (e.g. `applicant_name:name` → `applicant_name_first`, `applicant_name_middle`, `applicant_name_last`, `applicant_name_suffix`): see `strata-application-form/attributes.md`.
+Column expansion (e.g. `applicant_name:name` → `applicant_name_first/_middle/_last/_suffix`): see `strata-application-form/attributes.md`.
 
 ## Step 2: Hand-Write the Flow Class
 
-No generator exists for the flow class — create `app/flows/<name>_flow.rb` by hand.
+Create `app/flows/<name>_flow.rb` by hand — no generator.
 
 ```ruby
 # app/flows/leave_application_flow.rb
@@ -72,18 +67,18 @@ class LeaveApplicationFlow
 end
 ```
 
-Rules this example demonstrates:
+Rules demonstrated:
 
-- `fields:` defaults to `[page_name]` when omitted (see `date_of_birth`). Supply an explicit array when the page covers multiple columns or a differently-named column.
-- `depends_on: [:task_name]` locks `leave_details` until `personal_information` is complete.
-- `if:` proc skips `supporting_documents` when the record does not meet the condition.
-- `start_page` and `end_page` point at route helper stems — you will define the matching controller actions + views in Step 7.
+- `fields:` defaults to `[page_name]` when omitted. Supply an explicit array for multi-column pages or differently-named columns.
+- `depends_on:` locks a task until its prerequisites complete.
+- `if:` proc skips a page when the record does not meet the condition.
+- `start_page`/`end_page` point at route helper stems — define matching actions + views in Step 7.
 
-Full DSL source and dependency semantics: see `strata-multi-page-form/flow-dsl.md`.
+Full DSL: see `strata-multi-page-form/flow-dsl.md`.
 
 ## Step 3: Wire Per-Page Validations
 
-`validate_flow` introspects the flow and generates a `Flow::PAGE_NAME` constant per page (e.g. `Flow::APPLICANT_NAME`, `Flow::DATE_OF_BIRTH`). Scope presence/format rules to those constants so only the current page's fields validate on each step save.
+`validate_flow` generates a `Flow::PAGE_NAME` constant per page (e.g. `Flow::APPLICANT_NAME`). Scope rules to those constants so only the current page's fields validate on each step save.
 
 ```ruby
 # app/models/leave_application_form.rb
@@ -100,15 +95,15 @@ class LeaveApplicationForm < Strata::ApplicationForm
 end
 ```
 
-`memorable_date` attributes are single-column (e.g. `date_of_birth`, `leave_start_date`) — validate against the attribute name directly. `name` attributes expand to per-part columns (`applicant_name_first`, `applicant_name_last`, etc.) — validate those columns individually.
+`memorable_date` is single-column — validate the attribute directly. `name` expands to per-part columns — validate each individually.
 
-By default `validate_flow` also runs every per-page context when `submit_application` is called, catching any record that skipped a page. Disable with `validate_flow LeaveApplicationFlow, validate_on_submit: false` if needed.
+`validate_flow` also runs every per-page context on `submit_application` by default, catching skipped pages. Disable with `validate_on_submit: false`.
 
-Full validation source: see `strata-multi-page-form/pages-tasks-validations.md`.
+Full source: `strata-multi-page-form/pages-tasks-validations.md`.
 
 ## Step 4: Generate Views, Layout, and Locales
 
-`strata:application_form_views` creates one `edit_<page>.html.erb` per question page, a shared layout, and a locale file with placeholder labels and hints for every field.
+`strata:application_form_views` creates one `edit_<page>.html.erb` per question page, a shared layout, and a locale file with placeholder labels/hints.
 
 ```bash
 bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
@@ -126,17 +121,13 @@ app/views/layouts/leave_application_form.html.erb
 config/locales/leave_application_forms/en.yml
 ```
 
-Customize labels/hints in the generated locale file. The generated layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` inside the app layout — it does not render the task-list sidebar. If you want the sidebar, render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself in the layout or per-page templates. Template helper reference: `strata-multi-page-form/views-and-locales.md`.
+Customize labels/hints in the locale file. The layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` — no task-list sidebar. Render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself if needed. Helpers: `strata-multi-page-form/views-and-locales.md`.
 
 ## Step 5: Write the Controller
 
-No Rails generator needed — the SDK mixin provides the `edit_<page>` / `update_<page>` actions for every question page. Consumers supply only:
+The SDK mixin provides `edit_<page>` / `update_<page>` actions. Consumers supply: the mixin + `flow` declaration, a `flow_record` method, and any custom `start_page`/`end_page` actions.
 
-1. The mixin + `flow` declaration.
-2. A `flow_record` method that returns the record under edit (typically loaded + authorized in a `before_action`).
-3. Any custom actions (e.g., `introduction`, `confirmation`) declared via `start_page` / `end_page`.
-
-The mixin handles strong params automatically — each `update_<page>` action calls `params.require(...).permit(*page.attributes(model_class))`, which expands `strata_attribute` registrations into the right column list. No manual `permit` needed.
+Strong params are automatic — each `update_<page>` permits `page.attributes(model_class)`, expanding `strata_attribute` registrations. No manual `permit`.
 
 ```ruby
 # app/controllers/leave_application_forms_controller.rb
@@ -170,11 +161,11 @@ class LeaveApplicationFormsController < ApplicationController
 end
 ```
 
-On a failed `update_<page>`, the mixin re-renders with 422. To customize the error path, define `on_flow_update_invalid` — the mixin calls it before rendering. Full controller/mixin source: `strata-multi-page-form/controller-and-routes.md`.
+On failed `update_<page>` the mixin re-renders with 422. Override `on_flow_update_invalid` to customize. Full source: `strata-multi-page-form/controller-and-routes.md`.
 
 ## Step 6: Wire Routes
 
-Declare a standard `resources` block, then iterate `Flow.pages` to emit one GET/PATCH member pair per question page. Also add top-level member routes for the `start_page`/`end_page` actions (`introduction`, `confirmation`):
+Declare `resources`, then iterate `Flow.pages` to emit a GET/PATCH member pair per question page, plus member routes for `start_page`/`end_page` actions:
 
 ```ruby
 # config/routes.rb
@@ -193,23 +184,11 @@ Rails.application.routes.draw do
 end
 ```
 
-This produces:
-
-```
-GET    /leave_application_forms/:id/introduction
-GET    /leave_application_forms/:id/edit_applicant_name
-PATCH  /leave_application_forms/:id/update_applicant_name
-GET    /leave_application_forms/:id/edit_date_of_birth
-PATCH  /leave_application_forms/:id/update_date_of_birth
-...
-GET    /leave_application_forms/:id/confirmation
-```
-
-Route helpers generated: `introduction_leave_application_form_path(id)`, `edit_applicant_name_leave_application_form_path(id)`, `update_applicant_name_leave_application_form_path(id)`, etc. These match the pathnames `start_page`/`end_page` and `question_page` declared in Step 2.
+This produces routes like `/leave_application_forms/:id/introduction`, `/edit_applicant_name`, `/update_applicant_name`, ..., `/confirmation`. Helpers: `introduction_leave_application_form_path(id)`, `edit_applicant_name_leave_application_form_path(id)`, etc. — matching the pathnames from Step 2.
 
 ## Step 7: Build Introduction and Confirmation Pages
 
-`start_page :introduction` and `end_page :confirmation` only register path hints — the views and controller actions are hand-written. Create both files:
+`start_page`/`end_page` only register path hints — views and controller actions are hand-written:
 
 ```erb
 <%%# app/views/leave_application_forms/introduction.html.erb %>
@@ -228,7 +207,7 @@ Route helpers generated: `introduction_leave_application_form_path(id)`, `edit_a
 <p><%%= t(".status") %>: <strong><%%= @leave_application_form.status %></strong></p>
 ```
 
-Submit wiring lives in the `confirmation` action (Step 5): landing on the confirmation route calls `submit_application`, which fires the full `:submit` validation context (union of every page) and publishes the `<Name>ApplicationFormSubmitted` event. If validation fails, redirect back to the first incomplete page — implement yourself if needed:
+Submit wiring lives in `confirmation` (Step 5): the route calls `submit_application`, which fires the full `:submit` context and publishes `<Name>ApplicationFormSubmitted`. Redirect to the first incomplete page on failure:
 
 ```ruby
 def confirmation
@@ -242,4 +221,81 @@ def confirmation
 end
 ```
 
-Event publishing and post-submission write-locking: `strata-application-form/core-class.md`.
+Events and write-locking: `strata-application-form/core-class.md`.
+
+## Step 8: Test the Flow
+
+Three specs cover the flow: model (per-context validations), request (edit/update round trip), system (Capybara walk).
+
+`spec/models/leave_application_form_spec.rb`:
+
+```ruby
+require "rails_helper"
+
+RSpec.describe LeaveApplicationForm do
+  let(:form) { described_class.new(user_id: SecureRandom.uuid) }
+
+  it "validates applicant name only on the APPLICANT_NAME context" do
+    expect(form).not_to be_valid(LeaveApplicationForm::Flow::APPLICANT_NAME)
+    form.applicant_name_first = "Jane"
+    form.applicant_name_last  = "Doe"
+    expect(form).to be_valid(LeaveApplicationForm::Flow::APPLICANT_NAME)
+  end
+
+  it "validates all contexts on submit" do
+    form.save!
+    expect(form.submit_application).to be false
+    expect(form.errors[:applicant_name_first]).to include("can't be blank")
+  end
+end
+```
+
+`spec/requests/leave_application_forms_spec.rb`:
+
+```ruby
+require "rails_helper"
+
+RSpec.describe "LeaveApplicationForms", type: :request do
+  let(:form) { LeaveApplicationForm.create!(user_id: SecureRandom.uuid) }
+
+  it "saves and advances on valid update_applicant_name" do
+    patch update_applicant_name_leave_application_form_path(form), params: {
+      leave_application_form: { applicant_name_first: "Jane", applicant_name_last: "Doe" }
+    }
+    expect(form.reload.applicant_name_first).to eq("Jane")
+    expect(response).to redirect_to(edit_date_of_birth_leave_application_form_path(form))
+  end
+end
+```
+
+`spec/system/leave_application_form_spec.rb`:
+
+```ruby
+require "rails_helper"
+
+RSpec.describe "LeaveApplicationForm", type: :system do
+  let(:form) { LeaveApplicationForm.create!(user_id: SecureRandom.uuid) }
+
+  it "walks applicant through the first task" do
+    visit introduction_leave_application_form_path(form)
+    click_link "Begin"
+    fill_in "leave_application_form[applicant_name_first]", with: "Jane"
+    fill_in "leave_application_form[applicant_name_last]",  with: "Doe"
+    click_button "Save and continue"
+    expect(page).to have_current_path(edit_date_of_birth_leave_application_form_path(form))
+  end
+end
+```
+
+## Recap
+
+Each step: code → test → commit. Sibling sub-rules auto-load by path scope:
+
+| Sub-rule | When it applies |
+|----------|-----------------|
+| `strata-multi-page-form/flow-dsl.md` | `app/flows/*_flow.rb` — DSL, dependencies, conditional pages |
+| `strata-multi-page-form/controller-and-routes.md` | Controllers — mixin internals, TaskEvaluator, routes |
+| `strata-multi-page-form/pages-tasks-validations.md` | Form model — validation contexts, Task/QuestionPage |
+| `strata-multi-page-form/views-and-locales.md` | `app/views/*_forms/*`, locales — helpers, TaskListComponent |
+| `strata-application-form/core-class.md` | `submit_application`, events, write-lock |
+| `strata-application-form/attributes.md` | Column expansion for `name`, `address`, `memorable_date` |
