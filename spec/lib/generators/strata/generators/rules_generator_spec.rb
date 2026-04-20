@@ -444,6 +444,17 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content.length).to be <= 12_000,
         "recipe.md exceeds 12,000 chars (#{content.length})"
     end
+
+    it "root file points to recipe as the build entry point" do
+      content = File.read(root_file)
+      expect(content).to include("Build Recipe")
+      expect(content).to include("strata-multi-page-form/recipe.md")
+    end
+
+    it "root file lists recipe in the sub-rules table" do
+      content = File.read(root_file)
+      expect(content).to match(/strata-multi-page-form\/recipe\.md.*Build recipe/i)
+    end
   end
 
   describe "generating all features" do
