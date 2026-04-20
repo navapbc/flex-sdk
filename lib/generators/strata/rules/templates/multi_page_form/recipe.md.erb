@@ -27,3 +27,56 @@ Unlike `strata:application_form`, there is no generator for the `ApplicationForm
 | 6 | Wire routes | `resources :..._forms { member { Flow.pages.each } }` |
 | 7 | Build start/end pages + submit | `start_page`, `end_page`, confirmation view |
 | 8 | Test: model + request + system | Three spec files per the templates below |
+
+## Step 1: Generate the Application Form Model
+
+Use `strata:application_form` for the backing record — same generator used for single-page forms. Attribute list should be the union of every field referenced by the flow's `question_page` declarations.
+
+```bash
+bin/rails generate strata:application_form Leave \
+  applicant_name:name date_of_birth:memorable_date \
+  leave_type:integer leave_start_date:memorable_date leave_end_date:memorable_date
+```
+
+```bash
+bin/rails db:migrate
+```
+
+Column expansion rules (e.g. `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`): see `strata-application-form/attributes.md`.
+
+## Step 2: Hand-Write the Flow Class
+
+No generator exists for the flow class — create `app/flows/<name>_flow.rb` by hand.
+
+```ruby
+# app/flows/leave_application_flow.rb
+class LeaveApplicationFlow
+  include Strata::Flows::ApplicationFormFlow
+
+  task :personal_information do
+    question_page :applicant_name, fields: [
+      :applicant_name_first, :applicant_name_middle,
+      :applicant_name_last, :applicant_name_suffix
+    ]
+    question_page :date_of_birth
+  end
+
+  task :leave_details, depends_on: [:personal_information] do
+    question_page :leave_type
+    question_page :leave_dates, fields: [:leave_start_date, :leave_end_date]
+    question_page :supporting_documents, if: ->(r) { r.leave_type == "medical" }
+  end
+
+  start_page :introduction
+  end_page   :confirmation
+end
+```
+
+Rules this example demonstrates:
+
+- `fields:` defaults to `[page_name]` when omitted (see `date_of_birth`). Supply an explicit array when the page covers multiple columns or a differently-named column.
+- `depends_on: [:task_name]` locks `leave_details` until `personal_information` is complete.
+- `if:` proc skips `supporting_documents` when the record does not meet the condition.
+- `start_page` and `end_page` point at route helper stems — you will define the matching controller actions + views in Step 7.
+
+Full DSL source and dependency semantics: see `strata-multi-page-form/flow-dsl.md`.

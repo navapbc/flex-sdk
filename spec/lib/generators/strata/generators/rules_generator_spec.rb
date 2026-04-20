@@ -360,6 +360,20 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("# Strata SDK: Multi-Page Form — Build Recipe")
       expect(content).to include("| Step | Action |")
     end
+
+    it "recipe Step 1 generates the application form model" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 1: Generate the Application Form Model")
+      expect(content).to include("bin/rails generate strata:application_form")
+    end
+
+    it "recipe Step 2 defines the flow class by hand" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 2: Hand-Write the Flow Class")
+      expect(content).to include("include Strata::Flows::ApplicationFormFlow")
+      expect(content).to include("task :")
+      expect(content).to include("question_page :")
+    end
   end
 
   describe "generating all features" do
