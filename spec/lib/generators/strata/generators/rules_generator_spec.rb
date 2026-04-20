@@ -377,7 +377,6 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("task :personal_information")
       expect(content).to include("task :leave_details, depends_on: [:personal_information]")
       expect(content).to include("question_page :applicant_name")
-      expect(content).to include("start_page :introduction")
       expect(content).to include("end_page :confirmation")
     end
 

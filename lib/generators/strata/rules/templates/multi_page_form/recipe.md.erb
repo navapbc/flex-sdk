@@ -62,17 +62,16 @@ class LeaveApplicationFlow
     question_page :supporting_documents, if: ->(r) { r.leave_type == "medical" }
   end
 
-  start_page :introduction
   end_page :confirmation
 end
 ```
 
 Rules demonstrated:
 
-- `fields:` defaults to `[page_name]` when omitted. Supply an explicit array for multi-column pages or differently-named columns.
+- `fields:` defaults to `[page_name]`. Supply an array for multi-column or differently-named pages.
 - `depends_on:` locks a task until its prerequisites complete.
 - `if:` proc skips a page when the record does not meet the condition.
-- `start_page`/`end_page` point at route helper stems — define matching actions + views in Step 7.
+- `end_page :confirmation` → `confirmation_<model>_path` helper. `start_page` is omitted here because its `send(start_pathname, record)` contract requires a matching bare method; set it later once `introduction` is defined, or navigate to the intro view via a plain `link_to` in Step 7.
 
 Full DSL: see `strata-multi-page-form/flow-dsl.md`.
 
@@ -109,19 +108,7 @@ Full source: `strata-multi-page-form/pages-tasks-validations.md`.
 bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
 ```
 
-Generated output:
-
-```
-app/views/leave_application_forms/edit_applicant_name.html.erb
-app/views/leave_application_forms/edit_date_of_birth.html.erb
-app/views/leave_application_forms/edit_leave_type.html.erb
-app/views/leave_application_forms/edit_leave_dates.html.erb
-app/views/leave_application_forms/edit_supporting_documents.html.erb
-app/views/layouts/leave_application_form.html.erb
-config/locales/leave_application_forms/en.yml
-```
-
-Customize labels/hints in the locale file. The layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` — no task-list sidebar. Render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself if needed. Helpers: `strata-multi-page-form/views-and-locales.md`.
+Produces `app/views/leave_application_forms/edit_<page>.html.erb` per page, `app/views/layouts/leave_application_form.html.erb`, and `config/locales/leave_application_forms/en.yml`. Customize labels/hints in the locale file. The layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` — no task-list sidebar. Render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself if needed. Helpers: `strata-multi-page-form/views-and-locales.md`.
 
 ## Step 5: Write the Controller
 
@@ -214,8 +201,9 @@ def confirmation
   return if @leave_application_form.submitted?
 
   unless @leave_application_form.submit_application
-    flash[:errors] = @leave_application_form.errors.full_messages
+    errors = @leave_application_form.errors.full_messages
     first_failing_page = LeaveApplicationFlow.pages.find { |p| !p.completed?(@leave_application_form) }
+    flash[:errors] = errors  # captured before completed? mutates errors collection
     redirect_to first_failing_page.edit_path(@leave_application_form)
   end
 end
