@@ -80,3 +80,50 @@ Rules this example demonstrates:
 - `start_page` and `end_page` point at route helper stems — you will define the matching controller actions + views in Step 7.
 
 Full DSL source and dependency semantics: see `strata-multi-page-form/flow-dsl.md`.
+
+## Step 3: Wire Per-Page Validations
+
+`validate_flow` introspects the flow and generates a `Flow::PAGE_NAME` constant per page (e.g. `Flow::APPLICANT_NAME`, `Flow::DATE_OF_BIRTH`). Scope presence/format rules to those constants so only the current page's fields validate on each step save.
+
+```ruby
+# app/models/leave_application_form.rb
+class LeaveApplicationForm < Strata::ApplicationForm
+  include Strata::Flows::ApplicationFormValidations
+  validate_flow LeaveApplicationFlow
+
+  validates :applicant_name_first, presence: true, on: Flow::APPLICANT_NAME
+  validates :applicant_name_last,  presence: true, on: Flow::APPLICANT_NAME
+  validates :date_of_birth,        presence: true, on: Flow::DATE_OF_BIRTH
+  validates :leave_type,           presence: true, on: Flow::LEAVE_TYPE
+  validates :leave_start_date,     presence: true, on: Flow::LEAVE_DATES
+  validates :leave_end_date,       presence: true, on: Flow::LEAVE_DATES
+end
+```
+
+`memorable_date` attributes are single-column (e.g. `date_of_birth`, `leave_start_date`) — validate against the attribute name directly. `name` attributes expand to per-part columns (`applicant_name_first`, `applicant_name_last`, etc.) — validate those columns individually.
+
+By default `validate_flow` also runs every per-page context when `submit_application` is called, catching any record that skipped a page. Disable with `validate_flow LeaveApplicationFlow, validate_on_submit: false` if needed.
+
+Full validation source: see `strata-multi-page-form/pages-tasks-validations.md`.
+
+## Step 4: Generate Views, Layout, and Locales
+
+`strata:application_form_views` creates one `edit_<page>.html.erb` per question page, a shared layout, and a locale file with placeholder labels and hints for every field.
+
+```bash
+bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
+```
+
+Generated output:
+
+```
+app/views/leave_application_forms/edit_applicant_name.html.erb
+app/views/leave_application_forms/edit_date_of_birth.html.erb
+app/views/leave_application_forms/edit_leave_type.html.erb
+app/views/leave_application_forms/edit_leave_dates.html.erb
+app/views/leave_application_forms/edit_supporting_documents.html.erb
+app/views/layouts/leave_application_form.html.erb
+config/locales/leave_application_forms/en.yml
+```
+
+Customize labels/hints in the generated locale file. The generated layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` inside the app layout — it does not render the task-list sidebar. If you want the sidebar, render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself in the layout or per-page templates. Template helper reference: `strata-multi-page-form/views-and-locales.md`.

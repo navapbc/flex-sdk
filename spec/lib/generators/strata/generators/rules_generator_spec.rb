@@ -380,6 +380,20 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("start_page :introduction")
       expect(content).to include("end_page :confirmation")
     end
+
+    it "recipe Step 3 wires per-page validations via Flow constants" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 3: Wire Per-Page Validations")
+      expect(content).to include("include Strata::Flows::ApplicationFormValidations")
+      expect(content).to include("validate_flow")
+      expect(content).to include("on: Flow::")
+    end
+
+    it "recipe Step 4 runs the views generator" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 4: Generate Views, Layout, and Locales")
+      expect(content).to include("bin/rails generate strata:application_form_views")
+    end
   end
 
   describe "generating all features" do
