@@ -341,6 +341,25 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       content = File.read("#{sub_dir}/views-and-locales.md")
       expect(content).to include("strata:application_form_views")
     end
+
+    it "creates the recipe sub-file" do
+      expect(File.exist?("#{sub_dir}/recipe.md")).to be true
+    end
+
+    it "recipe sub-file has path-scoped frontmatter" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to start_with("---\n")
+      expect(content).to include("paths:")
+      expect(content).to include("**/app/flows/**/*_flow.rb")
+      expect(content).to include("**/app/models/**/*_form.rb")
+      expect(content).to include("**/app/controllers/**/*_forms_controller.rb")
+    end
+
+    it "recipe sub-file has title and overview table" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("# Strata SDK: Multi-Page Form — Build Recipe")
+      expect(content).to include("| Step | Action |")
+    end
   end
 
   describe "generating all features" do

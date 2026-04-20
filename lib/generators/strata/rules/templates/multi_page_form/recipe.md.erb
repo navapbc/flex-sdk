@@ -1,0 +1,29 @@
+---
+paths:
+  - "**/app/flows/**/*_flow.rb"
+  - "**/app/models/**/*_form.rb"
+  - "**/app/controllers/**/*_forms_controller.rb"
+  - "**/app/views/**/*_forms/**/*.html.erb"
+  - "**/spec/models/**/*_form_spec.rb"
+  - "**/spec/requests/**/*_forms_spec.rb"
+  - "**/spec/system/**/*_form_spec.rb"
+---
+
+# Strata SDK: Multi-Page Form — Build Recipe
+
+Step-by-step recipe for building a multi-page intake flow end-to-end. Do steps in order. Each step: generate or write code, then test, then commit.
+
+Unlike `strata:application_form`, there is no generator for the `ApplicationFormFlow` class itself — it is hand-written. Every other piece has a generator or an SDK mixin.
+
+## Overview
+
+| Step | Action | Deliverable |
+|------|--------|-------------|
+| 1 | Generate form model + migration | `bin/rails g strata:application_form NAME attr:type ...` |
+| 2 | Hand-write the flow class | `app/flows/<name>_flow.rb` |
+| 3 | Wire per-page validations | `validate_flow` + `on: Flow::PAGE` |
+| 4 | Generate views + layout + locales | `bin/rails g strata:application_form_views FLOW FORM` |
+| 5 | Write controller | `include Strata::Flows::ApplicationFormController` |
+| 6 | Wire routes | `resources :..._forms { member { Flow.pages.each } }` |
+| 7 | Build start/end pages + submit | `start_page`, `end_page`, confirmation view |
+| 8 | Test: model + request + system | Three spec files per the templates below |
