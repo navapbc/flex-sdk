@@ -411,6 +411,14 @@ RSpec.describe Strata::Generators::RulesGenerator, type: :generator do
       expect(content).to include("page.edit_pathname")
       expect(content).to include("page.update_pathname")
     end
+
+    it "recipe Step 7 wires introduction, confirmation, and submit_application" do
+      content = File.read("#{sub_dir}/recipe.md")
+      expect(content).to include("## Step 7: Build Introduction and Confirmation Pages")
+      expect(content).to include("submit_application")
+      expect(content).to include("introduction.html.erb")
+      expect(content).to include("confirmation.html.erb")
+    end
   end
 
   describe "generating all features" do

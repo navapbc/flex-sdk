@@ -206,3 +206,40 @@ GET    /leave_application_forms/:id/confirmation
 ```
 
 Route helpers generated: `introduction_leave_application_form_path(id)`, `edit_applicant_name_leave_application_form_path(id)`, `update_applicant_name_leave_application_form_path(id)`, etc. These match the pathnames `start_page`/`end_page` and `question_page` declared in Step 2.
+
+## Step 7: Build Introduction and Confirmation Pages
+
+`start_page :introduction` and `end_page :confirmation` only register path hints — the views and controller actions are hand-written. Create both files:
+
+```erb
+<%%# app/views/leave_application_forms/introduction.html.erb %>
+<h1><%%= t(".title") %></h1>
+<p><%%= t(".summary") %></p>
+
+<%%= render Strata::Flows::TaskListComponent.new(flow: LeaveApplicationFlow.new(@leave_application_form), show_step_label: true) %>
+
+<%%= link_to t(".start"), edit_applicant_name_leave_application_form_path(@leave_application_form), class: "usa-button" %>
+```
+
+```erb
+<%%# app/views/leave_application_forms/confirmation.html.erb %>
+<h1><%%= t(".title") %></h1>
+<p><%%= t(".confirmation_body", id: @leave_application_form.id) %></p>
+<p><%%= t(".status") %>: <strong><%%= @leave_application_form.status %></strong></p>
+```
+
+Submit wiring lives in the `confirmation` action (Step 5): landing on the confirmation route calls `submit_application`, which fires the full `:submit` validation context (union of every page) and publishes the `<Name>ApplicationFormSubmitted` event. If validation fails, redirect back to the first incomplete page — implement yourself if needed:
+
+```ruby
+def confirmation
+  return if @leave_application_form.submitted?
+
+  unless @leave_application_form.submit_application
+    flash[:errors] = @leave_application_form.errors.full_messages
+    first_failing_page = LeaveApplicationFlow.pages.find { |p| !p.completed?(@leave_application_form) }
+    redirect_to first_failing_page.edit_path(@leave_application_form)
+  end
+end
+```
+
+Event publishing and post-submission write-locking: `strata-application-form/core-class.md`.
