@@ -13,7 +13,7 @@ module Strata
       source_root File.expand_path("templates", __dir__)
       include SourceExcerptHelper
 
-      SUPPORTED_FEATURES = %w[application_form].freeze
+      SUPPORTED_FEATURES = %w[application_form attributes].freeze
 
       # Manifest of all SDK source files referenced by templates.
       # Specs validate these paths still exist, catching drift when
@@ -22,10 +22,6 @@ module Strata
         "application_form" => {
           files: %w[
             app/models/strata/application_form.rb
-            app/lib/strata/attributes.rb
-            app/lib/strata/attributes/address_attribute.rb
-            app/lib/strata/attributes/name_attribute.rb
-            app/lib/strata/attributes/memorable_date_attribute.rb
             app/models/concerns/strata/determinable.rb
             app/views/strata/application_forms/index.html.erb
             app/views/strata/application_forms/show.html.erb
@@ -36,6 +32,23 @@ module Strata
             lib/generators/strata/application_form_views/templates/edit_page.html.erb.tt
             docs/intake-application-forms.md
             docs/multi-page-form-flows.md
+          ]
+        },
+        "attributes" => {
+          files: %w[
+            app/lib/strata/attributes.rb
+            app/lib/strata/attributes/address_attribute.rb
+            app/lib/strata/attributes/array_attribute.rb
+            app/lib/strata/attributes/basic_value_object_attribute.rb
+            app/lib/strata/attributes/memorable_date_attribute.rb
+            app/lib/strata/attributes/money_attribute.rb
+            app/lib/strata/attributes/name_attribute.rb
+            app/lib/strata/attributes/range_attribute.rb
+            app/lib/strata/attributes/tax_id_attribute.rb
+            app/lib/strata/attributes/us_date_attribute.rb
+            app/lib/strata/attributes/year_month_attribute.rb
+            app/lib/strata/attributes/year_quarter_attribute.rb
+            lib/generators/strata/migration/migration_generator.rb
           ]
         }
       }.freeze
