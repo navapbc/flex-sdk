@@ -1,0 +1,16 @@
+---
+paths:
+  - "**/app/models/**/*.rb"
+---
+
+# Strata SDK: ArrayAttribute
+
+**Two distinct mechanisms share the name "array":**
+- `strata_attribute :foo, :array` — `:array` as a **type**: stores untyped array of hashes in jsonb
+- `strata_attribute :foo, :name, array: true` — `array: true` as an **option**: stores array of the named type in jsonb
+
+Both produce a single `jsonb` column but with different semantics and validation behavior.
+
+```ruby
+<%= read_sdk_file("app/lib/strata/attributes/array_attribute.rb") %>
+```
