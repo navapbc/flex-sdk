@@ -28,3 +28,4 @@ coverage/*
 
 # Ignore agent plans
 docs/superpowers/plans/*
+.worktrees/

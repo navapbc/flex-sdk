@@ -93,7 +93,7 @@ Generates path-scoped agent rule files for Strata SDK features. Rules embed curr
 bin/rails generate strata:rules FEATURE_NAME [--agent AGENT]
 ```
 
-Supported features: `application_form`, `multi_page_form`, `all`
+Supported features: `application_form`, `attributes`, `multi_page_form`, `all`
 
 Output directory (defaults to `.agents/rules/strata-sdk/`):
 - `--agent claude` → `.claude/rules/strata-sdk/`

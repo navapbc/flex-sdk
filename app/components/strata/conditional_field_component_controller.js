@@ -65,13 +65,13 @@ export default class extends Controller {
   }
 
   enableInputs() {
-    this.element.querySelectorAll("input, select, textarea").forEach((input) => {
+    this.element.querySelectorAll("input, select, textarea, button").forEach((input) => {
       input.disabled = false
     })
   }
 
   disableInputs() {
-    this.element.querySelectorAll("input, select, textarea").forEach((input) => {
+    this.element.querySelectorAll("input, select, textarea, button").forEach((input) => {
       input.disabled = true
     })
   }
