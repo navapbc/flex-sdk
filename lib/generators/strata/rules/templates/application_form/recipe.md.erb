@@ -42,7 +42,7 @@ class PassportApplicationForm < Strata::ApplicationForm
 end
 ```
 
-Column expansion per strata attribute: see `strata-application-form/attributes.md`.
+Column expansion per strata attribute: see `strata-attributes.md` (column mapping table).
 
 Run migration:
 
@@ -181,7 +181,7 @@ class PassportApplicationFormsController < ApplicationController
 end
 ```
 
-Strong-params note: strata attributes expand into underlying columns. Permit each underlying column (e.g., `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`; `address` → `_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code`). `memorable_date` uses a nested hash (`month`, `day`, `year`). See `strata-application-form/attributes.md` for the full column map.
+Strong-params note: strata attributes expand into underlying columns. Permit each underlying column (e.g., `name` → `name_first`, `name_middle`, `name_last`, `name_suffix`; `address` → `_street_line_1`, `_street_line_2`, `_city`, `_state`, `_zip_code`). `memorable_date` uses a nested hash (`month`, `day`, `year`). See `strata-attributes.md` for the full column map.
 
 ## Step 4: Test Controller
 
@@ -282,7 +282,7 @@ Example `app/views/passport_application_forms/edit.html.erb`:
 
 Two submit buttons: clicking "Submit" sends `params[:commit] == "Submit"`, which the controller (Step 3) routes through `submit_application`. Clicking "Save" persists without submission.
 
-> Multi-page flows (one question page per step, back/next navigation, step indicator) use `Strata::Flows::ApplicationFormController` and the `strata:application_form_views` generator — a different pattern than this recipe. See `strata-application-form/views.md` for that path.
+> Multi-page flows (one question page per step, back/next navigation, step indicator) use `Strata::Flows::ApplicationFormController` and the `strata:application_form_views` generator — a different pattern than this recipe. See `strata-multi-page-form/recipe.md` for that path.
 
 ## Step 6: Test Views
 
@@ -331,6 +331,6 @@ Each step: generate → test → commit. Repeat. For deep dives, load these sibl
 | Sub-rule | When it applies |
 |----------|-----------------|
 | `strata-application-form/core-class.md` | Editing model — submission internals, events |
-| `strata-application-form/attributes.md` | Declaring `strata_attribute` — column mappings |
 | `strata-application-form/views.md` | Editing views/layouts — field helpers, partials, I18n |
 | `strata-application-form/determinable.md` | Recording a determination on the form |
+| `strata-attributes.md` | Declaring `strata_attribute` — auto-loads on any model file |

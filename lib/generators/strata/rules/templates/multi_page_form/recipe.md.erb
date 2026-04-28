@@ -28,8 +28,6 @@ Step-by-step recipe for a multi-page intake flow. Do steps in order: generate or
 
 ## Step 1: Generate the Application Form Model
 
-Use `strata:application_form` — same generator as single-page forms. Attribute list should cover every field referenced by the flow's `question_page` declarations.
-
 ```bash
 bin/rails generate strata:application_form Leave \
   applicant_name:name date_of_birth:memorable_date \
@@ -37,7 +35,7 @@ bin/rails generate strata:application_form Leave \
 bin/rails db:migrate
 ```
 
-Column expansion (e.g. `applicant_name:name` → `applicant_name_first/_middle/_last/_suffix`): see `strata-application-form/attributes.md`.
+Generated model body, attribute expansion, and model spec: see `strata-application-form/recipe.md` Steps 1-2.
 
 ## Step 2: Hand-Write the Flow Class
 
@@ -66,18 +64,9 @@ class LeaveApplicationFlow
 end
 ```
 
-Rules demonstrated:
-
-- `fields:` defaults to `[page_name]`. Supply an array for multi-column or differently-named pages.
-- `depends_on:` locks a task until its prerequisites complete.
-- `if:` proc skips a page when the record does not meet the condition.
-- `end_page :confirmation` → `confirmation_<model>_path` helper. `start_page` is omitted here because its `send(start_pathname, record)` contract requires a matching bare method; set it later once `introduction` is defined, or navigate to the intro view via a plain `link_to` in Step 7.
-
-Full DSL: see `strata-multi-page-form/flow-dsl.md`.
+DSL details: `strata-multi-page-form/flow-dsl.md`.
 
 ## Step 3: Wire Per-Page Validations
-
-`validate_flow` generates a `Flow::PAGE_NAME` constant per page (e.g. `Flow::APPLICANT_NAME`). Scope rules to those constants so only the current page's fields validate on each step save.
 
 ```ruby
 # app/models/leave_application_form.rb
@@ -94,27 +83,17 @@ class LeaveApplicationForm < Strata::ApplicationForm
 end
 ```
 
-`memorable_date` is single-column — validate the attribute directly. `name` expands to per-part columns — validate each individually.
-
-`validate_flow` also runs every per-page context on `submit_application` by default, catching skipped pages. Disable with `validate_on_submit: false`.
-
-Full source: `strata-multi-page-form/pages-tasks-validations.md`.
+Full mechanics: `strata-multi-page-form/pages-tasks-validations.md`.
 
 ## Step 4: Generate Views, Layout, and Locales
-
-`strata:application_form_views` creates one `edit_<page>.html.erb` per question page, a shared layout, and a locale file with placeholder labels/hints.
 
 ```bash
 bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
 ```
 
-Produces `app/views/leave_application_forms/edit_<page>.html.erb` per page, `app/views/layouts/leave_application_form.html.erb`, and `config/locales/leave_application_forms/en.yml`. Customize labels/hints in the locale file. The layout wraps each page with `strata/shared/exit_link` and `strata/shared/step_indicator` — no task-list sidebar. Render `Strata::Flows::TaskListComponent.new(flow: @flow)` yourself if needed. Helpers: `strata-multi-page-form/views-and-locales.md`.
+Generated files + multi-page helpers: `strata-multi-page-form/views-and-locales.md`. Shared partials, layout source, I18n keys: `strata-application-form/views.md`.
 
 ## Step 5: Write the Controller
-
-The SDK mixin provides `edit_<page>` / `update_<page>` actions. Consumers supply: the mixin + `flow` declaration, a `flow_record` method, and any custom `start_page`/`end_page` actions.
-
-Strong params are automatic — each `update_<page>` permits `page.attributes(model_class)`, expanding `strata_attribute` registrations. No manual `permit`.
 
 ```ruby
 # app/controllers/leave_application_forms_controller.rb
@@ -148,7 +127,7 @@ class LeaveApplicationFormsController < ApplicationController
 end
 ```
 
-On failed `update_<page>` the mixin re-renders with 422. Override `on_flow_update_invalid` to customize. Full source: `strata-multi-page-form/controller-and-routes.md`.
+Full source: `strata-multi-page-form/controller-and-routes.md`.
 
 ## Step 6: Wire Routes
 
@@ -171,8 +150,6 @@ Rails.application.routes.draw do
 end
 ```
 
-This produces routes like `/leave_application_forms/:id/introduction`, `/edit_applicant_name`, `/update_applicant_name`, ..., `/confirmation`. Helpers: `introduction_leave_application_form_path(id)`, `edit_applicant_name_leave_application_form_path(id)`, etc. — matching the pathnames from Step 2.
-
 ## Step 7: Build Introduction and Confirmation Pages
 
 `start_page`/`end_page` only register path hints — views and controller actions are hand-written:
@@ -194,22 +171,7 @@ This produces routes like `/leave_application_forms/:id/introduction`, `/edit_ap
 <p><%%= t(".status") %>: <strong><%%= @leave_application_form.status %></strong></p>
 ```
 
-Submit wiring lives in `confirmation` (Step 5): the route calls `submit_application`, which fires the full `:submit` context and publishes `<Name>ApplicationFormSubmitted`. Redirect to the first incomplete page on failure:
-
-```ruby
-def confirmation
-  return if @leave_application_form.submitted?
-
-  unless @leave_application_form.submit_application
-    errors = @leave_application_form.errors.full_messages
-    first_failing_page = LeaveApplicationFlow.pages.find { |p| !p.completed?(@leave_application_form) }
-    flash[:errors] = errors  # captured before completed? mutates errors collection
-    redirect_to first_failing_page.edit_path(@leave_application_form)
-  end
-end
-```
-
-Events and write-locking: `strata-application-form/core-class.md`.
+`submit_application` runs the full `:submit` context — events + write-lock semantics: `strata-application-form/core-class.md`.
 
 ## Step 8: Test the Flow
 
@@ -286,4 +248,4 @@ Each step: code → test → commit. Sibling sub-rules auto-load by path scope:
 | `strata-multi-page-form/pages-tasks-validations.md` | Form model — validation contexts, Task/QuestionPage |
 | `strata-multi-page-form/views-and-locales.md` | `app/views/*_forms/*`, locales — helpers, TaskListComponent |
 | `strata-application-form/core-class.md` | `submit_application`, events, write-lock |
-| `strata-application-form/attributes.md` | Column expansion for `name`, `address`, `memorable_date` |
+| `strata-attributes.md` | Column expansion for `name`, `address`, `memorable_date` |

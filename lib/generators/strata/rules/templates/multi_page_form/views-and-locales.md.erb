@@ -1,7 +1,7 @@
 ---
 paths:
   - "**/app/views/**/*_forms/**/*.html.erb"
-  - "**/config/locales/**/*.yml"
+  - "**/config/locales/**/*_application_forms/**/*.yml"
 ---
 
 # Strata SDK: Multi-Page Forms — Views & Locales
@@ -39,6 +39,10 @@ This generates one ERB template per question page, a shared form layout with tas
 ```
 
 The `flow:` keyword argument must receive an instantiated flow object (e.g., `@flow` set by the controller). An optional `show_step_label:` boolean toggles the step-number label on each task section.
+
+## Shared Partials, Index/Show Templates, and I18n Keys
+
+Shared partials (`strata/shared/form_buttons`, `strata/shared/step_indicator`, `strata/shared/exit_link`), index/show view templates, and the full I18n key table are documented in `strata-application-form/views.md`. That rule auto-loads on application form view files and covers conventions shared between single-page and multi-page forms.
 
 ## Source Reference
 

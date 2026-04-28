@@ -35,7 +35,7 @@ resources :leave_application_forms, only: [:index, :new, :show, :create] do
 end
 ```
 
-This produces routes like `GET /leave_application_forms/:id/name` and `PATCH /leave_application_forms/:id/name` for every question page defined in the flow.
+This produces routes like `GET /leave_application_forms/:id/name` and `PATCH /leave_application_forms/:id/name` for every question page defined in the flow. The recipe shows the full `member do ... end` block including `introduction`/`confirmation` member routes.
 
 ## Auto-Generated Actions
 

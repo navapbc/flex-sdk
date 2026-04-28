@@ -65,30 +65,17 @@ end
 class LeaveApplicationForm < Strata::ApplicationForm
   include Strata::Flows::ApplicationFormValidations
   validate_flow LeaveApplicationFlow
-  validates :applicant_name_first, presence: true, on: Flow::NAME
+  validates :applicant_name_first, presence: true, on: Flow::APPLICANT_NAME
 end
 ```
 
 ## Generating Views
 
-Run the views generator to scaffold view templates, layout, and locale files:
-
-```bash
-bin/rails generate strata:application_form_views LeaveApplicationFlow LeaveApplicationForm
-```
-
-This generates view templates for each question page, a shared layout, and locale files for labels and headings.
+`bin/rails generate strata:application_form_views FLOW FORM` — scaffolds page templates, shared layout, and locale files. Full reference: `strata-multi-page-form/views-and-locales.md`. Workflow with example: `strata-multi-page-form/recipe.md` Step 4.
 
 ## Navigation Helpers
 
-Inside views and controllers the following helpers are available:
-
-- `@flow` — the flow class for the current request
-- `@flow_task` — the current task instance
-- `@flow_page` — the current page instance
-- `@flow_task.next_path` — path to the next page in the task
-- `@flow_task.prev_path` — path to the previous page in the task
-- `strata_form_with` — form builder helper scoped to the flow record
+`@flow_task.next_path` / `@flow_task.prev_path`, `strata_form_with`, and `TaskListComponent` — see `strata-multi-page-form/views-and-locales.md`.
 
 ## Build Recipe
 
