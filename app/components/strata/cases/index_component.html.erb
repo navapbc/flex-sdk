@@ -1,19 +1,20 @@
-<h1 class="usa-heading-xl"><%= @title %></h1>
+<h1 class="usa-heading-xl margin-bottom-6"><%= @title %></h1>
 
+<% needs_review_count = action_name == "index" ? @cases.count : @model_class.actionable.count %>
 <% tabs = [
-  { name: "Open", path: polymorphic_path(@model_class), active: action_name == "index" },
-  { name: "Closed", path: polymorphic_path(@model_class, action: "closed"), active: action_name == "closed" }
+  { name: "Needs Review", path: polymorphic_path(@model_class), active: action_name == "index", count: needs_review_count },
+  { name: "Past Applications", path: polymorphic_path(@model_class, action: "closed"), active: action_name == "closed" }
 ] %>
 
-<nav class="display-flex border-bottom-1px border-base-light">
-  <% tabs.each do |tab| %>
-    <%= render partial: "strata/cases/nav_tab", locals: tab %>
+<nav class="display-flex margin-bottom-2">
+  <% tabs.each_with_index do |tab, index| %>
+    <%= render partial: "strata/cases/nav_tab", locals: tab.merge(first: index == 0, last: index == tabs.size - 1) %>
   <% end %>
 </nav>
 
 <%= render Strata::US::TableComponent.new(borderless: true, classes: "width-full") do |table| %>
   <% @case_row_component_class.headers.each do |header| %>
-    <% table.with_header { header } %>
+    <% table.with_header(classes: "bg-base-lightest") { header } %>
   <% end %>
 
   <% if @cases.any? %>

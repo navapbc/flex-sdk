@@ -87,7 +87,10 @@ module Strata
 
       def due_on
         pending_tasks_with_due_date = @case.tasks.select { |task| task.pending? && task.due_on.present? }
-        pending_tasks_with_due_date.map(&:due_on).min&.strftime("%m/%d/%Y")
+        next_due = pending_tasks_with_due_date.map(&:due_on).min
+        return nil unless next_due
+
+        link_to "Review on #{next_due.strftime('%B %-d, %Y')}", polymorphic_path(@case), class: "usa-button"
       end
 
       def created_at

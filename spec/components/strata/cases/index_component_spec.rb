@@ -16,12 +16,12 @@ RSpec.describe Strata::Cases::IndexComponent, type: :component do
   end
 
   describe "tab navigation" do
-    it "renders Open tab" do
-      expect(page).to have_link("Open")
+    it "renders Needs Review tab" do
+      expect(page).to have_link("Needs Review")
     end
 
-    it "renders Closed tab" do
-      expect(page).to have_link("Closed")
+    it "renders Past Applications tab" do
+      expect(page).to have_link("Past Applications")
     end
   end
 

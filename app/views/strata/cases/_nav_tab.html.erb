@@ -1,7 +1,17 @@
-<%= link_to name, path, class: class_names(
-  "text-no-underline padding-y-1 padding-x-2 font-sans-md",
+<% label = local_assigns[:count] ? "#{name} [#{count}]" : name %>
+<% corner_styles = []
+   if local_assigns[:first]
+     corner_styles << "border-top-left-radius: 0.5rem"
+     corner_styles << "border-bottom-left-radius: 0.5rem"
+   end
+   if local_assigns[:last]
+     corner_styles << "border-top-right-radius: 0.5rem"
+     corner_styles << "border-bottom-right-radius: 0.5rem"
+   end %>
+<%= link_to label, path, style: corner_styles.join("; "), class: class_names(
+  "text-no-underline padding-y-1 padding-x-3 font-sans-md text-bold border-1px border-primary",
   {
-    "text-bold border-bottom-05 border-primary text-primary" => active,
-    "text-ink" => !active
+    "bg-primary text-white" => active,
+    "bg-white text-primary" => !active
   }
 ) %>
