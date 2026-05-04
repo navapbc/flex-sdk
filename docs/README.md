@@ -16,6 +16,7 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 - [Multi-Page Form Flows](./multi-page-form-flows.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
 - [Strata Rules Engine](./strata-rules-engine.md) - Introduction to the rules engine for business logic
+- [Strata Audit Log](./strata-audit-log.md) - Record an immutable trail of actions, atomic with the surrounding domain writes
 
 ## Implementation guides
 
