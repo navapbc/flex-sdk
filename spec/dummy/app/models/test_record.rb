@@ -10,6 +10,7 @@ class TestRecord < ApplicationRecord
   strata_attribute :adopted_on, :us_date
   strata_attribute :period, :us_date, range: true
   strata_attribute :tax_id, :tax_id
+  strata_attribute :user_facing_id, :user_facing_id, prefix: "T"
   strata_attribute :reporting_period, :year_quarter
   strata_attribute :base_period, :year_quarter, range: true
   strata_attribute :activity_reporting_period, :year_month
