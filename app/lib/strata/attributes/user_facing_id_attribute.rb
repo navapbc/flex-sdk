@@ -27,6 +27,8 @@ module Strata
           nil
         end
 
+        # Route serialize through cast so query strings like "T-Y01-B33-N91" are decoded
+        # to the integer sequence; the inherited Integer#serialize would coerce them to 0.
         def serialize(value)
           cast(value)
         end
