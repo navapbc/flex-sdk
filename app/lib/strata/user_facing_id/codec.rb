@@ -4,6 +4,7 @@ module Strata
   module UserFacingId
     # Encodes sequence integers into user-facing IDs and decodes them back.
     module Codec
+      # Override per-deployment with a 32-bit random integer for stronger sequence obfuscation.
       DEFAULT_KEY = 0x5a3c_9e21
       SEGMENT_COUNT = 3
 
