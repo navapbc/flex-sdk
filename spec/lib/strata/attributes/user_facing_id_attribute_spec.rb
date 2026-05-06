@@ -161,4 +161,69 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       TestRecord.find_by!(user_facing_id: tampered)
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  describe "writer behavior" do
+    let(:formatted_id) { TestRecord.new(user_facing_id_sequence: sequence_value).user_facing_id }
+
+    it "decodes a formatted ID into the backing sequence" do
+      target = TestRecord.new
+      target.user_facing_id = formatted_id
+
+      expect(target.user_facing_id_sequence).to eq(sequence_value)
+    end
+
+    it "accepts integer assignment as a sequence value" do
+      target = TestRecord.new
+      target.user_facing_id = sequence_value
+
+      expect(target.user_facing_id_sequence).to eq(sequence_value)
+    end
+
+    it "treats nil as a sequence reset" do
+      target = TestRecord.new(user_facing_id_sequence: sequence_value)
+      target.user_facing_id = nil
+
+      expect(target.user_facing_id_sequence).to be_nil
+    end
+
+    it "treats blank strings as nil" do
+      target = TestRecord.new(user_facing_id_sequence: sequence_value)
+      target.user_facing_id = ""
+
+      expect(target.user_facing_id_sequence).to be_nil
+    end
+
+    it "accepts lowercase formatted IDs" do
+      target = TestRecord.new
+      target.user_facing_id = formatted_id.downcase
+
+      expect(target.user_facing_id_sequence).to eq(sequence_value)
+    end
+
+    it "raises FormatError for malformed strings" do
+      expect do
+        TestRecord.new.user_facing_id = "not-an-id"
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for prefix mismatches" do
+      wrong_prefix_id = formatted_id.sub(/\AT-/, "X-")
+
+      expect do
+        TestRecord.new.user_facing_id = wrong_prefix_id
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises ParityError for tampered IDs" do
+      tampered = formatted_id.sub(/\d\z/) { |digit| ((digit.to_i + 1) % 10).to_s }
+
+      expect do
+        TestRecord.new.user_facing_id = tampered
+      end.to raise_error(Strata::UserFacingId::ParityError)
+    end
+
+    it "leaves the permissive cast path unaffected for find_by" do
+      expect(TestRecord.find_by(user_facing_id: "not-an-id")).to be_nil
+    end
+  end
 end

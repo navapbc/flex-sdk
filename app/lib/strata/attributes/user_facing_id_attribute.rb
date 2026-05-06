@@ -51,6 +51,19 @@ module Strata
 
             Strata::UserFacingId::Codec.encode(sequence_value, prefix:, key:)
           end
+
+          # Raise on bad string assignment (loud, debuggable) while leaving the
+          # type's permissive cast in place so query paths still return nil.
+          define_method("#{name}=") do |value|
+            coerced =
+              if value.is_a?(String) && value.strip.present?
+                Strata::UserFacingId::Codec.decode(value, prefix:, key:)
+              else
+                value
+              end
+
+            public_send("#{sequence_column}=", coerced)
+          end
         end
       end
     end
