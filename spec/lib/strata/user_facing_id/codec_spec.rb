@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-require_relative "../../../../app/lib/strata/user_facing_id/error"
-require_relative "../../../../app/lib/strata/user_facing_id/format_error"
-require_relative "../../../../app/lib/strata/user_facing_id/parity_error"
-require_relative "../../../../app/lib/strata/user_facing_id/alphabet"
-require_relative "../../../../app/lib/strata/user_facing_id/feistel"
-require_relative "../../../../app/lib/strata/user_facing_id/parity"
-require_relative "../../../../app/lib/strata/user_facing_id/codec"
+require "rails_helper"
 
 RSpec.describe Strata::UserFacingId::Codec do
   describe ".encode and .decode" do
