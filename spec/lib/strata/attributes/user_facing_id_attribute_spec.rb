@@ -77,6 +77,32 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     end
   end
 
+  describe "with a different prefix" do
+    let(:claim_record) { TestRecord.create!(claim_user_facing_id_sequence: sequence_value) }
+    let(:claim_user_facing_id) { claim_record.claim_user_facing_id }
+
+    it "formats the user-facing ID with the configured prefix" do
+      expect(claim_user_facing_id).to match(/\ACLAIM-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}\z/)
+    end
+
+    it "finds the correct record by the prefixed user-facing ID" do
+      other_record = TestRecord.create!(claim_user_facing_id_sequence: 54_321)
+
+      expect(TestRecord.find_by_claim_user_facing_id!(claim_user_facing_id)).to eq(claim_record)
+      expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).to contain_exactly(claim_record)
+      expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).not_to include(other_record)
+    end
+
+    it "does not allow lookup through an attribute with a different prefix" do
+      expect(TestRecord.find_by_user_facing_id(claim_user_facing_id)).to be_nil
+      expect(TestRecord.with_user_facing_id(claim_user_facing_id)).to be_empty
+
+      expect do
+        TestRecord.find_by_user_facing_id!(claim_user_facing_id)
+      end.to raise_error(ArgumentError)
+    end
+  end
+
   it "finds a record by user-facing ID" do
     expect(TestRecord.find_by_user_facing_id!(user_facing_id)).to eq(record)
   end
