@@ -44,6 +44,29 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       expect(persisted_record.user_facing_id).to match(/\AT-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}\z/)
     end
 
+    it "keeps the same user-facing ID after reloading from the database" do
+      persisted_record = TestRecord.create!
+      formatted_id = persisted_record.user_facing_id
+
+      expect(persisted_record.reload.user_facing_id).to eq(formatted_id)
+    end
+
+    it "queries by the backing integer sequence column" do
+      persisted_record = TestRecord.create!
+
+      expect(TestRecord.with_user_facing_id(persisted_record.user_facing_id).to_sql).to include(
+        "\"test_records\".\"user_facing_id_sequence\""
+      )
+    end
+
+    it "enforces uniqueness at the database layer" do
+      TestRecord.create!(user_facing_id_sequence: sequence_value)
+
+      expect do
+        TestRecord.create!(user_facing_id_sequence: sequence_value)
+      end.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
     it "finds the correct database record by user-facing ID" do
       matching_record = TestRecord.create!
       other_record = TestRecord.create!
@@ -62,6 +85,10 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     expect(TestRecord.find_by_user_facing_id("not-an-id")).to be_nil
   end
 
+  it "finds a record when the user-facing ID input is lowercase" do
+    expect(TestRecord.find_by_user_facing_id!(user_facing_id.downcase)).to eq(record)
+  end
+
   it "scopes records by user-facing ID" do
     other_record = TestRecord.create!(user_facing_id_sequence: 54_321)
 
@@ -78,6 +105,17 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
   it "raises ArgumentError for invalid finder format" do
     expect do
       TestRecord.find_by_user_facing_id!("not-an-id")
+    end.to raise_error(ArgumentError)
+  end
+
+  it "handles prefix mismatches consistently across lookup APIs" do
+    wrong_prefix_id = user_facing_id.sub(/\AT-/, "X-")
+
+    expect(TestRecord.find_by_user_facing_id(wrong_prefix_id)).to be_nil
+    expect(TestRecord.with_user_facing_id(wrong_prefix_id)).to be_empty
+
+    expect do
+      TestRecord.find_by_user_facing_id!(wrong_prefix_id)
     end.to raise_error(ArgumentError)
   end
 
