@@ -4,8 +4,13 @@ module Strata
   module UserFacingId
     # Encodes and decodes one LNN segment using the default user-facing alphabet.
     module Alphabet
+      # "I" is skipped to avoid confusion with "1" in printed or spoken IDs.
       DEFAULT = (("A".."Z").to_a - [ "I" ]).freeze
+
+      # Each segment is one letter plus two digits, so each letter owns 00-99.
       DIGITS_PER_LETTER = 100
+
+      # With the default alphabet, each segment can encode 25 * 100 values.
       BASE = DEFAULT.length * DIGITS_PER_LETTER
 
       module_function
@@ -23,6 +28,7 @@ module Strata
         match = segment.to_s.upcase.match(/\A([A-Z])(\d{2})\z/)
         raise FormatError, "invalid user-facing ID segment" unless match
 
+        # Reject letters that match the shape but are not in the configured alphabet.
         letter_index = alphabet.index(match[1])
         raise FormatError, "invalid user-facing ID segment" unless letter_index
 

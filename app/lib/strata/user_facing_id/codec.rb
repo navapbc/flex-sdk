@@ -6,6 +6,8 @@ module Strata
     module Codec
       DEFAULT_KEY = 0x5a3c_9e21
       SEGMENT_COUNT = 3
+
+      # Total formatted space before reserving four low bits for parity.
       ENCODED_CAPACITY = Alphabet::BASE**SEGMENT_COUNT
       DATA_CAPACITY = ENCODED_CAPACITY / 16
       MAX_VALUE = DATA_CAPACITY - 1
@@ -17,6 +19,8 @@ module Strata
         validate_capacity!(integer)
 
         data_value = cycle_walk_encode(integer, key:)
+
+        # Store parity in the low four bits before splitting into LNN segments.
         packed_value = Parity.append(data_value)
         segments = encode_segments(packed_value)
 
@@ -41,6 +45,7 @@ module Strata
       end
 
       def encode_segments(value)
+        # Emit most-significant segment first for stable, readable formatting.
         SEGMENT_COUNT.times.map do
           value, chunk = value.divmod(Alphabet::BASE)
           Alphabet.encode(chunk)
@@ -73,6 +78,8 @@ module Strata
       def cycle_walk_encode(value, key:)
         current = value
 
+        # Feistel permutes a power-of-two domain; cycle-walk until it lands in
+        # the smaller displayable data domain.
         loop do
           current = Feistel.permute(current, key:)
           return current if current < DATA_CAPACITY
@@ -82,6 +89,7 @@ module Strata
       def cycle_walk_decode(value, key:)
         current = value
 
+        # Decoding mirrors the same cycle walk using the inverse permutation.
         loop do
           current = Feistel.invert(current, key:)
           return current if current < DATA_CAPACITY

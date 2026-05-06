@@ -4,12 +4,16 @@ module Strata
   module UserFacingId
     # Calculates and validates the 4-bit checksum embedded in user-facing IDs.
     module Parity
+      # Different weights make transposed or changed segments more likely to fail validation.
       WEIGHTS = [ 1, 3, 7 ].freeze
+
+      # Four parity bits can represent checksums from 0 through 15.
       MASK = 0b1111
 
       module_function
 
       def calculate(value)
+        # Work in the same base as the visible LNN segments.
         chunks = [
           value % Alphabet::BASE,
           (value / Alphabet::BASE) % Alphabet::BASE,
@@ -20,10 +24,12 @@ module Strata
       end
 
       def append(value)
+        # Shift data left, then use the low four bits for the checksum.
         (value << 4) | calculate(value)
       end
 
       def split(value)
+        # Undo append: data lives above the low four parity bits.
         [ value >> 4, value & MASK ]
       end
 

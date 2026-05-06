@@ -15,6 +15,7 @@ module Strata
       def permute(value, key:, bits: DEFAULT_BITS, rounds: DEFAULT_ROUNDS)
         validate_domain!(value, bits)
 
+        # Split the input into equal halves; each round swaps and mixes them.
         half_bits = bits / 2
         mask = (1 << half_bits) - 1
         left = value >> half_bits
@@ -30,6 +31,7 @@ module Strata
       def invert(value, key:, bits: DEFAULT_BITS, rounds: DEFAULT_ROUNDS)
         validate_domain!(value, bits)
 
+        # The inverse starts from the same split, then replays rounds backward.
         half_bits = bits / 2
         mask = (1 << half_bits) - 1
         left = value >> half_bits
@@ -43,6 +45,7 @@ module Strata
       end
 
       def round_function(value, round, key, mask)
+        # This is not cryptographic; it is just a deterministic keyed mixer.
         mixed = value ^ ((key >> (round % 16)) & mask)
         mixed = (mixed * 0x5bd1e995 + (round * 0x27d4eb2d) + key) & 0xffffffff
         mixed ^= mixed >> 15
