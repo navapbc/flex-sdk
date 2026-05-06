@@ -15,6 +15,16 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     expect(record.user_facing_id).to eq(user_facing_id)
   end
 
+  it "uses the database default to assign sequence values" do
+    first_record = TestRecord.create!
+    second_record = TestRecord.create!
+
+    expect(first_record.user_facing_id_sequence).to be_present
+    expect(second_record.user_facing_id_sequence).to be > first_record.user_facing_id_sequence
+    expect(first_record.user_facing_id).to be_present
+    expect(second_record.user_facing_id).not_to eq(first_record.user_facing_id)
+  end
+
   it "finds a record by user-facing ID" do
     expect(TestRecord.find_by_user_facing_id!(user_facing_id)).to eq(record)
   end

@@ -14,6 +14,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_05_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  execute "CREATE SEQUENCE IF NOT EXISTS test_records_user_facing_id_sequence_seq AS bigint"
+
   create_table "foo_test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "status", default: 0
     t.string "business_process_current_step"
@@ -154,7 +156,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_05_000000) do
     t.string "activity_reporting_period"
     t.string "base_period_start"
     t.string "base_period_end"
-    t.bigint "user_facing_id_sequence"
+    t.bigint "user_facing_id_sequence", default: -> { "nextval('test_records_user_facing_id_sequence_seq'::regclass)" }, null: false
     t.index ["user_facing_id_sequence"], name: "index_test_records_on_user_facing_id_sequence", unique: true
   end
 
