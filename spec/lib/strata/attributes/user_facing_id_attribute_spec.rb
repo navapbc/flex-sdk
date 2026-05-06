@@ -59,11 +59,12 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       )
     end
 
-    it "finds the correct record with native ActiveRecord query methods" do
+    it "finds the correct record through native ActiveRecord query methods" do
       matching_record = TestRecord.create!
       other_record = TestRecord.create!
 
       expect(TestRecord.find_by(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
+      expect(TestRecord.find_by!(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
       expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).to contain_exactly(matching_record)
       expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).not_to include(other_record)
     end
@@ -74,15 +75,6 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       expect do
         TestRecord.create!(user_facing_id_sequence: sequence_value)
       end.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-
-    it "finds the correct database record by user-facing ID" do
-      matching_record = TestRecord.create!
-      other_record = TestRecord.create!
-
-      expect(TestRecord.find_by!(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
-      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).to contain_exactly(matching_record)
-      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).not_to include(other_record)
     end
   end
 
