@@ -28,7 +28,7 @@ module Strata
           user_facing_id_scope = lambda do |value|
             sequence_value = Strata::UserFacingId::Codec.decode(value, prefix:, key:)
             where(sequence_column => sequence_value)
-          rescue ArgumentError, Strata::UserFacingId::Error
+          rescue Strata::UserFacingId::Error
             none
           end
           scope :"with_#{name}", user_facing_id_scope
@@ -36,7 +36,7 @@ module Strata
           define_singleton_method(:"find_by_#{name}") do |value|
             sequence_value = Strata::UserFacingId::Codec.decode(value, prefix:, key:)
             find_by(sequence_column => sequence_value)
-          rescue ArgumentError, Strata::UserFacingId::Error
+          rescue Strata::UserFacingId::Error
             nil
           end
 

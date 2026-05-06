@@ -3,6 +3,6 @@
 module Strata
   module UserFacingId
     # Base exception for user-facing ID codec errors.
-    class Error < StandardError; end
+    class Error < ArgumentError; end
   end
 end
