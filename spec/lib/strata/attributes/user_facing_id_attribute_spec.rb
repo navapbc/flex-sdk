@@ -25,6 +25,35 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     expect(second_record.user_facing_id).not_to eq(first_record.user_facing_id)
   end
 
+  describe "database integration" do
+    it "stores the backing value as an integer sequence, not a formatted ID" do
+      persisted_record = TestRecord.create!
+      raw_sequence_value = TestRecord.connection.select_value(
+        "SELECT user_facing_id_sequence FROM test_records WHERE id = #{TestRecord.connection.quote(persisted_record.id)}"
+      )
+
+      expect(TestRecord.column_names).to include("user_facing_id_sequence")
+      expect(TestRecord.column_names).not_to include("user_facing_id")
+      expect(raw_sequence_value).to be_an(Integer)
+      expect(raw_sequence_value).to eq(persisted_record.user_facing_id_sequence)
+    end
+
+    it "exposes the user-facing ID in the expected format" do
+      persisted_record = TestRecord.create!
+
+      expect(persisted_record.user_facing_id).to match(/\AT-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}\z/)
+    end
+
+    it "finds the correct database record by user-facing ID" do
+      matching_record = TestRecord.create!
+      other_record = TestRecord.create!
+
+      expect(TestRecord.find_by_user_facing_id!(matching_record.user_facing_id)).to eq(matching_record)
+      expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).to contain_exactly(matching_record)
+      expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).not_to include(other_record)
+    end
+  end
+
   it "finds a record by user-facing ID" do
     expect(TestRecord.find_by_user_facing_id!(user_facing_id)).to eq(record)
   end
