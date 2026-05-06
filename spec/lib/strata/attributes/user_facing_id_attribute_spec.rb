@@ -81,8 +81,8 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       other_record = TestRecord.create!
 
       expect(TestRecord.find_by!(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
-      expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).to contain_exactly(matching_record)
-      expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).not_to include(other_record)
+      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).to contain_exactly(matching_record)
+      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).not_to include(other_record)
     end
   end
 
@@ -98,8 +98,8 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       other_record = TestRecord.create!(claim_user_facing_id_sequence: 54_321)
 
       expect(TestRecord.find_by!(claim_user_facing_id: claim_user_facing_id)).to eq(claim_record)
-      expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).to contain_exactly(claim_record)
-      expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).not_to include(other_record)
+      expect(TestRecord.where(claim_user_facing_id: claim_user_facing_id)).to contain_exactly(claim_record)
+      expect(TestRecord.where(claim_user_facing_id: claim_user_facing_id)).not_to include(other_record)
     end
 
     it "finds the correct record with native ActiveRecord query methods" do
@@ -113,7 +113,6 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     it "does not allow lookup through an attribute with a different prefix" do
       expect(TestRecord.find_by(user_facing_id: claim_user_facing_id)).to be_nil
       expect(TestRecord.where(user_facing_id: claim_user_facing_id)).to be_empty
-      expect(TestRecord.with_user_facing_id(claim_user_facing_id)).to be_empty
 
       expect do
         TestRecord.find_by!(user_facing_id: claim_user_facing_id)
@@ -133,17 +132,17 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     expect(TestRecord.find_by!(user_facing_id: user_facing_id.downcase)).to eq(record)
   end
 
-  it "scopes records by user-facing ID" do
+  it "queries records by user-facing ID with native where" do
     other_record = TestRecord.create!(user_facing_id_sequence: 54_321)
 
-    expect(TestRecord.with_user_facing_id(user_facing_id)).to contain_exactly(record)
-    expect(TestRecord.with_user_facing_id(user_facing_id)).not_to include(other_record)
+    expect(TestRecord.where(user_facing_id: user_facing_id)).to contain_exactly(record)
+    expect(TestRecord.where(user_facing_id: user_facing_id)).not_to include(other_record)
   end
 
-  it "returns an empty scope for invalid IDs" do
+  it "returns an empty relation for invalid IDs" do
     record
 
-    expect(TestRecord.with_user_facing_id("not-an-id")).to be_empty
+    expect(TestRecord.where(user_facing_id: "not-an-id")).to be_empty
   end
 
   it "raises RecordNotFound for invalid IDs with the native bang finder" do
@@ -157,7 +156,6 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
 
     expect(TestRecord.find_by(user_facing_id: wrong_prefix_id)).to be_nil
     expect(TestRecord.where(user_facing_id: wrong_prefix_id)).to be_empty
-    expect(TestRecord.with_user_facing_id(wrong_prefix_id)).to be_empty
 
     expect do
       TestRecord.find_by!(user_facing_id: wrong_prefix_id)

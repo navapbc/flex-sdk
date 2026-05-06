@@ -49,14 +49,6 @@ module Strata
 
             Strata::UserFacingId::Codec.encode(sequence_value, prefix:, key:)
           end
-
-          user_facing_id_scope = lambda do |value|
-            sequence_value = Strata::UserFacingId::Codec.decode(value, prefix:, key:)
-            where(sequence_column => sequence_value)
-          rescue Strata::UserFacingId::Error
-            none
-          end
-          scope :"with_#{name}", user_facing_id_scope
         end
       end
     end
