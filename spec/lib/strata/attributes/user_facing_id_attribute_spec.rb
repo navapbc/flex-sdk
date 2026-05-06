@@ -54,9 +54,18 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     it "queries by the backing integer sequence column" do
       persisted_record = TestRecord.create!
 
-      expect(TestRecord.with_user_facing_id(persisted_record.user_facing_id).to_sql).to include(
+      expect(TestRecord.where(user_facing_id: persisted_record.user_facing_id).to_sql).to include(
         "\"test_records\".\"user_facing_id_sequence\""
       )
+    end
+
+    it "finds the correct record with native ActiveRecord query methods" do
+      matching_record = TestRecord.create!
+      other_record = TestRecord.create!
+
+      expect(TestRecord.find_by(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
+      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).to contain_exactly(matching_record)
+      expect(TestRecord.where(user_facing_id: matching_record.user_facing_id)).not_to include(other_record)
     end
 
     it "enforces uniqueness at the database layer" do
@@ -91,6 +100,14 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       expect(TestRecord.find_by_claim_user_facing_id!(claim_user_facing_id)).to eq(claim_record)
       expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).to contain_exactly(claim_record)
       expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).not_to include(other_record)
+    end
+
+    it "finds the correct record with native ActiveRecord query methods" do
+      other_record = TestRecord.create!(claim_user_facing_id_sequence: 54_321)
+
+      expect(TestRecord.find_by(claim_user_facing_id: claim_user_facing_id)).to eq(claim_record)
+      expect(TestRecord.where(claim_user_facing_id: claim_user_facing_id)).to contain_exactly(claim_record)
+      expect(TestRecord.where(claim_user_facing_id: claim_user_facing_id)).not_to include(other_record)
     end
 
     it "does not allow lookup through an attribute with a different prefix" do

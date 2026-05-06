@@ -10,6 +10,28 @@ module Strata
         :derived_single_column
       end
 
+      # Casts formatted user-facing IDs to their backing integer sequence values.
+      class UserFacingIdSequenceType < ActiveModel::Type::Integer
+        def initialize(prefix:, key:)
+          @prefix = prefix
+          @key = key
+          super()
+        end
+
+        def cast(value)
+          return nil if value.nil?
+          return value if value.is_a?(Integer)
+
+          Strata::UserFacingId::Codec.decode(value, prefix: @prefix, key: @key)
+        rescue Strata::UserFacingId::Error
+          nil
+        end
+
+        def serialize(value)
+          cast(value)
+        end
+      end
+
       class_methods do
         def user_facing_id_attribute(name, options = {})
           prefix = options.fetch(:prefix)
@@ -17,6 +39,9 @@ module Strata
           key = options.fetch(:key, Strata::UserFacingId::Codec::DEFAULT_KEY)
 
           Strata::UserFacingId::Codec.normalize_prefix(prefix)
+
+          attribute sequence_column, UserFacingIdSequenceType.new(prefix:, key:)
+          alias_attribute name, sequence_column
 
           define_method(name) do
             sequence_value = public_send(sequence_column)
