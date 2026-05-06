@@ -57,20 +57,6 @@ module Strata
             none
           end
           scope :"with_#{name}", user_facing_id_scope
-
-          define_singleton_method(:"find_by_#{name}") do |value|
-            sequence_value = Strata::UserFacingId::Codec.decode(value, prefix:, key:)
-            find_by(sequence_column => sequence_value)
-          rescue Strata::UserFacingId::Error
-            nil
-          end
-
-          define_singleton_method(:"find_by_#{name}!") do |value|
-            sequence_value = Strata::UserFacingId::Codec.decode(value, prefix:, key:)
-            find_by!(sequence_column => sequence_value)
-          rescue Strata::UserFacingId::ParityError
-            raise ActiveRecord::RecordNotFound, "Couldn't find #{name} with '#{value}'"
-          end
         end
       end
     end

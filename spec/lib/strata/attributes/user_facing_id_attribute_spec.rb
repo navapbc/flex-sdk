@@ -80,7 +80,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       matching_record = TestRecord.create!
       other_record = TestRecord.create!
 
-      expect(TestRecord.find_by_user_facing_id!(matching_record.user_facing_id)).to eq(matching_record)
+      expect(TestRecord.find_by!(user_facing_id: matching_record.user_facing_id)).to eq(matching_record)
       expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).to contain_exactly(matching_record)
       expect(TestRecord.with_user_facing_id(matching_record.user_facing_id)).not_to include(other_record)
     end
@@ -97,7 +97,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     it "finds the correct record by the prefixed user-facing ID" do
       other_record = TestRecord.create!(claim_user_facing_id_sequence: 54_321)
 
-      expect(TestRecord.find_by_claim_user_facing_id!(claim_user_facing_id)).to eq(claim_record)
+      expect(TestRecord.find_by!(claim_user_facing_id: claim_user_facing_id)).to eq(claim_record)
       expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).to contain_exactly(claim_record)
       expect(TestRecord.with_claim_user_facing_id(claim_user_facing_id)).not_to include(other_record)
     end
@@ -111,25 +111,26 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     end
 
     it "does not allow lookup through an attribute with a different prefix" do
-      expect(TestRecord.find_by_user_facing_id(claim_user_facing_id)).to be_nil
+      expect(TestRecord.find_by(user_facing_id: claim_user_facing_id)).to be_nil
+      expect(TestRecord.where(user_facing_id: claim_user_facing_id)).to be_empty
       expect(TestRecord.with_user_facing_id(claim_user_facing_id)).to be_empty
 
       expect do
-        TestRecord.find_by_user_facing_id!(claim_user_facing_id)
-      end.to raise_error(ArgumentError)
+        TestRecord.find_by!(user_facing_id: claim_user_facing_id)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   it "finds a record by user-facing ID" do
-    expect(TestRecord.find_by_user_facing_id!(user_facing_id)).to eq(record)
+    expect(TestRecord.find_by!(user_facing_id: user_facing_id)).to eq(record)
   end
 
-  it "returns nil from the non-bang finder for invalid IDs" do
-    expect(TestRecord.find_by_user_facing_id("not-an-id")).to be_nil
+  it "returns nil from the native non-bang finder for invalid IDs" do
+    expect(TestRecord.find_by(user_facing_id: "not-an-id")).to be_nil
   end
 
   it "finds a record when the user-facing ID input is lowercase" do
-    expect(TestRecord.find_by_user_facing_id!(user_facing_id.downcase)).to eq(record)
+    expect(TestRecord.find_by!(user_facing_id: user_facing_id.downcase)).to eq(record)
   end
 
   it "scopes records by user-facing ID" do
@@ -145,28 +146,29 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     expect(TestRecord.with_user_facing_id("not-an-id")).to be_empty
   end
 
-  it "raises ArgumentError for invalid finder format" do
+  it "raises RecordNotFound for invalid IDs with the native bang finder" do
     expect do
-      TestRecord.find_by_user_facing_id!("not-an-id")
-    end.to raise_error(ArgumentError)
+      TestRecord.find_by!(user_facing_id: "not-an-id")
+    end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "handles prefix mismatches consistently across lookup APIs" do
     wrong_prefix_id = user_facing_id.sub(/\AT-/, "X-")
 
-    expect(TestRecord.find_by_user_facing_id(wrong_prefix_id)).to be_nil
+    expect(TestRecord.find_by(user_facing_id: wrong_prefix_id)).to be_nil
+    expect(TestRecord.where(user_facing_id: wrong_prefix_id)).to be_empty
     expect(TestRecord.with_user_facing_id(wrong_prefix_id)).to be_empty
 
     expect do
-      TestRecord.find_by_user_facing_id!(wrong_prefix_id)
-    end.to raise_error(ArgumentError)
+      TestRecord.find_by!(user_facing_id: wrong_prefix_id)
+    end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "raises RecordNotFound for finder parity mismatches" do
     tampered = user_facing_id.sub(/\d\z/) { |digit| ((digit.to_i + 1) % 10).to_s }
 
     expect do
-      TestRecord.find_by_user_facing_id!(tampered)
+      TestRecord.find_by!(user_facing_id: tampered)
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 end
