@@ -13,6 +13,7 @@ module Strata
       module_function
 
       def permute(value, key:, bits: DEFAULT_BITS, rounds: DEFAULT_ROUNDS)
+        validate_key!(key)
         validate_domain!(value, bits)
 
         # Split the input into equal halves; each round swaps and mixes them.
@@ -29,6 +30,7 @@ module Strata
       end
 
       def invert(value, key:, bits: DEFAULT_BITS, rounds: DEFAULT_ROUNDS)
+        validate_key!(key)
         validate_domain!(value, bits)
 
         # The inverse starts from the same split, then replays rounds backward.
@@ -51,6 +53,12 @@ module Strata
         mixed ^= mixed >> 15
         mixed ^= mixed >> 7
         mixed & mask
+      end
+
+      def validate_key!(key)
+        return if key.is_a?(Integer) && key.positive?
+
+        raise ArgumentError, "Feistel key must be a positive integer"
       end
 
       def validate_domain!(value, bits)
