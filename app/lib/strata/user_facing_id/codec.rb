@@ -45,11 +45,15 @@ module Strata
       end
 
       def encode_segments(value)
-        # Emit most-significant segment first for stable, readable formatting.
-        SEGMENT_COUNT.times.map do
-          value, chunk = value.divmod(Alphabet::BASE)
-          Alphabet.encode(chunk)
-        end.reverse
+        # Build right-to-left from the least-significant chunk, then unshift so the
+        # most-significant segment appears first in the rendered ID.
+        remaining = value
+        segments = []
+        SEGMENT_COUNT.times do
+          remaining, chunk = remaining.divmod(Alphabet::BASE)
+          segments.unshift(Alphabet.encode(chunk))
+        end
+        segments
       end
 
       def decode_segments(value, prefix:)
