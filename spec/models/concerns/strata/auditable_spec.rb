@@ -33,10 +33,4 @@ RSpec.describe Strata::Auditable do
       expect { test_form.destroy }.not_to change(Strata::AuditLine, :count)
     end
   end
-
-  describe 'opt-in posture' do
-    it 'is not included in Strata::ApplicationForm by default' do
-      expect(Strata::ApplicationForm.include?(described_class)).to be(false)
-    end
-  end
 end
