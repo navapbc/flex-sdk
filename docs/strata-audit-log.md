@@ -59,7 +59,7 @@ Strata::AuditLog.write!(
 | `action`  | yes      | `String`                | A short event name. Convention: `"<noun>.<verb>"` (e.g. `"case.approved"`).        |
 | `subject` | no       | any AR record           | Polymorphic — the record this event is about.                                      |
 | `actor`   | no       | any AR record           | Polymorphic — who did it. Falls back to the `actor:` passed to `record`.           |
-| `data`    | no       | `Hash` (or `nil`)       | Free-form jsonb payload. `nil` is coerced to `{}`. Defaults to `{}` when omitted.  |
+| `data`    | no       | `Hash` (or `nil`)       | Free-form jsonb payload. `nil` is coerced to `{}`. Defaults to `{}` when omitted. **You are responsible for screening this for PII** — see [PII and sensitive data](#pii-and-sensitive-data). |
 
 ## Querying audit history
 
@@ -133,6 +133,36 @@ end
 ```
 
 Then call `policy_scope(Strata::AuditLine)` in any controller that lists audit history.
+
+## PII and sensitive data
+
+The `data` column is a free-form `jsonb` payload with **no automatic
+redaction**. Whatever you pass to `data:` is persisted verbatim into a
+permanent, immutable log that is not routinely audited.
+
+Callers — both human engineers and AI agents — are responsible for
+self-screening every value before it reaches `data:`. We considered shipping
+a structural redaction mechanism (see
+[audit-log-pii-redaction.md](decisions/audit-log-pii-redaction.md)) and
+decided against it. Caller discipline is the policy.
+
+**Do not pass:**
+
+- `request.params` or any other raw request payload.
+- Full `record.attributes` hashes from models that may carry PII (passwords,
+  password digests, session tokens, SSNs, dates of birth, addresses, etc.).
+- User-supplied free text without inspecting it first.
+
+**Do pass:**
+
+- Small, structured diffs you constructed by hand, e.g.
+  `{ status: ["pending", "approved"] }`.
+- Non-sensitive request metadata (IP, user agent, request ID).
+- External-system identifiers (e.g. third-party transaction IDs).
+
+If you find yourself thinking "I'll just dump the whole record and clean it
+up later" — stop. There is no later. Audit lines are immutable; the cleanup
+is a manual data migration on a permanent log.
 
 ## Schema
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (not implemented)
+Decided — not implementing; relying on caller discipline (see Decision below).
 
 ## Date
 
@@ -49,7 +49,7 @@ who read the docs first.
 
 ## Design options considered
 
-### Option A — Whitelist on the subject model (proposed default)
+### Option A — Allow list on the subject model (proposed default)
 
 The `Strata::Auditable` concern gains a class-level DSL that declares which
 attributes are safe to capture in audit `data`:
@@ -65,10 +65,10 @@ end
 Two helpers ship alongside it:
 
 - `record.audit_snapshot` — returns `{ "status" => "approved", ... }`, the
-  current values of the whitelisted attributes.
+  current values of the allow-listed attributes.
 - `record.audit_diff` — returns `{ "status" => ["pending", "approved"] }`,
   using ActiveModel::Dirty (or `previous_changes` post-save) restricted to the
-  whitelisted attributes.
+  allow-listed attributes.
 
 Callers use these in their `data:` payloads:
 
@@ -97,7 +97,7 @@ field.
   rather than going through `audit_diff` / `audit_snapshot`. That's intentional
   — callers who freeform-construct `data` are responsible for that data.
 
-### Option B — Blacklist on the subject model
+### Option B — Block list on the subject model
 
 Inverted form: hosts list the attributes they want *excluded*.
 
@@ -105,11 +105,11 @@ Inverted form: hosts list the attributes they want *excluded*.
 class User < ApplicationRecord
   include Strata::Auditable
 
-  audit_blacklist :password_digest, :ssn, :session_token
+  audit_block_list :password_digest, :ssn, :session_token
 end
 ```
 
-`audit_snapshot` returns all attributes minus the blacklist.
+`audit_snapshot` returns all attributes minus the block list.
 
 **Pros:**
 - Easier first-time adoption — one line to mark sensitive fields.
@@ -117,11 +117,11 @@ end
   audited.
 
 **Cons:**
-- Unsafe by default. A new column added to the model after the blacklist was
+- Unsafe by default. A new column added to the model after the block list was
   written is automatically captured in audit history, even if it carries PII.
   This is precisely the failure mode the feature is meant to prevent.
 - Drifts silently: nothing connects "we added this column" to "we should add
-  it to the blacklist."
+  it to the block list."
 
 ### Option C — Caller-supplied redactor block
 
@@ -155,6 +155,9 @@ Ship **A as the primary mechanism** and leave **C as a separate, opt-in
 escape hatch** for hosts that need defense-in-depth on freeform `data`. Skip
 B entirely — the unsafe-by-default failure mode disqualifies it.
 
+(See **Decision** below: ultimately the team chose to build none of A/B/C
+and rely on caller discipline instead.)
+
 ## API sketch
 
 ```ruby
@@ -176,12 +179,12 @@ module Strata
       end
     end
 
-    # Current values of whitelisted attributes.
+    # Current values of allow-listed attributes.
     def audit_snapshot
       attributes.slice(*self.class._audit_attributes)
     end
 
-    # Per-attribute changes for whitelisted attributes only.
+    # Per-attribute changes for allow-listed attributes only.
     # Use during/after an update.
     def audit_diff
       changes = saved_changes.presence || changes_to_save
@@ -233,8 +236,28 @@ data = self.class.data_redactor.call(data) if self.class.data_redactor
    `audit_render(line)` hook that the dummy view (and any host viewer) calls
    before displaying `data`.
 
+## Decision
+
+After discussion with the team, we are **not implementing the redaction
+mechanism described above at this time**. This may be considered in the future
+depending on feedback from users.
+
+The working agreement is:
+
+- Engineers calling `Strata::AuditLog.record` / `.write!` / `#add_line` are
+  responsible for **self-screening any value passed to `data:`** for PII
+  before persistence. There is no automatic redaction; whatever the caller
+  hands the API ends up in a permanent, immutable log.
+- The user-facing audit log README ([docs/strata-audit-log.md](../strata-audit-log.md))
+  explicitly calls out this responsibility so future contributors and AI
+  agents see it at the API surface, not buried in a decision doc.
+- This decision is **revisitable**. If a host application onboards a
+  higher-sensitivity workload, or we observe leaks in practice, option A
+  (allow list DSL) remains the recommended implementation path.
+
 ## Tracking
 
-This document is the design baseline. Implementation should land as a separate
-PR with its own tests, docs update, and migration story for hosts that have
-already adopted `Strata::Auditable`.
+This document is the design baseline for a feature we considered and decided
+**not** to build. If the decision above is reversed, implementation should
+land as a separate PR with its own tests, docs update, and migration story
+for hosts that have already adopted `Strata::Auditable`.
