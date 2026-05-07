@@ -22,7 +22,7 @@ class SampleApplicationFormsController < ApplicationController
       redirect_to @sample_application_form
     else
       flash.now[:errors] = @sample_application_form.errors.full_messages
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -34,7 +34,7 @@ class SampleApplicationFormsController < ApplicationController
       redirect_to sample_application_form_path(@sample_application_form)
     elsif @sample_application_form.errors.full_messages
       flash.now[:errors] = @sample_application_form.errors.full_messages
-      render :review, status: :unprocessable_entity
+      render :review, status: :unprocessable_content
     else
       raise StandardError.new("The application could not be submitted.")
     end

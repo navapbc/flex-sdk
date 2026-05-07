@@ -27,7 +27,7 @@ class PassportApplicationFormsController < ApplicationController
           return
         else
           flash.now[:errors] = @passport_application_form.errors.full_messages
-          render :edit, status: :unprocessable_entity
+          render :edit, status: :unprocessable_content
           return
         end
       end
@@ -35,7 +35,7 @@ class PassportApplicationFormsController < ApplicationController
       redirect_to @passport_application_form, notice: "Passport application form was successfully updated."
     else
       flash.now[:errors] = @passport_application_form.errors.full_messages
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -49,7 +49,7 @@ class PassportApplicationFormsController < ApplicationController
           return
         else
           flash.now[:errors] = @passport_application_form.errors.full_messages
-          render :new, status: :unprocessable_entity
+          render :new, status: :unprocessable_content
           return
         end
       end
@@ -57,7 +57,7 @@ class PassportApplicationFormsController < ApplicationController
       redirect_to @passport_application_form, notice: "Passport application form was successfully saved."
     else
       flash.now[:errors] = @passport_application_form.errors.full_messages
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

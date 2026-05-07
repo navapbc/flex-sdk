@@ -44,6 +44,8 @@ module Strata
       end
 
       def print_next_steps
+        return if options[:quiet]
+
         say "\n" + set_color("Next Steps:", :green, :bold)
         say "  1. Customize the case_classes method in app/controllers/staff_controller.rb"
         say "     Example: def case_classes; [MyCase, AnotherCase]; end"
