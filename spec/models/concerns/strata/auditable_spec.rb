@@ -2,9 +2,9 @@
 
 require 'rails_helper'
 
-# This spec assumes Strata::Auditable is included in TestApplicationForm
-# (analogous to how Strata::Determinable is included in ApplicationForm).
-# If Auditable is included via a different host model, adjust the factory accordingly.
+# Strata::Auditable is opt-in. Host apps include it on the models that need
+# an audit trail. TestApplicationForm includes it so these specs can exercise
+# the concern without inventing another host model.
 RSpec.describe Strata::Auditable do
   let(:test_form) { create(:test_application_form) }
 
@@ -31,6 +31,12 @@ RSpec.describe Strata::Auditable do
       create(:strata_audit_line, subject: test_form, action: 'form.created')
 
       expect { test_form.destroy }.not_to change(Strata::AuditLine, :count)
+    end
+  end
+
+  describe 'opt-in posture' do
+    it 'is not included in Strata::ApplicationForm by default' do
+      expect(Strata::ApplicationForm.include?(described_class)).to be(false)
     end
   end
 end

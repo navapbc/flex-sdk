@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 module Strata
-  # AuditLine is an immutable record of something that happened. Each line carries
-  # an action string, an optional polymorphic subject (the record the event is
-  # about), an optional polymorphic actor (who did it), and a free-form jsonb
-  # `data` payload for caller-supplied details.
+  # AuditLine is an immutable record of something that happened.
+  #
+  # Columns:
+  # - `action` (string, required) — short event name, e.g. `"case.approved"`.
+  # - `subject_type` / `subject_id` (polymorphic, optional) — the record the
+  #   event is about.
+  # - `actor_type` / `actor_id` (polymorphic, optional) — who did it.
+  # - `data` (jsonb, defaults to `{}`) — free-form caller-supplied payload.
+  # - `created_at` (datetime) — when the line was recorded. There is no
+  #   `updated_at`; lines are immutable.
   #
   # Lines are typically created via {Strata::AuditLog.record} (block form, wrapped
   # in a DB transaction) or {Strata::AuditLog.write!} (single-line form). Once

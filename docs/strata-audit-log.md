@@ -10,7 +10,7 @@ Reach for the audit log when you need a permanent record of an action that:
 - Should be coupled to the success of the underlying work — if the domain write fails, the audit entry should not appear.
 - May need to outlive the record it describes (the trail of "this case was deleted" stays queryable even after the case is gone).
 
-For lightweight diagnostic logging that doesn't need to survive a rollback, plain `Rails.logger` is still the right tool.
+For lightweight diagnostic logging that doesn't need to survive a rollback, plain `Rails.logger` is still the right tool. The audit log is also **not** the right place for telemetry-style metrics (page views, click counts, performance timings) — those belong in your application metrics pipeline, not a permanent transactional log.
 
 ## Quick start
 
@@ -71,7 +71,7 @@ class Case < ApplicationRecord
 end
 ```
 
-`Strata::ApplicationForm` already includes it, so any application form subclass gets `audit_lines` for free.
+`Strata::Auditable` is opt-in — host applications include it on the models that need an audit trail. It is intentionally **not** mixed into `Strata::ApplicationForm` so that adding the audit log feature isn't a breaking change for existing host apps.
 
 The concern adds a `has_many :audit_lines, as: :subject` association. Combine it with the scopes on `Strata::AuditLine`:
 
@@ -105,6 +105,35 @@ The generator copies `db/migrate/<timestamp>_create_strata_audit_lines.rb`. It d
 
 Pass `--skip-migration-check` to suppress the post-generate prompt that asks whether to run `db:migrate` immediately.
 
+## Authorization
+
+Audit lines are polymorphic, which means the audit table mixes records belonging to different host models in one place. Hosts must wire authorization themselves — there is no global "you can see all audit lines" rule that's safe by default.
+
+The recommended pattern is a Pundit `Strata::AuditLinePolicy::Scope` that filters audit lines by joining each subject type to that subject's existing policy scope. The dummy app under `spec/dummy/app/policies/strata/audit_line_policy.rb` ships a reference implementation hosts can copy and adapt:
+
+```ruby
+class Strata::AuditLinePolicy < ApplicationPolicy
+  class Scope < ApplicationPolicy::Scope
+    def visible_subject_ids_by_type
+      {
+        "Case"            => Pundit.policy_scope(user, Case).select(:id),
+        "MyApplicationForm" => Pundit.policy_scope(user, MyApplicationForm).select(:id)
+      }
+    end
+
+    def resolve
+      filters = visible_subject_ids_by_type.map do |type, ids|
+        scope.where(subject_type: type, subject_id: ids)
+      end
+      filters << scope.where(subject_id: nil) # system events visible to all
+      filters.reduce { |combined, next_filter| combined.or(next_filter) }
+    end
+  end
+end
+```
+
+Then call `policy_scope(Strata::AuditLine)` in any controller that lists audit history.
+
 ## Schema
 
 `strata_audit_lines` (UUID primary key, immutable rows):
@@ -128,13 +157,15 @@ Indexes:
 
 ## Immutability
 
-`Strata::AuditLine#readonly?` returns `true` once a line is persisted, so updates and destroys raise `ActiveRecord::ReadOnlyRecord`:
+`Strata::AuditLine#readonly?` returns `true` once a line is persisted, so any attempt to mutate or destroy a persisted line **raises an exception** rather than silently failing:
 
 ```ruby
 line = Strata::AuditLog.write!(action: "user.signed_in", actor: current_user)
-line.update!(action: "tampered") # => ActiveRecord::ReadOnlyRecord
-line.destroy                     # => ActiveRecord::ReadOnlyRecord
+line.update!(action: "tampered") # raises ActiveRecord::ReadOnlyRecord
+line.destroy                     # raises ActiveRecord::ReadOnlyRecord
 ```
+
+Both `update!` and `destroy` raise `ActiveRecord::ReadOnlyRecord` — there is no soft-fail return value to check; expect callers to catch the exception or simply avoid mutating audit lines.
 
 This is application-level enforcement, not a database constraint. A host app that wants harder guarantees can add a `BEFORE UPDATE/DELETE` trigger.
 
@@ -170,7 +201,10 @@ Unlike `Strata::Determinable`, `Strata::Auditable` deliberately omits `dependent
 
 ### 4. Polymorphic class name drift
 
-The polymorphic columns store class name **strings** (`"Case"`, `"User"`, etc.). If you rename a host model later, existing `audit_lines` rows still reference the old name. Either avoid renaming audited models, or run a data migration to rewrite `subject_type` / `actor_type` when you do.
+The polymorphic columns store class name **strings** (`"Case"`, `"User"`, etc.) — *not* the parent class name. Two situations to watch for:
+
+- **Renames.** If you rename a host model later, existing `audit_lines` rows still reference the old name. Either avoid renaming audited models, or run a data migration to rewrite `subject_type` / `actor_type` when you do.
+- **STI / child models.** If you record audit lines against a subclass of `Strata::ApplicationForm` (e.g. `PassportApplicationForm`), the stored `subject_type` is the concrete subclass name, *not* `"Strata::ApplicationForm"`. Queries like `where(subject_type: "Strata::ApplicationForm")` will return no rows. Filter by the concrete class name (or use `for_subject(record)` which does the right thing automatically).
 
 ### 5. Thread safety
 

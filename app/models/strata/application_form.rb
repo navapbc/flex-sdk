@@ -23,7 +23,6 @@ module Strata
 
     include Strata::Attributes
     include Strata::Determinable
-    include Strata::Auditable
 
     define_model_callbacks :submit, only: [ :before, :after ]
 

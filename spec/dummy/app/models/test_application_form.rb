@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TestApplicationForm < Strata::ApplicationForm
+  include Strata::Auditable
+
   attribute :test_string, :string
 
   strata_attribute :applicant_name, :name
