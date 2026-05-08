@@ -87,6 +87,46 @@ RSpec.describe Strata::AuditLine do
     end
   end
 
+  describe 'virtual actor read side' do
+    it 'returns a VirtualActor::Instance when actor_id is nil and actor_type names a virtual class' do
+      line = create(:strata_audit_line, actor: TestVirtualActor.new)
+
+      result = line.reload.actor
+      expect(result).to be_a(Strata::VirtualActor::Instance)
+      expect(result.actor_type).to eq('TestVirtualActor')
+    end
+
+    it 'returns nil when actor_id is nil and actor_type names a non-virtual (deleted AR) class' do
+      line = build(:strata_audit_line)
+      line.actor_type = 'User'
+      line.actor_id = nil
+      line.save!
+
+      expect(line.reload.actor).to be_nil
+    end
+
+    it 'returns nil when actor_id is nil and actor_type names a class that no longer exists' do
+      line = build(:strata_audit_line)
+      line.actor_type = 'NoSuchClass'
+      line.actor_id = nil
+      line.save!
+
+      expect(line.reload.actor).to be_nil
+    end
+
+    it 'returns the AR record when actor_id is present (unchanged behavior)' do
+      user = create(:user)
+      line = create(:strata_audit_line, actor: user)
+
+      expect(line.reload.actor).to eq(user)
+    end
+
+    it 'returns nil when both actor_id and actor_type are nil (unchanged behavior)' do
+      line = create(:strata_audit_line, actor: nil)
+      expect(line.reload.actor).to be_nil
+    end
+  end
+
   describe 'data column' do
     it 'persists arbitrary jsonb payload and round-trips it' do
       payload = { 'changed_fields' => %w[status assignee_id], 'reason' => 'manual review' }

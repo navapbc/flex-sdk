@@ -30,6 +30,15 @@ module Strata
       persisted?
     end
 
+    def actor
+      return super unless actor_type.present? && actor_id.nil?
+
+      klass = actor_type.safe_constantize
+      return nil unless klass&.include?(Strata::VirtualActor)
+
+      Strata::VirtualActor::Instance.new(actor_type: actor_type)
+    end
+
     def actor=(value)
       return super if value.nil?
 
