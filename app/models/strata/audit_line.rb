@@ -43,6 +43,7 @@ module Strata
       if klass.include?(Strata::VirtualActor)
         self.actor_type = klass.name
         self.actor_id   = nil
+        value
       else
         super
       end
