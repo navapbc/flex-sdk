@@ -334,8 +334,20 @@ Open `spec/models/strata/audit_line_spec.rb`. Find the existing `describe 'polym
       expect(line.actor_id).to be_nil
       # Sanity: no constant lookup or DB hit happened — actor_id stays nil.
     end
+
+    it 'accepts a VirtualActor::Instance returned from a previous read' do
+      original = create(:strata_audit_line, actor: TestVirtualActor.new)
+      instance = original.reload.actor
+      expect(instance).to be_a(Strata::VirtualActor::Instance)
+
+      copy = create(:strata_audit_line, actor: instance)
+      expect(copy.actor_type).to eq('TestVirtualActor')
+      expect(copy.actor_id).to be_nil
+    end
   end
 ```
+
+The last example proves round-trip symmetry: `line2.actor = line1.actor` must not silently corrupt the row by writing `"Strata::VirtualActor::Instance"` into `actor_type`. Without an `Instance` branch in `actor=`, the override falls through to AR (Instance does not include the marker by design) and breaks.
 
 - [ ] **Step 2: Run the specs and confirm the new ones fail**
 
@@ -374,11 +386,17 @@ module Strata
 end
 ```
 
-Add an `actor=` override below the `readonly?` method (still inside the class):
+Add an `actor=` override below the `readonly?` method (still inside the class). The override must handle four input shapes: nil (delegate), a `VirtualActor::Instance` returned from a previous read (use its `actor_type`), a virtual actor class or instance (use the class name), or any other value (delegate to AR's polymorphic setter):
 
 ```ruby
     def actor=(value)
       return super if value.nil?
+
+      if value.is_a?(Strata::VirtualActor::Instance)
+        self.actor_type = value.actor_type
+        self.actor_id   = nil
+        return value
+      end
 
       klass = value.is_a?(Class) ? value : value.class
       if klass.include?(Strata::VirtualActor)
