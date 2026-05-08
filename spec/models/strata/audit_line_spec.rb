@@ -73,7 +73,6 @@ RSpec.describe Strata::AuditLine do
     it 'does not include a virtual actor as an AR record' do
       line = create(:strata_audit_line, actor: TestVirtualActor.new)
       expect(line.actor_id).to be_nil
-      # Sanity: no constant lookup or DB hit happened — actor_id stays nil.
     end
 
     it 'accepts a VirtualActor::Instance returned from a previous read' do

@@ -244,7 +244,7 @@ The accumulator returned via `.lines` is **not** thread-safe across threads spaw
 
 ## Conventions
 
-- **Action names**: short, lowercase, dot-separated noun-then-verb strings — e.g. `"case.approved"`, `"form.submitted"`, `"notification.sent"`. This makes `with_action` filtering predictable and groups related events alphabetically.
+- **Action names**: short, lowercase, dot-separated noun-then-verb strings — e.g. `"case.approved"`, `"form.submitted"`, `"notification.sent"`. This makes `with_action` filtering predictable and groups related events alphabetically. Action names can also easily be localized when using this convention.
 - **`data` payloads**: keep them small and structured. Useful contents include `{ before: ..., after: ... }` diffs, rule outputs, request metadata (IP, user agent), or external IDs. Avoid stuffing entire serialized records — the `subject` association already gives you a pointer to the live record.
 - **Actor**: pass the AR record (e.g. `current_user`), not just the ID, so the polymorphic association can hydrate it later.
 - **System events**: when there's no human actor (background jobs, cron, system boot), pass `actor: nil`. The columns are nullable.

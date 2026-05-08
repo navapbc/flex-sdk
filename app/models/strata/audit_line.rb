@@ -17,7 +17,6 @@ module Strata
 
     attribute :action,     :string
     attribute :data,       :jsonb, default: {}
-    attribute :created_at, :datetime
 
     validates :action, presence: true
 
