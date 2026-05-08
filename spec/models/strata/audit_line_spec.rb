@@ -127,6 +127,27 @@ RSpec.describe Strata::AuditLine do
     end
   end
 
+  describe 'integration with Strata::AuditLog' do
+    it 'records a virtual actor through AuditLog.write!' do
+      line = Strata::AuditLog.write!(action: 'system.synced', actor: TestVirtualActor.new)
+
+      expect(line.actor_type).to eq('TestVirtualActor')
+      expect(line.actor_id).to be_nil
+      expect(line.reload.actor).to be_a(Strata::VirtualActor::Instance)
+    end
+
+    it 'records a virtual actor as the default actor in AuditLog.record' do
+      log = Strata::AuditLog.record(actor: TestVirtualActor.new) do |l|
+        l.add_line(action: 'system.tick')
+      end
+
+      line = log.lines.first
+      expect(line.actor_type).to eq('TestVirtualActor')
+      expect(line.actor_id).to be_nil
+      expect(line.reload.actor).to be_a(Strata::VirtualActor::Instance)
+    end
+  end
+
   describe 'data column' do
     it 'persists arbitrary jsonb payload and round-trips it' do
       payload = { 'changed_fields' => %w[status assignee_id], 'reason' => 'manual review' }
