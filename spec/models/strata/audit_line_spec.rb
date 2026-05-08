@@ -203,9 +203,40 @@ RSpec.describe Strata::AuditLine do
     end
 
     describe '.by_actor' do
-      it 'returns only lines for the given actor' do
+      it 'returns only lines for the given AR actor' do
         expect(described_class.by_actor(user_alpha))
           .to contain_exactly(line_alpha_created, line_bravo_created)
+      end
+
+      context 'with a virtual actor' do
+        let!(:virtual_line) { create(:strata_audit_line, :with_virtual_actor, action: 'system.synced') }
+
+        before do
+          create(:strata_audit_line, actor_type: 'Other::System', actor_id: nil, action: 'other')
+        end
+
+        it 'returns lines stored by a virtual actor instance' do
+          expect(described_class.by_actor(TestVirtualActor.new))
+            .to contain_exactly(virtual_line)
+        end
+
+        it 'returns lines stored by a virtual actor class' do
+          expect(described_class.by_actor(TestVirtualActor))
+            .to contain_exactly(virtual_line)
+        end
+
+        it 'returns lines when passed a VirtualActor::Instance read from another line' do
+          read_actor = virtual_line.reload.actor
+          expect(read_actor).to be_a(Strata::VirtualActor::Instance)
+
+          expect(described_class.by_actor(read_actor))
+            .to contain_exactly(virtual_line)
+        end
+
+        it 'does not match AR-actor rows when querying for a virtual actor' do
+          expect(described_class.by_actor(TestVirtualActor))
+            .not_to include(line_alpha_created)
+        end
       end
     end
 

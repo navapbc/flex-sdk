@@ -22,7 +22,19 @@ module Strata
     validates :action, presence: true
 
     scope :for_subject,  ->(subject) { where(subject: subject) }
-    scope :by_actor,     ->(actor)   { where(actor: actor) }
+    scope :by_actor, ->(actor) {
+      case actor
+      when Strata::VirtualActor::Instance
+        where(actor_type: actor.actor_type, actor_id: nil)
+      else
+        klass = actor.is_a?(Class) ? actor : actor.class
+        if klass.include?(Strata::VirtualActor)
+          where(actor_type: klass.name, actor_id: nil)
+        else
+          where(actor: actor)
+        end
+      end
+    }
     scope :with_action,  ->(action)  { where(action: action.to_s) }
     scope :latest_first, -> { order(created_at: :desc) }
 
