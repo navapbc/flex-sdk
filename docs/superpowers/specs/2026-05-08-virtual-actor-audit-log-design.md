@@ -76,7 +76,7 @@ def actor
   klass = actor_type.safe_constantize
   return nil unless klass&.include?(Strata::VirtualActor)
 
-  Strata::VirtualActor::Instance.new(type: actor_type)
+  Strata::VirtualActor::Instance.new(actor_type: actor_type)
 end
 ```
 
@@ -87,7 +87,7 @@ Nil-handling matrix:
 | present | present | — | AR lookup (unchanged) |
 | nil | absent | — | `nil` (unchanged) |
 | nil | present | no | `nil` (deleted AR record, graceful) |
-| nil | present | yes | `VirtualActor::Instance.new(type:)` |
+| nil | present | yes | `VirtualActor::Instance.new(actor_type:)` |
 
 ### `by_actor` scope
 
