@@ -39,7 +39,9 @@ An immutable value object returned by `AuditLine#actor` when the actor is virtua
 |--------|---------|
 | `#actor_type` | `"Api::Client"` |
 | `#display_name` | `"Client"` (demodulized, humanized) |
-| `#==(other)` | true if same class, same `actor_type` |
+| `#==(other)` | true if `other` is also a `VirtualActor::Instance` with the same `actor_type` |
+
+**Note on identity:** virtual actors are identified by class name only. Any per-instance state (`Api::Client.new(request_id: 123)`) is discarded on persist — the round-trip from `actor=` to `actor` returns a fresh `VirtualActor::Instance`, not the original object. Host apps that need to capture per-event metadata about a virtual actor should put it in `data:`.
 
 ### Write side — `AuditLine#actor=`
 
@@ -47,14 +49,19 @@ Overrides the AR association setter. If the assigned object's class includes `St
 
 ```ruby
 def actor=(value)
-  if value.class.include?(Strata::VirtualActor)
-    self.actor_type = value.class.name
+  return super if value.nil?
+
+  klass = value.is_a?(Class) ? value : value.class
+  if klass.include?(Strata::VirtualActor)
+    self.actor_type = klass.name
     self.actor_id   = nil
   else
     super
   end
 end
 ```
+
+Nil falls through to `super` so AR clears both `actor_id` and `actor_type` as it would for a normal polymorphic association. Passing a class (`Api::Client`) or an instance (`Api::Client.new`) is treated equivalently — both write the same row.
 
 `AuditLog.record(actor: Api::Client.new)` and `AuditLog.write!(actor: Api::Client.new, ...)` require no changes — they pass the actor object through to `AuditLine#actor=`.
 
@@ -84,17 +91,25 @@ Nil-handling matrix:
 
 ### `by_actor` scope
 
-`where(actor: actor)` generates `WHERE actor_type = ? AND actor_id = ?`. For virtual actors, `actor_id = nil` requires `IS NULL`. Rails generates `IS NULL` correctly when given `nil`:
+`where(actor: actor)` generates `WHERE actor_type = ? AND actor_id = ?`. For virtual actors, `actor_id = nil` requires `IS NULL`. Rails generates `IS NULL` correctly when given `nil`. The scope must accept three input shapes — an AR record, a virtual actor class or instance, or a `VirtualActor::Instance` returned by a previous read — and route each to the right query:
 
 ```ruby
 scope :by_actor, ->(actor) do
-  if actor.class.include?(Strata::VirtualActor)
-    where(actor_type: actor.class.name, actor_id: nil)
+  case actor
+  when Strata::VirtualActor::Instance
+    where(actor_type: actor.actor_type, actor_id: nil)
   else
-    where(actor: actor)
+    klass = actor.is_a?(Class) ? actor : actor.class
+    if klass.include?(Strata::VirtualActor)
+      where(actor_type: klass.name, actor_id: nil)
+    else
+      where(actor: actor)
+    end
   end
 end
 ```
+
+This makes `AuditLine.by_actor(line.actor)` symmetric with `AuditLine.by_actor(Api::Client.new)` — both find the same rows.
 
 ## Files to change
 
@@ -112,3 +127,11 @@ No migration. No changes to `AuditLog`, `Auditable`, or host app contracts beyon
 - Multiple distinguishable virtual actor instances (type name is sufficient for all known use cases)
 - `Strata::VirtualActor` on the subject side
 - Virtual actor display in UI views (host app concern)
+
+## Rejected alternatives
+
+| Alternative | Why not |
+|---|---|
+| Add an `actor_kind` enum column (`'ar' \| 'virtual'`) to disambiguate explicitly instead of inferring from `actor_id IS NULL` + `VirtualActor` inclusion | Requires a migration and backfill on existing rows. The marker-based inference is unambiguous given the four-cell nil-handling matrix above; the explicit column adds schema churn for no behavior change. |
+| Store virtual actor identity inside the `data` JSON column and leave `actor_*` columns AR-only | Cleaner separation of polymorphic-AR vs system actors, but `by_actor` would no longer be a single indexed query — it would need a JSON predicate. Loses the goal of treating virtual actors as first-class for filtering and display. |
+| Single sentinel "system" AR row with a fixed UUID | Works for one logical actor but doesn't scale to multiple distinct system actors (e.g. `Api::Client`, `Cron::Worker`). Also leaves a real DB row that other tables might foreign-key to, which is the wrong shape for a non-persistent identity. |
