@@ -29,5 +29,23 @@ module Strata
     def readonly?
       persisted?
     end
+
+    def actor=(value)
+      return super if value.nil?
+
+      if value.is_a?(Strata::VirtualActor::Instance)
+        self.actor_type = value.actor_type
+        self.actor_id   = nil
+        return value
+      end
+
+      klass = value.is_a?(Class) ? value : value.class
+      if klass.include?(Strata::VirtualActor)
+        self.actor_type = klass.name
+        self.actor_id   = nil
+      else
+        super
+      end
+    end
   end
 end

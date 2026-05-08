@@ -34,7 +34,7 @@ RSpec.describe Strata::AuditLine do
   describe 'polymorphic actor' do
     let(:user) { create(:user) }
 
-    it 'stores and retrieves polymorphic actor' do
+    it 'stores and retrieves an ActiveRecord actor' do
       line = create(:strata_audit_line, actor: user)
       expect(line.actor).to eq(user)
       expect(line.actor_type).to eq('User')
@@ -45,6 +45,45 @@ RSpec.describe Strata::AuditLine do
       line = build(:strata_audit_line, actor: nil)
       expect(line).to be_valid
       expect { line.save! }.not_to raise_error
+      expect(line.actor_type).to be_nil
+      expect(line.actor_id).to be_nil
+    end
+  end
+
+  describe 'virtual actor write side' do
+    it 'stores actor_type and leaves actor_id nil when given a virtual actor instance' do
+      line = create(:strata_audit_line, actor: TestVirtualActor.new)
+      expect(line.actor_type).to eq('TestVirtualActor')
+      expect(line.actor_id).to be_nil
+    end
+
+    it 'treats a virtual actor class identically to an instance' do
+      line = create(:strata_audit_line, actor: TestVirtualActor)
+      expect(line.actor_type).to eq('TestVirtualActor')
+      expect(line.actor_id).to be_nil
+    end
+
+    it 'clears actor_type and actor_id when reassigned to nil' do
+      line = build(:strata_audit_line, actor: TestVirtualActor.new)
+      line.actor = nil
+      expect(line.actor_type).to be_nil
+      expect(line.actor_id).to be_nil
+    end
+
+    it 'does not include a virtual actor as an AR record' do
+      line = create(:strata_audit_line, actor: TestVirtualActor.new)
+      expect(line.actor_id).to be_nil
+      # Sanity: no constant lookup or DB hit happened — actor_id stays nil.
+    end
+
+    it 'accepts a VirtualActor::Instance returned from a previous read' do
+      original = create(:strata_audit_line, actor: TestVirtualActor.new)
+      instance = original.reload.actor
+      expect(instance).to be_a(Strata::VirtualActor::Instance)
+
+      copy = create(:strata_audit_line, actor: instance)
+      expect(copy.actor_type).to eq('TestVirtualActor')
+      expect(copy.actor_id).to be_nil
     end
   end
 
