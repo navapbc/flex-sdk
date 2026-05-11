@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_31_144038) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_31_144038) do
     t.string "leave_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "reviewed", default: false
+  end
+
+  create_table "strata_audit_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "action", null: false
+    t.uuid "subject_id"
+    t.string "subject_type"
+    t.uuid "actor_id"
+    t.string "actor_type"
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_type", "actor_id"], name: "index_strata_audit_lines_on_polymorphic_actor"
+    t.index ["created_at"], name: "index_strata_audit_lines_on_created_at"
+    t.index ["subject_type", "subject_id", "created_at"], name: "index_strata_audit_lines_on_subject_and_created_at", order: { created_at: :desc }
   end
 
   create_table "strata_determinations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

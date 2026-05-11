@@ -1,0 +1,42 @@
+<h1>Audit logs</h1>
+
+<% if @audit_lines.any? %>
+  <%= render Strata::US::TableComponent.new(striped: true) do |table| %>
+    <% table.with_caption { "Most recent audit lines" } %>
+    <% table.with_header { "Recorded at" } %>
+    <% table.with_header { "Action" } %>
+    <% table.with_header { "Subject" } %>
+    <% table.with_header { "Actor" } %>
+    <% table.with_header { "Data" } %>
+
+    <% @audit_lines.each do |line| %>
+      <% table.with_row do |row| %>
+        <% row.with_cell { line.created_at.iso8601 } %>
+        <% row.with_cell { line.action } %>
+        <% row.with_cell do %>
+          <% if line.subject_type.present? %>
+            <%= line.subject_type %> <%= line.subject_id %>
+          <% else %>
+            &mdash;
+          <% end %>
+        <% end %>
+        <% row.with_cell do %>
+          <% if line.actor_type.present? %>
+            <%= line.actor_type %> <%= line.actor_id %>
+          <% else %>
+            &mdash;
+          <% end %>
+        <% end %>
+        <% row.with_cell do %>
+          <% if line.data.present? %>
+            <pre><%= JSON.pretty_generate(line.data) %></pre>
+          <% else %>
+            &mdash;
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>No audit logs recorded yet.</p>
+<% end %>

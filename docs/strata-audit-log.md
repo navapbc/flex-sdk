@@ -1,0 +1,250 @@
+# Strata Audit Log
+
+The Strata Audit Log lets you record an immutable trail of what happened in your application — who did what, to which record, and any free-form context — and have those entries roll back atomically with the surrounding domain writes when something fails.
+
+## When to use it
+
+Reach for the audit log when you need a permanent record of an action that:
+
+- Affects a domain record and would benefit from "what changed and why" history (e.g. a case was approved, a form was submitted, a determination was overridden).
+- Should be coupled to the success of the underlying work — if the domain write fails, the audit entry should not appear.
+- May need to outlive the record it describes (the trail of "this case was deleted" stays queryable even after the case is gone).
+
+For lightweight diagnostic logging that doesn't need to survive a rollback, plain `Rails.logger` is still the right tool. The audit log is also **not** the right place for telemetry-style metrics (page views, click counts, performance timings) — those belong in your application metrics pipeline, not a permanent transactional log.
+
+## Quick start
+
+### Atomic, multi-line writes
+
+`Strata::AuditLog.record` opens an `ActiveRecord::Base.transaction`, yields a log object you append lines to, and commits everything together. If the block raises, every appended line is rolled back along with the caller's domain writes.
+
+```ruby
+Strata::AuditLog.record(actor: current_user) do |log|
+  case_record.update!(status: :approved)
+
+  log.add_line(
+    action: "case.approved",
+    subject: case_record,
+    data: { previous_status: "pending", reasons: ruleset_output.reasons }
+  )
+
+  notification.deliver!
+  log.add_line(action: "notification.sent", data: { channel: "email" })
+end
+```
+
+`record` returns the `Strata::AuditLog` instance with `.lines` populated, so you can inspect the persisted records:
+
+```ruby
+result = Strata::AuditLog.record(actor: current_user) { |log| log.add_line(action: "x") }
+result.lines.first # => #<Strata::AuditLine action: "x", actor_id: ..., ...>
+```
+
+### Single-line writes
+
+For a one-off event that doesn't need to be paired with other writes, use `Strata::AuditLog.write!`. It creates a single line outside any wrapper transaction:
+
+```ruby
+Strata::AuditLog.write!(
+  action: "user.signed_in",
+  actor: current_user,
+  data: { ip: request.remote_ip }
+)
+```
+
+### `add_line` / `write!` parameters
+
+| Field     | Required | Type                    | Notes                                                                              |
+| --------- | -------- | ----------------------- | ---------------------------------------------------------------------------------- |
+| `action`  | yes      | `String`                | A short event name. Convention: `"<noun>.<verb>"` (e.g. `"case.approved"`).        |
+| `subject` | no       | any AR record           | Polymorphic — the record this event is about.                                      |
+| `actor`   | no       | any AR record           | Polymorphic — who did it. Falls back to the `actor:` passed to `record`.           |
+| `data`    | no       | `Hash` (or `nil`)       | Free-form jsonb payload. `nil` is coerced to `{}`. Defaults to `{}` when omitted. **You are responsible for screening this for PII** — see [PII and sensitive data](#pii-and-sensitive-data). |
+
+## Querying audit history
+
+Include `Strata::Auditable` in any model that should expose its history:
+
+```ruby
+class Case < ApplicationRecord
+  include Strata::Auditable
+end
+```
+
+`Strata::Auditable` is opt-in — host applications include it on the models that need an audit trail. It is intentionally **not** mixed into `Strata::ApplicationForm` so that adding the audit log feature isn't a breaking change for existing host apps.
+
+The concern adds a `has_many :audit_lines, as: :subject` association. Combine it with the scopes on `Strata::AuditLine`:
+
+```ruby
+case_record.audit_lines.latest_first
+case_record.audit_lines.with_action("case.approved")
+
+Strata::AuditLine.by_actor(current_user).latest_first
+Strata::AuditLine.for_subject(case_record).with_action("case.updated")
+```
+
+Available scopes on `Strata::AuditLine`:
+
+| Scope                    | Returns                                          |
+| ------------------------ | ------------------------------------------------ |
+| `for_subject(record)`    | Lines whose subject is the given record.         |
+| `by_actor(record)`       | Lines whose actor is the given record.           |
+| `with_action(name)`      | Lines whose action matches (accepts symbols).    |
+| `latest_first`           | Ordered by `created_at` descending.              |
+
+## Installation
+
+The model, concern, and API are shipped by the engine. Only the migration needs to be installed in the host application:
+
+```bash
+bin/rails generate strata:audit_log
+bin/rails db:migrate
+```
+
+The generator copies `db/migrate/<timestamp>_create_strata_audit_lines.rb`. It does **not** scaffold a host-side `AuditLine` subclass — the schema is fixed and host-specific data goes in the jsonb `data` column.
+
+Pass `--skip-migration-check` to suppress the post-generate prompt that asks whether to run `db:migrate` immediately.
+
+## Authorization
+
+Audit lines are polymorphic, which means the audit table mixes records belonging to different host models in one place. Hosts must wire authorization themselves — there is no global "you can see all audit lines" rule that's safe by default.
+
+The recommended pattern is a Pundit `Strata::AuditLinePolicy::Scope` that filters audit lines by joining each subject type to that subject's existing policy scope. The dummy app under `spec/dummy/app/policies/strata/audit_line_policy.rb` ships a reference implementation hosts can copy and adapt:
+
+```ruby
+class Strata::AuditLinePolicy < ApplicationPolicy
+  class Scope < ApplicationPolicy::Scope
+    def visible_subject_ids_by_type
+      {
+        "Case"            => Pundit.policy_scope(user, Case).select(:id),
+        "MyApplicationForm" => Pundit.policy_scope(user, MyApplicationForm).select(:id)
+      }
+    end
+
+    def resolve
+      filters = visible_subject_ids_by_type.map do |type, ids|
+        scope.where(subject_type: type, subject_id: ids)
+      end
+      filters << scope.where(subject_id: nil) # system events visible to all
+      filters.reduce { |combined, next_filter| combined.or(next_filter) }
+    end
+  end
+end
+```
+
+Then call `policy_scope(Strata::AuditLine)` in any controller that lists audit history.
+
+## PII and sensitive data
+
+The `data` column is a free-form `jsonb` payload with **no automatic
+redaction**. Whatever you pass to `data:` is persisted verbatim into a
+permanent, immutable log that is not routinely audited.
+
+Callers — both human engineers and AI agents — are responsible for
+self-screening every value before it reaches `data:`. We considered shipping
+a structural redaction mechanism (see
+[audit-log-pii-redaction.md](decisions/audit-log-pii-redaction.md)) and
+decided against it. Caller discipline is the policy.
+
+**Do not pass:**
+
+- `request.params` or any other raw request payload.
+- Full `record.attributes` hashes from models that may carry PII (passwords,
+  password digests, session tokens, SSNs, dates of birth, addresses, etc.).
+- User-supplied free text without inspecting it first.
+
+**Do pass:**
+
+- Small, structured diffs you constructed by hand, e.g.
+  `{ status: ["pending", "approved"] }`.
+- Non-sensitive request metadata (IP, user agent, request ID).
+- External-system identifiers (e.g. third-party transaction IDs).
+
+If you find yourself thinking "I'll just dump the whole record and clean it
+up later" — stop. There is no later. Audit lines are immutable; the cleanup
+is a manual data migration on a permanent log.
+
+## Schema
+
+`strata_audit_lines` (UUID primary key, immutable rows):
+
+| Column         | Type       | Null | Notes                                         |
+| -------------- | ---------- | ---- | --------------------------------------------- |
+| `id`           | uuid       | no   | `gen_random_uuid()`                           |
+| `action`       | string     | no   | What happened.                                |
+| `subject_id`   | uuid       | yes  | Polymorphic — paired with `subject_type`.     |
+| `subject_type` | string     | yes  |                                               |
+| `actor_id`     | uuid       | yes  | Polymorphic — paired with `actor_type`.       |
+| `actor_type`   | string     | yes  |                                               |
+| `data`         | jsonb      | no   | Defaults to `{}`. Free-form payload.          |
+| `created_at`   | datetime   | no   | No `updated_at` — lines are immutable.        |
+
+Indexes:
+
+- `(subject_type, subject_id, created_at DESC)` — serves the dominant read pattern, "most recent lines for this subject," without a sort.
+- `(actor_type, actor_id)` — for "what did this actor do."
+- `created_at` — for time-window scans.
+
+## Immutability
+
+`Strata::AuditLine#readonly?` returns `true` once a line is persisted, so any attempt to mutate or destroy a persisted line **raises an exception** rather than silently failing:
+
+```ruby
+line = Strata::AuditLog.write!(action: "user.signed_in", actor: current_user)
+line.update!(action: "tampered") # raises ActiveRecord::ReadOnlyRecord
+line.destroy                     # raises ActiveRecord::ReadOnlyRecord
+```
+
+Both `update!` and `destroy` raise `ActiveRecord::ReadOnlyRecord` — there is no soft-fail return value to check; expect callers to catch the exception or simply avoid mutating audit lines.
+
+This is application-level enforcement, not a database constraint. A host app that wants harder guarantees can add a `BEFORE UPDATE/DELETE` trigger.
+
+## Gotchas
+
+### 1. Nested transactions become savepoints
+
+If you call `Strata::AuditLog.record` from inside a block that already opened an `ActiveRecord::Base.transaction`, your inner transaction becomes a **savepoint**, not a new top-level transaction.
+
+The practical consequence: `raise ActiveRecord::Rollback` inside your block only rolls back to the savepoint. The outer transaction keeps going and may still commit. If you need the whole unit of work to roll back, raise a real exception (anything other than `ActiveRecord::Rollback`) so it propagates out of the outer transaction too.
+
+```ruby
+ActiveRecord::Base.transaction do
+  case_record.update!(status: :approved)
+
+  Strata::AuditLog.record(actor: current_user) do |log|
+    log.add_line(action: "case.approved", subject: case_record)
+    raise ActiveRecord::Rollback # ← only rolls back the inner savepoint!
+  end
+
+  # We're still inside the outer transaction here, and case_record.update!
+  # is about to commit even though the audit line was discarded.
+end
+```
+
+### 2. `after_commit` fires only on the outermost commit
+
+If your application attaches `after_commit` callbacks to `Strata::AuditLine` (e.g. to ship lines to an external sink), those callbacks **fire only when the outermost transaction commits**, not when `Strata::AuditLog.record`'s inner block returns. Lines created deep in a nested transaction may take much longer than expected to reach downstream systems. Plan downstream integrations accordingly.
+
+### 3. Audit lines do **not** cascade-destroy with the subject
+
+Unlike `Strata::Determinable`, `Strata::Auditable` deliberately omits `dependent: :destroy`. This is intentional — an audit trail should outlive the record it describes so the history of "this case was deleted" remains queryable. The trade-off is that `audit_line.subject` will return `nil` once the underlying record is gone. The polymorphic `subject_type` and `subject_id` columns are preserved, so you can still query history by class+id even after deletion.
+
+### 4. Polymorphic class name drift
+
+The polymorphic columns store class name **strings** (`"Case"`, `"User"`, etc.) — *not* the parent class name. Two situations to watch for:
+
+- **Renames.** If you rename a host model later, existing `audit_lines` rows still reference the old name. Either avoid renaming audited models, or run a data migration to rewrite `subject_type` / `actor_type` when you do.
+- **STI / child models.** If you record audit lines against a subclass of `Strata::ApplicationForm` (e.g. `PassportApplicationForm`), the stored `subject_type` is the concrete subclass name, *not* `"Strata::ApplicationForm"`. Queries like `where(subject_type: "Strata::ApplicationForm")` will return no rows. Filter by the concrete class name (or use `for_subject(record)` which does the right thing automatically).
+
+### 5. Thread safety
+
+For normal Rails / Puma usage you don't need to think about this — every web request builds its own `Strata::AuditLog` instance, so concurrent requests never share state.
+
+The accumulator returned via `.lines` is **not** thread-safe across threads spawned **inside** the block (`Thread.new { log.add_line(...) }`, `Parallel.map(...) { |x| log.add_line(...) }`). Persisted rows remain correct in that case (Postgres serializes inserts), but the in-memory `.lines` array can be incomplete. If you fan out work inside the block, query `Strata::AuditLine` directly for what was written rather than trusting the returned accumulator.
+
+## Conventions
+
+- **Action names**: short, lowercase, dot-separated noun-then-verb strings — e.g. `"case.approved"`, `"form.submitted"`, `"notification.sent"`. This makes `with_action` filtering predictable and groups related events alphabetically. Action names can also easily be localized when using this convention.
+- **`data` payloads**: keep them small and structured. Useful contents include `{ before: ..., after: ... }` diffs, rule outputs, request metadata (IP, user agent), or external IDs. Avoid stuffing entire serialized records — the `subject` association already gives you a pointer to the live record.
+- **Actor**: pass the AR record (e.g. `current_user`), not just the ID, so the polymorphic association can hydrate it later.
+- **System events**: when there's no human actor (background jobs, cron, system boot), pass `actor: nil`. The columns are nullable.

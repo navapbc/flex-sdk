@@ -1,0 +1,72 @@
+# frozen_string_literal: true
+
+module Strata
+  # AuditLine is an immutable record of something that happened. Lines are
+  # typically created via {Strata::AuditLog.record} (block form, wrapped in a
+  # DB transaction) or {Strata::AuditLog.write!} (single-line form). Once
+  # persisted, lines are read-only — updates and destroys raise
+  # ActiveRecord::ReadOnlyRecord.
+  #
+  # @example Querying audit history for a record
+  #   Strata::AuditLine.for_subject(case_record).latest_first
+  class AuditLine < ApplicationRecord
+    self.table_name = "strata_audit_lines"
+
+    belongs_to :subject, polymorphic: true, optional: true
+    belongs_to :actor,   polymorphic: true, optional: true
+
+    attribute :action,     :string
+    attribute :data,       :jsonb, default: {}
+
+    validates :action, presence: true
+
+    scope :for_subject,  ->(subject) { where(subject: subject) }
+    scope :by_actor, ->(actor) {
+      case actor
+      when Strata::VirtualActor::Instance
+        where(actor_type: actor.actor_type, actor_id: nil)
+      else
+        klass = actor.is_a?(Class) ? actor : actor.class
+        if klass.include?(Strata::VirtualActor)
+          where(actor_type: klass.name, actor_id: nil)
+        else
+          where(actor: actor)
+        end
+      end
+    }
+    scope :with_action,  ->(action)  { where(action: action.to_s) }
+    scope :latest_first, -> { order(created_at: :desc) }
+
+    def readonly?
+      persisted?
+    end
+
+    def actor
+      return super unless actor_type.present? && actor_id.nil?
+
+      klass = actor_type.safe_constantize
+      return nil unless klass&.include?(Strata::VirtualActor)
+
+      Strata::VirtualActor::Instance.new(actor_type: actor_type)
+    end
+
+    def actor=(value)
+      return super if value.nil?
+
+      if value.is_a?(Strata::VirtualActor::Instance)
+        self.actor_type = value.actor_type
+        self.actor_id   = nil
+        return value
+      end
+
+      klass = value.is_a?(Class) ? value : value.class
+      if klass.include?(Strata::VirtualActor)
+        self.actor_type = klass.name
+        self.actor_id   = nil
+        value
+      else
+        super
+      end
+    end
+  end
+end
