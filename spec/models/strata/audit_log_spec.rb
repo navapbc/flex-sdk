@@ -203,6 +203,23 @@ RSpec.describe Strata::AuditLog do
         }.not_to change(Strata::AuditLine, :count)
       end
     end
+
+    context 'when called without a block' do
+      it 'raises ArgumentError with a helpful message' do
+        expect { described_class.record(actor: user) }
+          .to raise_error(ArgumentError, /requires a block/)
+      end
+
+      it 'does not persist any audit lines' do
+        expect {
+          begin
+            described_class.record(actor: user)
+          rescue ArgumentError
+            # expected
+          end
+        }.not_to change(Strata::AuditLine, :count)
+      end
+    end
   end
 
   describe '.write!' do

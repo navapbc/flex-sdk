@@ -6,5 +6,9 @@ FactoryBot.define do
     subject { nil }
     actor { nil }
     data { {} }
+
+    trait :with_virtual_actor do
+      actor { TestVirtualActor.new }
+    end
   end
 end
