@@ -13,6 +13,7 @@ This document provides comprehensive documentation for all Strata Attributes ava
 - [Range Attribute](#range-attribute)
 - [Tax ID Attribute](#tax-id-attribute)
 - [US Date Attribute](#us-date-attribute)
+- [User Facing ID Attribute](#user-facing-id-attribute)
 - [Year Month Attribute](#year-month-attribute)
 - [Year Quarter Attribute](#year-quarter-attribute)
 
@@ -482,6 +483,89 @@ puts application.submitted_on.year # => 2023
 ### Validation
 
 US date attributes include automatic validation to ensure the date is valid. Invalid dates will add an `:invalid_date` error to the model.
+
+## User Facing ID Attribute
+
+The User Facing ID Attribute provides human-friendly, obfuscated identifiers backed by an integer sequence column. The integer sequence is encoded into a prefixed, segmented string (e.g., `T-Y01-B33-N91`) using a keyed Feistel permutation, so consecutive sequence values produce non-sequential, unpredictable IDs that are safe to expose in URLs and user-facing surfaces.
+
+### Usage in Model
+
+```ruby
+class TestRecord < ApplicationRecord
+  include Strata::Attributes
+
+  strata_attribute :user_facing_id, :user_facing_id, prefix: "T"
+  strata_attribute :claim_user_facing_id, :user_facing_id, prefix: "CLAIM"
+end
+```
+
+### Options
+
+- `prefix` (required) — Uppercase alphanumeric prefix used as the first segment of the formatted ID.
+- `sequence_column` (optional) — Name of the backing integer column. Defaults to `"#{name}_sequence"`.
+- `key` (optional) — Integer key used to seed the Feistel permutation. Defaults to `Strata::UserFacingId::Codec::DEFAULT_KEY`. Pass a distinct key per attribute when you want IDs from different attributes to occupy independent encoding spaces. Once an ID has been issued for a given attribute, the key must not be changed — previously issued IDs are bound to the key they were encoded with.
+
+### Database Mapping
+
+A user facing ID attribute is backed by **1 integer column** (typically a `bigserial` so Postgres assigns sequence values automatically):
+
+For an attribute named `user_facing_id`:
+
+- `user_facing_id_sequence` (bigserial / integer)
+
+The encoded string is computed on read; it is not stored in the database.
+
+Example migration:
+
+```ruby
+class AddUserFacingIdSequenceToTestRecords < ActiveRecord::Migration[8.0]
+  def up
+    add_column :test_records, :user_facing_id_sequence, :bigserial, null: false
+    add_index :test_records, :user_facing_id_sequence, unique: true
+  end
+
+  def down
+    remove_index :test_records, :user_facing_id_sequence
+    remove_column :test_records, :user_facing_id_sequence
+  end
+end
+```
+
+### Available Methods
+
+- The attribute reader (e.g., `record.user_facing_id`) returns the formatted, prefixed string.
+- The sequence reader (e.g., `record.user_facing_id_sequence`) returns the underlying integer.
+- The attribute writer accepts either the formatted string or an integer sequence value and stores the integer.
+- Querying through the attribute (e.g., `Model.where(user_facing_id: "T-Y01-B33-N91")`) decodes the formatted ID to its sequence integer before comparing against the column.
+
+### Usage Examples
+
+```ruby
+# Reading
+record.user_facing_id          # => "T-Y01-B33-N91"
+record.user_facing_id_sequence # => 1
+
+# Assigning a formatted string (decodes to the underlying sequence integer)
+record.user_facing_id = "T-Y01-B33-N91"
+record.user_facing_id_sequence # => 1
+
+# Assigning an integer sequence directly
+record.user_facing_id = 42
+record.user_facing_id_sequence # => 42
+
+# Querying by formatted ID
+TestRecord.find_by(user_facing_id: "T-Y01-B33-N91")
+```
+
+### Validation
+
+The prefix is validated at model load time and must contain only letters and digits (`/\A[A-Z0-9]+\z/`); invalid prefixes raise `Strata::UserFacingId::FormatError`.
+
+At runtime:
+
+- Assigning a malformed formatted string raises `Strata::UserFacingId::Error` (loud failure for debuggability).
+- Querying with a malformed formatted string casts to `nil` so the query simply returns no results rather than raising.
+- Sequence values must fall within the codec's capacity range (`0..Strata::UserFacingId::Codec::MAX_VALUE`); out-of-range values raise `RangeError` during encoding.
 
 ## Year Month Attribute
 
