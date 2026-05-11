@@ -10,13 +10,18 @@ RSpec.describe Strata::TasksController, type: :controller do
 
   before do
     Rails.application.routes.draw do
+      mount Strata::Engine => "/"
       namespace :strata do
         resources :tasks, only: [ :index, :show, :update ]
       end
     end
+    Strata::Engine.routes.draw do
+      resources :tasks, only: [ :index, :show, :update ]
+    end
   end
 
   after do
+    Strata::Engine.routes.clear!
     Rails.application.reload_routes!
   end
 
@@ -30,7 +35,7 @@ RSpec.describe Strata::TasksController, type: :controller do
         end
       end
 
-      context 'when updating a task', skip: 'Cannot figure out why routing is failing, so skipping for now' do
+      context 'when updating a task' do
         before { patch :update, params: { id: task.id } }
 
         it 'sets the case from the task' do
