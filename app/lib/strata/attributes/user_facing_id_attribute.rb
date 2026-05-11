@@ -48,7 +48,7 @@ module Strata
           alphabet = options.fetch(:alphabet, Strata::UserFacingId::Alphabet::DEFAULT)
 
           Strata::UserFacingId::Codec.normalize_prefix(prefix)
-          Strata::Attributes::UserFacingIdAttribute.validate_alphabet!(alphabet)
+          alphabet = Strata::Attributes::UserFacingIdAttribute.validate_alphabet!(alphabet)
 
           attribute sequence_column, UserFacingIdSequenceType.new(prefix: prefix, key: key, alphabet: alphabet)
           alias_attribute name, sequence_column
@@ -113,6 +113,11 @@ module Strata
         if alphabet.uniq.length != alphabet.length
           raise Strata::UserFacingId::FormatError, "user-facing ID alphabet must not contain duplicates"
         end
+
+        # Dup-and-freeze so the alphabet captured by the attribute is immutable;
+        # callers may keep mutating their original array without affecting
+        # already-issued IDs.
+        alphabet.dup.freeze
       end
     end
   end

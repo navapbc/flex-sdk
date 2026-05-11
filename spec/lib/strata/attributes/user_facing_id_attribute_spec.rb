@@ -545,6 +545,42 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     end
   end
 
+  describe "alphabet immutability" do
+    it "is unaffected when the caller mutates the alphabet array after class definition" do
+      alphabet = %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z]
+      klass = Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :no_o_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: alphabet
+      end
+      original_encoding = klass.new(user_facing_id_sequence: 12_345).no_o_id
+
+      alphabet.clear
+      alphabet.concat(%w[Z Y X])
+
+      expect(klass.new(user_facing_id_sequence: 12_345).no_o_id).to eq(original_encoding)
+    end
+
+    it "does not freeze the caller's alphabet array" do
+      alphabet = %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z]
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :no_o_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: alphabet
+      end
+
+      expect(alphabet).not_to be_frozen
+    end
+  end
+
   describe "26-letter alphabet query safety" do
     let(:full_alphabet) { ("A".."Z").to_a }
     let(:full_alpha_class) do
