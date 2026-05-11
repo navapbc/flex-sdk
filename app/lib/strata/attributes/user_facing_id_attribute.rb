@@ -19,6 +19,11 @@ module Strata
           super()
         end
 
+        # Permissive on the query path: malformed input from `where(...)` /
+        # `find_by(...)` should produce an empty result, not raise. Rails calls
+        # cast on the predicate builder side too, so this can't be loud without
+        # breaking query semantics — the loud behavior lives on the per-attribute
+        # sequence-column setter defined below.
         def cast(value)
           return nil if value.nil?
           return value if value.is_a?(Integer)
@@ -66,6 +71,22 @@ module Strata
               end
 
             public_send("#{sequence_column}=", coerced)
+          end
+
+          # The column's permissive cast (needed for query semantics) would
+          # silently nil any string that fails to decode, including innocuous
+          # integer-as-string assignments. Override the sequence-column setter
+          # to raise loudly so misuse surfaces at the call site rather than
+          # turning into a NULL write.
+          define_method("#{sequence_column}=") do |value|
+            coerced =
+              if value.is_a?(String) && value.strip.present?
+                Strata::UserFacingId::Codec.decode(value, prefix: prefix, key: key, alphabet: alphabet)
+              else
+                value
+              end
+
+            write_attribute(sequence_column, coerced)
           end
         end
       end

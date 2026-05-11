@@ -544,4 +544,90 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       expect { define_class_with(%w[A]) }.not_to raise_error
     end
   end
+
+  describe "26-letter alphabet query safety" do
+    let(:full_alphabet) { ("A".."Z").to_a }
+    let(:full_alpha_class) do
+      alphabet = full_alphabet
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :full_alpha_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: alphabet
+      end
+    end
+
+    it "returns nil from find_by for a crafted overflow ID" do
+      full_alpha_class.create!(user_facing_id_sequence: 12_345)
+
+      expect(full_alpha_class.find_by(full_alpha_id: "T-Z99-Z99-Z99")).to be_nil
+    end
+
+    it "returns an empty relation from where for a crafted overflow ID" do
+      full_alpha_class.create!(user_facing_id_sequence: 12_345)
+
+      expect(full_alpha_class.where(full_alpha_id: "T-Z99-Z99-Z99")).to be_empty
+    end
+
+    it "raises RecordNotFound (not RangeError) from find_by! for a crafted overflow ID" do
+      full_alpha_class.create!(user_facing_id_sequence: 12_345)
+
+      expect do
+        full_alpha_class.find_by!(full_alpha_id: "T-Z99-Z99-Z99")
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "sequence column setter loudness" do
+    it "raises FormatError when assigning a numeric string to the sequence column" do
+      expect do
+        TestRecord.new.user_facing_id_sequence = "12345"
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError when assigning a non-id string to the sequence column" do
+      expect do
+        TestRecord.new.user_facing_id_sequence = "not-an-id"
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "still accepts a formatted ID on the sequence column" do
+      formatted = TestRecord.new(user_facing_id_sequence: 12_345).user_facing_id
+      target = TestRecord.new
+      target.user_facing_id_sequence = formatted
+
+      expect(target.user_facing_id_sequence).to eq(12_345)
+    end
+
+    it "still accepts an integer on the sequence column" do
+      target = TestRecord.new
+      target.user_facing_id_sequence = 12_345
+
+      expect(target.user_facing_id_sequence).to eq(12_345)
+    end
+
+    it "still accepts nil on the sequence column" do
+      target = TestRecord.new(user_facing_id_sequence: 12_345)
+      target.user_facing_id_sequence = nil
+
+      expect(target.user_facing_id_sequence).to be_nil
+    end
+
+    it "keeps the query path permissive: find_by returns nil for malformed input" do
+      expect(TestRecord.find_by(user_facing_id: "not-an-id")).to be_nil
+    end
+
+    it "keeps the query path permissive: where returns empty for malformed input" do
+      expect(TestRecord.where(user_facing_id: "not-an-id")).to be_empty
+    end
+
+    it "keeps the query path permissive: find_by! raises RecordNotFound for malformed input" do
+      expect do
+        TestRecord.find_by!(user_facing_id: "not-an-id")
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end
