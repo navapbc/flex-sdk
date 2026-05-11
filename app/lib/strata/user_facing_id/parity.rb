@@ -4,7 +4,9 @@ module Strata
   module UserFacingId
     # Calculates and validates the 4-bit checksum embedded in user-facing IDs.
     module Parity
-      # Different weights spread the parity across the data bits so single-bit errors are caught with high probability.
+      # Different weights spread the parity across the three segment chunks so that
+      # a single-segment (one-letter or one-two-digit) typo is caught with high
+      # probability; random tampering passes the check at ~1/16.
       WEIGHTS = [ 1, 3, 7 ].freeze
 
       # Four parity bits can represent checksums from 0 through 15.

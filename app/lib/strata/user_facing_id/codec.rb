@@ -3,6 +3,12 @@
 module Strata
   module UserFacingId
     # Encodes sequence integers into user-facing IDs and decodes them back.
+    #
+    # Intended as attribute-internal: callers should go through
+    # `user_facing_id_attribute` rather than invoking the codec directly.
+    # In particular, alphabet inputs are validated by the attribute layer,
+    # not here — calling Codec.encode/decode with a malformed alphabet
+    # (empty, duplicates, non-letters) is undefined.
     module Codec
       # Keyed Feistel permutation seed used to obfuscate sequence integers.
       #
