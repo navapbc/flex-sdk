@@ -284,4 +284,85 @@ RSpec.describe Strata::UserFacingId::Codec do
       expect { described_class.encode(12_345, prefix: "BAD-PREFIX") }.to raise_error(Strata::UserFacingId::FormatError)
     end
   end
+
+  describe "custom alphabet" do
+    let(:no_o_alphabet) { %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z] }
+    let(:full_alphabet) { ("A".."Z").to_a }
+    let(:no_o_max) { (no_o_alphabet.length * Strata::UserFacingId::Alphabet::DIGITS_PER_LETTER)**3 / 16 - 1 }
+
+    it "round-trips a representative sweep under a custom alphabet" do
+      [ 0, 1, 12_345, 1_000_000, no_o_max ].each do |value|
+        encoded = described_class.encode(value, prefix: "T", alphabet: no_o_alphabet)
+        expect(described_class.decode(encoded, prefix: "T", alphabet: no_o_alphabet)).to eq(value)
+      end
+    end
+
+    it "never emits excluded letters in encoded output" do
+      encodings = (0...10_000).map { |value| described_class.encode(value, prefix: "T", alphabet: no_o_alphabet) }
+
+      expect(encodings).to all(match(/\AT-[A-HJ-NP-Z]\d{2}-[A-HJ-NP-Z]\d{2}-[A-HJ-NP-Z]\d{2}\z/))
+      encodings.each { |encoded| expect(encoded).not_to include("O") }
+    end
+
+    it "produces a different encoded value than the default alphabet" do
+      custom = described_class.encode(12_345, prefix: "T", alphabet: no_o_alphabet)
+      default = described_class.encode(12_345, prefix: "T")
+
+      expect(custom).not_to eq(default)
+    end
+
+    it "raises FormatError for an encoded ID containing letters outside the configured alphabet" do
+      expect do
+        described_class.decode("T-O00-A00-A00", prefix: "T", alphabet: no_o_alphabet)
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises RangeError beyond the per-alphabet capacity" do
+      expect { described_class.encode(no_o_max + 1, prefix: "T", alphabet: no_o_alphabet) }.to raise_error(RangeError)
+    end
+
+    it "caps capacity at Feistel::DOMAIN_SIZE for a full 26-letter alphabet" do
+      feistel_max = Strata::UserFacingId::Feistel::DOMAIN_SIZE - 1
+
+      expect { described_class.encode(feistel_max, prefix: "T", alphabet: full_alphabet) }.not_to raise_error
+      expect { described_class.encode(feistel_max + 1, prefix: "T", alphabet: full_alphabet) }.to raise_error(RangeError)
+    end
+
+    it "allows 'I' to appear in encoded output when the alphabet includes it" do
+      found_i = (0...1_000).any? do |value|
+        described_class.encode(value, prefix: "T", alphabet: full_alphabet).include?("I")
+      end
+
+      expect(found_i).to be(true)
+    end
+
+    describe "golden table under a 24-letter (no-O) alphabet" do
+      # Locked once captured from the first implementation run; future changes to
+      # alphabet plumbing, base math, or parity weighting must update this table
+      # deliberately — any change breaks every issued no-O ID downstream.
+      [
+        { sequence: 0,         encoded: "T-C43-W57-F51" },
+        { sequence: 1,         encoded: "T-Q02-B25-B79" },
+        { sequence: 12_345,    encoded: "T-Y40-R61-U57" },
+        { sequence: 1_000_000, encoded: "T-G02-G94-U21" }
+      ].each do |case_data|
+        it "encodes sequence=#{case_data[:sequence]} to #{case_data[:encoded]}" do
+          encoded = described_class.encode(case_data[:sequence], prefix: "T",
+            alphabet: %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z])
+
+          expect(encoded).to eq(case_data[:encoded])
+        end
+      end
+    end
+  end
+
+  describe "regression: default alphabet is unchanged" do
+    it "produces identical output whether :alphabet is omitted or explicitly default" do
+      [ 0, 1, 12_345, 1_000_000, described_class::MAX_VALUE ].each do |value|
+        explicit = described_class.encode(value, prefix: "T", alphabet: Strata::UserFacingId::Alphabet::DEFAULT)
+
+        expect(explicit).to eq(described_class.encode(value, prefix: "T"))
+      end
+    end
+  end
 end

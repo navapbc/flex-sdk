@@ -371,4 +371,177 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       end.to raise_error(KeyError)
     end
   end
+
+  describe "custom :alphabet option" do
+    let(:no_o_alphabet) { %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z] }
+    let(:model_class) do
+      alphabet = no_o_alphabet
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :no_o_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: alphabet
+      end
+    end
+
+    it "formats IDs using only the configured alphabet" do
+      record = model_class.create!(user_facing_id_sequence: 12_345)
+
+      expect(record.no_o_id).to match(/\AT-[A-HJ-NP-Z]\d{2}-[A-HJ-NP-Z]\d{2}-[A-HJ-NP-Z]\d{2}\z/)
+      expect(record.no_o_id).not_to include("O")
+    end
+
+    it "produces a different encoding than the default-alphabet attribute on the same sequence" do
+      default_record = TestRecord.new(user_facing_id_sequence: 12_345)
+      custom_record = model_class.new(user_facing_id_sequence: 12_345)
+
+      expect(custom_record.no_o_id).not_to eq(default_record.user_facing_id)
+    end
+
+    it "round-trips through the writer" do
+      formatted = model_class.new(user_facing_id_sequence: 12_345).no_o_id
+      target = model_class.new
+      target.no_o_id = formatted
+
+      expect(target.user_facing_id_sequence).to eq(12_345)
+    end
+
+    it "raises FormatError when the writer receives a letter outside the alphabet" do
+      expect do
+        model_class.new.no_o_id = "T-O00-A00-A00"
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "supports find_by through the custom-alphabet attribute" do
+      record = model_class.create!(user_facing_id_sequence: 12_345)
+
+      expect(model_class.find_by!(no_o_id: record.no_o_id)).to eq(record)
+      expect(model_class.where(no_o_id: record.no_o_id)).to contain_exactly(record)
+    end
+
+    it "combines :alphabet with :key" do
+      custom_key = 0xdead_beef
+      alphabet = no_o_alphabet
+      keyed_class = Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :keyed_no_o_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          key: custom_key,
+          alphabet: alphabet
+      end
+
+      keyed_record = keyed_class.new(user_facing_id_sequence: 12_345)
+
+      expect(keyed_record.keyed_no_o_id).not_to include("O")
+      expect(keyed_record.keyed_no_o_id).not_to eq(model_class.new(user_facing_id_sequence: 12_345).no_o_id)
+    end
+
+    it "reduces capacity according to alphabet length" do
+      per_alphabet_max = (no_o_alphabet.length * Strata::UserFacingId::Alphabet::DIGITS_PER_LETTER)**3 / 16 - 1
+
+      expect { model_class.new(user_facing_id_sequence: per_alphabet_max).no_o_id }.not_to raise_error
+      expect { model_class.new(user_facing_id_sequence: per_alphabet_max + 1).no_o_id }.to raise_error(RangeError)
+    end
+
+    it "accepts a full 26-letter alphabet that includes 'I'" do
+      full_alphabet = ("A".."Z").to_a
+      klass = Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :full_alpha_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: full_alphabet
+      end
+
+      encodings = (1..200).map { |seq| klass.new(user_facing_id_sequence: seq).full_alpha_id }
+
+      expect(encodings.any? { |encoded| encoded.include?("I") }).to be(true)
+    end
+
+    it "caps a 26-letter alphabet at Feistel::DOMAIN_SIZE - 1" do
+      full_alphabet = ("A".."Z").to_a
+      klass = Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :full_alpha_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: full_alphabet
+      end
+      feistel_max = Strata::UserFacingId::Feistel::DOMAIN_SIZE - 1
+
+      expect { klass.new(user_facing_id_sequence: feistel_max).full_alpha_id }.not_to raise_error
+      expect { klass.new(user_facing_id_sequence: feistel_max + 1).full_alpha_id }.to raise_error(RangeError)
+    end
+
+    it "omitting :alphabet produces output identical to today" do
+      # Regression guard: existing attributes (and persisted IDs) must keep their encoding.
+      expect(TestRecord.new(user_facing_id_sequence: 12_345).user_facing_id).to eq("T-V64-Z59-H64")
+    end
+  end
+
+  describe "alphabet validation at class-definition time" do
+    def define_class_with(alphabet)
+      bad_alphabet = alphabet
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :bad_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          alphabet: bad_alphabet
+      end
+    end
+
+    it "raises FormatError for duplicate letters" do
+      expect { define_class_with(%w[A A B C D]) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for lowercase letters" do
+      expect { define_class_with(%w[a b c d]) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for digits or symbols" do
+      expect { define_class_with(%w[A B 1 2]) }.to raise_error(Strata::UserFacingId::FormatError)
+      expect { define_class_with(%w[A B - C]) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for multi-character entries" do
+      expect { define_class_with(%w[AA BB CC]) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for an empty alphabet" do
+      expect { define_class_with([]) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for an alphabet longer than 26 characters" do
+      too_long = ("A".."Z").to_a + [ "A" ]
+
+      expect { define_class_with(too_long) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError when alphabet is not an Array" do
+      expect { define_class_with("ABCDEFG") }.to raise_error(Strata::UserFacingId::FormatError)
+      expect { define_class_with(nil) }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "accepts a 26-letter alphabet" do
+      expect { define_class_with(("A".."Z").to_a) }.not_to raise_error
+    end
+
+    it "accepts a single-letter alphabet" do
+      # Smallest valid alphabet — capacity collapses to 100^3/16 = 62,500 but it's still valid.
+      expect { define_class_with(%w[A]) }.not_to raise_error
+    end
+  end
 end

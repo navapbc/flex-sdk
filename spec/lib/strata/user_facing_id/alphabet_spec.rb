@@ -90,4 +90,42 @@ RSpec.describe Strata::UserFacingId::Alphabet do
       end
     end
   end
+
+  describe "with a custom alphabet" do
+    let(:no_o_alphabet) { %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z] }
+    let(:full_alphabet) { ("A".."Z").to_a }
+
+    it "encodes using only letters from the custom alphabet" do
+      capacity = no_o_alphabet.length * described_class::DIGITS_PER_LETTER
+      encodings = (0...capacity).map { |value| described_class.encode(value, alphabet: no_o_alphabet) }
+
+      expect(encodings).to all(match(/\A[A-HJ-NP-Z]\d{2}\z/))
+      expect(encodings.uniq.size).to eq(capacity)
+    end
+
+    it "round-trips every value within the custom alphabet's capacity" do
+      capacity = no_o_alphabet.length * described_class::DIGITS_PER_LETTER
+      (0...capacity).each do |value|
+        encoded = described_class.encode(value, alphabet: no_o_alphabet)
+        expect(described_class.decode(encoded, alphabet: no_o_alphabet)).to eq(value)
+      end
+    end
+
+    it "raises RangeError for values beyond the custom alphabet's capacity" do
+      capacity = no_o_alphabet.length * described_class::DIGITS_PER_LETTER
+
+      expect { described_class.encode(capacity, alphabet: no_o_alphabet) }.to raise_error(RangeError)
+    end
+
+    it "raises FormatError on decode for letters not in the custom alphabet" do
+      expect { described_class.decode("O00", alphabet: no_o_alphabet) }
+        .to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "supports a full 26-letter alphabet that includes 'I'" do
+      # Index 8 in a full A-Z alphabet is "I"; default alphabet maps index 8 to "J".
+      expect(described_class.encode(800, alphabet: full_alphabet)).to eq("I00")
+      expect(described_class.decode("I00", alphabet: full_alphabet)).to eq(800)
+    end
+  end
 end

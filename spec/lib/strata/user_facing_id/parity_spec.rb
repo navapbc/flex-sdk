@@ -92,4 +92,24 @@ RSpec.describe Strata::UserFacingId::Parity do
       end
     end
   end
+
+  describe ".calculate with a custom base" do
+    it "matches the default-base calculation when base equals Alphabet::BASE" do
+      [ 0, 1, 12_345, 1_000_000 ].each do |value|
+        expect(described_class.calculate(value, base: Strata::UserFacingId::Alphabet::BASE))
+          .to eq(described_class.calculate(value))
+      end
+    end
+
+    it "chunks against the configured base for non-default alphabets" do
+      # For value = 12345 under base 2400: chunks = [345, 5, 0]; weighted sum = 345*1 + 5*3 + 0*7 = 360; 360 % 16 = 8.
+      expect(described_class.calculate(12_345, base: 2400)).to eq(8)
+    end
+
+    it "produces a four-bit value across the custom-base domain" do
+      [ 0, 1, 12_345, 1_000_000 ].each do |value|
+        expect(described_class.calculate(value, base: 2400)).to be_between(0, 15)
+      end
+    end
+  end
 end

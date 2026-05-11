@@ -12,20 +12,21 @@ module Strata
 
       module_function
 
-      def calculate(value)
-        # Work in the same base as the visible LNN segments.
+      def calculate(value, base: Alphabet::BASE)
+        # Work in the same base as the visible LNN segments so that custom-alphabet
+        # IDs get chunked the same way the codec splits them on decode.
         chunks = [
-          value % Alphabet::BASE,
-          (value / Alphabet::BASE) % Alphabet::BASE,
-          (value / (Alphabet::BASE**2)) % Alphabet::BASE
+          value % base,
+          (value / base) % base,
+          (value / (base**2)) % base
         ]
 
         chunks.zip(WEIGHTS).sum { |chunk, weight| chunk * weight } % 16
       end
 
-      def append(value)
+      def append(value, base: Alphabet::BASE)
         # Shift data left, then use the low four bits for the checksum.
-        (value << 4) | calculate(value)
+        (value << 4) | calculate(value, base: base)
       end
 
       def split(value)
@@ -33,12 +34,12 @@ module Strata
         [ value >> 4, value & MASK ]
       end
 
-      def valid?(value, parity)
-        calculate(value) == parity
+      def valid?(value, parity, base: Alphabet::BASE)
+        calculate(value, base: base) == parity
       end
 
-      def validate!(value, parity)
-        return true if valid?(value, parity)
+      def validate!(value, parity, base: Alphabet::BASE)
+        return true if valid?(value, parity, base: base)
 
         raise ParityError, "invalid user-facing ID parity"
       end
