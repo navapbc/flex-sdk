@@ -225,5 +225,150 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
     it "leaves the permissive cast path unaffected for find_by" do
       expect(TestRecord.find_by(user_facing_id: "not-an-id")).to be_nil
     end
+
+    it "raises FormatError when an integer-as-string is assigned" do
+      # The writer treats any non-blank string as a formatted ID, so "12345"
+      # is parsed (and fails) rather than coerced to the integer 12345.
+      expect do
+        TestRecord.new.user_facing_id = "12345"
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+  end
+
+  describe "golden persisted ID" do
+    it "renders sequence 12345 under prefix 'T' as the exact codec golden value" do
+      # Locks the end-to-end Rails integration against the codec golden table.
+      record = TestRecord.create!(user_facing_id_sequence: 12_345)
+
+      expect(record.user_facing_id).to eq("T-V64-Z59-H64")
+      expect(record.reload.user_facing_id).to eq("T-V64-Z59-H64")
+    end
+
+    it "renders sequence 12345 under prefix 'CLAIM' as the exact codec golden value" do
+      record = TestRecord.create!(claim_user_facing_id_sequence: 12_345)
+
+      expect(record.claim_user_facing_id).to eq("CLAIM-V64-Z59-H64")
+    end
+  end
+
+  describe "multiple persisted records" do
+    it "round-trips every record through find_by across a sample of 20 records" do
+      records = Array.new(20) { TestRecord.create! }
+
+      expect(records.map(&:user_facing_id).uniq.size).to eq(20)
+      records.each do |target|
+        expect(TestRecord.find_by!(user_facing_id: target.user_facing_id)).to eq(target)
+      end
+    end
+  end
+
+  describe "out-of-range sequence values" do
+    it "raises RangeError when the backing sequence exceeds MAX_VALUE" do
+      # bigserial can outgrow the encodable space; if it ever does, the reader
+      # raises rather than returning a garbled ID.
+      out_of_range = Strata::UserFacingId::Codec::MAX_VALUE + 1
+      record = TestRecord.new(user_facing_id_sequence: out_of_range)
+
+      expect { record.user_facing_id }.to raise_error(RangeError)
+    end
+  end
+
+  describe "custom :key option" do
+    let(:custom_key) { 0xdead_beef }
+    let(:model_class) do
+      key = custom_key
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        user_facing_id_attribute :keyed_id,
+          prefix: "T",
+          sequence_column: :user_facing_id_sequence,
+          key: key
+      end
+    end
+
+    it "flows the custom key through encode" do
+      # Matches the codec golden-table entry for prefix T, custom key, seq 12345.
+      record = model_class.new(user_facing_id_sequence: 12_345)
+
+      expect(record.keyed_id).to eq("T-P03-O83-R39")
+    end
+
+    it "produces a different encoding than the default-key attribute on the same sequence" do
+      record = TestRecord.new(user_facing_id_sequence: 12_345)
+      custom_record = model_class.new(user_facing_id_sequence: 12_345)
+
+      expect(custom_record.keyed_id).not_to eq(record.user_facing_id)
+    end
+
+    it "flows the custom key through the writer" do
+      record = model_class.new
+      record.keyed_id = "T-P03-O83-R39"
+
+      expect(record.user_facing_id_sequence).to eq(12_345)
+    end
+  end
+
+  describe "custom :sequence_column option" do
+    let(:model_class) do
+      Class.new(ApplicationRecord) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        # Explicit sequence_column points the attribute at the CLAIM column.
+        user_facing_id_attribute :case_id,
+          prefix: "CASE",
+          sequence_column: :claim_user_facing_id_sequence
+      end
+    end
+
+    it "reads and writes through the configured sequence column" do
+      record = model_class.new(claim_user_facing_id_sequence: 12_345)
+
+      expect(record.case_id).to match(/\ACASE-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}\z/)
+      expect(record.case_id).to eq("CASE-V64-Z59-H64")
+    end
+
+    it "exposes the attribute as an alias for the configured sequence column" do
+      record = model_class.new(claim_user_facing_id_sequence: 12_345)
+
+      expect(record.case_id).to eq(model_class.new(case_id: 12_345).case_id)
+    end
+  end
+
+  describe "class-definition-time validation" do
+    it "raises FormatError when the prefix contains disallowed characters" do
+      expect do
+        Class.new(ApplicationRecord) do
+          self.table_name = "test_records"
+          include Strata::Attributes
+
+          user_facing_id_attribute :bad_id, prefix: "BAD-PREFIX"
+        end
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises FormatError for an empty prefix" do
+      expect do
+        Class.new(ApplicationRecord) do
+          self.table_name = "test_records"
+          include Strata::Attributes
+
+          user_facing_id_attribute :bad_id, prefix: ""
+        end
+      end.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises KeyError when prefix is omitted" do
+      expect do
+        Class.new(ApplicationRecord) do
+          self.table_name = "test_records"
+          include Strata::Attributes
+
+          user_facing_id_attribute :bad_id
+        end
+      end.to raise_error(KeyError)
+    end
   end
 end

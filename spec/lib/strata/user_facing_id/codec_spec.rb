@@ -2,9 +2,63 @@
 
 require "rails_helper"
 
+# Locked encodings: future changes to Feistel rounds, parity weights, the
+# alphabet, or the default key must update this table deliberately — any change
+# here breaks every issued ID downstream. Defined outside the example group so
+# they can drive example generation in `each` loops below.
+custom_key = 0xdead_beef
+default_key = Strata::UserFacingId::Codec::DEFAULT_KEY
+max_value = Strata::UserFacingId::Codec::MAX_VALUE
+
+golden_cases = [
+  { prefix: "T",     key: default_key, sequence: 0,         encoded: "T-C24-T46-Y51" },
+  { prefix: "T",     key: default_key, sequence: 1,         encoded: "T-Y55-F21-A99" },
+  { prefix: "T",     key: default_key, sequence: 2,         encoded: "T-K82-T85-H69" },
+  { prefix: "T",     key: default_key, sequence: 100,       encoded: "T-N26-F54-X99" },
+  { prefix: "T",     key: default_key, sequence: 12_345,    encoded: "T-V64-Z59-H64" },
+  { prefix: "T",     key: default_key, sequence: 1_000_000, encoded: "T-F55-B74-Z10" },
+  { prefix: "T",     key: default_key, sequence: max_value, encoded: "T-G86-E57-P40" },
+  { prefix: "CLAIM", key: default_key, sequence: 0,         encoded: "CLAIM-C24-T46-Y51" },
+  { prefix: "CLAIM", key: default_key, sequence: 1,         encoded: "CLAIM-Y55-F21-A99" },
+  { prefix: "CLAIM", key: default_key, sequence: 12_345,    encoded: "CLAIM-V64-Z59-H64" },
+  { prefix: "T",     key: custom_key,  sequence: 0,         encoded: "T-N41-W82-Q18" },
+  { prefix: "T",     key: custom_key,  sequence: 1,         encoded: "T-H80-Z47-J66" },
+  { prefix: "T",     key: custom_key,  sequence: 12_345,    encoded: "T-P03-O83-R39" }
+].freeze
+
 RSpec.describe Strata::UserFacingId::Codec do
+  let(:custom_key) { 0xdead_beef }
+
+  describe "constants" do
+    it "locks the default key, segment count, and capacity" do
+      # These values define the encoding contract: changing any of them would
+      # invalidate every previously issued user-facing ID.
+      expect(described_class::DEFAULT_KEY).to eq(0x5a3c_9e21)
+      expect(described_class::SEGMENT_COUNT).to eq(3)
+      expect(described_class::ENCODED_CAPACITY).to eq(15_625_000_000)
+      expect(described_class::DATA_CAPACITY).to eq(976_562_500)
+      expect(described_class::MAX_VALUE).to eq(976_562_499)
+    end
+  end
+
+  describe "golden table" do
+    golden_cases.each do |case_data|
+      label = "prefix=#{case_data[:prefix]} key=0x#{case_data[:key].to_s(16)} sequence=#{case_data[:sequence]}"
+
+      it "encodes #{label} to #{case_data[:encoded]}" do
+        expect(described_class.encode(case_data[:sequence], prefix: case_data[:prefix], key: case_data[:key]))
+          .to eq(case_data[:encoded])
+      end
+
+      it "decodes #{case_data[:encoded]} back to sequence #{case_data[:sequence]}" do
+        expect(described_class.decode(case_data[:encoded], prefix: case_data[:prefix], key: case_data[:key]))
+          .to eq(case_data[:sequence])
+      end
+    end
+  end
+
   describe ".encode and .decode" do
-    it "round-trips sequence values" do
+    it "round-trips a representative set of sequence values" do
       [
         0,
         1,
@@ -30,10 +84,43 @@ RSpec.describe Strata::UserFacingId::Codec do
       expect(described_class.encode(12_345, prefix: "C")).to eq(encoded)
     end
 
+    it "produces encoded strings of constant length for any value" do
+      lengths = (0...10_000).map { |value| described_class.encode(value, prefix: "T").length }
+
+      expect(lengths.uniq).to eq([ "T-A00-A00-A00".length ])
+    end
+
+    it "round-trips every value across a 50,000-value sweep" do
+      (0...50_000).each do |value|
+        encoded = described_class.encode(value, prefix: "T")
+        expect(described_class.decode(encoded, prefix: "T")).to eq(value)
+      end
+    end
+
     it "does not collide across a sample of the domain" do
-      encoded_values = (0...10_000).map { |value| described_class.encode(value, prefix: "C") }
+      encoded_values = (0...50_000).map { |value| described_class.encode(value, prefix: "C") }
 
       expect(encoded_values.uniq.size).to eq(encoded_values.size)
+    end
+
+    it "round-trips boundary values exactly" do
+      [ 0, described_class::MAX_VALUE ].each do |value|
+        encoded = described_class.encode(value, prefix: "T")
+
+        expect(described_class.decode(encoded, prefix: "T")).to eq(value)
+      end
+    end
+
+    it "accepts lowercase formatted IDs on decode" do
+      encoded = described_class.encode(12_345, prefix: "T")
+
+      expect(described_class.decode(encoded.downcase, prefix: "T")).to eq(12_345)
+    end
+
+    it "accepts leading and trailing whitespace on decode" do
+      encoded = described_class.encode(12_345, prefix: "T")
+
+      expect(described_class.decode("  #{encoded}  ", prefix: "T")).to eq(12_345)
     end
 
     it "raises for invalid format" do
@@ -63,6 +150,138 @@ RSpec.describe Strata::UserFacingId::Codec do
       expect do
         described_class.encode(described_class::MAX_VALUE + 1, prefix: "C")
       end.to raise_error(RangeError)
+    end
+  end
+
+  describe "key isolation" do
+    it "produces different encoded strings for the same sequence under different keys" do
+      default_encoded = described_class.encode(12_345, prefix: "T")
+      custom_encoded = described_class.encode(12_345, prefix: "T", key: custom_key)
+
+      expect(default_encoded).not_to eq(custom_encoded)
+    end
+
+    it "round-trips losslessly under a non-default key" do
+      [ 0, 1, 12_345, 1_000_000, described_class::MAX_VALUE ].each do |value|
+        encoded = described_class.encode(value, prefix: "T", key: custom_key)
+
+        expect(described_class.decode(encoded, prefix: "T", key: custom_key)).to eq(value)
+      end
+    end
+
+    it "never recovers the original sequence when decoded with the wrong key" do
+      # Decoding with the wrong key either raises (parity mismatch) or recovers
+      # a *different* integer. It must never silently return the original value;
+      # callers that need authentication must rotate keys, not rely on parity.
+      sequences = [ 0, 1, 12_345, 1_000_000, described_class::MAX_VALUE ]
+      recovered_count = 0
+
+      sequences.each do |value|
+        encoded = described_class.encode(value, prefix: "T")
+        begin
+          decoded = described_class.decode(encoded, prefix: "T", key: custom_key)
+          recovered_count += 1 if decoded == value
+        rescue Strata::UserFacingId::Error
+          # Acceptable: wrong key triggered parity mismatch.
+        end
+      end
+
+      expect(recovered_count).to eq(0)
+    end
+  end
+
+  describe ".normalize_prefix" do
+    it "uppercases lowercase input" do
+      expect(described_class.normalize_prefix("claim")).to eq("CLAIM")
+    end
+
+    it "strips surrounding whitespace" do
+      expect(described_class.normalize_prefix("  t  ")).to eq("T")
+    end
+
+    it "accepts alphanumeric prefixes" do
+      [ "T", "CLAIM", "A1", "X9Z" ].each do |prefix|
+        expect { described_class.normalize_prefix(prefix) }.not_to raise_error
+      end
+    end
+
+    it "rejects prefixes with non-alphanumeric characters" do
+      [ "A-B", "A B", "A_B", "A.B", "A!" ].each do |bad_prefix|
+        expect { described_class.normalize_prefix(bad_prefix) }.to raise_error(Strata::UserFacingId::FormatError)
+      end
+    end
+
+    it "rejects empty and nil prefixes" do
+      [ "", "   ", nil ].each do |bad_prefix|
+        expect { described_class.normalize_prefix(bad_prefix) }.to raise_error(Strata::UserFacingId::FormatError)
+      end
+    end
+  end
+
+  describe ".decode input validation" do
+    let(:valid_encoded) { described_class.encode(12_345, prefix: "T") }
+
+    it "raises for missing prefix" do
+      no_prefix = valid_encoded.sub(/\AT-/, "")
+
+      expect { described_class.decode(no_prefix, prefix: "T") }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises for an extra segment" do
+      extra = "#{valid_encoded}-A00"
+
+      expect { described_class.decode(extra, prefix: "T") }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises for a missing segment" do
+      truncated = valid_encoded.split("-")[0..2].join("-")
+
+      expect { described_class.decode(truncated, prefix: "T") }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+
+    it "raises for a malformed segment shape" do
+      [
+        "T-Y1-B33-N91",    # short segment
+        "T-Y011-B33-N91",  # long segment
+        "T-YY1-B33-N91",   # two letters
+        "T-Y01-B33-9N1"    # digit-led segment
+      ].each do |bad_input|
+        expect { described_class.decode(bad_input, prefix: "T") }.to raise_error(Strata::UserFacingId::FormatError),
+          "expected FormatError for #{bad_input.inspect}"
+      end
+    end
+
+    it "raises for empty input" do
+      expect { described_class.decode("", prefix: "T") }.to raise_error(Strata::UserFacingId::FormatError)
+    end
+  end
+
+  describe ".encode input validation" do
+    it "raises for a negative integer" do
+      expect { described_class.encode(-1, prefix: "T") }.to raise_error(RangeError)
+    end
+
+    it "truncates a float through Integer() coercion" do
+      # Kernel#Integer accepts a Float and truncates toward zero, so 1.5 encodes
+      # as 1. This is a quirk of the underlying coercion; documented here so a
+      # future change to stricter coercion is a deliberate decision.
+      expect(described_class.encode(1.5, prefix: "T")).to eq(described_class.encode(1, prefix: "T"))
+    end
+
+    it "raises for nil" do
+      expect { described_class.encode(nil, prefix: "T") }.to raise_error(ArgumentError)
+    end
+
+    it "raises for a non-numeric string" do
+      expect { described_class.encode("foo", prefix: "T") }.to raise_error(ArgumentError)
+    end
+
+    it "accepts an integer-as-string" do
+      expect(described_class.encode("12345", prefix: "T")).to eq(described_class.encode(12_345, prefix: "T"))
+    end
+
+    it "validates the prefix at encode time" do
+      expect { described_class.encode(12_345, prefix: "BAD-PREFIX") }.to raise_error(Strata::UserFacingId::FormatError)
     end
   end
 end
