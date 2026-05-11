@@ -4,7 +4,13 @@ module Strata
   module UserFacingId
     # Encodes sequence integers into user-facing IDs and decodes them back.
     module Codec
-      # Override per-deployment with a 32-bit random integer for stronger sequence obfuscation.
+      # Keyed Feistel permutation seed used to obfuscate sequence integers.
+      #
+      # Set once for a deployment and never rotated: every previously issued
+      # user-facing ID is bound to the key it was encoded with, so changing this
+      # value makes existing IDs unrecoverable. For per-attribute isolation,
+      # pass a different `key:` to `user_facing_id_attribute` rather than
+      # changing this default.
       DEFAULT_KEY = 0x5a3c_9e21
       SEGMENT_COUNT = 3
 
