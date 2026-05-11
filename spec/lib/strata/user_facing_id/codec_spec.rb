@@ -328,6 +328,35 @@ RSpec.describe Strata::UserFacingId::Codec do
       expect { described_class.encode(feistel_max + 1, prefix: "T", alphabet: full_alphabet) }.to raise_error(RangeError)
     end
 
+    describe "26-letter alphabet decode safety" do
+      it "raises FormatError (not RangeError) when a crafted ID's data half overflows the Feistel ceiling" do
+        # 2600^3 - 1 has a data half (>>4) of 1,098,499,999 — above the 2^30 - 1 ceiling.
+        expect do
+          described_class.decode("T-Z99-Z99-Z99", prefix: "T", alphabet: full_alphabet)
+        end.to raise_error(Strata::UserFacingId::FormatError)
+      end
+
+      it "raises FormatError on overflow even when parity matches" do
+        # Build a crafted ID whose data half is above capacity but whose parity is
+        # consistent. The capacity check must fire before the parity check.
+        base = full_alphabet.length * Strata::UserFacingId::Alphabet::DIGITS_PER_LETTER
+        overflow_data = Strata::UserFacingId::Feistel::DOMAIN_SIZE
+        parity = Strata::UserFacingId::Parity.calculate(overflow_data, base: base)
+        packed = (overflow_data << 4) | parity
+        remaining = packed
+        segments = []
+        Strata::UserFacingId::Codec::SEGMENT_COUNT.times do
+          remaining, chunk = remaining.divmod(base)
+          segments.unshift(Strata::UserFacingId::Alphabet.encode(chunk, alphabet: full_alphabet))
+        end
+        crafted = ([ "T" ] + segments).join("-")
+
+        expect do
+          described_class.decode(crafted, prefix: "T", alphabet: full_alphabet)
+        end.to raise_error(Strata::UserFacingId::FormatError)
+      end
+    end
+
     it "allows 'I' to appear in encoded output when the alphabet includes it" do
       found_i = (0...1_000).any? do |value|
         described_class.encode(value, prefix: "T", alphabet: full_alphabet).include?("I")

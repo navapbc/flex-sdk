@@ -42,7 +42,15 @@ module Strata
         packed_value = decode_segments(value, prefix: prefix, alphabet: alphabet, base: base)
         data_value, parity = Parity.split(packed_value)
 
-        validate_capacity!(data_value, capacity)
+        # Encode-time over-capacity is a programmer error (RangeError, raised by
+        # validate_capacity!), but decode-time over-capacity means the input is
+        # not a valid ID we could have issued — raise FormatError so callers and
+        # the attribute's permissive query path treat it like any other malformed
+        # input rather than leaking a standard-library RangeError.
+        unless data_value.between?(0, capacity - 1)
+          raise FormatError, "user-facing ID data value is outside the encodable range"
+        end
+
         Parity.validate!(data_value, parity, base: base)
 
         cycle_walk_decode(data_value, key: key, capacity: capacity)
