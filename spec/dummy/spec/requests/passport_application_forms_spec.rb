@@ -43,7 +43,7 @@ RSpec.describe "PassportApplicationForms", type: :request do
       allow(passport_application_form).to receive(:update).and_return(false)
       patch "/passport_application_forms/#{passport_application_form.id}",
             params: { passport_application_form: { name_first: "" } }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

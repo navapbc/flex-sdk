@@ -43,6 +43,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :audit_logs, only: [ :index ]
+
     get "search", to: "staff#search"
   end
 

@@ -72,7 +72,7 @@ module Strata::Flows
                 flash.now[:errors] = flow_record.errors.full_messages
               end
 
-              render page.edit_pathname, status: :unprocessable_entity
+              render page.edit_pathname, status: :unprocessable_content
             end
           end
         end

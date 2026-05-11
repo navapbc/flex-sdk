@@ -1,0 +1,47 @@
+Description:
+    Installs the strata_audit_lines migration into the host application.
+    The Strata::AuditLine model, Strata::AuditLog API, and Strata::Auditable
+    concern are shipped by the engine directly — only the migration is copied.
+
+Usage:
+    bin/rails generate strata:audit_log
+
+This will create:
+    - db/migrate/<timestamp>_create_strata_audit_lines.rb
+
+Options:
+    --skip-migration-check         Skip checking if strata_audit_lines table exists
+
+About Audit Logs:
+    AuditLines are immutable records of "what happened" in your application.
+    Each line carries an `action` string, an optional polymorphic `subject`,
+    an optional polymorphic `actor`, and a free-form jsonb `data` payload.
+
+    Use Strata::AuditLog.record for atomic multi-line writes wrapped in a DB
+    transaction (audit lines roll back with the caller's domain writes on
+    failure):
+
+        Strata::AuditLog.record(actor: current_user) do |log|
+          case_record.update!(status: :approved)
+          log.add_line(
+            action: "case.approved",
+            subject: case_record,
+            data: { previous_status: "pending" }
+          )
+        end
+
+    Use Strata::AuditLog.write! for one-off entries:
+
+        Strata::AuditLog.write!(
+          action: "user.signed_in",
+          actor: current_user,
+          data: { ip: request.remote_ip }
+        )
+
+    Include Strata::Auditable in any aggregate root to expose its history:
+
+        class Case < ApplicationRecord
+          include Strata::Auditable
+        end
+
+        case_record.audit_lines.latest_first

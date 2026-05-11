@@ -7,7 +7,7 @@ require 'tmpdir'
 
 RSpec.describe Strata::Generators::StaffGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([], {}, destination_root: destination_root) }
+  let(:generator) { described_class.new([], { quiet: true }, destination_root: destination_root) }
 
   before do
     FileUtils.mkdir_p("#{destination_root}/app/controllers")
