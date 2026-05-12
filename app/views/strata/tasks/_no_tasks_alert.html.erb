@@ -1,7 +1,3 @@
-<div class="usa-alert usa-alert--info usa-alert--no-icon">
-  <div class="usa-alert__body">
-    <p class="usa-alert__text">
-      <%= t("strata.tasks.partials.no_tasks_alert.message") %>
-    </p>
-  </div>
-</div>
+<%= render Strata::US::AlertComponent.new(type: :info, with_icon: false) do |alert| %>
+  <% alert.with_body { t("strata.tasks.partials.no_tasks_alert.message") } %>
+<% end %>

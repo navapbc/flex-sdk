@@ -65,13 +65,9 @@
 <%= render partial: "strata/tasks/task_info", locals: { task_info: } %>
 <section class="usa-section padding-top-2">
   <% if flash["task-message"] %>
-    <div class="usa-alert usa-alert--info usa-alert--no-icon">
-      <div class="usa-alert__body">
-        <p class="usa-alert__text">
-          <%= flash["task-message"] %>
-        </p>
-      </div>
-    </div>
+    <%= render Strata::US::AlertComponent.new(type: :info, with_icon: false) do |alert| %>
+      <% alert.with_body { flash["task-message"] } %>
+    <% end %>
   <% end %>
   <% if content_for?(:task_details_partial) %>
     <%= yield(:task_details_partial) %>
