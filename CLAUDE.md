@@ -46,9 +46,9 @@ make db-reset       # drop, recreate, migrate, seed
 make db-console     # open the Rails dbconsole
 ```
 
-## After pulling or merging changes/updates
+## After pulling or merging changes
 
-Run `make install` to ensure that all dependencies are up-to-date before continuing.
+Run `make install` to pick up new gem or npm dependencies, then `make db-migrate` if new migrations landed (check `git diff` against `spec/dummy/db/migrate/`). Also run `make db-test-prepare` if the schema changed, so the test DB is in sync before `make test`.
 
 ## Before committing or pushing
 
