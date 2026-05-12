@@ -12,16 +12,35 @@ on:
 
 jobs:
   claude:
+    # Only run for trusted actors (repo owners, members, collaborators).
+    # Without this guard, any GitHub user commenting "@claude" could trigger
+    # a job with contents: write / pull-requests: write permissions.
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (
+        github.event_name == 'issue_comment' &&
+        contains(github.event.comment.body, '@claude') &&
+        (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR')
+      ) ||
+      (
+        github.event_name == 'pull_request_review_comment' &&
+        contains(github.event.comment.body, '@claude') &&
+        (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR')
+      ) ||
+      (
+        github.event_name == 'pull_request_review' &&
+        contains(github.event.review.body, '@claude') &&
+        (github.event.review.author_association == 'OWNER' || github.event.review.author_association == 'MEMBER' || github.event.review.author_association == 'COLLABORATOR')
+      ) ||
+      (
+        github.event_name == 'issues' &&
+        (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')) &&
+        (github.event.issue.author_association == 'OWNER' || github.event.issue.author_association == 'MEMBER' || github.event.issue.author_association == 'COLLABORATOR')
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required for Claude to push branches
       pull-requests: write # Required for Claude to open and update PRs
-      issues: read
+      issues: write # Required for Claude to comment on issues
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
@@ -44,4 +63,4 @@ jobs:
           # prompt: 'Update the pull request description to include a summary of changes.'
 
           # Allow Claude to create branches and open PRs, but not merge.
-          claude_args: '--allowed-tools "Bash(git:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue:*)"'
+          claude_args: '--allowed-tools "Bash(git:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*)"'
