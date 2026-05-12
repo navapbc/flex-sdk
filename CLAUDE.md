@@ -4,7 +4,7 @@ Guidelines for AI assistants working on the Strata SDK for Rails.
 
 ## What this repo is
 
-Strata SDK for Rails is a **Rails engine** (gem name: `strata`, see [strata.gemspec](strata.gemspec)) that provides building blocks for government digital services: form attributes, multi-page form flows, a rules engine, case management, intake applications, audit logging, and more. The engine's code lives at the repo root (`app/`, `config/`, `db/`, `lib/`).
+Strata SDK for Rails is a **Rails engine** (gem name: `strata`, see [strata.gemspec](strata.gemspec)) that provides building blocks for government digital services: form attributes, multi-page form flows, a rules engine, case management, intake applications, audit logging, and more. The engine's code lives at the repo root in `app/`, `config/`, and `lib/`. The engine ships no migrations of its own; all migrations live in the dummy app under `spec/dummy/db/migrate/`.
 
 A **dummy Rails app** lives at [spec/dummy/](spec/dummy/) and is used to exercise the engine in tests and locally. Several things you'd expect at the repo root live there instead:
 
