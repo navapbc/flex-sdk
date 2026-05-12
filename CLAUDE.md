@@ -46,6 +46,10 @@ make db-reset       # drop, recreate, migrate, seed
 make db-console     # open the Rails dbconsole
 ```
 
+## After pulling or merging changes/updates
+
+Run `make install` to ensure that all dependencies are up-to-date before continuing.
+
 ## Before committing or pushing
 
 Run both, and resolve everything before pushing:
