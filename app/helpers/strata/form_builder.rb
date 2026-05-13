@@ -36,9 +36,16 @@ module Strata
     # hint, and error elements. Supports USWDS input prefix/suffix via the
     # +:prefix+ and +:suffix+ options.
     #
+    # Prefix/suffix elements render with +aria-hidden="true"+ per USWDS
+    # guidance — they are a sighted-user affordance, not part of the input's
+    # accessible name. Callers must ensure the input label carries any
+    # semantic context the affix conveys (e.g. "Income (in dollars)" rather
+    # than "Income" alongside a "$" prefix). See:
+    # https://designsystem.digital.gov/components/input-prefix-suffix/
+    #
     # Example usage:
     #   <%= f.text_field :foobar, { label: "Custom label text", hint: "Some hint text" } %>
-    #   <%= f.text_field :amount, { prefix: "$", suffix: ".00" } %>
+    #   <%= f.text_field :amount, { label: "Amount (in dollars)", prefix: "$" } %>
     standard_helpers.each do |field_type|
       define_method(field_type) do |attribute, options = {}|
         classes = us_class_for_field_type(field_type, options[:width])
@@ -534,8 +541,14 @@ module Strata
     # @option options [String] :class Custom CSS classes
     # @option options [String] :placeholder Placeholder text
     # @option options [String] :inputmode Input mode (defaults to 'decimal')
-    # @option options [String,FalseClass] :prefix Currency prefix (defaults to '$'; pass +false+ to omit)
-    # @option options [String,FalseClass] :suffix Optional suffix text
+    # @option options [String,FalseClass] :prefix Decorative currency prefix
+    #   rendered left-flush inside the input border. Defaults to "$"; pass
+    #   +false+ to omit, or another glyph (e.g. "€"). Marked +aria-hidden+ per
+    #   USWDS — set the label to carry the unit context (e.g.
+    #   "Income (in dollars)") so screen-reader users aren't relying on the
+    #   visual prefix alone.
+    # @option options [String,FalseClass] :suffix Decorative suffix text with
+    #   the same accessibility semantics as +:prefix+.
     # @return [String] The rendered HTML for the money input
     def money_field(attribute, options = {})
       # Get the existing Money object value if present
