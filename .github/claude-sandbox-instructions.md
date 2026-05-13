@@ -6,17 +6,19 @@ You can confirm you're in this context by checking that `$GITHUB_ACTIONS == "tru
 
 ## Workflow for changes
 
-1. **Plan first, then wait for approval.** Post a comment on the triggering issue/PR with:
+1. **Post a plan and wait for approval.** Comment on the triggering issue/PR with:
    - What you'll change and why
    - Files you expect to touch
    - Test approach
    - Any open questions or assumptions
-     Then stop. Do not start coding until a human replies with approval (e.g. "go ahead", "lgtm", or answers your questions). If the trigger comment already contains a clear, detailed instruction, you can post a short confirmation plan and proceed once a human acknowledges — but when in doubt, wait.
 
-2. **Work on a branch.** Once approved, create a branch off the appropriate base:
+   Then stop and wait. Do not start coding until a human replies with approval (e.g. "go ahead", "lgtm", or answers your questions). Once approved, proceed through the rest of the workflow autonomously — you do not need further sign-off for individual decisions along the way unless you hit one of the items in "When to stop and ask" below.
+
+2. **Work on a branch.** Create a branch off the appropriate base:
    - Issue trigger → branch off the default branch
    - PR/review trigger → branch off the PR's head branch
-     Use a descriptive name like `claude/<short-description>`. Never push directly to `main`.
+
+   Use a descriptive name like `claude/<short-description>`. Never push directly to `main`.
 
 3. **Implement.** Follow every rule in [CLAUDE.md](../CLAUDE.md).
 
@@ -32,16 +34,17 @@ You can confirm you're in this context by checking that `$GITHUB_ACTIONS == "tru
 
 ## When to stop and ask
 
+Only stop for **major** items that genuinely require human judgment. For everything else, make a reasoned choice, document it in the PR description, and let code review catch any disagreement.
+
 You cannot truly pause mid-run in CI, so "stop and ask" means: **post a comment summarizing the situation, list the options you see with trade-offs, and exit without making further code changes.** Do this when you hit:
 
-- An ambiguous business rule that [CLAUDE.md](../CLAUDE.md) says to ask about
+- A business rule you can't infer from existing code, tests, or the triggering comment
 - A breaking API or schema change that affects callers outside the changeset
-- A failing test whose root cause is unclear, or that you can't reproduce reasoning about
-- A decision between two valid implementation paths with materially different trade-offs
+- A failing test you cannot diagnose after reasonable investigation
 - Anything that would require modifying CI, secrets, deployment config, or other shared infra
 - A request whose scope is materially larger than the triggering comment implies
 
-A clear "here are the options, please pick" comment is far more useful than a confident wrong direction.
+A clear "here are the options, please pick" comment is far more useful than a confident wrong direction — but reserve it for the items above, not every fork in the road.
 
 ## Communication style
 
