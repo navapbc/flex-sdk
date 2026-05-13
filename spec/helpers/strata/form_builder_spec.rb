@@ -804,7 +804,7 @@ RSpec.describe Strata::FormBuilder do
       end
     end
 
-    context 'by default' do
+    context 'without an explicit prefix' do
       it 'wraps the input in a usa-input-group with a $ prefix' do
         expect(result).to have_element(:div, class: 'usa-input-group')
         expect(result).to have_element(:div, text: '$', class: 'usa-input-prefix', 'aria-hidden': 'true')
