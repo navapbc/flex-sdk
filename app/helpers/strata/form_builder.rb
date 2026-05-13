@@ -33,10 +33,12 @@ module Strata
     ########################################
 
     # Override default text fields to automatically include the label,
-    # hint, and error elements
+    # hint, and error elements. Supports USWDS input prefix/suffix via the
+    # +:prefix+ and +:suffix+ options.
     #
     # Example usage:
     #   <%= f.text_field :foobar, { label: "Custom label text", hint: "Some hint text" } %>
+    #   <%= f.text_field :amount, { prefix: "$", suffix: ".00" } %>
     standard_helpers.each do |field_type|
       define_method(field_type) do |attribute, options = {}|
         classes = us_class_for_field_type(field_type, options[:width])
@@ -46,6 +48,8 @@ module Strata
         label_text = options.delete(:label)
         label_class = options.delete(:label_class) || ""
         skip_form_group = options.delete(:skip_form_group)
+        prefix = options.delete(:prefix)
+        suffix = options.delete(:suffix)
 
         label_options = options.except(:width, :class, :id).merge({
           class: label_class,
@@ -57,8 +61,28 @@ module Strata
           field_options[:aria_describedby] = hint_id(attribute)
         end
 
-        content = us_text_field_label(attribute, label_text, label_options) +
-          super(attribute, field_options)
+        input_el = super(attribute, field_options)
+        if prefix || suffix
+          # Rails wraps error-state inputs in <div class="field_with_errors">, which
+          # would sit between the prefix and the input, breaking the
+          # .usa-input-prefix + input CSS adjacency selector that supplies the
+          # input's padding-left. Strip the wrapper only here; Strata renders its
+          # own error markers (usa-input--error, usa-form-group--error, the
+          # usa-error-message span) so nothing visual is lost.
+          if has_error?(attribute)
+            input_el = input_el.to_s.sub(%r{\A<div class="field_with_errors">(.*)</div>\z}m, '\1').html_safe
+          end
+          group_class = "usa-input-group"
+          group_class += " usa-input-group--error" if has_error?(attribute)
+          input_el = @template.content_tag(:div, class: group_class) do
+            @template.safe_join([
+              input_affix(prefix, "usa-input-prefix"),
+              input_el,
+              input_affix(suffix, "usa-input-suffix")
+            ])
+          end
+        end
+        content = us_text_field_label(attribute, label_text, label_options) + input_el
 
         if skip_form_group
           return content
@@ -510,6 +534,8 @@ module Strata
     # @option options [String] :class Custom CSS classes
     # @option options [String] :placeholder Placeholder text
     # @option options [String] :inputmode Input mode (defaults to 'decimal')
+    # @option options [String,FalseClass] :prefix Currency prefix (defaults to '$'; pass +false+ to omit)
+    # @option options [String,FalseClass] :suffix Optional suffix text
     # @return [String] The rendered HTML for the money input
     def money_field(attribute, options = {})
       # Get the existing Money object value if present
@@ -520,6 +546,7 @@ module Strata
       input_options = options.except(:group_options)
       input_options[:inputmode] ||= "decimal"
       input_options[:value] = dollar_value unless input_options.key?(:value)
+      input_options[:prefix] = "$" unless input_options.key?(:prefix)
 
       form_group(attribute, options[:group_options] || {}) do
         text_field(attribute, input_options.merge(skip_form_group: true))
@@ -623,6 +650,11 @@ module Strata
       else
         options[key] = current_value + value
       end
+    end
+
+    def input_affix(text, class_name)
+      return nil unless text
+      @template.content_tag(:div, text, class: class_name, "aria-hidden": true)
     end
 
     def us_class_for_field_type(field_type, width = nil)
