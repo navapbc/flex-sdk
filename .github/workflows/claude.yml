@@ -6,7 +6,7 @@ on:
   pull_request_review_comment:
     types: [created]
   issues:
-    types: [opened, assigned]
+    types: [opened]
   pull_request_review:
     types: [submitted]
 
@@ -19,22 +19,22 @@ jobs:
       (
         github.event_name == 'issue_comment' &&
         contains(github.event.comment.body, '@claude') &&
-        (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR')
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
       ) ||
       (
         github.event_name == 'pull_request_review_comment' &&
         contains(github.event.comment.body, '@claude') &&
-        (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR')
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
       ) ||
       (
         github.event_name == 'pull_request_review' &&
         contains(github.event.review.body, '@claude') &&
-        (github.event.review.author_association == 'OWNER' || github.event.review.author_association == 'MEMBER' || github.event.review.author_association == 'COLLABORATOR')
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)
       ) ||
       (
         github.event_name == 'issues' &&
         (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')) &&
-        (github.event.issue.author_association == 'OWNER' || github.event.issue.author_association == 'MEMBER' || github.event.issue.author_association == 'COLLABORATOR')
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
       )
     runs-on: ubuntu-latest
     permissions:
@@ -63,4 +63,7 @@ jobs:
           # prompt: 'Update the pull request description to include a summary of changes.'
 
           # Allow Claude to create branches and open PRs, but not merge.
-          claude_args: '--allowed-tools "Bash(git:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*)"'
+          # git is enumerated rather than wildcarded to exclude reset/clean/remote/tag.
+          # Pushes to protected branches are blocked by branch protection rules at the repo level.
+          claude_args: >-
+            --allowed-tools "Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git blame:*),Bash(git rev-parse:*),Bash(git branch:*),Bash(git checkout:*),Bash(git switch:*),Bash(git add:*),Bash(git rm:*),Bash(git mv:*),Bash(git restore:*),Bash(git commit:*),Bash(git push:*),Bash(git fetch:*),Bash(git pull:*),Bash(git stash:*),Bash(git rebase:*),Bash(git merge:*),Bash(git config:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*)"
