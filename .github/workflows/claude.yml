@@ -49,6 +49,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Claude reads CLAUDE.md from the checked-out repo automatically, and CLAUDE.md
+      # points at .github/claude-sandbox-instructions.md for CI-specific workflow rules
+      # (plan-then-approve, branch + PR flow, stop-and-comment on hard decisions).
+      # Edit that file to change how Claude behaves in CI.
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1

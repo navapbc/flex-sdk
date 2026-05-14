@@ -76,6 +76,12 @@ For non-trivial work, follow these steps in order:
 
 When in doubt about whether a change is trivial, ask.
 
+## Execution context
+
+When you are running in GitHub Actions (typically triggered by an `@claude` mention on an issue, PR, or review comment), **additionally** follow [.github/claude-sandbox-instructions.md](.github/claude-sandbox-instructions.md). Those rules cover the CI-specific workflow: post a plan and wait for approval, work on a branch, open a PR with a description, and post-a-comment-then-stop when you hit decisions that need human judgment.
+
+Check `$GITHUB_ACTIONS` (set to `true` in CI) if you're unsure which context you're in. When running locally, ignore the sandbox instructions.
+
 ## Migrations
 
 Generate migrations with the Rails generator from inside the dummy app:
