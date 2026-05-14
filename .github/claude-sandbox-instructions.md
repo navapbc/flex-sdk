@@ -12,7 +12,7 @@ You can confirm you're in this context by checking that `$GITHUB_ACTIONS == "tru
    - Test approach
    - Any open questions or assumptions
 
-   Then stop and wait. Do not start coding until a human replies with approval (e.g. "go ahead", "lgtm", or answers your questions). Once approved, proceed through the rest of the workflow autonomously — you do not need further sign-off for individual decisions along the way unless you hit one of the items in "When to stop and ask" below.
+   Then stop and wait. Do not start coding until a human replies with approval. **The reply must mention `@claude`** (e.g. `@claude go ahead`, `@claude lgtm`) — the workflow only fires on comments containing that mention, so a bare "go ahead" will not re-trigger a run. Once approved, proceed through the rest of the workflow autonomously — you do not need further sign-off for individual decisions along the way unless you hit one of the items in "When to stop and ask" below.
 
 2. **Work on a branch.** Create a branch off the appropriate base:
    - Issue trigger → branch off the default branch
