@@ -79,8 +79,7 @@ module Strata
           if has_error?(attribute)
             input_el = input_el.to_s.sub(%r{\A<div class="field_with_errors">(.*)</div>\z}m, '\1').html_safe
           end
-          group_class = "usa-input-group"
-          group_class += " usa-input-group--error" if has_error?(attribute)
+          group_class = us_input_group_class(error: has_error?(attribute), width: options[:width])
           input_el = @template.content_tag(:div, class: group_class) do
             @template.safe_join([
               input_affix(prefix, "usa-input-prefix"),
@@ -687,6 +686,12 @@ module Strata
       end
     end
 
+    def us_input_group_class(error:, width: nil)
+      classes = "usa-input-group"
+      classes += " usa-input-group--error" if error
+      classes += " usa-input-group--#{width}" if width
+      classes
+    end
 
     # Render the label, hint text, and error message for a form field
     def us_text_field_label(attribute, text = nil, options = {})

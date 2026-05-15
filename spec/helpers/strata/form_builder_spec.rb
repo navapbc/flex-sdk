@@ -203,6 +203,26 @@ RSpec.describe Strata::FormBuilder do
         expect(result).to have_css('.usa-input-prefix + input')
       end
     end
+
+    context 'with a prefix and a width' do
+      # USWDS forces `.usa-input-group input { width: 100% }`, which overrides
+      # the `usa-input--<width>` max-width on the inner input. The width
+      # modifier has to land on the group itself to constrain the wrapped
+      # input visually.
+      let(:result) { builder.text_field(:income, prefix: '$', width: 'sm') }
+
+      it 'applies the width modifier to the input-group' do
+        expect(result).to have_css('.usa-input-group.usa-input-group--sm')
+      end
+    end
+
+    context 'with a suffix and a width' do
+      let(:result) { builder.text_field(:income, suffix: 'lbs.', width: 'md') }
+
+      it 'applies the width modifier to the input-group' do
+        expect(result).to have_css('.usa-input-group.usa-input-group--md')
+      end
+    end
   end
 
   describe '#hint' do
