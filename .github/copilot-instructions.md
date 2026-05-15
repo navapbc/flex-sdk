@@ -15,11 +15,11 @@ This repository contains the Strata SDK, a Ruby on Rails engine designed to help
 - **Primary Language**: Ruby
 - **Framework**: Rails
 - **Project Type**: Ruby Gem/Rails Engine
-- **Key Dependencies**:
-  - validates_timeliness
-    - Version can be found in `strata.gemspec`
+- **Key Dependencies** (versions declared in `strata.gemspec`):
   - Rails
-    - Version can be found in `strata.gemspec`
+  - Pundit (authorization)
+  - ViewComponent
+  - validates_timeliness
 
 ## Build and Test Instructions
 
@@ -78,10 +78,11 @@ make test-watch # Watch mode for development
 - `/config`: Strata engine configuration files
   - `/config/routes.rb`: Route definitions
   - `/config/initializers`: Rails initializers
-- `/db/migrate`: Strata engine database migrations
 - `/lib/strata`: Core Strata engine configuration code
 - `/spec`: Test files
-  - `/spec/dummy`: Test application that's used to test the Strata engine
+  - `/spec/dummy`: Dummy Rails app used to exercise the engine in tests and locally
+  - `/spec/dummy/db/migrate`: Database migrations (the engine ships no migrations of its own; they live in the dummy app)
+  - `/spec/dummy/db/schema.rb`: Schema for the dummy app's database
 
 ### Important Files
 

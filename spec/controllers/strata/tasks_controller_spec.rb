@@ -3,21 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe Strata::TasksController, type: :controller do
+  routes { Strata::Engine.routes }
+
   let(:user) { create(:user) }
   let(:application_form) { create(:test_application_form) }
   let(:case_record) { create(:test_case, application_form_id: application_form.id) }
   let(:task) { case_record.create_task(TestTask, case: case_record) }
 
   before do
-    Rails.application.routes.draw do
-      namespace :strata do
-        resources :tasks, only: [ :index, :show, :update ]
-      end
+    Strata::Engine.routes.draw do
+      resources :tasks, only: [ :index, :show, :update ]
     end
   end
 
   after do
-    Rails.application.reload_routes!
+    Strata::Engine.routes.clear!
   end
 
   describe 'before actions' do
@@ -30,7 +30,7 @@ RSpec.describe Strata::TasksController, type: :controller do
         end
       end
 
-      context 'when updating a task', skip: 'Cannot figure out why routing is failing, so skipping for now' do
+      context 'when updating a task' do
         before { patch :update, params: { id: task.id } }
 
         it 'sets the case from the task' do
