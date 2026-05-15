@@ -49,8 +49,13 @@ module Strata
         end
       end
 
+      def user_facing_id_key_for(attribute)
+        attribute[:key] ||= SecureRandom.random_number(0x1_0000_0000)
+        "0x%08x" % attribute[:key]
+      end
+
       def strata_attribute_type?(type)
-        [ :name, :address, :money, :memorable_date, :us_date, :tax_id, :year_quarter ].include?(type.to_sym)
+        [ :name, :address, :money, :memorable_date, :us_date, :tax_id, :year_quarter, :user_facing_id ].include?(type.to_sym)
       end
 
       def has_strata_attributes?

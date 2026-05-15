@@ -88,6 +88,76 @@ RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
     end
   end
 
+  describe "generating a model with a user_facing_id attribute" do
+    let(:args) { [ "Claim", "claim_id:user_facing_id" ] }
+
+    before do
+      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000).and_return(0xdeadbeef)
+    end
+
+    it "passes the attribute through to strata:migration unchanged" do
+      generator.create_migration_file
+      expect(generator).to have_received(:generate).with(
+        "strata:migration", "CreateClaims", "claim_id:user_facing_id"
+      )
+    end
+
+    it "renders strata_attribute with prefix TODO, a fresh random key, and a TODO comment" do
+      generator.create_model_file
+      contents = File.read("#{destination_root}/app/models/claim.rb")
+      expect(contents).to include("include Strata::Attributes")
+      expect(contents).to match(
+        /# TODO: replace prefix "TODO".*\n  strata_attribute :claim_id, :user_facing_id, prefix: "TODO", key: 0xdeadbeef/
+      )
+    end
+
+    it "does not fall through to the plain Rails attribute branch" do
+      generator.create_model_file
+      contents = File.read("#{destination_root}/app/models/claim.rb")
+      expect(contents).not_to match(/^\s*attribute :claim_id, :user_facing_id/)
+    end
+  end
+
+  describe "generating a model with multiple user_facing_id attributes" do
+    let(:args) { [ "Case", "user_facing_id:user_facing_id", "claim_user_facing_id:user_facing_id" ] }
+
+    before do
+      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000)
+        .and_return(0xaaaaaaaa, 0xbbbbbbbb)
+    end
+
+    it "gives each attribute its own freshly generated key" do
+      generator.create_model_file
+      contents = File.read("#{destination_root}/app/models/case.rb")
+      expect(contents).to include('strata_attribute :user_facing_id, :user_facing_id, prefix: "TODO", key: 0xaaaaaaaa')
+      expect(contents).to include('strata_attribute :claim_user_facing_id, :user_facing_id, prefix: "TODO", key: 0xbbbbbbbb')
+    end
+  end
+
+  describe "generating a model with user_facing_id mixed with other Strata and Rails attributes" do
+    let(:args) { [ "Claim", "full_name:name", "claim_id:user_facing_id", "email:string" ] }
+
+    before do
+      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000).and_return(0x12345678)
+    end
+
+    it "renders each attribute in its appropriate form" do
+      generator.create_model_file
+      contents = File.read("#{destination_root}/app/models/claim.rb")
+      expect(contents).to include("strata_attribute :full_name, :name")
+      expect(contents).to include('strata_attribute :claim_id, :user_facing_id, prefix: "TODO", key: 0x12345678')
+      expect(contents).to include("attribute :email, :string")
+    end
+
+    it "still passes everything to strata:migration verbatim" do
+      generator.create_migration_file
+      expect(generator).to have_received(:generate).with(
+        "strata:migration", "CreateClaims",
+        "full_name:name", "claim_id:user_facing_id", "email:string"
+      )
+    end
+  end
+
   describe "when model file already exists" do
     let(:args) { [ "TestModel" ] }
 
