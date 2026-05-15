@@ -55,8 +55,8 @@ module Strata
         label_text = options.delete(:label)
         label_class = options.delete(:label_class) || ""
         skip_form_group = options.delete(:skip_form_group)
-        prefix = options.delete(:prefix)
-        suffix = options.delete(:suffix)
+        prefix = options.delete(:prefix).presence
+        suffix = options.delete(:suffix).presence
 
         label_options = options.except(:width, :class, :id).merge({
           class: label_class,

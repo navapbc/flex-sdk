@@ -156,6 +156,34 @@ RSpec.describe Strata::FormBuilder do
       end
     end
 
+    context 'with a blank prefix' do
+      let(:result) { builder.text_field(:income, prefix: '') }
+
+      it 'treats an empty string as absent and does not wrap the input' do
+        expect(result).not_to have_css('.usa-input-group')
+        expect(result).not_to have_css('.usa-input-prefix')
+      end
+    end
+
+    context 'with a blank suffix' do
+      let(:result) { builder.text_field(:income, suffix: '') }
+
+      it 'treats an empty string as absent and does not wrap the input' do
+        expect(result).not_to have_css('.usa-input-group')
+        expect(result).not_to have_css('.usa-input-suffix')
+      end
+    end
+
+    context 'with a present prefix and a blank suffix' do
+      let(:result) { builder.text_field(:income, prefix: '$', suffix: '') }
+
+      it 'wraps the input but omits the empty suffix entirely' do
+        expect(result).to have_css('.usa-input-group')
+        expect(result).to have_element(:div, class: 'usa-input-prefix', text: '$')
+        expect(result).not_to have_css('.usa-input-suffix')
+      end
+    end
+
     context 'with a prefix and validation errors' do
       let(:result) { builder.text_field(:income, prefix: '$') }
 
