@@ -494,16 +494,16 @@ The User Facing ID Attribute provides human-friendly, obfuscated identifiers bac
 class TestRecord < ApplicationRecord
   include Strata::Attributes
 
-  strata_attribute :user_facing_id, :user_facing_id, prefix: "T"
-  strata_attribute :claim_user_facing_id, :user_facing_id, prefix: "CLAIM"
+  strata_attribute :user_facing_id, :user_facing_id, prefix: "T", key: 0x9b6d_42a7
+  strata_attribute :claim_user_facing_id, :user_facing_id, prefix: "CLAIM", key: 0xc7e3_18b5
 end
 ```
 
 ### Options
 
 - `prefix` (required) — Uppercase alphanumeric prefix used as the first segment of the formatted ID.
+- `key` (required) — Positive integer used to seed the Feistel permutation. There is no default: every attribute must pick a key explicitly. Pass a distinct key per attribute when you want IDs from different attributes to occupy independent encoding spaces. Once an ID has been issued for a given attribute, the key must not be changed — previously issued IDs are bound to the key they were encoded with.
 - `sequence_column` (optional) — Name of the backing integer column. Defaults to `"#{name}_sequence"`.
-- `key` (optional) — Integer key used to seed the Feistel permutation. Defaults to `Strata::UserFacingId::Codec::DEFAULT_KEY`. Pass a distinct key per attribute when you want IDs from different attributes to occupy independent encoding spaces. Once an ID has been issued for a given attribute, the key must not be changed — previously issued IDs are bound to the key they were encoded with.
 - `alphabet` (optional) — Array of uppercase A-Z letters that may appear in the encoded ID. Defaults to `Strata::UserFacingId::Alphabet::DEFAULT` (A-Z minus "I"). Pass a custom alphabet when you want to drop additional confusable letters (for example, "O" vs. "0"). Must be unique single-character uppercase strings, between 1 and 26 letters long. Like `key`, once IDs have been issued for an attribute the alphabet must not be changed — previously issued IDs are bound to the alphabet they were encoded with. See [Alphabet and Capacity](#alphabet-and-capacity) below for the trade-offs of smaller alphabets.
 
 ### Database Mapping
@@ -588,6 +588,7 @@ class TestRecord < ApplicationRecord
   # Default alphabet minus "O" — 24 letters, ~864 million IDs available.
   strata_attribute :user_facing_id, :user_facing_id,
     prefix: "T",
+    key: 0x9b6d_42a7,
     alphabet: %w[A B C D E F G H J K L M N P Q R S T U V W X Y Z]
 end
 ```

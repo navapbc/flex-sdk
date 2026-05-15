@@ -240,14 +240,14 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       # Locks the end-to-end Rails integration against the codec golden table.
       record = TestRecord.create!(user_facing_id_sequence: 12_345)
 
-      expect(record.user_facing_id).to eq("T-V64-Z59-H64")
-      expect(record.reload.user_facing_id).to eq("T-V64-Z59-H64")
+      expect(record.user_facing_id).to eq("T-D67-B66-O48")
+      expect(record.reload.user_facing_id).to eq("T-D67-B66-O48")
     end
 
     it "renders sequence 12345 under prefix 'CLAIM' as the exact codec golden value" do
       record = TestRecord.create!(claim_user_facing_id_sequence: 12_345)
 
-      expect(record.claim_user_facing_id).to eq("CLAIM-V64-Z59-H64")
+      expect(record.claim_user_facing_id).to eq("CLAIM-Z75-N82-O60")
     end
   end
 
@@ -319,7 +319,8 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         # Explicit sequence_column points the attribute at the CLAIM column.
         user_facing_id_attribute :case_id,
           prefix: "CASE",
-          sequence_column: :claim_user_facing_id_sequence
+          sequence_column: :claim_user_facing_id_sequence,
+          key: 0x9b6d_42a7
       end
     end
 
@@ -327,7 +328,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
       record = model_class.new(claim_user_facing_id_sequence: 12_345)
 
       expect(record.case_id).to match(/\ACASE-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}-[A-HJ-Z]\d{2}\z/)
-      expect(record.case_id).to eq("CASE-V64-Z59-H64")
+      expect(record.case_id).to eq("CASE-D67-B66-O48")
     end
 
     it "exposes the attribute as an alias for the configured sequence column" do
@@ -344,7 +345,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
           self.table_name = "test_records"
           include Strata::Attributes
 
-          user_facing_id_attribute :bad_id, prefix: "BAD-PREFIX"
+          user_facing_id_attribute :bad_id, prefix: "BAD-PREFIX", key: 0x9b6d_42a7
         end
       end.to raise_error(Strata::UserFacingId::FormatError)
     end
@@ -355,7 +356,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
           self.table_name = "test_records"
           include Strata::Attributes
 
-          user_facing_id_attribute :bad_id, prefix: ""
+          user_facing_id_attribute :bad_id, prefix: "", key: 0x9b6d_42a7
         end
       end.to raise_error(Strata::UserFacingId::FormatError)
     end
@@ -366,7 +367,18 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
           self.table_name = "test_records"
           include Strata::Attributes
 
-          user_facing_id_attribute :bad_id
+          user_facing_id_attribute :bad_id, key: 0x9b6d_42a7
+        end
+      end.to raise_error(KeyError)
+    end
+
+    it "raises KeyError when key is omitted" do
+      expect do
+        Class.new(ApplicationRecord) do
+          self.table_name = "test_records"
+          include Strata::Attributes
+
+          user_facing_id_attribute :bad_id, prefix: "T"
         end
       end.to raise_error(KeyError)
     end
@@ -383,6 +395,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :no_o_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: alphabet
       end
     end
@@ -458,6 +471,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :full_alpha_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: full_alphabet
       end
 
@@ -475,6 +489,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :full_alpha_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: full_alphabet
       end
       feistel_max = Strata::UserFacingId::Feistel::DOMAIN_SIZE - 1
@@ -485,7 +500,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
 
     it "omitting :alphabet produces output identical to today" do
       # Regression guard: existing attributes (and persisted IDs) must keep their encoding.
-      expect(TestRecord.new(user_facing_id_sequence: 12_345).user_facing_id).to eq("T-V64-Z59-H64")
+      expect(TestRecord.new(user_facing_id_sequence: 12_345).user_facing_id).to eq("T-D67-B66-O48")
     end
   end
 
@@ -499,6 +514,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :bad_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: bad_alphabet
       end
     end
@@ -555,6 +571,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :no_o_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: alphabet
       end
       original_encoding = klass.new(user_facing_id_sequence: 12_345).no_o_id
@@ -574,6 +591,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :no_o_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: alphabet
       end
 
@@ -592,6 +610,7 @@ RSpec.describe Strata::Attributes::UserFacingIdAttribute do
         user_facing_id_attribute :full_alpha_id,
           prefix: "T",
           sequence_column: :user_facing_id_sequence,
+          key: 0x9b6d_42a7,
           alphabet: alphabet
       end
     end

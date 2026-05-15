@@ -2,6 +2,10 @@
 
 require "rails_helper"
 
+# Arbitrary positive integer used to exercise the Feistel permutation; not a
+# stable contract — pick any non-zero integer here.
+test_key = 0x5a3c_9e21
+
 RSpec.describe Strata::UserFacingId::Feistel do
   describe "constants" do
     it "locks the default bit-width and round count" do
@@ -23,20 +27,20 @@ RSpec.describe Strata::UserFacingId::Feistel do
       ]
 
       values.each do |value|
-        permuted = described_class.permute(value, key: Strata::UserFacingId::Codec::DEFAULT_KEY)
+        permuted = described_class.permute(value, key: test_key)
 
-        expect(described_class.invert(permuted, key: Strata::UserFacingId::Codec::DEFAULT_KEY)).to eq(value)
+        expect(described_class.invert(permuted, key: test_key)).to eq(value)
       end
     end
 
     it "keeps values inside the 30-bit domain" do
-      permuted = described_class.permute(12_345, key: Strata::UserFacingId::Codec::DEFAULT_KEY)
+      permuted = described_class.permute(12_345, key: test_key)
 
       expect(permuted).to be_between(0, described_class::DOMAIN_SIZE - 1)
     end
 
     it "is a bijection over a 10,000-value slice" do
-      key = Strata::UserFacingId::Codec::DEFAULT_KEY
+      key = test_key
       permuted = (0...10_000).map { |value| described_class.permute(value, key: key) }
 
       expect(permuted.uniq.size).to eq(10_000)
@@ -48,14 +52,14 @@ RSpec.describe Strata::UserFacingId::Feistel do
     end
 
     it "produces different permutations under different keys" do
-      under_default = described_class.permute(12_345, key: Strata::UserFacingId::Codec::DEFAULT_KEY)
+      under_default = described_class.permute(12_345, key: test_key)
       under_custom = described_class.permute(12_345, key: 0xdead_beef)
 
       expect(under_default).not_to eq(under_custom)
     end
 
     it "round-trips under a non-default round count" do
-      key = Strata::UserFacingId::Codec::DEFAULT_KEY
+      key = test_key
       [ 2, 4, 8, 12 ].each do |rounds|
         permuted = described_class.permute(12_345, key: key, rounds: rounds)
 
@@ -64,7 +68,7 @@ RSpec.describe Strata::UserFacingId::Feistel do
     end
 
     it "round-trips under a non-default even bit count" do
-      key = Strata::UserFacingId::Codec::DEFAULT_KEY
+      key = test_key
       [ 16, 20, 24, 32 ].each do |bits|
         max = (1 << bits) - 1
         [ 0, 1, max / 2, max ].each do |value|
@@ -80,19 +84,19 @@ RSpec.describe Strata::UserFacingId::Feistel do
   describe "domain and bit-width validation" do
     it "raises for odd bit counts" do
       expect do
-        described_class.permute(0, key: Strata::UserFacingId::Codec::DEFAULT_KEY, bits: 15)
+        described_class.permute(0, key: test_key, bits: 15)
       end.to raise_error(ArgumentError)
     end
 
     it "raises for values at or above the domain size" do
       expect do
-        described_class.permute(described_class::DOMAIN_SIZE, key: Strata::UserFacingId::Codec::DEFAULT_KEY)
+        described_class.permute(described_class::DOMAIN_SIZE, key: test_key)
       end.to raise_error(RangeError)
     end
 
     it "raises for negative values" do
       expect do
-        described_class.permute(-1, key: Strata::UserFacingId::Codec::DEFAULT_KEY)
+        described_class.permute(-1, key: test_key)
       end.to raise_error(RangeError)
     end
   end

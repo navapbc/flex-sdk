@@ -10,14 +10,6 @@ module Strata
     # not here — calling Codec.encode/decode with a malformed alphabet
     # (empty, duplicates, non-letters) is undefined.
     module Codec
-      # Keyed Feistel permutation seed used to obfuscate sequence integers.
-      #
-      # Set once for a deployment and never rotated: every previously issued
-      # user-facing ID is bound to the key it was encoded with, so changing this
-      # value makes existing IDs unrecoverable. For per-attribute isolation,
-      # pass a different `key:` to `user_facing_id_attribute` rather than
-      # changing this default.
-      DEFAULT_KEY = 0x5a3c_9e21
       SEGMENT_COUNT = 3
 
       # Total formatted space before reserving four low bits for parity.
@@ -27,7 +19,7 @@ module Strata
 
       module_function
 
-      def encode(value, prefix:, key: DEFAULT_KEY, alphabet: Alphabet::DEFAULT)
+      def encode(value, prefix:, key:, alphabet: Alphabet::DEFAULT)
         integer = normalize_integer(value)
         base = alphabet.length * Alphabet::DIGITS_PER_LETTER
         capacity = data_capacity(base)
@@ -42,7 +34,7 @@ module Strata
         ([ normalize_prefix(prefix) ] + segments).join("-")
       end
 
-      def decode(value, prefix:, key: DEFAULT_KEY, alphabet: Alphabet::DEFAULT)
+      def decode(value, prefix:, key:, alphabet: Alphabet::DEFAULT)
         base = alphabet.length * Alphabet::DIGITS_PER_LETTER
         capacity = data_capacity(base)
         packed_value = decode_segments(value, prefix: prefix, alphabet: alphabet, base: base)

@@ -44,7 +44,7 @@ module Strata
         def user_facing_id_attribute(name, options = {})
           prefix = options.fetch(:prefix)
           sequence_column = options.fetch(:sequence_column, :"#{name}_sequence")
-          key = options.fetch(:key, Strata::UserFacingId::Codec::DEFAULT_KEY)
+          key = options.fetch(:key)
           alphabet = options.fetch(:alphabet, Strata::UserFacingId::Alphabet::DEFAULT)
 
           Strata::UserFacingId::Codec.normalize_prefix(prefix)
