@@ -41,8 +41,8 @@ module Strata
       #   When nil, falls back to +details/<task_type_underscored>+ resolved via the controller's
       #   prepended view paths.
       # @param details_locals [Hash] extra locals forwarded to the details partial
-      #   (e.g. +application_form:+, +kase:+). Merged on top of the +task+ and
-      #   +assigned_user_display_text+ that the component always passes.
+      #   (e.g. +application_form:+, +kase:+). Merged on top of +task+, which the
+      #   component always passes.
       def initialize(task:, assigned_user_display_text: nil,
                      task_info: nil, breadcrumbs: nil,
                      task_details_partial: nil, details_locals: {})
@@ -87,8 +87,7 @@ module Strata
       end
 
       def details_partial_locals
-        { task: task, assigned_user_display_text: assigned_user_display_text }
-          .merge(details_locals)
+        { task: task }.merge(details_locals)
       end
     end
   end
