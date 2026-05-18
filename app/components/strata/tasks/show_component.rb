@@ -5,10 +5,6 @@ module Strata
     # ShowComponent renders the staff-facing task detail page: breadcrumbs, a heading,
     # task info row, optional flash banner, and a task-type-specific details section.
     #
-    # The component mirrors the public surface of the legacy +app/views/strata/tasks/show.html.erb+
-    # template so existing call sites that render the template continue to work via a
-    # backwards-compatible wrapper.
-    #
     # @example Basic usage
     #   <%= render Strata::Tasks::ShowComponent.new(
     #     task: @task,
@@ -44,10 +40,9 @@ module Strata
       # @param task_details_partial [String, nil] partial path to render in the details section.
       #   When nil, falls back to +details/<task_type_underscored>+ resolved via the controller's
       #   prepended view paths.
-      # @param details_locals [Hash] extra locals forwarded to the details partial. Used by the
-      #   backwards-compat wrapper at +app/views/strata/tasks/show.html.erb+ to forward any
-      #   additional locals the caller passed (e.g. +application_form:+, +kase:+), preserving
-      #   the legacy +local_assigns.to_h+ behaviour of the old template.
+      # @param details_locals [Hash] extra locals forwarded to the details partial
+      #   (e.g. +application_form:+, +kase:+). Merged on top of the +task+ and
+      #   +assigned_user_display_text+ that the component always passes.
       def initialize(task:, assigned_user_display_text: nil,
                      task_info: nil, breadcrumbs: nil,
                      task_details_partial: nil, details_locals: {})
