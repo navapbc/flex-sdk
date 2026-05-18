@@ -17,7 +17,7 @@ module Strata
     #     <% end %>
     #   <% end %>
     class CardGroupComponent < ViewComponent::Base
-      renders_many :cards, ->(**options) { CardComponent.new(tag: :li, **options) }
+      renders_many :cards, ->(**options) { CardComponent.new(**{ tag: :li }.merge(options)) }
 
       def initialize(classes: nil, **html_attributes)
         @classes = classes
