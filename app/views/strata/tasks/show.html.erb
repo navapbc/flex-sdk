@@ -20,17 +20,13 @@
       `strata/shared/_breadcrumbs` and `strata/tasks/_task_info` partials'
       own `content_for?` checks. No wrapper-level forwarding is needed.
 %>
-<%
-  _known_locals = %i[task assigned_user_display_text task_info breadcrumbs task_details_partial]
-  _details_locals = local_assigns.to_h.except(*_known_locals)
-%>
 <%= render Strata::Tasks::ShowComponent.new(
       task: task,
       assigned_user_display_text: local_assigns[:assigned_user_display_text],
       task_info: local_assigns[:task_info],
       breadcrumbs: local_assigns[:breadcrumbs],
       task_details_partial: local_assigns[:task_details_partial],
-      details_locals: _details_locals
+      details_locals: local_assigns.to_h
     ) do |c| %>
   <% c.with_task_details_content  { content_for(:task_details_partial) } if content_for?(:task_details_partial) %>
 <% end %>
