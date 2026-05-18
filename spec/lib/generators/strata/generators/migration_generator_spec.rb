@@ -7,7 +7,7 @@ require 'tmpdir'
 
 RSpec.describe Strata::Generators::MigrationGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new([ name, *attrs ], options, destination_root: destination_root) }
+  let(:generator) { described_class.new([ name, *attrs ], options.merge(quiet: true), destination_root: destination_root) }
   let(:name) { 'CreateTestRecords' }
   let(:attrs) { [] }
   let(:options) { {} }

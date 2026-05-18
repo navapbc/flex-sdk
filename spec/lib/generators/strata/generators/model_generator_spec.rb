@@ -7,7 +7,7 @@ require 'tmpdir'
 
 RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
   let(:destination_root) { Dir.mktmpdir }
-  let(:generator) { described_class.new(args, options, destination_root: destination_root) }
+  let(:generator) { described_class.new(args, options.merge(quiet: true), destination_root: destination_root) }
   let(:args) { [ name ] }
   let(:options) { {} }
   let(:name) { 'TestModel' }
