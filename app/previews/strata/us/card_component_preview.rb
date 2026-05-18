@@ -19,9 +19,7 @@ module Strata
       def with_media
         render Strata::US::CardComponent.new do |card|
           card.with_header { "Card with media" }
-          card.with_media do
-            '<img src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg" alt="USWDS sample image" />'.html_safe
-          end
+          card.with_media { preview_image }
           card.with_body { "<p>This card includes a media image above the body.</p>".html_safe }
           card.with_footer { '<button class="usa-button">Read more</button>'.html_safe }
         end
@@ -31,9 +29,7 @@ module Strata
       def flag
         render Strata::US::CardComponent.new(flag: true) do |card|
           card.with_header { "Flag layout" }
-          card.with_media do
-            '<img src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg" alt="USWDS sample image" />'.html_safe
-          end
+          card.with_media { preview_image }
           card.with_body { "<p>The flag variant places media beside the content.</p>".html_safe }
           card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
         end
@@ -43,9 +39,7 @@ module Strata
       def flag_media_right
         render Strata::US::CardComponent.new(flag_media_right: true) do |card|
           card.with_header { "Media on the right" }
-          card.with_media do
-            '<img src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg" alt="USWDS sample image" />'.html_safe
-          end
+          card.with_media { preview_image }
           card.with_body { "<p>This flag variant positions media on the right.</p>".html_safe }
           card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
         end
@@ -53,11 +47,9 @@ module Strata
 
       # @label Header first
       def header_first
-        render Strata::US::CardComponent.new(header_first: true) do |card|
+        render Strata::US::CardComponent.new(flag: true, header_first: true) do |card|
           card.with_header { "Header first" }
-          card.with_media do
-            '<img src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg" alt="USWDS sample image" />'.html_safe
-          end
+          card.with_media { preview_image }
           card.with_body { "<p>The header appears before the media.</p>".html_safe }
           card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
         end
@@ -67,9 +59,7 @@ module Strata
       def media_inset
         render Strata::US::CardComponent.new(media_inset: true) do |card|
           card.with_header { "Inset media" }
-          card.with_media do
-            '<img src="https://designsystem.digital.gov/img/introducing-uswds-2-0/built-to-grow--alt.jpg" alt="USWDS sample image" />'.html_safe
-          end
+          card.with_media { preview_image }
           card.with_body { "<p>Media is inset from the card edges.</p>".html_safe }
         end
       end
@@ -86,6 +76,12 @@ module Strata
         render Strata::US::CardComponent.new do |card|
           card.with_body { "<p>This card has a body but no header or footer.</p>".html_safe }
         end
+      end
+
+      private
+
+      def preview_image
+        helpers.image_tag("strata/card_preview_placeholder.svg", alt: "Card preview placeholder")
       end
     end
   end

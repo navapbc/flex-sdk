@@ -49,6 +49,20 @@ module Strata
         @html_attributes = html_attributes
       end
 
+      def before_render
+        if @header_first && !@flag
+          raise ArgumentError, "header_first variant requires flag (or flag_media_right) to be set"
+        end
+
+        if @media_inset && @media_exdent
+          raise ArgumentError, "media_inset and media_exdent are mutually exclusive"
+        end
+
+        unless header? || media? || body? || footer?
+          raise ArgumentError, "CardComponent requires at least one of header, media, body, or footer"
+        end
+      end
+
       def card_classes
         class_names(
           "usa-card",

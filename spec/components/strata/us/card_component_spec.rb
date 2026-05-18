@@ -14,6 +14,44 @@ RSpec.describe Strata::US::CardComponent, type: :component do
     expect(page).not_to have_css(".usa-card--header-first")
   end
 
+  it "raises when no slots are provided" do
+    expect {
+      render_inline(described_class.new)
+    }.to raise_error(ArgumentError, /at least one of header, media, body, or footer/)
+  end
+
+  it "raises when header_first is set without flag" do
+    expect {
+      render_inline(described_class.new(header_first: true)) do |card|
+        card.with_body { "Body" }
+      end
+    }.to raise_error(ArgumentError, /header_first variant requires flag/)
+  end
+
+  it "raises when both media_inset and media_exdent are set" do
+    expect {
+      render_inline(described_class.new(media_inset: true, media_exdent: true)) do |card|
+        card.with_body { "Body" }
+      end
+    }.to raise_error(ArgumentError, /mutually exclusive/)
+  end
+
+  it "allows header_first when combined with flag" do
+    render_inline(described_class.new(flag: true, header_first: true)) do |card|
+      card.with_body { "Body" }
+    end
+
+    expect(page).to have_css(".usa-card.usa-card--flag.usa-card--header-first")
+  end
+
+  it "allows header_first when combined with flag_media_right" do
+    render_inline(described_class.new(flag_media_right: true, header_first: true)) do |card|
+      card.with_body { "Body" }
+    end
+
+    expect(page).to have_css(".usa-card.usa-card--flag.usa-card--media-right.usa-card--header-first")
+  end
+
   it "renders header, media, body, and footer when all slots are provided" do
     render_inline(described_class.new) do |card|
       card.with_header { "My Card" }
@@ -95,14 +133,6 @@ RSpec.describe Strata::US::CardComponent, type: :component do
       expect(page).to have_css(".usa-card.usa-card--flag.usa-card--media-right")
     end
 
-    it "applies the header-first variant" do
-      render_inline(described_class.new(header_first: true)) do |card|
-        card.with_body { "Body" }
-      end
-
-      expect(page).to have_css(".usa-card.usa-card--header-first")
-    end
-
     it "applies media-inset on the media element when media_inset is true" do
       render_inline(described_class.new(media_inset: true)) do |card|
         card.with_media { "<img src='img.png' alt='alt' />".html_safe }
@@ -120,13 +150,12 @@ RSpec.describe Strata::US::CardComponent, type: :component do
     end
 
     it "does not render media variants when media slot is empty" do
-      render_inline(described_class.new(media_inset: true, media_exdent: true)) do |card|
+      render_inline(described_class.new(media_inset: true)) do |card|
         card.with_body { "Body" }
       end
 
       expect(page).not_to have_css(".usa-card__media")
       expect(page).not_to have_css(".usa-card__media--inset")
-      expect(page).not_to have_css(".usa-card__media--exdent")
     end
   end
 
