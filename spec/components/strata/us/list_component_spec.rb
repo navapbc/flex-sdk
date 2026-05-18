@@ -138,14 +138,22 @@ RSpec.describe Strata::US::ListComponent, type: :component do
   end
 
   describe "nested lists" do
-    it "supports nesting by rendering arbitrary block content inside an item" do
+    it "renders a child ListComponent inside an item" do
+      inner_html = render_inline(described_class.new(ordered: true)) do |inner|
+        inner.with_item { "Nested 1" }
+        inner.with_item { "Nested 2" }
+      end.to_html
+
       render_inline(described_class.new) do |outer|
-        outer.with_item do
-          "Parent item"
-        end
+        outer.with_item { "Top-level A" }
+        outer.with_item { inner_html.html_safe }
       end
 
-      expect(page).to have_css("ul.usa-list > li", text: "Parent item")
+      expect(page).to have_css("ul.usa-list > li", text: "Top-level A")
+      expect(page).to have_css("ul.usa-list > li > ol.usa-list")
+      expect(page).to have_css("ul.usa-list > li > ol.usa-list > li", count: 2)
+      expect(page).to have_css("ul.usa-list > li > ol.usa-list > li", text: "Nested 1")
+      expect(page).to have_css("ul.usa-list > li > ol.usa-list > li", text: "Nested 2")
     end
   end
 end

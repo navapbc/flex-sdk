@@ -1,0 +1,11 @@
+<%= render Strata::US::ListComponent.new do |outer| %>
+  <% outer.with_item { "First top-level item" } %>
+  <% outer.with_item do %>
+    Second top-level item with a nested list:
+    <%= render Strata::US::ListComponent.new do |inner| %>
+      <% inner.with_item { "Nested item A" } %>
+      <% inner.with_item { "Nested item B" } %>
+    <% end %>
+  <% end %>
+  <% outer.with_item { "Third top-level item" } %>
+<% end %>
