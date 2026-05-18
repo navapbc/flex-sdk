@@ -1,0 +1,27 @@
+<% if breadcrumbs_content? %>
+  <%= breadcrumbs_content %>
+<% else %>
+  <%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs || default_breadcrumbs } %>
+<% end %>
+<h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
+<% if task_info_content? %>
+  <%= task_info_content %>
+<% else %>
+  <%= render partial: "strata/tasks/task_info", locals: { task_info: task_info || default_task_info } %>
+<% end %>
+<section class="usa-section padding-top-2">
+  <% if task_message %>
+    <div class="usa-alert usa-alert--info usa-alert--no-icon">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text">
+          <%= task_message %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+  <% if task_details_content? %>
+    <%= task_details_content %>
+  <% else %>
+    <%= render partial: details_partial_path, locals: details_partial_locals %>
+  <% end %>
+</section>
