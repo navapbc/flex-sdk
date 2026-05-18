@@ -33,9 +33,12 @@ module Strata
       renders_one :task_details_content
 
       # @param task [Strata::Task] the task being shown
-      # @param assigned_user_display_text [String] display name for the task's assignee
-      # @param task_info [Array<Hash>, String, nil] either an array of +{label:, value:}+ hashes
-      #   or a raw HTML string. When nil, a default row (status / due / assignee) is rendered.
+      # @param assigned_user_display_text [String, nil] display name for the task's assignee.
+      #   Only read when the component falls back to its default +task_info+ row — that is,
+      #   when no +task_info:+ constructor arg, +task_info_content+ slot, or
+      #   +content_for(:task_info)+ override is provided. Otherwise it is unused and may be omitted.
+      # @param task_info [Array<Hash>, nil] an array of +{label:, value:}+ hashes.
+      #   When nil, a default row (status / due / assignee) is rendered.
       # @param breadcrumbs [Array<Hash>, nil] array of +{text:, link:}+ hashes. When nil, a
       #   default Home / Tasks / <task type> trail is rendered.
       # @param task_details_partial [String, nil] partial path to render in the details section.
@@ -45,7 +48,7 @@ module Strata
       #   backwards-compat wrapper at +app/views/strata/tasks/show.html.erb+ to forward any
       #   additional locals the caller passed (e.g. +application_form:+, +kase:+), preserving
       #   the legacy +local_assigns.to_h+ behaviour of the old template.
-      def initialize(task:, assigned_user_display_text:,
+      def initialize(task:, assigned_user_display_text: nil,
                      task_info: nil, breadcrumbs: nil,
                      task_details_partial: nil, details_locals: {})
         @task = task

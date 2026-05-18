@@ -3,13 +3,15 @@
     continue to work. New code should prefer `render Strata::Tasks::ShowComponent.new(...)`.
 
     Required locals:
-    - assigned_user_display_text: String - The name of the user assigned to this task
     - task: Strata::Task - The task object
 
     Optional locals:
+    - assigned_user_display_text: String - Name of the assignee. Only used when the
+      default task_info row is rendered (i.e. no task_info: local or
+      content_for(:task_info) is provided).
     - task_details_partial: String - Partial path to render for the task details. If not
       provided, the view looks for a partial named after the task type within `details/`.
-    - task_info: Array | String - An array of {label:, value:} hashes OR an HTML string.
+    - task_info: Array - An array of {label:, value:} hashes.
     - breadcrumbs: Array - Array of {text:, link:} hashes overriding the default trail.
 
     Legacy content_for overrides:
@@ -24,7 +26,7 @@
 %>
 <%= render Strata::Tasks::ShowComponent.new(
       task: task,
-      assigned_user_display_text: assigned_user_display_text,
+      assigned_user_display_text: local_assigns[:assigned_user_display_text],
       task_info: local_assigns[:task_info],
       breadcrumbs: local_assigns[:breadcrumbs],
       task_details_partial: local_assigns[:task_details_partial],

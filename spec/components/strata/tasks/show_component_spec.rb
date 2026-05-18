@@ -49,6 +49,19 @@ RSpec.describe Strata::Tasks::ShowComponent, type: :component do
     end
   end
 
+  describe "without assigned_user_display_text" do
+    it "renders when task_info is provided (display text is unused)" do
+      expect {
+        render_inline(described_class.new(
+          task: task,
+          task_info: [ { label: "Status:", value: "Pending" } ]
+        )) { |c| c.with_task_details_content { "" } }
+      }.not_to raise_error
+      expect(page).to have_text("Status:")
+      expect(page).to have_text("Pending")
+    end
+  end
+
   describe "task_info as an array of hashes" do
     before do
       render_inline(described_class.new(
