@@ -78,7 +78,7 @@ RSpec.describe Strata::US::CardComponent, type: :component do
     end
   end
 
-  context "variant classes" do
+  context "with variant classes" do
     it "applies the flag variant" do
       render_inline(described_class.new(flag: true)) do |card|
         card.with_body { "Body" }
@@ -130,7 +130,7 @@ RSpec.describe Strata::US::CardComponent, type: :component do
     end
   end
 
-  context "custom classes and html attributes" do
+  context "with custom classes and html attributes" do
     it "appends custom classes to the wrapper" do
       render_inline(described_class.new(classes: "extra-class another-class")) do |card|
         card.with_body { "Body" }
