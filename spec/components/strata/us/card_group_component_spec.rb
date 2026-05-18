@@ -54,14 +54,14 @@ RSpec.describe Strata::US::CardGroupComponent, type: :component do
     expect(page).not_to have_css("ul.usa-card-group > div.usa-card")
   end
 
-  it "allows a card's tag to be overridden" do
+  it "forces each card to <li> even when a different tag is supplied" do
     render_inline(described_class.new) do |group|
       group.with_card(tag: :div) do |card|
         card.with_body { "Body" }
       end
     end
 
-    expect(page).to have_css("ul.usa-card-group > div.usa-card")
-    expect(page).not_to have_css("ul.usa-card-group > li.usa-card")
+    expect(page).to have_css("ul.usa-card-group > li.usa-card")
+    expect(page).not_to have_css("ul.usa-card-group > div.usa-card")
   end
 end
