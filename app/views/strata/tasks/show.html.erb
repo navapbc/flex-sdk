@@ -12,7 +12,11 @@
     - task_info: Array | String - An array of {label:, value:} hashes OR an HTML string.
     - breadcrumbs: Array - Array of {text:, link:} hashes overriding the default trail.
 
-    Legacy content_for overrides (still supported): :breadcrumbs, :task_info, :task_details_partial
+    Legacy content_for overrides:
+    - :task_details_partial - forwarded explicitly via the slot below.
+    - :breadcrumbs / :task_info - still respected, handled by the inner
+      `strata/shared/_breadcrumbs` and `strata/tasks/_task_info` partials'
+      own `content_for?` checks. No wrapper-level forwarding is needed.
 %>
 <%
   _known_locals = %i[task assigned_user_display_text task_info breadcrumbs task_details_partial]
@@ -26,7 +30,5 @@
       task_details_partial: local_assigns[:task_details_partial],
       details_locals: _details_locals
     ) do |c| %>
-  <% c.with_breadcrumbs_content   { content_for(:breadcrumbs) }          if content_for?(:breadcrumbs) %>
-  <% c.with_task_info_content     { content_for(:task_info) }            if content_for?(:task_info) %>
   <% c.with_task_details_content  { content_for(:task_details_partial) } if content_for?(:task_details_partial) %>
 <% end %>
