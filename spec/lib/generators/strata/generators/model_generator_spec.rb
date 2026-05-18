@@ -92,7 +92,7 @@ RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
     let(:args) { [ "Claim", "claim_id:user_facing_id" ] }
 
     before do
-      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000).and_return(0xdeadbeef)
+      allow(SecureRandom).to receive(:random_number).with(0xFFFF_FFFF).and_return(0xdeadbeee)
     end
 
     it "passes the attribute through to strata:migration unchanged" do
@@ -122,8 +122,8 @@ RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
     let(:args) { [ "Case", "user_facing_id:user_facing_id", "claim_user_facing_id:user_facing_id" ] }
 
     before do
-      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000)
-        .and_return(0xaaaaaaaa, 0xbbbbbbbb)
+      allow(SecureRandom).to receive(:random_number).with(0xFFFF_FFFF)
+        .and_return(0xaaaaaaa9, 0xbbbbbbba)
     end
 
     it "gives each attribute its own freshly generated key" do
@@ -138,7 +138,7 @@ RSpec.describe Strata::Generators::ModelGenerator, type: :generator do
     let(:args) { [ "Claim", "full_name:name", "claim_id:user_facing_id", "email:string" ] }
 
     before do
-      allow(SecureRandom).to receive(:random_number).with(0x1_0000_0000).and_return(0x12345678)
+      allow(SecureRandom).to receive(:random_number).with(0xFFFF_FFFF).and_return(0x12345677)
     end
 
     it "renders each attribute in its appropriate form" do

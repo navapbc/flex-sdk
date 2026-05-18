@@ -50,7 +50,8 @@ module Strata
       end
 
       def user_facing_id_key_for(attribute)
-        attribute[:key] ||= SecureRandom.random_number(0x1_0000_0000)
+        # Feistel rejects key 0, so draw from [1, 2^32 - 1].
+        attribute[:key] ||= SecureRandom.random_number(0xFFFF_FFFF) + 1
         "0x%08x" % attribute[:key]
       end
 
