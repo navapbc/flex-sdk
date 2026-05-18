@@ -31,5 +31,15 @@ module Strata
       model.errors.add(:weekly_wage, :greater_than, value: 0, count: 0)
       render template: "strata/previews/_money_field", locals: { model: model }
     end
+
+    def with_alternate_prefix
+      render template: "strata/previews/_money_field",
+             locals: { model: TestRecord.new, options: { prefix: "€" } }
+    end
+
+    def with_widths
+      render template: "strata/previews/_money_field_widths",
+             locals: { model: TestRecord.new }
+    end
   end
 end
