@@ -60,7 +60,7 @@ module Strata
       private
 
       def preview_image
-        helpers.image_tag("strata/card_preview_placeholder.svg", alt: "Card preview placeholder")
+        image_tag("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjQwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkNhcmQgcHJldmlldyBwbGFjZWhvbGRlciI+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIyNDAiIGZpbGw9IiMwMDVlYTIiLz4KICA8cmVjdCB4PSIwIiB5PSIxODAiIHdpZHRoPSI0MDAiIGhlaWdodD0iNjAiIGZpbGw9IiMxNjJlNTEiLz4KICA8Y2lyY2xlIGN4PSIzMjAiIGN5PSI4MCIgcj0iMzIiIGZpbGw9IiNmZmJlMmUiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjEzMCIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhcmQgcHJldmlldyBwbGFjZWhvbGRlcjwvdGV4dD4KPC9zdmc+Cg==", alt: "Card preview placeholder")
       end
     end
   end
