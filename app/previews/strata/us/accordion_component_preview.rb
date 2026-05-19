@@ -38,22 +38,6 @@ module Strata
           component.with_body { "<p>No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner, nor in time of war, but in a manner to be prescribed by law.</p>".html_safe }
         end
       end
-
-      def with_custom_classes_and_html_attributes
-        render Strata::US::AccordionComponent.new(
-          heading_tag: :h4,
-          is_bordered: true,
-          classes: "my-accordion",
-          id: "amendments",
-          data: { testid: "amendments-accordion" },
-          "aria-label": "Bill of Rights"
-        ) do |component|
-          component.with_heading { "First Amendment" }
-          component.with_body { "<p>Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances.</p>".html_safe }
-          component.with_heading { "Second Amendment" }
-          component.with_body { "<p>A well regulated Militia, being necessary to the security of a free State, the right of the people to keep and bear Arms, shall not be infringed.</p>".html_safe }
-        end
-      end
     end
   end
 end
