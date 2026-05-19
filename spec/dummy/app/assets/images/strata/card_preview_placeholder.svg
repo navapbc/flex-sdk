@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" role="img" aria-label="Card preview placeholder">
+  <rect width="400" height="240" fill="#005ea2"/>
+  <rect x="0" y="180" width="400" height="60" fill="#162e51"/>
+  <circle cx="320" cy="80" r="32" fill="#ffbe2e"/>
+  <text x="200" y="130" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" text-anchor="middle">Card preview placeholder</text>
+</svg>
