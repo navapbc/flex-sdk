@@ -9,6 +9,7 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 ## Core concepts
 
 - [Strata SDK components](./strata-sdk-components.md) - Overview of available SDK components
+- [USWDS components](./uswds-components.md) - ViewComponent wrappers for U.S. Web Design System components
 - [Authorization](./authorization.md) - Built-in base policies for secure authorization patterns
 - [API Authentication](./api-authentication.md) - Secure API endpoints using the ApiAuthenticator and HMAC strategies
 - [Strata Data Modeler](./strata-data-modeler.md) - Learn how to define data models using Strata Attributes and generate migrations using the Strata Migration Generator.
