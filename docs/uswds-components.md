@@ -16,10 +16,11 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 
 1. [Accordion](#accordion)
 2. [Alert](#alert)
-3. [Card](#card)
-4. [Card Group](#card-group)
-5. [List](#list)
-6. [Table](#table)
+3. [Breadcrumbs](#breadcrumbs)
+4. [Card](#card)
+5. [Card Group](#card-group)
+6. [List](#list)
+7. [Table](#table)
 
 ---
 
@@ -81,6 +82,45 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 
 <%= render Strata::US::AlertComponent.new(type: :warning, slim: true, with_icon: false) do |alert| %>
   <% alert.with_body { "Heads up — read-only mode." } %>
+<% end %>
+```
+
+---
+
+## Breadcrumbs
+
+`Strata::US::BreadcrumbsComponent` — a navigation trail of links ending in the current page. See [USWDS Breadcrumb](https://designsystem.digital.gov/components/breadcrumb/).
+
+The last item is always rendered as the current page (no link, `usa-current` + `aria-current="page"`) regardless of whether an `href` was supplied.
+
+**Options**
+
+- `wrap:` — render the wrapping variant (crumbs wrap to multiple lines on narrow screens). Defaults to `false`.
+- `aria_label:` — overrides the `aria-label` on the `<nav>`. Defaults to the i18n value at `strata.components.us.breadcrumbs.aria_label` (`"Breadcrumb"` in `en`, `"Ruta de navegación"` in `es-US`).
+- `classes:` — extra CSS classes appended to the root `<nav>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<nav>`.
+
+**Slots**
+
+- `with_item(text = nil, href: nil, classes: nil, **html_attributes) { ... }` — a single crumb. Text may be passed as a positional or `text:` argument, or via a block. `href:` is optional; when omitted (or on the last crumb), the crumb renders without a link. Extra keyword arguments become HTML attributes on the `<li>`.
+- `with_items(collection)` — render an item per element. Each element is a hash matching the keyword arguments to `with_item` (e.g. `{ text:, href: }`).
+
+**Example**
+
+```erb
+<%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+  <% bc.with_item(href: root_path) { "Home" } %>
+  <% bc.with_item(href: cases_path) { "Cases" } %>
+  <% bc.with_item { "Case #12345" } %>
+<% end %>
+
+<%= render Strata::US::BreadcrumbsComponent.new(wrap: true) do |bc| %>
+  <% bc.with_items([
+       { text: "Home", href: root_path },
+       { text: "Cases", href: cases_path },
+       { text: "Case #12345" }
+     ]) %>
 <% end %>
 ```
 
