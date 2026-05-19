@@ -1,0 +1,7 @@
+<%= content_tag :nav, class: wrapper_classes, "aria-label": @aria_label, **@html_attributes do %>
+  <ol class="usa-breadcrumb__list">
+    <% items.each do |item| %>
+      <%= item %>
+    <% end %>
+  </ol>
+<% end %>
