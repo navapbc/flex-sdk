@@ -35,12 +35,12 @@ RSpec.describe "strata/tasks/_task_info.html.erb", type: :view do
 
     it "renders each info item correctly" do
       expect(rendered).to have_selector('div.grid-col-auto', count: 3)
-      expect(rendered).to include(task_info[0][:label])
-      expect(rendered).to include(task_info[0][:value])
-      expect(rendered).to include(task_info[1][:label])
-      expect(rendered).to include(task_info[1][:value])
-      expect(rendered).to include(task_info[2][:label])
-      expect(rendered).to include(task_info[2][:value])
+      expect(rendered).to have_content(task_info[0][:label])
+      expect(rendered).to have_content(task_info[0][:value])
+      expect(rendered).to have_content(task_info[1][:label])
+      expect(rendered).to have_content(task_info[1][:value])
+      expect(rendered).to have_content(task_info[2][:label])
+      expect(rendered).to have_content(task_info[2][:value])
     end
   end
 end
