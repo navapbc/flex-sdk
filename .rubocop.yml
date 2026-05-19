@@ -44,9 +44,13 @@ YARD/MeaninglessTag:
 
 YARD/MismatchName:
   Enabled: true
+  Exclude:
+    - "app/previews/**/*"
 
 YARD/TagTypePosition:
   Enabled: true
+  Exclude:
+    - "app/previews/**/*"
 
 YARD/TagTypeSyntax:
   Enabled: true
