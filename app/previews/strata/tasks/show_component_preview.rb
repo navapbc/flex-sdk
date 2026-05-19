@@ -45,9 +45,9 @@ module Strata
       private
 
       def build_preview_task
-        return nil unless defined?(PassportPhotoTask) && defined?(PassportCase)
+        return nil unless defined?(PassportPhotoTask)
 
-        PassportPhotoTask.create(case: PassportCase.create, due_on: 1.week.from_now)
+        PassportPhotoTask.new(due_on: 1.week.from_now)
       end
 
       def preview_breadcrumbs
