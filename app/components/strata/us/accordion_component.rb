@@ -16,17 +16,30 @@ module Strata
       renders_many :headings
       renders_many :bodies
 
-      def initialize(heading_tag:, id_prefix: nil, is_bordered: false, is_multiselectable: false)
+      def initialize(heading_tag:, id_prefix: nil, is_bordered: false, is_multiselectable: false, classes: nil, **html_attributes)
         @heading_tag = heading_tag
         @is_bordered = is_bordered
         @is_multiselectable = is_multiselectable
         @id_prefix = id_prefix || "acrdn-#{SecureRandom.hex(6)}-"
+        @classes = classes
+        @html_attributes = html_attributes
       end
 
       def before_render
         if headings.length != bodies.length
           raise ArgumentError, "Number of headings (#{headings.length}) must match number of bodies (#{bodies.length})"
         end
+      end
+
+      def wrapper_classes
+        class_names(
+          "usa-accordion",
+          {
+            "usa-accordion--bordered" => @is_bordered,
+            "usa-accordion--multiselectable" => @is_multiselectable
+          },
+          @classes
+        )
       end
 
       private

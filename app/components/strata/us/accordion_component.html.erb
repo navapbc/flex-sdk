@@ -1,8 +1,4 @@
-<div class="<%= class_names(
-  "usa-accordion",
-  "usa-accordion--bordered": @is_bordered,
-  "usa-accordion--multiselectable": @is_multiselectable
-) %>"<%= ' data-allow-multiple' if @is_multiselectable %>>
+<div class="<%= wrapper_classes %>"<%= ' data-allow-multiple' if @is_multiselectable %> <%= tag.attributes(@html_attributes) %>>
   <% headings.zip(bodies).each_with_index do |(heading, body), idx| %>
     <%= content_tag @heading_tag, class: "usa-accordion__heading" do %>
       <button type="button" class="usa-accordion__button" aria-expanded="false" aria-controls="<%= item_id(idx) %>">

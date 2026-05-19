@@ -10,7 +10,7 @@ All components live in the `Strata::US` namespace under [app/components/strata/u
 <% end %>
 ```
 
-Most components accept a `classes:` keyword for additional CSS classes and forward any other keyword arguments as HTML attributes on the component's primary element — see each component's options below for specifics. Live previews are available in Lookbook (mounted at `/lookbook` in the dummy app — run `make start` and visit `http://localhost:3000/lookbook`); preview sources are under [app/previews/strata/us/](../app/previews/strata/us/).
+Every component accepts a `classes:` keyword for additional CSS classes and forwards any other keyword arguments as HTML attributes on the component's primary element (the `<table>` for [Table](#table); the wrapping element otherwise). Live previews are available in Lookbook (mounted at `/lookbook` in the dummy app — run `make start` and visit `http://localhost:3000/lookbook`); preview sources are under [app/previews/strata/us/](../app/previews/strata/us/).
 
 ## Components
 
@@ -33,6 +33,7 @@ Most components accept a `classes:` keyword for additional CSS classes and forwa
 - `id_prefix:` — prefix used to generate panel IDs. Defaults to a random `acrdn-XXXXXX-` value.
 - `is_bordered:` — render the bordered variant. Defaults to `false`.
 - `is_multiselectable:` — allow multiple panels open at once. Defaults to `false`.
+- `classes:` — extra CSS classes appended to the root element.
 
 **Slots**
 
