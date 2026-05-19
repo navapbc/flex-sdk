@@ -10,7 +10,7 @@ All components live in the `Strata::US` namespace under [app/components/strata/u
 <% end %>
 ```
 
-Every component accepts a `classes:` keyword for additional CSS classes and forwards any other keyword arguments as HTML attributes on the root element. Live previews for every component are available in Lookbook (mounted at `/lookbook` in the dummy app — run `make start` and visit `http://localhost:3000/lookbook`); preview sources are under [app/previews/strata/us/](../app/previews/strata/us/).
+Most components accept a `classes:` keyword for additional CSS classes and forward any other keyword arguments as HTML attributes on the component's primary element — see each component's options below for specifics. Live previews are available in Lookbook (mounted at `/lookbook` in the dummy app — run `make start` and visit `http://localhost:3000/lookbook`); preview sources are under [app/previews/strata/us/](../app/previews/strata/us/).
 
 ## Components
 
@@ -33,7 +33,6 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 - `id_prefix:` — prefix used to generate panel IDs. Defaults to a random `acrdn-XXXXXX-` value.
 - `is_bordered:` — render the bordered variant. Defaults to `false`.
 - `is_multiselectable:` — allow multiple panels open at once. Defaults to `false`.
-- `classes:` — extra CSS classes appended to the root element.
 
 **Slots**
 
@@ -195,7 +194,7 @@ At least one of header, media, body, or footer must be provided.
 - `scrollable:` — wrap the table in a horizontally scrollable container.
 - `sticky_header:` — pin the header row when the table scrolls.
 - `sortable:` — enable USWDS client-side sorting on `data-sortable` headers.
-- `classes:` — extra CSS classes appended to the `<table>` element.
+- `classes:` — extra CSS classes appended to the `<table>` element. Extra HTML attributes are also applied to the `<table>`, not the optional `scrollable` wrapper.
 
 **Slots**
 
