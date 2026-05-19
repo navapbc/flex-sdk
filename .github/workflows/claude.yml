@@ -49,6 +49,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Install Ruby and project dependencies so Claude can run `make test` / `make lint`.
+      # Mirrors the setup in .github/workflows/ci.yml. `make setup` also boots Postgres
+      # via docker compose and prepares the test DB.
+      - uses: ruby/setup-ruby@v1
+
+      - name: Install deps and initialize DB
+        run: make setup
+
       # Claude reads CLAUDE.md from the checked-out repo automatically, and CLAUDE.md
       # points at .github/claude-sandbox-instructions.md for CI-specific workflow rules
       # (plan-then-approve, branch + PR flow, stop-and-comment on hard decisions).
@@ -69,5 +77,8 @@ jobs:
           # Allow Claude to create branches and open PRs, but not merge.
           # git is enumerated rather than wildcarded to exclude reset/clean/remote/tag.
           # Pushes to protected branches are blocked by branch protection rules at the repo level.
+          # make targets are enumerated (not `make:*`) to prevent `-f` / `-C` / variable
+          # overrides from being used to execute arbitrary shell. Add new targets here
+          # explicitly as needs arise.
           claude_args: >-
-            --allowed-tools "Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git blame:*),Bash(git rev-parse:*),Bash(git branch:*),Bash(git checkout:*),Bash(git switch:*),Bash(git add:*),Bash(git rm:*),Bash(git mv:*),Bash(git restore:*),Bash(git commit:*),Bash(git push:*),Bash(git fetch:*),Bash(git pull:*),Bash(git stash:*),Bash(git rebase:*),Bash(git merge:*),Bash(git config:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*)"
+            --allowed-tools "Bash(make test),Bash(make lint),Bash(make lint-ci),Bash(make db-migrate),Bash(make db-test-prepare),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git blame:*),Bash(git rev-parse:*),Bash(git branch:*),Bash(git checkout:*),Bash(git switch:*),Bash(git add:*),Bash(git rm:*),Bash(git mv:*),Bash(git restore:*),Bash(git commit:*),Bash(git push:*),Bash(git fetch:*),Bash(git pull:*),Bash(git stash:*),Bash(git rebase:*),Bash(git merge:*),Bash(git config:*),Bash(gh pr create:*),Bash(gh pr edit:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr diff:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*)"

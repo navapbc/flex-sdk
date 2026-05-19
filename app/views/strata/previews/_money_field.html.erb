@@ -1,3 +1,4 @@
+<%# locals: (model:, options: {}) %>
 <%= strata_form_with(model: model, url: false) do |f| %>
-  <%= f.money_field :weekly_wage %>
+  <%= f.money_field :weekly_wage, **options %>
 <% end %>

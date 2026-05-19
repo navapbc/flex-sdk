@@ -117,4 +117,53 @@ RSpec.describe Strata::US::AccordionComponent, type: :component do
       end
     }.to raise_error(ArgumentError, /Number of headings.*must match number of bodies/)
   end
+
+  context "when classes are provided" do
+    it "appends them after the base and variant USWDS classes" do
+      render_inline(described_class.new(heading_tag: :h2, is_bordered: true, classes: "my-acc extra")) do |c|
+        c.with_heading { "Item 1" }
+        c.with_body { "<p>Content</p>".html_safe }
+      end
+
+      expect(page).to have_css(".usa-accordion.usa-accordion--bordered.my-acc.extra")
+    end
+
+    it "does nothing when nil" do
+      render_inline(described_class.new(heading_tag: :h2, classes: nil)) do |c|
+        c.with_heading { "Item 1" }
+        c.with_body { "<p>Content</p>".html_safe }
+      end
+
+      expect(page.find(".usa-accordion")[:class]).to eq("usa-accordion")
+    end
+  end
+
+  context "when extra HTML attributes are provided" do
+    it "forwards them to the root element" do
+      render_inline(described_class.new(
+        heading_tag: :h2,
+        id: "faq",
+        data: { testid: "faq-acc" },
+        "aria-label": "FAQ"
+      )) do |c|
+        c.with_heading { "Item 1" }
+        c.with_body { "<p>Content</p>".html_safe }
+      end
+
+      expect(page).to have_css(".usa-accordion#faq[data-testid='faq-acc'][aria-label='FAQ']")
+    end
+
+    it "keeps data-allow-multiple alongside other forwarded data attributes when multiselectable" do
+      render_inline(described_class.new(
+        heading_tag: :h2,
+        is_multiselectable: true,
+        data: { testid: "faq-acc" }
+      )) do |c|
+        c.with_heading { "Item 1" }
+        c.with_body { "<p>Content</p>".html_safe }
+      end
+
+      expect(page).to have_css(".usa-accordion[data-allow-multiple][data-testid='faq-acc']")
+    end
+  end
 end

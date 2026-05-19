@@ -13,6 +13,7 @@ RSpec.describe Strata::FormBuilder do
       attribute :start_date, :date  # for date_picker
       attribute :has_employer, :string
       attribute :leave_type, :string
+      attribute :income, :string    # for prefix/suffix tests
     end
 
     stub_const("TestForm", test_form_class)
@@ -107,6 +108,119 @@ RSpec.describe Strata::FormBuilder do
 
       it 'adds the class to the label' do
         expect(result).to have_element(:label, class: 'usa-label custom-label-class')
+      end
+    end
+
+    context 'with a prefix' do
+      let(:result) { builder.text_field(:income, prefix: '$') }
+
+      it 'wraps the input in a usa-input-group' do
+        expect(result).to have_element(:div, class: 'usa-input-group')
+      end
+
+      it 'renders the prefix as a sibling of the input, hidden from assistive tech' do
+        expect(result).to have_element(:div, text: '$', class: 'usa-input-prefix', 'aria-hidden': 'true')
+      end
+
+      it 'does not render an input-suffix' do
+        expect(result).not_to have_css('.usa-input-suffix')
+      end
+
+      it 'does not pass the prefix option through to the input element' do
+        expect(result).not_to have_element(:input, prefix: '$')
+      end
+    end
+
+    context 'with a suffix' do
+      let(:result) { builder.text_field(:income, suffix: '.00') }
+
+      it 'wraps the input in a usa-input-group' do
+        expect(result).to have_element(:div, class: 'usa-input-group')
+      end
+
+      it 'renders the suffix as a sibling of the input, hidden from assistive tech' do
+        expect(result).to have_element(:div, text: '.00', class: 'usa-input-suffix', 'aria-hidden': 'true')
+      end
+
+      it 'does not render an input-prefix' do
+        expect(result).not_to have_css('.usa-input-prefix')
+      end
+    end
+
+    context 'with both prefix and suffix' do
+      let(:result) { builder.text_field(:income, prefix: '$', suffix: '.00') }
+
+      it 'renders both affixes inside a single input-group' do
+        expect(result).to have_element(:div, class: 'usa-input-prefix', text: '$')
+        expect(result).to have_element(:div, class: 'usa-input-suffix', text: '.00')
+      end
+    end
+
+    context 'with a blank prefix' do
+      let(:result) { builder.text_field(:income, prefix: '') }
+
+      it 'treats an empty string as absent and does not wrap the input' do
+        expect(result).not_to have_css('.usa-input-group')
+        expect(result).not_to have_css('.usa-input-prefix')
+      end
+    end
+
+    context 'with a blank suffix' do
+      let(:result) { builder.text_field(:income, suffix: '') }
+
+      it 'treats an empty string as absent and does not wrap the input' do
+        expect(result).not_to have_css('.usa-input-group')
+        expect(result).not_to have_css('.usa-input-suffix')
+      end
+    end
+
+    context 'with a present prefix and a blank suffix' do
+      let(:result) { builder.text_field(:income, prefix: '$', suffix: '') }
+
+      it 'wraps the input but omits the empty suffix entirely' do
+        expect(result).to have_css('.usa-input-group')
+        expect(result).to have_element(:div, class: 'usa-input-prefix', text: '$')
+        expect(result).not_to have_css('.usa-input-suffix')
+      end
+    end
+
+    context 'with a prefix and validation errors' do
+      let(:result) { builder.text_field(:income, prefix: '$') }
+
+      before do
+        object.errors.add(:income, 'is invalid')
+      end
+
+      it 'adds the error modifier to the input-group, not just the input' do
+        expect(result).to have_element(:div, class: 'usa-input-group usa-input-group--error')
+      end
+
+      it 'keeps the input as the immediate sibling of the prefix in error states' do
+        # USWDS uses .usa-input-prefix + input (adjacent-sibling selector) to apply
+        # padding-left so the input value doesn't sit on top of the prefix. Anything
+        # that lands between them (e.g. Rails' default field_with_errors wrap) would
+        # break that adjacency.
+        expect(result).to have_css('.usa-input-prefix + input')
+      end
+    end
+
+    context 'with a prefix and a width' do
+      # USWDS forces `.usa-input-group input { width: 100% }`, which overrides
+      # the `usa-input--<width>` max-width on the inner input. The width
+      # modifier has to land on the group itself to constrain the wrapped
+      # input visually.
+      let(:result) { builder.text_field(:income, prefix: '$', width: 'sm') }
+
+      it 'applies the width modifier to the input-group' do
+        expect(result).to have_css('.usa-input-group.usa-input-group--sm')
+      end
+    end
+
+    context 'with a suffix and a width' do
+      let(:result) { builder.text_field(:income, suffix: 'lbs.', width: 'md') }
+
+      it 'applies the width modifier to the input-group' do
+        expect(result).to have_css('.usa-input-group.usa-input-group--md')
       end
     end
   end
@@ -735,6 +849,31 @@ RSpec.describe Strata::FormBuilder do
 
       it 'passes through HTML options to the input' do
         expect(result).to have_element(:input, 'data-test': 'value', 'aria-label': 'Amount')
+      end
+    end
+
+    context 'without an explicit prefix' do
+      it 'wraps the input in a usa-input-group with a $ prefix' do
+        expect(result).to have_element(:div, class: 'usa-input-group')
+        expect(result).to have_element(:div, text: '$', class: 'usa-input-prefix', 'aria-hidden': 'true')
+      end
+    end
+
+    context 'with an explicit prefix' do
+      let(:result) { builder.money_field(:weekly_wage, prefix: '€') }
+
+      it 'uses the caller-supplied prefix instead of the default' do
+        expect(result).to have_element(:div, text: '€', class: 'usa-input-prefix')
+        expect(result).not_to have_element(:div, text: '$', class: 'usa-input-prefix')
+      end
+    end
+
+    context 'with prefix: false' do
+      let(:result) { builder.money_field(:weekly_wage, prefix: false) }
+
+      it 'omits the input-group wrapper and the prefix entirely' do
+        expect(result).not_to have_css('.usa-input-group')
+        expect(result).not_to have_css('.usa-input-prefix')
       end
     end
   end

@@ -11,13 +11,9 @@
 <% end %>
 <section class="usa-section padding-top-2">
   <% if task_message %>
-    <div class="usa-alert usa-alert--info usa-alert--no-icon">
-      <div class="usa-alert__body">
-        <p class="usa-alert__text">
-          <%= task_message %>
-        </p>
-      </div>
-    </div>
+    <%= render Strata::US::AlertComponent.new(type: :info, with_icon: false) do |alert| %>
+      <% alert.with_body { task_message } %>
+    <% end %>
   <% end %>
   <% if task_details_content? %>
     <%= task_details_content %>

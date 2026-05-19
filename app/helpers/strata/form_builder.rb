@@ -33,10 +33,19 @@ module Strata
     ########################################
 
     # Override default text fields to automatically include the label,
-    # hint, and error elements
+    # hint, and error elements. Supports USWDS input prefix/suffix via the
+    # +:prefix+ and +:suffix+ options.
+    #
+    # Prefix/suffix elements render with +aria-hidden="true"+ per USWDS
+    # guidance — they are a sighted-user affordance, not part of the input's
+    # accessible name. Callers must ensure the input label carries any
+    # semantic context the affix conveys (e.g. "Income (in dollars)" rather
+    # than "Income" alongside a "$" prefix). See:
+    # https://designsystem.digital.gov/components/input-prefix-suffix/
     #
     # Example usage:
     #   <%= f.text_field :foobar, { label: "Custom label text", hint: "Some hint text" } %>
+    #   <%= f.text_field :amount, { label: "Amount (in dollars)", prefix: "$" } %>
     standard_helpers.each do |field_type|
       define_method(field_type) do |attribute, options = {}|
         classes = us_class_for_field_type(field_type, options[:width])
@@ -46,6 +55,8 @@ module Strata
         label_text = options.delete(:label)
         label_class = options.delete(:label_class) || ""
         skip_form_group = options.delete(:skip_form_group)
+        prefix = options.delete(:prefix).presence
+        suffix = options.delete(:suffix).presence
 
         label_options = options.except(:width, :class, :id).merge({
           class: label_class,
@@ -57,8 +68,27 @@ module Strata
           field_options[:aria_describedby] = hint_id(attribute)
         end
 
-        content = us_text_field_label(attribute, label_text, label_options) +
-          super(attribute, field_options)
+        input_el = super(attribute, field_options)
+        if prefix || suffix
+          # Rails wraps error-state inputs in <div class="field_with_errors">, which
+          # would sit between the prefix and the input, breaking the
+          # .usa-input-prefix + input CSS adjacency selector that supplies the
+          # input's padding-left. Strip the wrapper only here; Strata renders its
+          # own error markers (usa-input--error, usa-form-group--error, the
+          # usa-error-message span) so nothing visual is lost.
+          if has_error?(attribute)
+            input_el = input_el.to_s.sub(%r{\A<div class="field_with_errors">(.*)</div>\z}m, '\1').html_safe
+          end
+          group_class = us_input_group_class(error: has_error?(attribute), width: options[:width])
+          input_el = @template.content_tag(:div, class: group_class) do
+            @template.safe_join([
+              input_affix(prefix, "usa-input-prefix"),
+              input_el,
+              input_affix(suffix, "usa-input-suffix")
+            ])
+          end
+        end
+        content = us_text_field_label(attribute, label_text, label_options) + input_el
 
         if skip_form_group
           return content
@@ -510,6 +540,14 @@ module Strata
     # @option options [String] :class Custom CSS classes
     # @option options [String] :placeholder Placeholder text
     # @option options [String] :inputmode Input mode (defaults to 'decimal')
+    # @option options [String,FalseClass] :prefix Decorative currency prefix
+    #   rendered left-flush inside the input border. Defaults to "$"; pass
+    #   +false+ to omit, or another glyph (e.g. "€"). Marked +aria-hidden+ per
+    #   USWDS — set the label to carry the unit context (e.g.
+    #   "Income (in dollars)") so screen-reader users aren't relying on the
+    #   visual prefix alone.
+    # @option options [String,FalseClass] :suffix Decorative suffix text with
+    #   the same accessibility semantics as +:prefix+.
     # @return [String] The rendered HTML for the money input
     def money_field(attribute, options = {})
       # Get the existing Money object value if present
@@ -520,6 +558,7 @@ module Strata
       input_options = options.except(:group_options)
       input_options[:inputmode] ||= "decimal"
       input_options[:value] = dollar_value unless input_options.key?(:value)
+      input_options[:prefix] = "$" unless input_options.key?(:prefix)
 
       form_group(attribute, options[:group_options] || {}) do
         text_field(attribute, input_options.merge(skip_form_group: true))
@@ -625,6 +664,11 @@ module Strata
       end
     end
 
+    def input_affix(text, class_name)
+      return nil unless text
+      @template.content_tag(:div, text, class: class_name, "aria-hidden": true)
+    end
+
     def us_class_for_field_type(field_type, width = nil)
       case field_type
       when :check_box
@@ -642,6 +686,12 @@ module Strata
       end
     end
 
+    def us_input_group_class(error:, width: nil)
+      classes = "usa-input-group"
+      classes += " usa-input-group--error" if error
+      classes += " usa-input-group--#{width}" if width
+      classes
+    end
 
     # Render the label, hint text, and error message for a form field
     def us_text_field_label(attribute, text = nil, options = {})

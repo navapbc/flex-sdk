@@ -1,0 +1,19 @@
+<%# locals: (model:) %>
+<%= strata_form_with(model: model, url: false) do |f| %>
+  <div class="grid-row grid-gap">
+    <div class="grid-col-6">
+      <h3 class="font-sans-sm">Disabled Prefix</h3>
+      <% %w[xs sm md lg].each do |w| %>
+        <%= f.money_field :weekly_wage, label: "width: #{w}", width: w, prefix: false, id: "control_#{w}" %>
+      <% end %>
+      <%= f.money_field :weekly_wage, label: "no width", prefix: false, id: "control_none" %>
+    </div>
+    <div class="grid-col-6">
+      <h3 class="font-sans-sm">Default Prefix</h3>
+      <% %w[xs sm md lg].each do |w| %>
+        <%= f.money_field :weekly_wage, label: "width: #{w}", width: w, id: "prefixed_#{w}" %>
+      <% end %>
+      <%= f.money_field :weekly_wage, label: "no width", id: "prefixed_none" %>
+    </div>
+  </div>
+<% end %>
