@@ -46,6 +46,13 @@ module Strata
         )
       end
 
+      def nav_attributes
+        attrs = @html_attributes.dup
+        attrs[:class] = wrapper_classes
+        attrs[:"aria-label"] = @aria_label
+        attrs
+      end
+
       # ItemComponent renders one crumb as an <li>. The parent marks the
       # final crumb via `current!` so it renders as the current page
       # (no link, `usa-current` + `aria-current="page"`) regardless of any

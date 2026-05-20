@@ -138,6 +138,23 @@ RSpec.describe Strata::US::BreadcrumbsComponent, type: :component do
 
       expect(page).to have_css("nav.usa-breadcrumb#my-bc[data-test='yes']")
     end
+
+    it "does not raise and prefers the dedicated classes: when html_attributes also carries :class" do
+      render_inline(described_class.new(classes: "from-classes", class: "from-html-attrs")) do |bc|
+        bc.with_item { "Current" }
+      end
+
+      expect(page).to have_css("nav.usa-breadcrumb.from-classes")
+      expect(page).not_to have_css("nav.from-html-attrs")
+    end
+
+    it "does not raise and prefers the dedicated aria_label: when html_attributes also carries :\"aria-label\"" do
+      render_inline(described_class.new(aria_label: "Dedicated", "aria-label": "From html attrs")) do |bc|
+        bc.with_item { "Current" }
+      end
+
+      expect(page).to have_css("nav.usa-breadcrumb[aria-label='Dedicated']")
+    end
   end
 
   describe "item-level options" do
