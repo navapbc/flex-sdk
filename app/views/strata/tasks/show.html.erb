@@ -8,7 +8,7 @@
       - task_info: Array - An array of {label:, value:} hashes rendered as the info row.
       - assigned_user_display_text: String - Name of the assignee. Used in the default
         task_info row (status / due / assignee) that is rendered when no task_info: local
-        and no content_for(:task_info) override is provided.
+        is provided.
 
     Optional locals:
     - task_details_partial: String - Partial path to render for the task details. If not
@@ -17,9 +17,9 @@
 
     Legacy content_for overrides:
     - :task_details_partial - forwarded explicitly via the slot below.
-    - :breadcrumbs / :task_info - still respected, handled by the inner
-      `strata/shared/_breadcrumbs` and `strata/tasks/_task_info` partials'
-      own `content_for?` checks. No wrapper-level forwarding is needed.
+    - :breadcrumbs - still respected, handled by the inner
+      `strata/shared/_breadcrumbs` partial's own `content_for?` check.
+      No wrapper-level forwarding is needed.
 %>
 <%= render Strata::Tasks::ShowComponent.new(
       task: task,

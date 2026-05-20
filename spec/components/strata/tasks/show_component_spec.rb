@@ -109,16 +109,19 @@ RSpec.describe Strata::Tasks::ShowComponent, type: :component do
       render_inline(described_class.new(
         task: task,
         assigned_user_display_text: assigned_user_display_text,
-        task_details_partial: "strata/tasks/task_info",
+        task_details_partial: "strata/shared/breadcrumbs",
         task_info: [ { label: "Top Row", value: "row value" } ],
-        details_locals: { task_info: [ { label: "Routed", value: "via partial" } ] }
+        details_locals: { breadcrumbs: [
+          { text: "Routed via partial", link: "/routed" },
+          { text: "Current step" }
+        ] }
       ))
     end
 
     it "renders the named partial in the details section with forwarded locals" do
       expect(page).to have_text("Top Row")
-      expect(page).to have_text("Routed")
-      expect(page).to have_text("via partial")
+      expect(page).to have_link("Routed via partial", href: "/routed")
+      expect(page).to have_text("Current step")
     end
   end
 

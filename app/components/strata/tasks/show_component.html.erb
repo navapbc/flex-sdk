@@ -7,7 +7,7 @@
 <% if task_info_content? %>
   <%= task_info_content %>
 <% else %>
-  <%= render partial: "strata/tasks/task_info", locals: { task_info: task_info || default_task_info } %>
+  <%= render Strata::Tasks::TaskInfoComponent.new(task_info: task_info || default_task_info) %>
 <% end %>
 <section class="usa-section padding-top-2">
   <% if task_message %>

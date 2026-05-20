@@ -31,8 +31,8 @@ module Strata
       # @param task [Strata::Task] the task being shown
       # @param assigned_user_display_text [String, nil] display name for the task's assignee.
       #   Only read when the component falls back to its default +task_info+ row — that is,
-      #   when no +task_info:+ constructor arg, +task_info_content+ slot, or
-      #   +content_for(:task_info)+ override is provided. Otherwise it is unused and may be omitted.
+      #   when no +task_info:+ constructor arg and no +task_info_content+ slot is provided.
+      #   Otherwise it is unused and may be omitted.
       # @param task_info [Array<Hash>, nil] an array of +{label:, value:}+ hashes.
       #   When nil, a default row (status / due / assignee) is rendered.
       # @param breadcrumbs [Array<Hash>, nil] array of +{text:, link:}+ hashes. When nil, a
