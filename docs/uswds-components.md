@@ -89,7 +89,7 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 
 ## Breadcrumbs
 
-`Strata::US::BreadcrumbsComponent` — a navigation trail of links ending in the current page. See [USWDS Breadcrumb](https://designsystem.digital.gov/components/breadcrumb/).
+`Strata::US::BreadcrumbsComponent` — a navigation trail of links ending in the current page. See [USWDS Breadcrumb](https://designsystem.digital.gov/components/breadcrumb/) and the [Lookbook preview](../app/previews/strata/us/breadcrumbs_component_preview.rb).
 
 The last item is always rendered as the current page (no link, `usa-current` + `aria-current="page"`) regardless of whether an `href` was supplied.
 
