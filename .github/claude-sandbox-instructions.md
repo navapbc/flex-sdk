@@ -18,7 +18,7 @@ You can confirm you're in this context by checking that `$GITHUB_ACTIONS == "tru
    - Issue trigger → branch off the default branch
    - PR/review trigger → branch off the PR's head branch
 
-   Use a descriptive name like `claude/<short-description>`. Never push directly to `main`.
+   Name the branch `claude/issue-<number>-<short-description>-<YYYYMMDD>-<HHMM>` (or `claude/pr-<number>-...` when triggered from a PR). The `<short-description>` is a 2–5 word kebab-case summary of the issue/PR — e.g. `claude/issue-254-fix-audit-log-pagination-20260519-2004`. Never push directly to `main`.
 
 3. **Implement.** Follow every rule in [CLAUDE.md](../CLAUDE.md).
 
