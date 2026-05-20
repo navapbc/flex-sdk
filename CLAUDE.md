@@ -123,6 +123,7 @@ When working with SDK-specific features, consult these docs:
 | Topic                                                   | Doc                                                                                      |
 | ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Available SDK components                                | [strata-sdk-components.md](docs/strata-sdk-components.md)                                |
+| USWDS components                                        | [uswds-components.md](docs/uswds-components.md)                                          |
 | Strata attributes (Address, Array, MemorableDate, etc.) | [strata-attributes.md](docs/strata-attributes.md)                                        |
 | Contributing new Strata attributes                      | [contributing-strata-attributes.md](docs/contributing/contributing-strata-attributes.md) |
 | Data modeler & migration generator                      | [strata-data-modeler.md](docs/strata-data-modeler.md)                                    |
