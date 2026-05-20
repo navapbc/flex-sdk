@@ -45,8 +45,6 @@ module Strata
       private
 
       def build_preview_task
-        return nil unless defined?(PassportPhotoTask)
-
         PassportPhotoTask.new(due_on: 1.week.from_now)
       end
 
