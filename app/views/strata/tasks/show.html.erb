@@ -28,6 +28,4 @@
       breadcrumbs: local_assigns[:breadcrumbs],
       task_details_partial: local_assigns[:task_details_partial],
       details_locals: local_assigns.to_h
-    ) do |c| %>
-  <% c.with_task_details_content  { content_for(:task_details_partial) } if content_for?(:task_details_partial) %>
-<% end %>
+    ) %>

@@ -87,7 +87,7 @@ module Strata
       end
 
       def details_partial_locals
-        { task: task }.merge(details_locals)
+        details_locals.merge(task: task)
       end
     end
   end
