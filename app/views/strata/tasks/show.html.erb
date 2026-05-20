@@ -4,14 +4,15 @@
 
     Required locals:
     - task: Strata::Task - The task object
+    - One of:
+      - task_info: Array - An array of {label:, value:} hashes rendered as the info row.
+      - assigned_user_display_text: String - Name of the assignee. Used in the default
+        task_info row (status / due / assignee) that is rendered when no task_info: local
+        and no content_for(:task_info) override is provided.
 
     Optional locals:
-    - assigned_user_display_text: String - Name of the assignee. Only used when the
-      default task_info row is rendered (i.e. no task_info: local or
-      content_for(:task_info) is provided).
     - task_details_partial: String - Partial path to render for the task details. If not
       provided, the view looks for a partial named after the task type within `details/`.
-    - task_info: Array - An array of {label:, value:} hashes.
     - breadcrumbs: Array - Array of {text:, link:} hashes overriding the default trail.
 
     Legacy content_for overrides:
