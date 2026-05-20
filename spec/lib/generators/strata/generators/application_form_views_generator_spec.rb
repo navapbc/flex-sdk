@@ -252,11 +252,11 @@ RSpec.describe Strata::Generators::ApplicationFormViewsGenerator, type: :generat
       expect(File.read(layout_path)).to include('t("test_application_forms.actions.exit")')
     end
 
-    it "renders the step indicator partial" do
-      expect(File.read(layout_path)).to include('strata/shared/step_indicator')
+    it "renders the step indicator component" do
+      expect(File.read(layout_path)).to include("Strata::US::StepIndicatorComponent.new")
     end
 
-    it "passes step indicator locals from @flow_task" do
+    it "passes step indicator arguments from @flow_task" do
       content = File.read(layout_path)
       expect(content).to include("@flow_task.pages.map(&:name)")
       expect(content).to include("@flow_task.current_page.name")

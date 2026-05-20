@@ -4,10 +4,10 @@
     exit_text: t("<%= form_name.underscore.pluralize %>.actions.exit")
   } %>
   <div class="margin-y-2">
-    <%%= render partial: "strata/shared/step_indicator", locals: {
+    <%%= render Strata::US::StepIndicatorComponent.new(
       steps: @flow_task.pages.map(&:name),
       current_step: @flow_task.current_page.name,
-    } %>
+    ) %>
   </div>
   <%%= yield %>
 <%% end %>
