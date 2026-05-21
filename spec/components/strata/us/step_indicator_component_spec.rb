@@ -155,6 +155,18 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
       expect(page).to have_css(".usa-step-indicator__heading-text", text: "Default-scope review")
       expect(page).to have_css(".usa-step-indicator__segment-label", text: "Default-scope review")
     end
+
+    it "coerces an explicit translation_scope: nil to the default scope" do
+      I18n.backend.store_translations(
+        :en,
+        strata: { application_forms: { steps: { review: "Default-scope review" } } }
+      )
+
+      render_default(translation_scope: nil)
+
+      expect(page).to have_css(".usa-step-indicator__heading-text", text: "Default-scope review")
+      expect(page).to have_css(".usa-step-indicator__segment-label", text: "Default-scope review")
+    end
   end
 
   describe "large_header option" do

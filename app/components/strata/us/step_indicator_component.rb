@@ -25,10 +25,12 @@ module Strata
     #         header_first: true
     #       ) %>
     class StepIndicatorComponent < ViewComponent::Base
+      DEFAULT_TRANSLATION_SCOPE = "strata.application_forms.steps"
+
       def initialize(
         steps:,
         current_step:,
-        translation_scope: "strata.application_forms.steps",
+        translation_scope: DEFAULT_TRANSLATION_SCOPE,
         large_header: false,
         header_first: false,
         type: nil,
@@ -37,7 +39,7 @@ module Strata
       )
         @steps = Array(steps).map(&:to_sym)
         @current_step = current_step.to_sym
-        @translation_scope = translation_scope
+        @translation_scope = translation_scope || DEFAULT_TRANSLATION_SCOPE
         @large_header = large_header
         @header_first = header_first
         @type = type
