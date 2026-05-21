@@ -47,7 +47,7 @@ RSpec.describe Strata::Flows::QuestionPage do
   end
 
   describe "with an enclosing loop" do
-    let(:loop_node) { Strata::Flows::Loop.new(:prior_employer, association: :prior_employers) }
+    let(:loop_node) { Strata::Flows::Loop.new(:prior_employer, association: :sample_employment_details) }
     let(:page) { described_class.new("business_name", loop: loop_node) }
 
     it "is marked as in a loop" do
@@ -89,6 +89,19 @@ RSpec.describe Strata::Flows::QuestionPage do
           .to eq("/sample_application_forms/1/sample_employment_details/2/update_prior_employer_business_name")
         expect(page).to have_received(:update_prior_employer_business_name_sample_application_form_sample_employment_detail_path)
           .with(flow_record, child_record)
+      end
+
+      it "builds the helper name from the singularized association name (not the child class name)" do
+        # Capture the symbol passed to `send` to verify we route through association.singularize.
+        captured_method = nil
+        allow(page).to receive(:send).and_wrap_original do |original, method_name, *args|
+          captured_method = method_name
+          "/stubbed"
+        end
+
+        page.edit_path(flow_record, child_record)
+
+        expect(captured_method.to_s).to eq("edit_prior_employer_business_name_sample_application_form_sample_employment_detail_path")
       end
     end
 

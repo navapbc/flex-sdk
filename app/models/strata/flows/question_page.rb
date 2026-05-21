@@ -34,7 +34,7 @@ module Strata::Flows
     def edit_path(flow_record, loop_record = nil)
       if in_loop?
         send(
-          "#{edit_pathname}_#{flow_record.class.name.underscore}_#{loop_record.class.name.underscore}_path",
+          "#{edit_pathname}_#{flow_record.class.name.underscore}_#{@loop.association.to_s.singularize}_path",
           flow_record, loop_record
         )
       else
@@ -49,7 +49,7 @@ module Strata::Flows
     def update_path(flow_record, loop_record = nil)
       if in_loop?
         send(
-          "#{update_pathname}_#{flow_record.class.name.underscore}_#{loop_record.class.name.underscore}_path",
+          "#{update_pathname}_#{flow_record.class.name.underscore}_#{@loop.association.to_s.singularize}_path",
           flow_record, loop_record
         )
       else
