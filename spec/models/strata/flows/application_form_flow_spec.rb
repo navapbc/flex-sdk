@@ -167,6 +167,32 @@ RSpec.describe Strata::Flows::ApplicationFormFlow do
       expect(loop_node.association).to eq(:prior_employers)
     end
 
+    it "passes scope: through to the Loop node" do
+      scope_proc = ->(rel) { rel }
+      flow_with_scope = Class.new do
+        include Strata::Flows::ApplicationFormFlow
+
+        task :employment do
+          loop :prior_employer, association: :prior_employers, scope: :active do
+            question_page :business_name
+          end
+        end
+      end
+
+      flow_with_scope_proc = Class.new do
+        include Strata::Flows::ApplicationFormFlow
+
+        task :employment do
+          loop :prior_employer, association: :prior_employers, scope: scope_proc do
+            question_page :business_name
+          end
+        end
+      end
+
+      expect(flow_with_scope.tasks.first.pages.first.scope).to eq(:active)
+      expect(flow_with_scope_proc.tasks.first.pages.first.scope).to eq(scope_proc)
+    end
+
     it "back-references the loop on each enclosed QuestionPage" do
       loop_node = FlowWithLoop.tasks.find { |t| t.name == :employment }.pages[1]
 

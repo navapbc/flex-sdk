@@ -99,8 +99,10 @@ module Strata::Flows
 
       # Defines a loop over a has_many association on the flow record.
       # When association: is omitted, it defaults to the loop name.
-      def loop(loop_name, association: nil, &block)
-        @current_loop = Loop.new(loop_name, association: association)
+      # `scope:` optionally narrows the association — accepts a Symbol naming
+      # a scope on the relation, or a Proc that receives and returns a relation.
+      def loop(loop_name, association: nil, scope: nil, &block)
+        @current_loop = Loop.new(loop_name, association: association, scope: scope)
         @current_task.pages.push(@current_loop)
         block.call
         @current_loop = nil

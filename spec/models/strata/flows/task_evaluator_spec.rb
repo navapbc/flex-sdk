@@ -187,6 +187,32 @@ RSpec.describe Strata::Flows::TaskEvaluator do
       end
     end
 
+    describe "#next_path with a scoped loop" do
+      let(:loop_node) do
+        Strata::Flows::Loop.new(
+          :prior_employer,
+          association: :prior_employers,
+          pages: [ loop_business_name, loop_role ],
+          scope: ->(records) { records.select { |r| r.business_name == "Acme" } }
+        )
+      end
+
+      it "treats out-of-scope records as if they don't exist when advancing past the loop" do
+        # child_b is filtered out by the scope; cursor at child_a's last page exits the loop.
+        allow(outer_after).to receive(:edit_path).with(flow_record).and_return("/years_employed")
+        cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 1)
+
+        expect(cursor.next_path).to eq("/years_employed")
+      end
+
+      it "enters the loop at the first in-scope record from the outer page" do
+        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/business_name")
+        cursor = described_class.new(task, flow_record, 0)
+
+        expect(cursor.next_path).to eq("/loop/a/business_name")
+      end
+    end
+
     describe "#next_path with if: predicates inside the loop" do
       let(:loop_role) do
         Strata::Flows::QuestionPage.new(:role, if: ->(child) { child.business_name == "Globex" })
