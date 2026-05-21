@@ -1,13 +1,5 @@
-<%#
-  DEPRECATED: Prefer rendering Strata::US::StepIndicatorComponent directly.
-
-    <%= render Strata::US::StepIndicatorComponent.new(
-          steps: ..., current_step: ..., type: :counters, large_header: true, header_first: true
-        ) %>
-
-  This partial is preserved so existing host apps and generated layouts that
-  call `render partial: "strata/shared/step_indicator"` continue to work.
-%>
+<%# DEPRECATED: prefer rendering Strata::US::StepIndicatorComponent directly. %>
+<%# Preserved so existing callers using `render partial: "strata/shared/step_indicator"` keep working. %>
 <%= render Strata::US::StepIndicatorComponent.new(
       steps: steps,
       current_step: current_step,
