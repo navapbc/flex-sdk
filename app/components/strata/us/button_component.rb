@@ -8,11 +8,12 @@ module Strata
     #
     # See https://designsystem.digital.gov/components/button/.
     #
-    # The +strata_link_to+ and +strata_button_to+ view helpers (see
-    # Strata::ButtonsHelper) wrap Rails' +link_to+ / +button_to+ and apply this
-    # styling for Rails-rendered tags. For other call sites — +form.button+,
-    # a non-Strata +f.submit+ — pass +Strata::US::ButtonComponent.css_classes+
-    # as the +:class+. The class-method helper is the single source of truth.
+    # The +strata_link_to+ (see Strata::LinksHelper) and +strata_button_to+
+    # (see Strata::ButtonsHelper) view helpers wrap Rails' +link_to+ /
+    # +button_to+ and apply this styling for Rails-rendered tags. For other
+    # call sites — +form.button+, a non-Strata +f.submit+ — pass
+    # +Strata::US::ButtonComponent.css_classes+ as the +:class+. The
+    # class-method helper is the single source of truth.
     #
     # @example A primary button
     #   <%= render Strata::US::ButtonComponent.new do %>
