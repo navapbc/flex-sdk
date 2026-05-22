@@ -24,8 +24,18 @@ module Strata
     #         large_header: true,
     #         header_first: true
     #       ) %>
+    #
+    # The `type` option also accepts `:counters_sm`, `:center`, and `:no_labels`,
+    # each of which maps to the corresponding `usa-step-indicator--*` modifier.
     class StepIndicatorComponent < ViewComponent::Base
       DEFAULT_TRANSLATION_SCOPE = "strata.application_forms.steps"
+
+      TYPE_CLASSES = {
+        counters: "usa-step-indicator--counters",
+        counters_sm: "usa-step-indicator--counters-sm",
+        center: "usa-step-indicator--center",
+        no_labels: "usa-step-indicator--no-labels"
+      }.freeze
 
       def initialize(
         steps:,
@@ -80,7 +90,7 @@ module Strata
       def wrapper_classes
         class_names(
           "usa-step-indicator",
-          { "usa-step-indicator--counters" => @type == :counters },
+          TYPE_CLASSES[@type],
           @classes
         )
       end

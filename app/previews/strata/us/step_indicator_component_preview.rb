@@ -30,6 +30,30 @@ module Strata
         )
       end
 
+      def counters_sm
+        render Strata::US::StepIndicatorComponent.new(
+          type: :counters_sm,
+          steps: [ :in_progress, :submitted, :decision_made ],
+          current_step: :submitted
+        )
+      end
+
+      def center
+        render Strata::US::StepIndicatorComponent.new(
+          type: :center,
+          steps: [ :in_progress, :submitted, :decision_made ],
+          current_step: :submitted
+        )
+      end
+
+      def no_labels
+        render Strata::US::StepIndicatorComponent.new(
+          type: :no_labels,
+          steps: [ :in_progress, :submitted, :decision_made ],
+          current_step: :submitted
+        )
+      end
+
       # @!group Statuses
 
       def in_progress

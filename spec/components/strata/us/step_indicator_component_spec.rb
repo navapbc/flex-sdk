@@ -114,6 +114,54 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
     end
   end
 
+  describe "type: :counters_sm variant" do
+    it "adds usa-step-indicator--counters-sm to the root when type: :counters_sm" do
+      render_default(type: :counters_sm)
+
+      expect(page).to have_css("div.usa-step-indicator.usa-step-indicator--counters-sm")
+    end
+
+    it "does not add usa-step-indicator--counters-sm by default" do
+      render_default
+
+      expect(page).not_to have_css(".usa-step-indicator--counters-sm")
+    end
+
+    it "does not add the plain --counters class when type: :counters_sm" do
+      render_default(type: :counters_sm)
+
+      expect(page).not_to have_css(".usa-step-indicator--counters:not(.usa-step-indicator--counters-sm)")
+    end
+  end
+
+  describe "type: :center variant" do
+    it "adds usa-step-indicator--center to the root when type: :center" do
+      render_default(type: :center)
+
+      expect(page).to have_css("div.usa-step-indicator.usa-step-indicator--center")
+    end
+
+    it "does not add usa-step-indicator--center by default" do
+      render_default
+
+      expect(page).not_to have_css(".usa-step-indicator--center")
+    end
+  end
+
+  describe "type: :no_labels variant" do
+    it "adds usa-step-indicator--no-labels to the root when type: :no_labels" do
+      render_default(type: :no_labels)
+
+      expect(page).to have_css("div.usa-step-indicator.usa-step-indicator--no-labels")
+    end
+
+    it "does not add usa-step-indicator--no-labels by default" do
+      render_default
+
+      expect(page).not_to have_css(".usa-step-indicator--no-labels")
+    end
+  end
+
   describe "i18n display names" do
     let(:scope) { "spec.step_indicator_component.steps" }
 
