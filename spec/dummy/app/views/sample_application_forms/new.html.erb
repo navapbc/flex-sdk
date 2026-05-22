@@ -2,10 +2,11 @@
   <h1 class="margin-top-0"><%= t(".title") %></h1>
   <%= render Strata::US::ButtonGroupComponent.new do |group| %>
     <% group.with_item do %>
-      <%= link_to(
+      <%= strata_link_to(
         t("actions.back"),
         sample_application_forms_path,
-        class: Strata::US::ButtonComponent.css_classes(variant: :outline)
+        as: :button,
+        variant: :outline
       ) %>
     <% end %>
     <% group.with_item do %>

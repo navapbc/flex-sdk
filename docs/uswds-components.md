@@ -162,34 +162,32 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 <% end %>
 ```
 
-### `strata_button_to`
+### `strata_link_to` and `strata_button_to`
 
-For non-GET actions, use the `strata_button_to` view helper. It takes the same arguments as Rails' `button_to` (generating a `<form>` with CSRF protection around a `<button>`), plus `variant:`, `size:`, and `inverse:`:
+For Rails-rendered tags, use the view helpers. `strata_button_to` wraps Rails' `button_to` (form-wrapped `<button>` with CSRF) and always applies USWDS button styling. `strata_link_to` wraps Rails' `link_to`, defaulting to a plain passthrough; pass `as: :button` to opt into button styling.
 
 ```erb
+<%# Button-styled <a> (GET navigation) %>
+<%= strata_link_to "Edit", edit_path, as: :button, variant: :outline %>
+
+<%# Form-wrapped <button> (POST/PATCH/DELETE with CSRF) %>
 <%= strata_button_to "Delete", item_path(item), method: :delete, variant: :secondary %>
+
+<%# Plain <a> (no styling) %>
+<%= strata_link_to "Read more", article_path %>
 ```
 
-A caller-supplied `:class` is appended to the USWDS classes, so spacing/layout utilities still work:
+A caller-supplied `:class` is appended to the USWDS classes:
 
 ```erb
-<%= strata_button_to "Submit", path, method: :post, variant: :outline, class: "margin-top-4" %>
+<%= strata_link_to "Back", root_path, as: :button, variant: :outline, class: "margin-top-4" %>
 ```
 
-There is intentionally **no** `strata_link_to` helper — a `link_to` shouldn't always imply button styling. For a button-styled link, render the component with `href:`, or use the class-method helper on a regular `link_to`:
-
-```erb
-<%= render Strata::US::ButtonComponent.new(href: edit_path, variant: :outline) do %>
-  Edit
-<% end %>
-
-<%= link_to "Edit", edit_path,
-      class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
-```
+`strata_link_to` raises `ArgumentError` if `:variant`, `:size`, or `:inverse` are passed without `as: :button` — that surfaces the case where someone forgot to opt in to button styling instead of silently producing a plain link. It also raises on an unrecognized `:as` value (currently only `:button` is supported).
 
 ### Lower-level: `Strata::US::ButtonComponent.css_classes`
 
-When neither the component nor the helper fits — `form.button`, a non-Strata `f.submit`, a `link_to` that needs button styling, or any other call site where you need the bare class string — use the class-method helper directly:
+When neither the component nor the helpers fit — `form.button`, a non-Strata `f.submit`, or any other call site where you need the bare class string — use the class-method helper directly:
 
 ```erb
 <%= form.button "Approve", value: "approve",
