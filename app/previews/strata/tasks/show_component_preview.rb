@@ -13,7 +13,6 @@ module Strata
     class ShowComponentPreview < ViewComponent::Preview
       def default
         task = build_preview_task
-        return render(plain: "No task class available for preview") unless task
 
         render ShowComponent.new(
           task: task,
@@ -26,7 +25,6 @@ module Strata
 
       def with_custom_task_info
         task = build_preview_task
-        return render(plain: "No task class available for preview") unless task
 
         render ShowComponent.new(
           task: task,

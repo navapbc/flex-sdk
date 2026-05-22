@@ -19,6 +19,11 @@
     - :breadcrumbs - still respected, handled by the inner
       `strata/shared/_breadcrumbs` partial's own `content_for?` check.
       No wrapper-level forwarding is needed.
+    - :task_info - Previously, content_for(:task_info) would allow rendering custom
+      markup in the task info section. This has been replaced with the 'with_task_info_content' slot.
+    - :task_details_partial - Previously, content_for(:task_details_partial) would allow rendering custom
+      markup instead of the task details partial rendering. This has been replaced with the 'with_task_details_content' slot.
+
 %>
 <%= render Strata::Tasks::ShowComponent.new(
       task: task,
