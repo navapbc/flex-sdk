@@ -215,19 +215,41 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
     end
   end
 
-  describe "unknown current_step (defensive)" do
-    it "renders without raising and marks no segment as current or complete" do
-      render_inline(described_class.new(steps: steps, current_step: :unknown_step))
-
-      expect(page).not_to have_css("li.usa-step-indicator__segment--current")
-      expect(page).not_to have_css("li.usa-step-indicator__segment--complete")
+  describe "current_step not in steps" do
+    it "raises ArgumentError when current_step is not in steps" do
+      expect {
+        described_class.new(steps: [ :a, :b, :c ], current_step: :unknown)
+      }.to raise_error(
+        ArgumentError,
+        "Invalid current_step: :unknown. Must be one of [:a, :b, :c]"
+      )
     end
 
-    it "falls back to the humanized current_step in the heading when steps is empty" do
-      render_inline(described_class.new(steps: [], current_step: :unknown_step))
+    it "raises ArgumentError when steps is empty" do
+      expect {
+        described_class.new(steps: [], current_step: :anything)
+      }.to raise_error(
+        ArgumentError,
+        "Invalid current_step: :anything. Must be one of []"
+      )
+    end
 
-      expect(page).to have_css(".usa-step-indicator__heading-text", text: "Unknown step")
-      expect(page).not_to have_css("li.usa-step-indicator__segment")
+    it "raises at initialization (before render)" do
+      expect {
+        described_class.new(steps: [ :a, :b ], current_step: :c)
+      }.to raise_error(ArgumentError)
+    end
+
+    it "validates after symbol normalization (string current_step matching symbol steps)" do
+      expect {
+        described_class.new(steps: [ :a, :b ], current_step: "b")
+      }.not_to raise_error
+    end
+
+    it "validates after symbol normalization (symbol current_step matching string steps)" do
+      expect {
+        described_class.new(steps: [ "a", "b" ], current_step: :b)
+      }.not_to raise_error
     end
   end
 

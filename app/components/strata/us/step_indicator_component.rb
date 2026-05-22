@@ -39,6 +39,10 @@ module Strata
       )
         @steps = Array(steps).map(&:to_sym)
         @current_step = current_step.to_sym
+        unless @steps.include?(@current_step)
+          raise ArgumentError,
+                "Invalid current_step: #{@current_step.inspect}. Must be one of #{@steps.inspect}"
+        end
         @translation_scope = translation_scope || DEFAULT_TRANSLATION_SCOPE
         @large_header = large_header
         @header_first = header_first
@@ -58,11 +62,11 @@ module Strata
       end
 
       def current_step_index
-        @current_step_index ||= @steps.index(@current_step) || -1
+        @current_step_index ||= @steps.index(@current_step)
       end
 
       def current_step_name
-        step_indicators[current_step_index]&.dig(:name) || @current_step.to_s.humanize
+        step_indicators[current_step_index][:name]
       end
 
       def total_steps
