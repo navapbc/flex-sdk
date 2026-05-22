@@ -15,10 +15,10 @@
     <br />
     <ul class="usa-list--unstyled usa-button-group" role="group">
       <li class="usa-button-group__item">
-        <%= form.button "Approve", value: "approve", class: "usa-button", name: "task-action" %>
+        <%= form.button "Approve", value: "approve", class: Strata::US::ButtonComponent.css_classes, name: "task-action" %>
       </li>
       <li class="usa-button-group__item">
-        <%= form.button "Deny", value: "deny", class: "usa-button usa-button--secondary", name: "task-action" %>
+        <%= form.button "Deny", value: "deny", class: Strata::US::ButtonComponent.css_classes(variant: :secondary), name: "task-action" %>
       </li>
     </ul>
   </fieldset>

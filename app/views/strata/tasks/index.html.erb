@@ -41,7 +41,7 @@
                       disabled: !unassigned_tasks&.any?,
                       method: :post,
                       title: unassigned_tasks&.any? ? t("strata.tasks.messages.no_tasks_available") : nil,
-                      class: "usa-button" %>
+                      class: Strata::US::ButtonComponent.css_classes %>
     </div>
   </div>
   <% if tasks&.any? %>

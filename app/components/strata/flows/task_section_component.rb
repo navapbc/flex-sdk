@@ -48,14 +48,14 @@ module Strata
           link_to(
             t(".actions.continue"),
             @task.path(@flow.record),
-            class: "usa-button usa-button--outline",
+            class: Strata::US::ButtonComponent.css_classes(variant: :outline),
             method: :get
           )
         else
           link_to(
             t(".actions.start"),
             @task.path(@flow.record),
-            class: "usa-button",
+            class: Strata::US::ButtonComponent.css_classes,
             method: :get
           )
         end

@@ -4,6 +4,6 @@
     task_info: [
       { label: "Status:", value: @task.status.camelize },
       { label: "Due On:", value: local_en_us(@task.due_on) },
-      { label: "Assigned To:", value: @assignee&.full_name || link_to("Assign to me", "#", class: "usa-button") }
+      { label: "Assigned To:", value: @assignee&.full_name || link_to("Assign to me", "#", class: Strata::US::ButtonComponent.css_classes) }
     ]
 } %>

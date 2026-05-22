@@ -5,11 +5,11 @@
       <%= link_to(
         t("actions.back"),
         sample_application_forms_path,
-        class: "usa-button usa-button--outline"
+        class: Strata::US::ButtonComponent.css_classes(variant: :outline)
       ) %>
     </li>
     <li>
-      <%= f.submit t(".agree_button"), class: "usa-button" %>
+      <%= f.submit t(".agree_button") %>
     </li>
   </ul>
 <% end %>

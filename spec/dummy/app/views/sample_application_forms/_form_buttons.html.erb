@@ -4,7 +4,7 @@
 
 <ul class="usa-button-group">
   <li>
-    <%= link_to t("actions.back"), back_path, class: "usa-button usa-button--outline" %>
+    <%= link_to t("actions.back"), back_path, class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
   </li>
   <li>
     <%= f.submit t("actions.save_and_continue") %>

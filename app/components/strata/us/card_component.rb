@@ -12,7 +12,7 @@ module Strata
     #     <% end %>
     #     <% card.with_body { "<p>Card body content.</p>".html_safe } %>
     #     <% card.with_footer do %>
-    #       <%= button_tag "Action", class: "usa-button" %>
+    #       <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
     #     <% end %>
     #   <% end %>
     #
