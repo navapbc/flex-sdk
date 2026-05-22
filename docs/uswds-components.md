@@ -17,10 +17,11 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 1. [Accordion](#accordion)
 2. [Alert](#alert)
 3. [Breadcrumbs](#breadcrumbs)
-4. [Card](#card)
-5. [Card Group](#card-group)
-6. [List](#list)
-7. [Table](#table)
+4. [Button](#button)
+5. [Card](#card)
+6. [Card Group](#card-group)
+7. [List](#list)
+8. [Table](#table)
 
 ---
 
@@ -122,6 +123,61 @@ Any other keyword arguments are forwarded as HTML attributes on the `<nav>`.
        { text: "Case #12345" }
      ]) %>
 <% end %>
+```
+
+---
+
+## Button
+
+`Strata::US::ButtonComponent` — a USWDS-styled button rendered as either a `<button>` or an `<a>`. See [USWDS Button](https://designsystem.digital.gov/components/button/) and the [Lookbook preview](../app/previews/strata/us/button_component_preview.rb).
+
+Pass an `href:` to render an `<a class="usa-button">`; otherwise the component renders a `<button>`.
+
+**Options**
+
+- `variant:` — visual variant. One of `:default` (primary), `:secondary`, `:accent_cool`, `:accent_warm`, `:base`, `:outline`, `:unstyled`. Defaults to `:default`.
+- `size:` — `:default` or `:big`. Defaults to `:default`.
+- `inverse:` — render the inverse modifier for use on dark backgrounds. Defaults to `false`. USWDS recommends pairing this with `:outline` or `:unstyled`.
+- `type:` — `:button`, `:submit`, or `:reset`. Only applied to `<button>` elements (ignored when `href:` is set). Defaults to `:button`.
+- `href:` — when set, renders an `<a>` element instead of a `<button>`.
+- `disabled:` — when true, adds the `disabled` attribute on `<button>` or `aria-disabled="true"` on `<a>`. Defaults to `false`.
+- `classes:` — extra CSS classes appended to the root element.
+
+Any other keyword arguments are forwarded as HTML attributes on the rendered element.
+
+**Example**
+
+```erb
+<%= render Strata::US::ButtonComponent.new do %>
+  Save
+<% end %>
+
+<%= render Strata::US::ButtonComponent.new(href: edit_path, variant: :outline) do %>
+  Edit
+<% end %>
+
+<%= render Strata::US::ButtonComponent.new(variant: :secondary, size: :big, disabled: true) do %>
+  Delete
+<% end %>
+```
+
+### Using the button style without the component
+
+Some call sites need Rails to own the element rendering — most notably `button_to` (which generates its own `<form>`), `link_to`, `form.button`, and `f.submit`. For these, use the class-method helper `Strata::US::ButtonComponent.css_classes` to produce a matching USWDS class string:
+
+```erb
+<%= button_to "Delete", path, method: :delete,
+      class: Strata::US::ButtonComponent.css_classes(variant: :secondary) %>
+
+<%= link_to "Edit", edit_path,
+      class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
+```
+
+The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
+
+```erb
+<%= f.submit "Save draft", variant: :outline %>
+<%= f.submit "Apply", big: true %>
 ```
 
 ---

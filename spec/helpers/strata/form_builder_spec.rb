@@ -341,11 +341,52 @@ RSpec.describe Strata::FormBuilder do
       expect(result).to have_element(:input, type: 'submit', class: 'usa-button')
     end
 
+    it 'does not add variant modifier classes by default' do
+      expect(result).not_to have_css('input.usa-button--secondary')
+      expect(result).not_to have_css('input.usa-button--outline')
+      expect(result).not_to have_css('input.usa-button--big')
+    end
+
     context 'with big set to true' do
       let (:result) { builder.submit(nil, { big: true }) }
 
       it 'outputs a big submit button' do
         expect(result).to have_element(:input, type: 'submit', class: 'usa-button--big')
+      end
+
+      it 'preserves the margin-y-6 spacing for big submits' do
+        expect(result).to have_element(:input, class: /margin-y-6/)
+      end
+    end
+
+    context 'with a variant' do
+      let (:result) { builder.submit(nil, { variant: :outline }) }
+
+      it 'applies the variant modifier alongside usa-button' do
+        expect(result).to have_element(:input, type: 'submit', class: 'usa-button usa-button--outline')
+      end
+
+      it 'does not leak the :variant key onto the input as an attribute' do
+        expect(result).not_to have_css('input[variant]')
+      end
+    end
+
+    context 'with both :variant and :big' do
+      let (:result) { builder.submit(nil, { variant: :secondary, big: true }) }
+
+      it 'combines variant + size + spacing modifiers' do
+        expect(result).to have_element(
+          :input,
+          type: 'submit',
+          class: 'usa-button usa-button--secondary usa-button--big margin-y-6'
+        )
+      end
+    end
+
+    context 'with an unknown variant' do
+      it 'raises ArgumentError' do
+        expect { builder.submit(nil, { variant: :nonsense }) }
+          .to raise_error(ArgumentError, /variant/)
       end
     end
   end
