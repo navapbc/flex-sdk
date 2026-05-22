@@ -15,7 +15,8 @@ module Strata
     #       <%= render Strata::US::ButtonComponent.new do %>Save<% end %>
     #     <% end %>
     #     <% group.with_item do %>
-    #       <%= strata_link_to "Cancel", cancel_path, variant: :outline %>
+    #       <%= link_to "Cancel", cancel_path,
+    #             class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
     #     <% end %>
     #   <% end %>
     #

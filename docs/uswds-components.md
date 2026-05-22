@@ -162,25 +162,34 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 <% end %>
 ```
 
-### View helpers: `strata_link_to` and `strata_button_to`
+### `strata_button_to`
 
-For the common cases — a button-styled `<a>` or a `button_to`-generated `<form>` + `<button>` — use the view helpers. They take the same arguments as Rails' `link_to` / `button_to`, plus `variant:`, `size:`, and `inverse:`:
+For non-GET actions, use the `strata_button_to` view helper. It takes the same arguments as Rails' `button_to` (generating a `<form>` with CSRF protection around a `<button>`), plus `variant:`, `size:`, and `inverse:`:
 
 ```erb
-<%= strata_link_to "Edit", edit_path, variant: :outline %>
-
 <%= strata_button_to "Delete", item_path(item), method: :delete, variant: :secondary %>
 ```
 
 A caller-supplied `:class` is appended to the USWDS classes, so spacing/layout utilities still work:
 
 ```erb
-<%= strata_link_to "Back", root_path, variant: :outline, class: "margin-top-4" %>
+<%= strata_button_to "Submit", path, method: :post, variant: :outline, class: "margin-top-4" %>
+```
+
+There is intentionally **no** `strata_link_to` helper — a `link_to` shouldn't always imply button styling. For a button-styled link, render the component with `href:`, or use the class-method helper on a regular `link_to`:
+
+```erb
+<%= render Strata::US::ButtonComponent.new(href: edit_path, variant: :outline) do %>
+  Edit
+<% end %>
+
+<%= link_to "Edit", edit_path,
+      class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
 ```
 
 ### Lower-level: `Strata::US::ButtonComponent.css_classes`
 
-When the view helpers don't fit — `form.button`, a non-Strata `f.submit`, or any other call site where you need the bare class string — use the class-method helper directly:
+When neither the component nor the helper fits — `form.button`, a non-Strata `f.submit`, a `link_to` that needs button styling, or any other call site where you need the bare class string — use the class-method helper directly:
 
 ```erb
 <%= form.button "Approve", value: "approve",

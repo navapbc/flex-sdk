@@ -45,16 +45,17 @@ module Strata
             { class: "display-flex flex-align-center flex-justify-end" },
           ).concat(link_to(t(".actions.edit"), @task.path(@flow.record), class: "usa-link"))
         elsif @task.started?(@flow.record)
-          helpers.strata_link_to(
+          link_to(
             t(".actions.continue"),
             @task.path(@flow.record),
-            variant: :outline,
+            class: Strata::US::ButtonComponent.css_classes(variant: :outline),
             method: :get
           )
         else
-          helpers.strata_link_to(
+          link_to(
             t(".actions.start"),
             @task.path(@flow.record),
+            class: Strata::US::ButtonComponent.css_classes,
             method: :get
           )
         end
