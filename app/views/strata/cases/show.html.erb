@@ -23,6 +23,8 @@
       text: kase.id
     }
   ]
+  # Translate the legacy `link:` key to `href:` so downstream callers overriding
+  # `breadcrumbs` with the pre-component hash shape still render clickable links.
   breadcrumbs = breadcrumbs.map { |bc| bc.transform_keys { |k| k == :link ? :href : k } }
 %>
 <%= render Strata::US::BreadcrumbsComponent.new do |bc| %>

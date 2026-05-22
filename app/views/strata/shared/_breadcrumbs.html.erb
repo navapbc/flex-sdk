@@ -1,3 +1,5 @@
+<%# Translate the legacy `link:` key to `href:` so downstream callers passing the
+    pre-component hash shape still render clickable links. %>
 <%
   breadcrumbs = breadcrumbs.map { |bc| bc.transform_keys { |k| k == :link ? :href : k } }
 %>
