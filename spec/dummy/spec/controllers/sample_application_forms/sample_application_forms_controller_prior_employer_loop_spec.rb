@@ -72,6 +72,22 @@ RSpec.describe SampleApplicationFormsController do
         expect(response).to have_http_status(:unprocessable_content)
         expect(child_b.reload.business_name).to be_nil
       end
+
+      it "preserves submitted values on the re-rendered form rather than reverting to the DB state" do
+        # child_a starts with business_name: "Acme". Submit an invalid value that
+        # passes type coercion but fails validation, then verify the form shows
+        # the submitted value (not the original "Acme").
+        patch :update_prior_employer_business_name, params: {
+          sample_application_form_id: application.id,
+          id: child_a.id,
+          sample_employment_detail: { business_name: "" },
+          locale: "en"
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to have_field("sample_employment_detail[business_name]", with: "")
+        expect(response.body).not_to have_field("sample_employment_detail[business_name]", with: "Acme")
+      end
     end
   end
 

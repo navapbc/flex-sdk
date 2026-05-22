@@ -72,11 +72,10 @@ module Strata::Flows
 
           # /{record_class}/:id/update_{question_page_name} (or nested under loop child)
           define_method(page.update_pathname) do
-            target_record = if page.in_loop?
-              flow_record.public_send(page.loop.association).find(params[:id])
-            else
-              flow_record
-            end
+            # For loop pages, reuse the loop_record already resolved by set_flow_task
+            # so that assign_attributes/errors land on the same instance the view
+            # renders, preserving submitted values across a re-render.
+            target_record = page.in_loop? ? @flow_task.loop_record : flow_record
 
             record_class_name = target_record.class.name.underscore.to_sym
             form_params = params.require(record_class_name).permit(*(page.attributes(target_record.class)))
