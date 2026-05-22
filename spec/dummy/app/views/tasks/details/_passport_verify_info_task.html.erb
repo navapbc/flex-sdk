@@ -13,13 +13,13 @@
       <%= form.date_field :dob, :value => application_form.date_of_birth, readonly: true, class: "usa-input", "aria-readonly": true %>
     </p>
     <br />
-    <ul class="usa-list--unstyled usa-button-group" role="group">
-      <li class="usa-button-group__item">
+    <%= render Strata::US::ButtonGroupComponent.new(role: "group") do |group| %>
+      <% group.with_item do %>
         <%= form.button "Approve", value: "approve", class: Strata::US::ButtonComponent.css_classes, name: "task-action" %>
-      </li>
-      <li class="usa-button-group__item">
+      <% end %>
+      <% group.with_item do %>
         <%= form.button "Deny", value: "deny", class: Strata::US::ButtonComponent.css_classes(variant: :secondary), name: "task-action" %>
-      </li>
-    </ul>
+      <% end %>
+    <% end %>
   </fieldset>
 <% end %>

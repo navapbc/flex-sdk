@@ -18,10 +18,11 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 2. [Alert](#alert)
 3. [Breadcrumbs](#breadcrumbs)
 4. [Button](#button)
-5. [Card](#card)
-6. [Card Group](#card-group)
-7. [List](#list)
-8. [Table](#table)
+5. [Button Group](#button-group)
+6. [Card](#card)
+7. [Card Group](#card-group)
+8. [List](#list)
+9. [Table](#table)
 
 ---
 
@@ -178,6 +179,39 @@ The Strata form builder's `f.submit` already delegates to this helper internally
 ```erb
 <%= f.submit "Save draft", variant: :outline %>
 <%= f.submit "Apply", big: true %>
+```
+
+---
+
+## Button Group
+
+`Strata::US::ButtonGroupComponent` — a `<ul class="usa-button-group">` of related buttons, with the option to render the segmented variant. See [USWDS Button group](https://designsystem.digital.gov/components/button-group/) and the [Lookbook preview](../app/previews/strata/us/button_group_component_preview.rb).
+
+The component wraps each item in `<li class="usa-button-group__item">`. The `<li>` contents are up to the caller — typically a `Strata::US::ButtonComponent`, a `link_to`, or an `f.submit`.
+
+**Options**
+
+- `segmented:` — render the segmented variant (`usa-button-group--segmented`). Defaults to `false`.
+- `classes:` — extra CSS classes appended to the root `<ul>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<ul>`.
+
+**Slots**
+
+- `with_item(classes: nil, **html_attributes) { ... }` — a single button-group entry. Extra keyword arguments are forwarded as HTML attributes on the `<li>`.
+
+**Example**
+
+```erb
+<%= render Strata::US::ButtonGroupComponent.new do |group| %>
+  <% group.with_item do %>
+    <%= render Strata::US::ButtonComponent.new do %>Save<% end %>
+  <% end %>
+  <% group.with_item do %>
+    <%= link_to "Cancel", cancel_path,
+          class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
+  <% end %>
+<% end %>
 ```
 
 ---

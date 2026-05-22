@@ -2,11 +2,11 @@
 
 <hr class="border-base-lightest margin-top-4">
 
-<ul class="usa-button-group">
-  <li>
+<%= render Strata::US::ButtonGroupComponent.new do |group| %>
+  <% group.with_item do %>
     <%= link_to t("strata.form_builder.actions.back"), back_path, class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
-  </li>
-  <li>
+  <% end %>
+  <% group.with_item do %>
     <%= f.submit t("strata.form_builder.actions.save_and_continue") %>
-  </li>
-</ul>
+  <% end %>
+<% end %>
