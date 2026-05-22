@@ -162,16 +162,29 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 <% end %>
 ```
 
-### Using the button style without the component
+### View helpers: `strata_link_to` and `strata_button_to`
 
-Some call sites need Rails to own the element rendering — most notably `button_to` (which generates its own `<form>`), `link_to`, `form.button`, and `f.submit`. For these, use the class-method helper `Strata::US::ButtonComponent.css_classes` to produce a matching USWDS class string:
+For the common cases — a button-styled `<a>` or a `button_to`-generated `<form>` + `<button>` — use the view helpers. They take the same arguments as Rails' `link_to` / `button_to`, plus `variant:`, `size:`, and `inverse:`:
 
 ```erb
-<%= button_to "Delete", path, method: :delete,
-      class: Strata::US::ButtonComponent.css_classes(variant: :secondary) %>
+<%= strata_link_to "Edit", edit_path, variant: :outline %>
 
-<%= link_to "Edit", edit_path,
-      class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
+<%= strata_button_to "Delete", item_path(item), method: :delete, variant: :secondary %>
+```
+
+A caller-supplied `:class` is appended to the USWDS classes, so spacing/layout utilities still work:
+
+```erb
+<%= strata_link_to "Back", root_path, variant: :outline, class: "margin-top-4" %>
+```
+
+### Lower-level: `Strata::US::ButtonComponent.css_classes`
+
+When the view helpers don't fit — `form.button`, a non-Strata `f.submit`, or any other call site where you need the bare class string — use the class-method helper directly:
+
+```erb
+<%= form.button "Approve", value: "approve",
+      class: Strata::US::ButtonComponent.css_classes %>
 ```
 
 The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:

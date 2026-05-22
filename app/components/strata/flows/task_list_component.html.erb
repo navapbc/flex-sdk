@@ -6,8 +6,8 @@
     <% end %>
 </ul>
 
-<%= button_to t(".actions.review_and_submit"),
+<%= strata_button_to t(".actions.review_and_submit"),
             @flow.end_path,
             method: :get,
-            class: "#{Strata::US::ButtonComponent.css_classes} margin-top-2",
+            class: "margin-top-2",
             disabled: !@flow.completed? %>

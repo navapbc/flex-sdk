@@ -36,12 +36,11 @@
     </div>
     <div class="grid-col-12 tablet:grid-col-3">
       <label class="usa-label" for="next-task-button" style="margin-bottom: 0.5rem"><%= t("strata.tasks.index.actions_label") %></label>
-      <%= button_to t("strata.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task),
+      <%= strata_button_to t("strata.tasks.actions.pick_next"), url_for(only_path: true, action: :pick_up_next_task),
                       id: "next-task-button",
                       disabled: !unassigned_tasks&.any?,
                       method: :post,
-                      title: unassigned_tasks&.any? ? t("strata.tasks.messages.no_tasks_available") : nil,
-                      class: Strata::US::ButtonComponent.css_classes %>
+                      title: unassigned_tasks&.any? ? t("strata.tasks.messages.no_tasks_available") : nil %>
     </div>
   </div>
   <% if tasks&.any? %>

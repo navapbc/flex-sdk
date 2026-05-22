@@ -4,7 +4,7 @@
 
 <%= render Strata::US::ButtonGroupComponent.new do |group| %>
   <% group.with_item do %>
-    <%= link_to t("actions.back"), back_path, class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
+    <%= strata_link_to t("actions.back"), back_path, variant: :outline %>
   <% end %>
   <% group.with_item do %>
     <%= f.submit t("actions.save_and_continue") %>
