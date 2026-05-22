@@ -162,44 +162,11 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 <% end %>
 ```
 
-### `strata_link_to` and `strata_button_to`
+### Helpers and `css_classes`
 
-For Rails-rendered tags, use the view helpers. `strata_button_to` wraps Rails' `button_to` (form-wrapped `<button>` with CSRF) and always applies USWDS button styling. `strata_link_to` wraps Rails' `link_to`, defaulting to a plain passthrough; pass `as: :button` to opt into button styling.
+For Rails-rendered tags (`link_to`, `button_to`, `form.button`, `f.submit`), use the Strata view helpers — `strata_link_to ..., as: :button` and `strata_button_to` — instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
 
-```erb
-<%# Button-styled <a> (GET navigation) %>
-<%= strata_link_to "Edit", edit_path, as: :button, variant: :outline %>
-
-<%# Form-wrapped <button> (POST/PATCH/DELETE with CSRF) %>
-<%= strata_button_to "Delete", item_path(item), method: :delete, variant: :secondary %>
-
-<%# Plain <a> (no styling) %>
-<%= strata_link_to "Read more", article_path %>
-```
-
-A caller-supplied `:class` is appended to the USWDS classes:
-
-```erb
-<%= strata_link_to "Back", root_path, as: :button, variant: :outline, class: "margin-top-4" %>
-```
-
-`strata_link_to` raises `ArgumentError` if `:variant`, `:size`, or `:inverse` are passed without `as: :button` — that surfaces the case where someone forgot to opt in to button styling instead of silently producing a plain link. It also raises on an unrecognized `:as` value (currently only `:button` is supported).
-
-### Lower-level: `Strata::US::ButtonComponent.css_classes`
-
-When neither the component nor the helpers fit — `form.button`, a non-Strata `f.submit`, or any other call site where you need the bare class string — use the class-method helper directly:
-
-```erb
-<%= form.button "Approve", value: "approve",
-      class: Strata::US::ButtonComponent.css_classes %>
-```
-
-The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
-
-```erb
-<%= f.submit "Save draft", variant: :outline %>
-<%= f.submit "Apply", big: true %>
-```
+The class-method helper `Strata::US::ButtonComponent.css_classes(variant:, size:, inverse:)` returns the bare USWDS class string and is the single source of truth used by all of the above. Reach for it when neither the component nor the view helpers fit.
 
 ---
 
