@@ -67,6 +67,13 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
       expect(page).to have_css("li.usa-step-indicator__segment--current", count: 1)
     end
 
+    it "adds aria-current='true' to the current segment only" do
+      render_default
+
+      expect(page).to have_css("li.usa-step-indicator__segment--current[aria-current='true']", count: 1)
+      expect(page).not_to have_css("li.usa-step-indicator__segment:not(.usa-step-indicator__segment--current)[aria-current]")
+    end
+
     it "shows the current step's display name in the heading text" do
       render_default
 

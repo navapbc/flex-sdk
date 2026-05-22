@@ -18,7 +18,7 @@
 
   <ol class="usa-step-indicator__segments">
     <% step_indicators.each do |step_indicator| %>
-      <li class="<%= segment_classes(step_indicator) %>">
+      <%= tag.li(class: segment_classes(step_indicator), "aria-current": ("true" if step_indicator[:current])) do %>
         <span class="usa-step-indicator__segment-label">
           <%= step_indicator[:name] %>
           <span class="usa-sr-only">
@@ -29,7 +29,7 @@
             <% end %>
           </span>
         </span>
-      </li>
+      <% end %>
     <% end %>
   </ol>
 
