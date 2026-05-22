@@ -151,4 +151,37 @@ RSpec.describe "strata/tasks/show.html.erb", type: :view do
       )
     end
   end
+
+  describe "content_for(:breadcrumbs)" do
+    # The other examples stub ShowComponent.new so they can assert on its
+    # constructor args. Here we want the real component (and the nested
+    # strata/shared/breadcrumbs partial it renders) so we can verify that
+    # content_for(:breadcrumbs) set by the caller is actually yielded in the
+    # final output. We use PassportPhotoTask so the component's default
+    # details/<task_type> lookup resolves to the existing dummy app partial.
+    let(:task) { create(:passport_task, :with_due_on, type: "PassportPhotoTask") }
+
+    before do
+      allow(Strata::Tasks::ShowComponent).to receive(:new).and_call_original
+      # In production, Strata::TasksController prepends app/views/tasks so the
+      # details/<task_type> partial resolves. Mirror that here.
+      controller.prepend_view_path Rails.root.join("app/views/tasks")
+      # The details partial uses `form_with action: :update`, which resolves
+      # against the current request — point it at the dummy app's tasks routes.
+      controller.request.path_parameters[:controller] = "tasks"
+      controller.request.path_parameters[:action] = "show"
+      controller.request.path_parameters[:id] = task.id
+    end
+
+    it "renders content_for(:breadcrumbs) provided by the caller" do
+      view.content_for(:breadcrumbs) do
+        '<nav class="custom-breadcrumbs">Custom Trail</nav>'.html_safe
+      end
+
+      render_show(assigned_user_display_text: "Jane Doe", breadcrumbs: [])
+
+      expect(rendered).to have_css("nav.custom-breadcrumbs", text: "Custom Trail")
+      expect(rendered).not_to have_css("nav.usa-breadcrumb")
+    end
+  end
 end
