@@ -43,6 +43,7 @@
       text: t("tasks.types.#{task.type.underscore}")
     }
   ]
+  breadcrumbs = breadcrumbs.map { |bc| bc.transform_keys { |k| k == :link ? :href : k } }
 %>
 <%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
   <% bc.with_items(breadcrumbs) %>
