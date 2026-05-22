@@ -87,7 +87,7 @@ module Strata::Flows
             else
               # Allow custom error-handling behaviors by defining :on_flow_update_invalid
               if respond_to?(:on_flow_update_invalid)
-                on_flow_update_invalid
+                on_flow_update_invalid(target_record)
               else
                 flash.now[:errors] = target_record.errors.full_messages
               end
