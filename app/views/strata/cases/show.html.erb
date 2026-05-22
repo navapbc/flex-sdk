@@ -17,14 +17,16 @@
   breadcrumbs = local_assigns[:breadcrumbs] || [
     {
       text: "Cases",
-      link: polymorphic_path(model_class)
+      href: polymorphic_path(model_class)
     },
     {
       text: kase.id
     }
   ]
 %>
-<%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: } %>
+<%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+  <% bc.with_items(breadcrumbs) %>
+<% end %>
 
 <h1 class="usa-heading-xl">Case ID: <%= kase.id %></h1>
 <%= yield :case_summary %>

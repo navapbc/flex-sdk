@@ -33,18 +33,20 @@
   breadcrumbs = local_assigns[:breadcrumbs] || [
     {
       text: t("strata.tasks.breadcrumbs.home"),
-      link: "/"
+      href: "/"
     },
     {
       text: t("strata.tasks.breadcrumbs.tasks"),
-      link: url_for(only_path: true, action: :index)
+      href: url_for(only_path: true, action: :index)
     },
     {
       text: t("tasks.types.#{task.type.underscore}")
     }
   ]
 %>
-<%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: } %>
+<%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+  <% bc.with_items(breadcrumbs) %>
+<% end %>
 <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
 <%
   task_info = local_assigns[:task_info] || [
