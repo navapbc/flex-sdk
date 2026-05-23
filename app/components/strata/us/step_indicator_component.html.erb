@@ -21,13 +21,15 @@
       <%= tag.li(class: segment_classes(step_indicator), "aria-current": ("true" if step_indicator[:current])) do %>
         <span class="usa-step-indicator__segment-label">
           <%= step_indicator[:name] %>
-          <span class="usa-sr-only">
-            <% if step_indicator[:complete] %>
-              completed
-            <% else %>
-              not completed
-            <% end %>
-          </span>
+          <% unless step_indicator[:current] %>
+            <span class="usa-sr-only">
+              <% if step_indicator[:complete] %>
+                completed
+              <% else %>
+                not completed
+              <% end %>
+            </span>
+          <% end %>
         </span>
       <% end %>
     <% end %>

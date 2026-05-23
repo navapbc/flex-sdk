@@ -7,8 +7,8 @@ module Strata
     #
     # Each step's display name is looked up under `translation_scope` and falls
     # back to a humanized form of the step symbol when no translation exists.
-    # Steps before and including `current_step` are marked complete; the
-    # `current_step` is additionally marked current.
+    # Steps before `current_step` are marked complete; the `current_step` is
+    # marked current.
     #
     # @example Basic usage
     #   <%= render Strata::US::StepIndicatorComponent.new(
@@ -65,7 +65,7 @@ module Strata
         @step_indicators ||= @steps.map.with_index do |step, index|
           {
             name: t(step.to_s, scope: @translation_scope, default: step.to_s.humanize),
-            complete: index <= current_step_index,
+            complete: index < current_step_index,
             current: step == @current_step
           }
         end

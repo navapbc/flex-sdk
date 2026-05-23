@@ -54,11 +54,18 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
   end
 
   describe "segment state — current (the active step)" do
-    it "marks it with both --current and --complete (per existing logic)" do
+    it "is not marked --complete" do
       render_default
 
       current = page.find("li.usa-step-indicator__segment--current")
-      expect(current[:class]).to include("usa-step-indicator__segment--complete")
+      expect(current[:class]).not_to include("usa-step-indicator__segment--complete")
+    end
+
+    it "does not render the .usa-sr-only completion text" do
+      render_default
+
+      current = page.find("li.usa-step-indicator__segment--current")
+      expect(current).not_to have_css(".usa-sr-only")
     end
 
     it "marks exactly one segment as --current" do
