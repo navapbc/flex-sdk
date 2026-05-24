@@ -49,134 +49,85 @@ module Strata::Flows
       in_loop? ? current_page.update_path(@record, @loop_record) : current_page.update_path(@record)
     end
 
+    # Path to the previous page, or nil if at the start of the task.
     def prev_path
-      if in_loop?
-        within = step_within_loop_backward
-        return within if within
-      end
-
-      walk_outer_backward(@current_page_idx)
+      step(:backward)
     end
 
+    # Path to the next page, or nil if at the end of the task.
     def next_path
-      if in_loop?
-        within = step_within_loop_forward
-        return within if within
-      end
-
-      walk_outer_forward(@current_page_idx)
+      step(:forward)
     end
 
     private
 
-    def step_within_loop_forward
-      loop_node = current_loop
-
-      idx = @loop_page_idx + 1
-      while idx < loop_node.pages.length
-        page = loop_node.pages[idx]
-        return page.edit_path(@record, @loop_record) if page.needed?(@loop_record)
-        idx += 1
+    # If the cursor is inside a Loop, try to move within it first; otherwise
+    # (or if the loop is exhausted) walk the task's outer pages.
+    def step(direction)
+      if in_loop?
+        within = step_within_loop(direction)
+        return within if within
       end
 
-      advance_to_next_loop_record(loop_node)
+      walk_outer(@current_page_idx, direction)
     end
 
-    def step_within_loop_backward
+    # Move within the current Loop: first try an adjacent page on the active
+    # child record, then fall through to the next child record's first
+    # needed page. Returns nil when the loop has nothing more in that
+    # direction.
+    def step_within_loop(direction)
       loop_node = current_loop
+      page = traverse(loop_node.pages, @loop_page_idx, direction)
+             .find { |p| p.needed?(@loop_record) }
+      return page.edit_path(@record, @loop_record) if page
 
-      idx = @loop_page_idx - 1
-      while idx >= 0
-        page = loop_node.pages[idx]
-        return page.edit_path(@record, @loop_record) if page.needed?(@loop_record)
-        idx -= 1
-      end
-
-      retreat_to_previous_loop_record(loop_node)
-    end
-
-    def advance_to_next_loop_record(loop_node)
       records = loop_node.records_for(@record)
       current_idx = records.find_index(@loop_record)
       return nil unless current_idx
 
-      next_idx = current_idx + 1
-      while next_idx < records.length
-        child = records[next_idx]
-        page = first_needed_page(loop_node.pages, child)
-        return page.edit_path(@record, child) if page
-        next_idx += 1
-      end
-
-      nil
+      enter_loop(loop_node, traverse(records, current_idx, direction), direction)
     end
 
-    def retreat_to_previous_loop_record(loop_node)
-      records = loop_node.records_for(@record)
-      current_idx = records.find_index(@loop_record)
-      return nil unless current_idx
-
-      prev_idx = current_idx - 1
-      while prev_idx >= 0
-        child = records[prev_idx]
-        page = last_needed_page(loop_node.pages, child)
-        return page.edit_path(@record, child) if page
-        prev_idx -= 1
-      end
-
-      nil
-    end
-
-    def walk_outer_forward(starting_idx)
-      idx = starting_idx + 1
-      while idx < @task.pages.length
-        path = enter_forward(@task.pages[idx])
+    # Walk the task's top-level pages from `starting_idx` and return the
+    # path of the first item we can enter.
+    def walk_outer(starting_idx, direction)
+      traverse(@task.pages, starting_idx, direction).each do |item|
+        path = enter(item, direction)
         return path if path
-        idx += 1
       end
       nil
     end
 
-    def walk_outer_backward(starting_idx)
-      idx = starting_idx - 1
-      while idx >= 0
-        path = enter_backward(@task.pages[idx])
-        return path if path
-        idx -= 1
+    # Enter a single top-level item: a QuestionPage's edit path if needed,
+    # or the first reachable page of a Loop.
+    def enter(item, direction)
+      if item.is_a?(Loop)
+        enter_loop(item, ordered(item.records_for(@record), direction), direction)
+      elsif item.needed?(@record)
+        item.edit_path(@record)
+      end
+    end
+
+    # Walk `records` (already ordered for the direction) and return the
+    # edit path of the first child whose first needed page exists.
+    def enter_loop(loop_node, records, direction)
+      records.each do |child|
+        page = ordered(loop_node.pages, direction).find { |p| p.needed?(child) }
+        return page.edit_path(@record, child) if page
       end
       nil
     end
 
-    def enter_forward(item)
-      if item.is_a?(Loop)
-        item.records_for(@record).each do |child|
-          page = first_needed_page(item.pages, child)
-          return page.edit_path(@record, child) if page
-        end
-        nil
-      else
-        item.needed?(@record) ? item.edit_path(@record) : nil
-      end
+    # Elements of `arr` adjacent to `idx`, ordered so the nearest comes
+    # first: items after `idx` forward, items before `idx` (reversed) backward.
+    def traverse(arr, idx, direction)
+      direction == :forward ? (arr[(idx + 1)..] || []) : arr.first(idx).reverse
     end
 
-    def enter_backward(item)
-      if item.is_a?(Loop)
-        item.records_for(@record).reverse_each do |child|
-          page = last_needed_page(item.pages, child)
-          return page.edit_path(@record, child) if page
-        end
-        nil
-      else
-        item.needed?(@record) ? item.edit_path(@record) : nil
-      end
-    end
-
-    def first_needed_page(pages, child_record)
-      pages.find { |p| p.needed?(child_record) }
-    end
-
-    def last_needed_page(pages, child_record)
-      pages.reverse.find { |p| p.needed?(child_record) }
+    # `arr` in iteration order for the direction (reversed when backward).
+    def ordered(arr, direction)
+      direction == :forward ? arr : arr.reverse
     end
   end
 end
