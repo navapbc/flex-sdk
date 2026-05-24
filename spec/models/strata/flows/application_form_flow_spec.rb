@@ -272,7 +272,7 @@ RSpec.describe Strata::Flows::ApplicationFormFlow do
         page, evaluator = FlowWithLoop.find_page_and_task_by_action(
           flow_record,
           "edit_prior_employer_business_name",
-          { id: "xyz" }
+          "xyz"
         )
 
         expect(page.name).to eq(:business_name)

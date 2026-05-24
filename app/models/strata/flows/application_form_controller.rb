@@ -49,7 +49,7 @@ module Strata::Flows
           @flow_page, @flow_task = flow_class.find_page_and_task_by_action(
             flow_record,
             request.path_parameters[:action],
-            request.path_parameters
+            request.path_parameters[:id]
           )
         end
 

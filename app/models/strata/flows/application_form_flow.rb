@@ -128,7 +128,7 @@ module Strata::Flows
         @end_pathname = path
       end
 
-      def find_page_and_task_by_action(flow_record, action, params = {})
+      def find_page_and_task_by_action(flow_record, action, id_param = nil)
         action_sym = action.to_sym
 
         tasks.each do |task|
@@ -137,7 +137,7 @@ module Strata::Flows
               item.pages.each_with_index do |loop_page, loop_page_idx|
                 next unless [ loop_page.edit_pathname.to_sym, loop_page.update_pathname.to_sym ].include?(action_sym)
 
-                loop_record = resolve_loop_record(item, flow_record, params)
+                loop_record = resolve_loop_record(item, flow_record, id_param)
                 return loop_page, TaskEvaluator.new(
                   task, flow_record, page_idx,
                   loop_record: loop_record, loop_page_idx: loop_page_idx
@@ -197,10 +197,10 @@ module Strata::Flows
 
       private
 
-      def resolve_loop_record(loop_node, flow_record, params)
-        return nil unless params[:id]
+      def resolve_loop_record(loop_node, flow_record, id_param)
+        return nil unless id_param
 
-        loop_node.records_for(flow_record).find(params[:id])
+        loop_node.records_for(flow_record).find(id_param)
       end
 
       def validate_unique_action_names!
