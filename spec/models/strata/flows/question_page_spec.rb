@@ -95,6 +95,46 @@ RSpec.describe Strata::Flows::QuestionPage do
     end
   end
 
+  describe "#started? with a nested-attributes field" do
+    before do
+      child_class = Class.new(ActiveRecord::Base) do
+        self.table_name = "test_application_forms"
+      end
+      stub_const("NestedAttrsForm", child_class)
+
+      parent_class = Class.new(ActiveRecord::Base) do
+        self.table_name = "users"
+        has_many :forms, class_name: "NestedAttrsForm", foreign_key: :user_id
+        accepts_nested_attributes_for :forms
+      end
+      stub_const("NestedAttrsUser", parent_class)
+    end
+
+    let(:record) { NestedAttrsUser.new(first_name: "Alice", last_name: "Smith") }
+
+    context "with the hash form" do
+      let(:page) { described_class.new("forms", fields: [ forms_attributes: [ :test_string ] ]) }
+
+      it "is not started when no nested records have been assigned" do
+        expect(page).not_to be_started(record)
+      end
+
+      it "is started after nested attributes are assigned" do
+        record.forms_attributes = [ { test_string: "hello" } ]
+        expect(page).to be_started(record)
+      end
+    end
+
+    context "with the symbol form" do
+      let(:page) { described_class.new("forms", fields: [ :forms_attributes ]) }
+
+      it "is started after nested attributes are assigned" do
+        record.forms_attributes = [ { test_string: "hello" } ]
+        expect(page).to be_started(record)
+      end
+    end
+  end
+
   describe "#started? with multiple fields" do
     before do
       multi_field_class = Class.new do
