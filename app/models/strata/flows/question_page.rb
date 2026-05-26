@@ -26,14 +26,24 @@ module Strata::Flows
       @fields.any? do |field|
         field_names = field.is_a?(Hash) ? field.keys : [ field ]
         field_names.any? do |name|
-          # Fields for accepts_nested_attributes_for associations are declared as
-          # :foo_attributes (matching the foo_attributes= setter used by form
-          # params), but only the bare association reader (record.foo) exists.
-          # Strip the suffix so we probe the actual association.
-          attribute_name = name.to_s.delete_suffix("_attributes")
-          record.public_send(attribute_name).present?
+          attribute_name = started_field_name(record, name)
+          attribute_name && record.public_send(attribute_name).present?
         end
       end
+    end
+
+    def started_field_name(record, name)
+      attribute_name = name.to_s
+      return attribute_name if record.respond_to?(attribute_name)
+
+      # Fields for accepts_nested_attributes_for associations are declared as
+      # :foo_attributes (matching the foo_attributes= setter used by form
+      # params), but only the bare association reader (record.foo) exists.
+      # Only strip the suffix when probing a nested-attributes field.
+      return unless attribute_name.end_with?("_attributes")
+
+      association_name = attribute_name.delete_suffix("_attributes")
+      association_name if record.respond_to?(association_name)
     end
 
     def edit_pathname
