@@ -10,6 +10,7 @@ RSpec.describe Strata::Flows::Task do
 
       attribute :first_name, :string
       attribute :last_name, :string
+      attribute :middle_name, :string
       validates :first_name, presence: true, on: :first_name
       validates :last_name, presence: true, on: :last_name
     end
@@ -36,6 +37,14 @@ RSpec.describe Strata::Flows::Task do
     it "is true when only a later page has data" do
       record.last_name = "Smith"
       expect(task).to be_started(record)
+    end
+
+    it "is false when a page has only an untouched optional field" do
+      optional_page = Strata::Flows::QuestionPage.new("middle_name")
+      task = described_class.new("name", pages: [ optional_page ])
+
+      expect(optional_page).to be_completed(record)
+      expect(task).not_to be_started(record)
     end
   end
 
