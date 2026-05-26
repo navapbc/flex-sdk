@@ -28,21 +28,6 @@ module Strata
       renders_one :task_info_content
       renders_one :task_details_content
 
-      # @param task [Strata::Task] the task being shown
-      # @param assigned_user_display_text [String, nil] display name for the task's assignee.
-      #   Only read when the component falls back to its default +task_info+ row — that is,
-      #   when no +task_info:+ constructor arg and no +task_info_content+ slot is provided.
-      #   Otherwise it is unused and may be omitted.
-      # @param task_info [Array<Hash>, nil] an array of +{label:, value:}+ hashes.
-      #   When nil, a default row (status / due / assignee) is rendered.
-      # @param breadcrumbs [Array<Hash>, nil] array of +{text:, link:}+ hashes. When nil, a
-      #   default Home / Tasks / <task type> trail is rendered.
-      # @param task_details_partial [String, nil] partial path to render in the details section.
-      #   When nil, falls back to +details/<task_type_underscored>+ resolved via the controller's
-      #   prepended view paths.
-      # @param details_locals [Hash] extra locals forwarded to the details partial
-      #   (e.g. +application_form:+, +kase:+). Merged on top of +task+, which the
-      #   component always passes.
       def initialize(task:, assigned_user_display_text: nil,
                      task_info: nil, breadcrumbs: nil,
                      task_details_partial: nil, details_locals: {})
