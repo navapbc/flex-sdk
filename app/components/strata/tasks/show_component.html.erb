@@ -1,7 +1,9 @@
 <% if breadcrumbs_content? %>
   <%= breadcrumbs_content %>
 <% else %>
-  <%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: breadcrumbs || default_breadcrumbs } %>
+  <%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+    <% bc.with_items(breadcrumbs_items) %>
+  <% end %>
 <% end %>
 <h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
 <% if task_info_content? %>

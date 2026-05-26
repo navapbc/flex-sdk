@@ -16,9 +16,8 @@
     - breadcrumbs: Array - Array of {text:, link:} hashes overriding the default trail.
 
     Legacy content_for overrides:
-    - :breadcrumbs - still respected, handled by the inner
-      `strata/shared/_breadcrumbs` partial's own `content_for?` check.
-      No wrapper-level forwarding is needed.
+    - :breadcrumbs - Previously, content_for(:breadcrumbs) would allow rendering custom
+      breadcrumb markup. This has been removed; use the 'with_breadcrumbs_content' slot instead.
     - :task_info - Previously, content_for(:task_info) would allow rendering custom
       markup in the task info section. This has been replaced with the 'with_task_info_content' slot.
     - :task_details_partial - Previously, content_for(:task_details_partial) would allow rendering custom

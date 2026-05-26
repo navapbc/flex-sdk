@@ -61,13 +61,21 @@ module Strata
 
       def default_breadcrumbs
         [
-          { text: t("strata.tasks.breadcrumbs.home"), link: "/" },
+          { text: t("strata.tasks.breadcrumbs.home"), href: "/" },
           {
             text: t("strata.tasks.breadcrumbs.tasks"),
-            link: helpers.url_for(only_path: true, action: :index)
+            href: helpers.url_for(only_path: true, action: :index)
           },
           { text: t("tasks.types.#{task.type.underscore}") }
         ]
+      end
+
+      # Normalize the legacy +link:+ key to +href:+ so downstream callers that
+      # still pass +link:+ keep rendering as clickable links rather than spans.
+      def breadcrumbs_items
+        (breadcrumbs || default_breadcrumbs).map do |bc|
+          bc.transform_keys { |k| k == :link ? :href : k }
+        end
       end
 
       def default_task_info

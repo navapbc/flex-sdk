@@ -153,11 +153,9 @@ RSpec.describe "strata/tasks/show.html.erb", type: :view do
   end
 
   describe "content_for(:breadcrumbs)" do
-    # The other examples stub ShowComponent.new so they can assert on its
-    # constructor args. Here we want the real component (and the nested
-    # strata/shared/breadcrumbs partial it renders) so we can verify that
-    # content_for(:breadcrumbs) set by the caller is actually yielded in the
-    # final output. We use PassportPhotoTask so the component's default
+    # The legacy content_for(:breadcrumbs) override is no longer respected;
+    # callers should use the `with_breadcrumbs_content` slot on ShowComponent
+    # instead. We use PassportPhotoTask so the component's default
     # details/<task_type> lookup resolves to the existing dummy app partial.
     let(:task) { create(:passport_task, :with_due_on, type: "PassportPhotoTask") }
 
@@ -173,15 +171,15 @@ RSpec.describe "strata/tasks/show.html.erb", type: :view do
       controller.request.path_parameters[:id] = task.id
     end
 
-    it "renders content_for(:breadcrumbs) provided by the caller" do
+    it "ignores content_for(:breadcrumbs) and renders the default trail" do
       view.content_for(:breadcrumbs) do
         '<nav class="custom-breadcrumbs">Custom Trail</nav>'.html_safe
       end
 
-      render_show(assigned_user_display_text: "Jane Doe", breadcrumbs: [])
+      render_show(assigned_user_display_text: "Jane Doe")
 
-      expect(rendered).to have_css("nav.custom-breadcrumbs", text: "Custom Trail")
-      expect(rendered).not_to have_css("nav.usa-breadcrumb")
+      expect(rendered).not_to have_css("nav.custom-breadcrumbs")
+      expect(rendered).to have_css("nav.usa-breadcrumb")
     end
   end
 end

@@ -31,6 +31,10 @@ RSpec.describe Strata::Tasks::ShowComponent, type: :component do
       expect(page).to have_css("nav.usa-breadcrumb")
       expect(page).to have_link(I18n.t("strata.tasks.breadcrumbs.home"), href: "/")
       expect(page).to have_text(I18n.t("strata.tasks.breadcrumbs.tasks"))
+      expect(page).to have_css(
+        "li.usa-breadcrumb__list-item.usa-current[aria-current='page']",
+        text: I18n.t("tasks.types.#{task.type.underscore}")
+      )
     end
 
     it "renders the default task info row" do
@@ -101,6 +105,28 @@ RSpec.describe Strata::Tasks::ShowComponent, type: :component do
       expect(page).to have_link("Dashboard", href: "/custom")
       expect(page).to have_text("Current Page")
       expect(page).not_to have_link(I18n.t("strata.tasks.breadcrumbs.home"), href: "/")
+    end
+  end
+
+  describe "custom breadcrumbs with href: key" do
+    let(:custom_breadcrumbs) do
+      [
+        { text: "Dashboard", href: "/custom" },
+        { text: "Current Page" }
+      ]
+    end
+
+    before do
+      render_inline(described_class.new(
+        task: task,
+        assigned_user_display_text: assigned_user_display_text,
+        breadcrumbs: custom_breadcrumbs
+      )) { |c| c.with_task_details_content { "" } }
+    end
+
+    it "renders the provided breadcrumbs" do
+      expect(page).to have_link("Dashboard", href: "/custom")
+      expect(page).to have_text("Current Page")
     end
   end
 
