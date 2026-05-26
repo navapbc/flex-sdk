@@ -70,6 +70,79 @@ RSpec.describe Strata::Flows::QuestionPage do
     end
   end
 
+  describe "#started? with a boolean field" do
+    before do
+      bool_class = Class.new do
+        include ActiveModel::Model
+        include ActiveModel::Attributes
+
+        attribute :consents, :boolean
+      end
+
+      stub_const("BooleanModel", bool_class)
+    end
+
+    let(:record) { BooleanModel.new }
+    let(:page) { described_class.new("consents") }
+
+    it "is not started when the field is nil" do
+      expect(page).not_to be_started(record)
+    end
+
+    it "is started when the field is true" do
+      record.consents = true
+      expect(page).to be_started(record)
+    end
+
+    it "is started when the field is explicitly false" do
+      record.consents = false
+      expect(page).to be_started(record)
+    end
+
+    context "when mixed with a string field that is blank" do
+      before do
+        mixed_class = Class.new do
+          include ActiveModel::Model
+          include ActiveModel::Attributes
+
+          attribute :consents, :boolean
+          attribute :note, :string
+        end
+
+        stub_const("MixedBooleanModel", mixed_class)
+      end
+
+      let(:record) { MixedBooleanModel.new }
+      let(:page) { described_class.new("preferences", fields: [ :note, :consents ]) }
+
+      it "is started when only the boolean field is explicitly false" do
+        record.consents = false
+        expect(page).to be_started(record)
+      end
+    end
+  end
+
+  describe "#started? when a field is not defined on the record" do
+    let(:page) { described_class.new("ghost", fields: [ :nonexistent_field ]) }
+
+    it "does not raise" do
+      expect { page.started?(record) }.not_to raise_error
+    end
+
+    it "is not started" do
+      expect(page).not_to be_started(record)
+    end
+
+    context "when mixed with a defined field that has a value" do
+      let(:page) { described_class.new("mixed", fields: [ :nonexistent_field, :first_name ]) }
+
+      it "is started" do
+        record.first_name = "Mary"
+        expect(page).to be_started(record)
+      end
+    end
+  end
+
   describe "#started? with a multi-parameter field" do
     before do
       test_model_class = Class.new(ActiveRecord::Base) do

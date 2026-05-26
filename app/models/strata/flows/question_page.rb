@@ -27,7 +27,10 @@ module Strata::Flows
         field_names = field.is_a?(Hash) ? field.keys : [ field ]
         field_names.any? do |name|
           attribute_name = started_field_name(record, name)
-          attribute_name && record.public_send(attribute_name).present?
+          value = record.public_send(attribute_name) if attribute_name
+          # An explicit boolean false is a real user-supplied answer (e.g. a "No"
+          # on a yes/no question), but `false.present?` is falsy in Rails.
+          value == false || value.present?
         end
       end
     end
