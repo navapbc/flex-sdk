@@ -114,7 +114,6 @@ module Strata
       def root_html_attributes
         attrs = @html_attributes.dup
         attrs.delete(:class)
-        attrs[:"aria-label"] = t("strata.components.us.step_indicator.aria_label")
         attrs
       end
     end

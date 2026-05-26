@@ -16,7 +16,6 @@ es-US:
         breadcrumbs:
           aria_label: "Ruta de navegación"
         step_indicator:
-          aria_label: "progreso"
           step: "Paso"
           of: "de"
           completed: "completado"

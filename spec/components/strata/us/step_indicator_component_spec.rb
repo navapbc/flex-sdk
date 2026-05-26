@@ -15,7 +15,7 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
     it "renders a div.usa-step-indicator wrapping the segments list and header" do
       render_default
 
-      expect(page).to have_css("div.usa-step-indicator[aria-label='progress']")
+      expect(page).to have_css("div.usa-step-indicator")
       expect(page).to have_css("div.usa-step-indicator > ol.usa-step-indicator__segments")
       expect(page).to have_css(
         "div.usa-step-indicator > div.usa-step-indicator__header > h4.usa-step-indicator__heading"
@@ -341,13 +341,6 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
       expect(page).not_to have_css("div.from-html-attrs")
     end
 
-    it "does not override the built-in aria-label='progress' from html_attributes" do
-      # The component owns aria-label='progress' on the root. We intentionally
-      # do not expose it as an option to keep the component focused.
-      render_default
-
-      expect(page).to have_css("div.usa-step-indicator[aria-label='progress']")
-    end
   end
 
   describe "XSS safety" do

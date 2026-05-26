@@ -19,7 +19,6 @@ en:
         breadcrumbs:
           aria_label: "Breadcrumb"
         step_indicator:
-          aria_label: "progress"
           step: "Step"
           of: "of"
           completed: "completed"
