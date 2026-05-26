@@ -15,6 +15,12 @@ es-US:
       us:
         breadcrumbs:
           aria_label: "Ruta de navegación"
+        step_indicator:
+          aria_label: "progreso"
+          step: "Paso"
+          of: "de"
+          completed: "completado"
+          not_completed: "no completado"
     application_forms:
       index:
         col_created_at: "Fecha de creación"

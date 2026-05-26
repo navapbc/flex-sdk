@@ -2,9 +2,9 @@
   <div class="<%= header_classes %>">
     <h4 class="usa-step-indicator__heading display-flex flex-align-center">
       <span class="usa-step-indicator__heading-counter">
-        <span class="usa-sr-only">Step</span>
+        <span class="usa-sr-only"><%= t("strata.components.us.step_indicator.step") %></span>
         <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
-        <span class="usa-step-indicator__total-steps">of <%= total_steps %></span>
+        <span class="usa-step-indicator__total-steps"><%= t("strata.components.us.step_indicator.of") %> <%= total_steps %></span>
       </span>
       <span class="<%= heading_text_classes %>"><%= current_step_name %></span>
     </h4>
@@ -24,9 +24,9 @@
           <% unless step_indicator[:current] %>
             <span class="usa-sr-only">
               <% if step_indicator[:complete] %>
-                completed
+                <%= t("strata.components.us.step_indicator.completed") %>
               <% else %>
-                not completed
+                <%= t("strata.components.us.step_indicator.not_completed") %>
               <% end %>
             </span>
           <% end %>

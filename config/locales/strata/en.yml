@@ -18,6 +18,12 @@ en:
       us:
         breadcrumbs:
           aria_label: "Breadcrumb"
+        step_indicator:
+          aria_label: "progress"
+          step: "Step"
+          of: "of"
+          completed: "completed"
+          not_completed: "not completed"
     application_forms:
       index:
         col_created_at: "Created At"
