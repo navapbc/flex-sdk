@@ -340,7 +340,6 @@ RSpec.describe Strata::US::StepIndicatorComponent, type: :component do
       expect(page).to have_css("div.usa-step-indicator.from-classes")
       expect(page).not_to have_css("div.from-html-attrs")
     end
-
   end
 
   describe "XSS safety" do
