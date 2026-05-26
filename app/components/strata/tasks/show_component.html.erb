@@ -1,0 +1,25 @@
+<% if breadcrumbs_content? %>
+  <%= breadcrumbs_content %>
+<% else %>
+  <%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+    <% bc.with_items(breadcrumbs_items) %>
+  <% end %>
+<% end %>
+<h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
+<% if task_info_content? %>
+  <%= task_info_content %>
+<% else %>
+  <%= render Strata::Tasks::TaskInfoComponent.new(task_info: task_info || default_task_info) %>
+<% end %>
+<section class="usa-section padding-top-2">
+  <% if task_message %>
+    <%= render Strata::US::AlertComponent.new(type: :info, with_icon: false) do |alert| %>
+      <% alert.with_body { task_message } %>
+    <% end %>
+  <% end %>
+  <% if task_details_content? %>
+    <%= task_details_content %>
+  <% else %>
+    <%= render partial: details_partial_path, locals: details_partial_locals %>
+  <% end %>
+</section>

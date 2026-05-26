@@ -1,77 +1,34 @@
-<%# Show view for displaying a task
+<%# Backwards-compatible wrapper around Strata::Tasks::ShowComponent.
+    Existing call sites using `render template: 'strata/tasks/show', locals: {...}`
+    continue to work. New code should prefer `render Strata::Tasks::ShowComponent.new(...)`.
+
     Required locals:
-    - assigned_user_display_text: String - The name of the user assigned to this task
     - task: Strata::Task - The task object
+    - One of:
+      - task_info: Array - An array of {label:, value:} hashes rendered as the info row.
+      - assigned_user_display_text: String - Name of the assignee. Used in the default
+        task_info row (status / due / assignee) that is rendered when no task_info: local
+        is provided.
 
     Optional locals:
-    - task_details_partial: String - The HTML to render for the task details. If not provided, the view will look for a partial named after the task type within the `details` directory.
-    - task_info: Array | String - An array of hashes containing task information to display OR an HTML string to render. See examples below.
-    
-    Example usage:
-      render template: 'strata/tasks/default/show', locals: {
-        task: @task,
-        assigned_user_display_text: assigned_user&.full_name || "Not Assigned"
-      }
+    - task_details_partial: String - Partial path to render for the task details. If not
+      provided, the view looks for a partial named after the task type within `details/`.
+    - breadcrumbs: Array - Array of {text:, link:} hashes overriding the default trail.
 
-      # OR
+    Legacy content_for overrides:
+    - :breadcrumbs - Previously, content_for(:breadcrumbs) would allow rendering custom
+      breadcrumb markup. This has been removed; use the 'with_breadcrumbs_content' slot instead.
+    - :task_info - Previously, content_for(:task_info) would allow rendering custom
+      markup in the task info section. This has been replaced with the 'with_task_info_content' slot.
+    - :task_details_partial - Previously, content_for(:task_details_partial) would allow rendering custom
+      markup instead of the task details partial rendering. This has been replaced with the 'with_task_details_content' slot.
 
-      render template: 'strata/tasks/default/show', locals: {
-        task: @task,
-        task_info: [
-          { label: "Custom Label", value: "Custom Value" }
-        ]
-      }
-
-      # OR
-
-      render template: 'strata/tasks/default/show', locals: {
-        task: @task,
-        task_info: <marquee>My scrolling message here</marquee>
-      }
 %>
-<%
-  breadcrumbs = local_assigns[:breadcrumbs] || [
-    {
-      text: t("strata.tasks.breadcrumbs.home"),
-      link: "/"
-    },
-    {
-      text: t("strata.tasks.breadcrumbs.tasks"),
-      link: url_for(only_path: true, action: :index)
-    },
-    {
-      text: t("tasks.types.#{task.type.underscore}")
-    }
-  ]
-%>
-<%= render partial: "strata/shared/breadcrumbs", locals: { breadcrumbs: } %>
-<h1 class="section-heading-h1"><%= t("tasks.types.#{task.type.underscore}") %></h1>
-<%
-  task_info = local_assigns[:task_info] || [
-    {
-      label: t("strata.tasks.show.details.status"),
-      value: t("tasks.statuses.#{task.status}")
-    },
-    {
-      label: t("strata.tasks.show.details.due_on"),
-      value: local_en_us(task.due_on)
-    },
-    {
-      label: t("strata.tasks.show.details.assigned_to"),
-      value: assigned_user_display_text
-    }
-  ]
-%>
-<%= render partial: "strata/tasks/task_info", locals: { task_info: } %>
-<section class="usa-section padding-top-2">
-  <% if flash["task-message"] %>
-    <%= render Strata::US::AlertComponent.new(type: :info, with_icon: false) do |alert| %>
-      <% alert.with_body { flash["task-message"] } %>
-    <% end %>
-  <% end %>
-  <% if content_for?(:task_details_partial) %>
-    <%= yield(:task_details_partial) %>
-  <% else %>
-    <%= render partial: "details/#{task.type.underscore}", locals: local_assigns.to_h %>
-  <% end %>
-</section>
+<%= render Strata::Tasks::ShowComponent.new(
+      task: task,
+      assigned_user_display_text: local_assigns[:assigned_user_display_text],
+      task_info: local_assigns[:task_info],
+      breadcrumbs: local_assigns[:breadcrumbs],
+      task_details_partial: local_assigns[:task_details_partial],
+      details_locals: local_assigns.to_h
+    ) %>

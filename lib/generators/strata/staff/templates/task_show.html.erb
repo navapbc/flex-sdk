@@ -1,6 +1,5 @@
-<%%= render template: 'strata/tasks/show', locals: {
+<%%= render Strata::Tasks::ShowComponent.new(
   task: @task,
   assigned_user_display_text: @assignee&.full_name || "N/A",
-  application_form: @application_form,
-  kase: @case
-} %>
+  details_locals: { application_form: @application_form, kase: @case }
+) %>
