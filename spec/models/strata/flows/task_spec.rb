@@ -21,64 +21,69 @@ RSpec.describe Strata::Flows::Task do
   let(:last_name_page) { Strata::Flows::QuestionPage.new("last_name") }
   let(:record) { TestModel.new }
 
-  describe "an unstarted task" do
-    let(:task) { described_class.new("name", pages: [ first_name_page ]) }
-
-    it "is not started or completed" do
-      expect(task).not_to be_started(record)
-      expect(task).not_to be_completed(record)
-    end
-
-    it "returns the first page path" do
-      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
-      expect(task.path(record)).to eq("edit_path")
-    end
-  end
-
-  describe "a started task" do
+  describe "#started?" do
     let(:task) { described_class.new("name", pages: [ first_name_page, last_name_page ]) }
 
-    before { record.first_name = "Mary" }
-
-    it "is started but not completed" do
-      expect(task).to be_started(record)
-      expect(task).not_to be_completed(record)
+    it "is false when no pages have data" do
+      expect(task).not_to be_started(record)
     end
 
-    it "returns the first incomplete page path" do
-      allow(last_name_page).to receive(:edit_path).and_return("edit_path")
-      expect(task.path(record)).to eq("edit_path")
+    it "is true when the first page has data" do
+      record.first_name = "Mary"
+      expect(task).to be_started(record)
+    end
+
+    it "is true when only a later page has data" do
+      record.last_name = "Smith"
+      expect(task).to be_started(record)
     end
   end
 
-  describe "a completed task" do
-    let(:task) { described_class.new("name", pages: [ first_name_page ]) }
+  describe "#completed?" do
+    let(:task) { described_class.new("name", pages: [ first_name_page, last_name_page ]) }
 
-    before { record.first_name = "Mary" }
+    it "is false when no pages have data" do
+      expect(task).not_to be_completed(record)
+    end
 
-    it "is started and completed" do
-      expect(task).to be_started(record)
+    it "is false when only some pages are complete" do
+      record.first_name = "Mary"
+      expect(task).not_to be_completed(record)
+    end
+
+    it "is true when all pages are complete" do
+      record.first_name = "Mary"
+      record.last_name = "Smith"
       expect(task).to be_completed(record)
     end
-
-    it "returns the first page path" do
-      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
-      expect(task.path(record)).to eq("edit_path")
-    end
   end
 
-  describe "a task with data on a later page but not the first page" do
+  describe "#path" do
     let(:task) { described_class.new("name", pages: [ first_name_page, last_name_page ]) }
 
-    before { record.last_name = "Smith" }
-
-    it "is started" do
-      expect(task).to be_started(record)
+    before do
+      allow(first_name_page).to receive(:edit_path).and_return("first_name_path")
+      allow(last_name_page).to receive(:edit_path).and_return("last_name_path")
     end
 
-    it "returns the first incomplete page path" do
-      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
-      expect(task.path(record)).to eq("edit_path")
+    it "returns the first page path when no pages have data" do
+      expect(task.path(record)).to eq("first_name_path")
+    end
+
+    it "returns the first incomplete page path when in progress" do
+      record.first_name = "Mary"
+      expect(task.path(record)).to eq("last_name_path")
+    end
+
+    it "returns the first incomplete page path when only a later page has data" do
+      record.last_name = "Smith"
+      expect(task.path(record)).to eq("first_name_path")
+    end
+
+    it "returns the first page path when all pages are complete" do
+      record.first_name = "Mary"
+      record.last_name = "Smith"
+      expect(task.path(record)).to eq("first_name_path")
     end
   end
 
