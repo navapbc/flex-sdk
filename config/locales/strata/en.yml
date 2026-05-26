@@ -14,6 +14,10 @@ en:
       year_month_range_start_greater_than_end: "start cannot be after end"
       year_quarter_range_start_greater_than_end: "start cannot be after end"
   strata:
+    components:
+      us:
+        breadcrumbs:
+          aria_label: "Breadcrumb"
     application_forms:
       index:
         col_created_at: "Created At"

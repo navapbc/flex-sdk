@@ -11,6 +11,10 @@ es-US:
       us_date_range_start_greater_than_end: "la fecha de inicio no puede ser posterior a la fecha de fin"
       year_quarter_range_start_greater_than_end: "el período inicial no puede ser posterior al período final"
   strata:
+    components:
+      us:
+        breadcrumbs:
+          aria_label: "Ruta de navegación"
     application_forms:
       index:
         col_created_at: "Fecha de creación"
