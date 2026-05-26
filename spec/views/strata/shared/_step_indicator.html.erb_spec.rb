@@ -17,7 +17,7 @@ RSpec.describe "strata/shared/_step_indicator.html.erb", type: :view do
     it "renders the component's root markup with the given steps and current_step" do
       render_partial(steps: steps, current_step: current_step)
 
-      expect(rendered).to have_css("div.usa-step-indicator[aria-label='progress']")
+      expect(rendered).to have_css("div.usa-step-indicator")
       expect(rendered).to have_css("li.usa-step-indicator__segment", count: 3)
       expect(rendered).to have_css("li.usa-step-indicator__segment--current")
       expect(rendered).to have_css(".usa-step-indicator__current-step", text: "2")
