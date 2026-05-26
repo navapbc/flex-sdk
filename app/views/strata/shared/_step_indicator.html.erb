@@ -1,10 +1,5 @@
 <%# DEPRECATED: prefer rendering Strata::US::StepIndicatorComponent directly. %>
 <%# Preserved so existing callers using `render partial: "strata/shared/step_indicator"` keep working. %>
 <%= render Strata::US::StepIndicatorComponent.new(
-      steps: steps,
-      current_step: current_step,
-      translation_scope: local_assigns.fetch(:translation_scope, "strata.application_forms.steps"),
-      large_header: local_assigns.fetch(:large_header, false),
-      header_first: local_assigns.fetch(:header_first, false),
-      type: local_assigns[:type]
+      **local_assigns.slice(:steps, :current_step, :translation_scope, :large_header, :header_first, :type)
     ) %>

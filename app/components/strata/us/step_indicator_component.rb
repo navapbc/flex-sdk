@@ -40,7 +40,7 @@ module Strata
       def initialize(
         steps:,
         current_step:,
-        translation_scope: DEFAULT_TRANSLATION_SCOPE,
+        translation_scope: nil,
         large_header: false,
         header_first: false,
         type: nil,
