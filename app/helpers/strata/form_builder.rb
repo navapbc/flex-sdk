@@ -154,12 +154,22 @@ module Strata
       form_group(attribute) { content }
     end
 
+    # Renders the submit input with USWDS button styling.
+    #
+    # @option options [Symbol] :variant Visual variant
+    #   (+:default+, +:secondary+, +:accent_cool+, +:accent_warm+, +:base+,
+    #   +:outline+, +:unstyled+). Defaults to +:default+ (primary).
+    # @option options [Boolean] :big When true, applies the +usa-button--big+
+    #   modifier along with extra vertical margin.
+    # @param [Object, nil] value
     def submit(value = nil, options = {})
-      append_to_option(options, :class, " usa-button")
+      variant = options.delete(:variant) || :default
+      big = options.delete(:big)
+      size = big ? :big : :default
 
-      if options[:big]
-        append_to_option(options, :class, " usa-button--big margin-y-6")
-      end
+      button_classes = Strata::US::ButtonComponent.css_classes(variant: variant, size: size)
+      append_to_option(options, :class, " #{button_classes}")
+      append_to_option(options, :class, " margin-y-6") if big
 
       super(value, options)
     end
