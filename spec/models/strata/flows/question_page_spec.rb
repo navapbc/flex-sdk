@@ -36,6 +36,13 @@ RSpec.describe Strata::Flows::QuestionPage do
       expect(page).to be_completed(record)
     end
 
+    it "is started when the field has a value" do
+      expect(page).not_to be_started(record)
+
+      record.first_name = "Mary"
+      expect(page).to be_started(record)
+    end
+
     it "returns the correct pathnames" do
       expect(page.edit_pathname).to eq("edit_first_name")
       expect(page.update_pathname).to eq("update_first_name")
@@ -60,6 +67,57 @@ RSpec.describe Strata::Flows::QuestionPage do
 
     it "uses the passed in fields" do
       expect(page.fields).to eq([ :first_name, :last_name ])
+    end
+  end
+
+  describe "#started? with a multi-parameter field" do
+    before do
+      test_model_class = Class.new(ActiveRecord::Base) do
+        self.table_name = "test_records"
+        include Strata::Attributes
+
+        strata_attribute :date_of_birth, :memorable_date
+      end
+
+      stub_const("DobModel", test_model_class)
+    end
+
+    let(:record) { DobModel.new }
+    let(:page) { described_class.new("dob", fields: [ date_of_birth: [ :month, :day, :year ] ]) }
+
+    it "is not started when the field has no value" do
+      expect(page).not_to be_started(record)
+    end
+
+    it "is started when the field has a value" do
+      record.date_of_birth = Date.new(1990, 5, 15)
+      expect(page).to be_started(record)
+    end
+  end
+
+  describe "#started? with multiple fields" do
+    before do
+      multi_field_class = Class.new do
+        include ActiveModel::Model
+        include ActiveModel::Attributes
+
+        attribute :first_name, :string
+        attribute :last_name, :string
+      end
+
+      stub_const("MultiFieldModel", multi_field_class)
+    end
+
+    let(:record) { MultiFieldModel.new }
+    let(:page) { described_class.new("name", fields: [ :first_name, :last_name ]) }
+
+    it "is not started when no fields have values" do
+      expect(page).not_to be_started(record)
+    end
+
+    it "is started when any field has a value" do
+      record.last_name = "Smith"
+      expect(page).to be_started(record)
     end
   end
 

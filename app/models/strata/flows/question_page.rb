@@ -22,6 +22,13 @@ module Strata::Flows
       record.valid?(@name.to_sym)
     end
 
+    def started?(record)
+      @fields.any? do |field|
+        field_names = field.is_a?(Hash) ? field.keys : [ field ]
+        field_names.any? { |name| record.public_send(name).present? }
+      end
+    end
+
     def edit_pathname
       "edit_#{@name}"
     end

@@ -32,6 +32,16 @@ class SampleTaskListPreview < Lookbook::Preview
     render Strata::Flows::TaskListComponent.new(flow:, show_step_label: true)
   end
 
+  # @label First page empty, later page has data
+  # @note Personal Information has data on the second page (Date of Birth) but the first page (Name) is empty. Shows "Continue" because some sub-page has data, and routes to the first incomplete page.
+  def first_page_empty_later_page_has_data
+    flow = SampleFlow.new(FactoryBot.build_stubbed(
+      :sample_application_form,
+      date_of_birth: Date.new(1990, 5, 15)
+    ))
+    render Strata::Flows::TaskListComponent.new(flow:, show_step_label: true)
+  end
+
   # @label First task completed
   # @note Personal Information is completed, unlocking Employment Details. Leave Details still shows "Cannot start yet" because it depends on Employment Details.
   def depends_on_first_task_completed

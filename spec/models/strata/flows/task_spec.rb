@@ -9,18 +9,20 @@ RSpec.describe Strata::Flows::Task do
       include ActiveModel::Attributes
 
       attribute :first_name, :string
+      attribute :last_name, :string
       validates :first_name, presence: true, on: :first_name
+      validates :last_name, presence: true, on: :last_name
     end
 
     stub_const("TestModel", test_model_class)
   end
 
-  let(:incomplete_page) { Strata::Flows::QuestionPage.new("first_name") }
-  let(:complete_page) { Strata::Flows::QuestionPage.new("last_name") }
+  let(:first_name_page) { Strata::Flows::QuestionPage.new("first_name") }
+  let(:last_name_page) { Strata::Flows::QuestionPage.new("last_name") }
   let(:record) { TestModel.new }
 
   describe "an unstarted task" do
-    let(:task) { described_class.new("name", pages: [ incomplete_page ]) }
+    let(:task) { described_class.new("name", pages: [ first_name_page ]) }
 
     it "is not started or completed" do
       expect(task).not_to be_started(record)
@@ -28,13 +30,15 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first page path" do
-      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
+      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
 
   describe "a started task" do
-    let(:task) { described_class.new("name", pages: [ complete_page, incomplete_page ]) }
+    let(:task) { described_class.new("name", pages: [ first_name_page, last_name_page ]) }
+
+    before { record.first_name = "Mary" }
 
     it "is started but not completed" do
       expect(task).to be_started(record)
@@ -42,13 +46,15 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first incomplete page path" do
-      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
+      allow(last_name_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
 
   describe "a completed task" do
-    let(:task) { described_class.new("name", pages: [ complete_page ]) }
+    let(:task) { described_class.new("name", pages: [ first_name_page ]) }
+
+    before { record.first_name = "Mary" }
 
     it "is started and completed" do
       expect(task).to be_started(record)
@@ -56,7 +62,22 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first page path" do
-      allow(complete_page).to receive(:edit_path).and_return("edit_path")
+      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
+      expect(task.path(record)).to eq("edit_path")
+    end
+  end
+
+  describe "a task with data on a later page but not the first page" do
+    let(:task) { described_class.new("name", pages: [ first_name_page, last_name_page ]) }
+
+    before { record.last_name = "Smith" }
+
+    it "is started" do
+      expect(task).to be_started(record)
+    end
+
+    it "returns the first incomplete page path" do
+      allow(first_name_page).to receive(:edit_path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end

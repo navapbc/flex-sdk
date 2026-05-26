@@ -12,7 +12,7 @@ module Strata::Flows
     end
 
     def started?(record)
-      @pages.any? { |page| page.completed?(record) }
+      @pages.any? { |page| page.started?(record) }
     end
 
     def completed?(record)
