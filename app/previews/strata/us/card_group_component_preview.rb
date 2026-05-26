@@ -12,17 +12,17 @@ module Strata
           group.with_card do |card|
             card.with_header { "First card" }
             card.with_body { "<p>Content for the first card.</p>".html_safe }
-            card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
+            card.with_footer { %(<button class="#{Strata::US::ButtonComponent.css_classes}">Action</button>).html_safe }
           end
           group.with_card do |card|
             card.with_header { "Second card" }
             card.with_body { "<p>Content for the second card.</p>".html_safe }
-            card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
+            card.with_footer { %(<button class="#{Strata::US::ButtonComponent.css_classes}">Action</button>).html_safe }
           end
           group.with_card do |card|
             card.with_header { "Third card" }
             card.with_body { "<p>Content for the third card.</p>".html_safe }
-            card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
+            card.with_footer { %(<button class="#{Strata::US::ButtonComponent.css_classes}">Action</button>).html_safe }
           end
         end
       end
@@ -35,7 +35,7 @@ module Strata
               card.with_header { "Card #{i + 1}" }
               card.with_media { preview_image }
               card.with_body { "<p>Each card spans 6 columns at tablet width and 4 columns at widescreen.</p>".html_safe }
-              card.with_footer { '<button class="usa-button">Action</button>'.html_safe }
+              card.with_footer { %(<button class="#{Strata::US::ButtonComponent.css_classes}">Action</button>).html_safe }
             end
           end
         end

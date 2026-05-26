@@ -1,16 +1,17 @@
 <%= strata_form_with(model: @sample_application_form) do |f| %>
   <h1 class="margin-top-0"><%= t(".title") %></h1>
-  <ul class="usa-button-group">
-    <li>
-      <%= link_to(
+  <%= render Strata::US::ButtonGroupComponent.new do |group| %>
+    <% group.with_item do %>
+      <%= strata_link_to(
         t("actions.back"),
         sample_application_forms_path,
-        class: "usa-button usa-button--outline"
+        as: :button,
+        variant: :outline
       ) %>
-    </li>
-    <li>
-      <%= f.submit t(".agree_button"), class: "usa-button" %>
-    </li>
-  </ul>
+    <% end %>
+    <% group.with_item do %>
+      <%= f.submit t(".agree_button") %>
+    <% end %>
+  <% end %>
 <% end %>
  
