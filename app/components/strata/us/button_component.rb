@@ -8,10 +8,12 @@ module Strata
     #
     # See https://designsystem.digital.gov/components/button/.
     #
-    # For places where Rails owns the element rendering (e.g. +button_to+,
-    # +link_to+, +form.button+, +f.submit+), use the class-method helper
-    # +Strata::US::ButtonComponent.css_classes+ to produce a matching class
-    # string without going through the component.
+    # The +strata_link_to+ (see Strata::LinksHelper) and +strata_button_to+
+    # (see Strata::ButtonsHelper) view helpers wrap Rails' +link_to+ /
+    # +button_to+ and apply this styling for Rails-rendered tags. For other
+    # call sites — +form.button+, a non-Strata +f.submit+ — pass
+    # +Strata::US::ButtonComponent.css_classes+ as the +:class+. The
+    # class-method helper is the single source of truth.
     #
     # @example A primary button
     #   <%= render Strata::US::ButtonComponent.new do %>
@@ -23,9 +25,9 @@ module Strata
     #     Edit
     #   <% end %>
     #
-    # @example Class-string helper for button_to
-    #   <%= button_to "Delete", path, method: :delete,
-    #         class: Strata::US::ButtonComponent.css_classes(variant: :secondary) %>
+    # @example The view helpers
+    #   <%= strata_link_to "Edit", edit_path, as: :button, variant: :outline %>
+    #   <%= strata_button_to "Delete", path, method: :delete, variant: :secondary %>
     class ButtonComponent < ViewComponent::Base
       ALLOWED_VARIANTS = %i[default secondary accent_cool accent_warm base outline unstyled].freeze
       ALLOWED_SIZES = %i[default big].freeze

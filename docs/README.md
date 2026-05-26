@@ -14,6 +14,7 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 - [API Authentication](./api-authentication.md) - Secure API endpoints using the ApiAuthenticator and HMAC strategies
 - [Strata Data Modeler](./strata-data-modeler.md) - Learn how to define data models using Strata Attributes and generate migrations using the Strata Migration Generator.
 - [Strata Form Builder](./strata-form-builder.md) - Build frontend form views with USWDS markup.
+- [Strata View Helpers](./strata-view-helpers.md) - View helpers like `strata_link_to` and `strata_button_to` that wrap Rails primitives with USWDS-aware styling.
 - [Multi-Page Form Flows](./multi-page-form-flows.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
 - [Strata Rules Engine](./strata-rules-engine.md) - Introduction to the rules engine for business logic
