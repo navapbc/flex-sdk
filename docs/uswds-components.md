@@ -228,7 +228,7 @@ At least one of header, media, body, or footer must be provided.
 
 `Strata::US::StepIndicatorComponent` — progress display for a multi-step process. See [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/) and the [Lookbook preview](../app/previews/strata/us/step_indicator_component_preview.rb).
 
-Steps before and including `current_step` are marked complete; the `current_step` is additionally marked current. Each step's display name is looked up under `translation_scope` and falls back to a humanized form of the step symbol when no translation exists.
+Steps before `current_step` are marked complete; `current_step` is marked current (with `aria-current="true"`). Each step's display name is looked up under `translation_scope` and falls back to a humanized form of the step symbol when no translation exists.
 
 **Options**
 
@@ -237,10 +237,14 @@ Steps before and including `current_step` are marked complete; the `current_step
 - `translation_scope:` — I18n scope used to look up each step's display name. Defaults to `"strata.application_forms.steps"`.
 - `large_header:` — adds `font-heading-xl` to the heading text. Defaults to `false`.
 - `header_first:` — render the header above the segments (with `margin-bottom-2`) instead of below. Defaults to `false`.
-- `type:` — set to `:counters` for the counters variant (numbered segments).
+- `type:` — selects a USWDS variant. One of:
+    - `:counters` → `usa-step-indicator--counters` (numbered segments)
+    - `:counters_sm` → `usa-step-indicator--counters-sm` (small numbered segments)
+    - `:center` → `usa-step-indicator--center` (centered labels)
+    - `:no_labels` → `usa-step-indicator--no-labels` (hides segment labels)
 - `classes:` — extra CSS classes appended to the root `<div>`.
 
-Any other keyword arguments are forwarded as HTML attributes on the root `<div>` (`aria-label="progress"` is set by the component).
+Any other keyword arguments are forwarded as HTML attributes on the root `<div>`. The component does not set `aria-label` itself; if you want one, pass `aria: { label: "…" }` (or `aria_label:` depending on call style).
 
 **Example**
 
