@@ -164,7 +164,7 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 
 ### `Strata::US::ButtonComponent.css_classes`
 
-For call sites where Rails owns the element rendering — `button_to` (which generates its own `<form>`), `link_to`, `form.button`, `f.submit` — render the component directly isn't an option. Use the class-method helper to produce a matching USWDS class string:
+For call sites where Rails owns the element rendering — `button_to` (which generates its own `<form>`), `link_to`, `form.button`, `f.submit` — rendering the component directly isn't an option. Use the class-method helper to produce a matching USWDS class string:
 
 ```erb
 <%= button_to "Delete", path, method: :delete,
