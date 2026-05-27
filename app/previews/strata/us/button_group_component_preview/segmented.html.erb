@@ -1,0 +1,11 @@
+<%= render Strata::US::ButtonGroupComponent.new(segmented: true) do |group| %>
+  <% group.with_item do %>
+    <%= render(Strata::US::ButtonComponent.new) { "Map" } %>
+  <% end %>
+  <% group.with_item do %>
+    <%= render(Strata::US::ButtonComponent.new) { "Satellite" } %>
+  <% end %>
+  <% group.with_item do %>
+    <%= render(Strata::US::ButtonComponent.new) { "Hybrid" } %>
+  <% end %>
+<% end %>
