@@ -16,11 +16,11 @@
 
   <h1><%= t(".title") %></h1>
 
-  <%= render partial: "strata/shared/step_indicator", locals: {
+  <%= render Strata::US::StepIndicatorComponent.new(
     type: :counters,
     steps: [:in_progress, :submitted, :decision_made],
     current_step: @passport_application_form.status
-  } %>
+  ) %>
 
   <div class="margin-top-4">
     <div class="border-top border-base-light padding-top-2 margin-top-2">

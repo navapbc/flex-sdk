@@ -20,7 +20,8 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 4. [Card](#card)
 5. [Card Group](#card-group)
 6. [List](#list)
-7. [Table](#table)
+7. [Step Indicator](#step-indicator)
+8. [Table](#table)
 
 ---
 
@@ -219,6 +220,47 @@ At least one of header, media, body, or footer must be provided.
 <%= render Strata::US::ListComponent.new(ordered: true) do |list| %>
   <% list.with_items(["Apples", "Bananas", "Cherries"]) %>
 <% end %>
+```
+
+---
+
+## Step Indicator
+
+`Strata::US::StepIndicatorComponent` — progress display for a multi-step process. See [USWDS Step Indicator](https://designsystem.digital.gov/components/step-indicator/) and the [Lookbook preview](../app/previews/strata/us/step_indicator_component_preview.rb).
+
+Steps before `current_step` are marked complete; `current_step` is marked current (with `aria-current="true"`). Each step's display name is looked up under `translation_scope` and falls back to a humanized form of the step symbol when no translation exists.
+
+**Options**
+
+- `steps:` (required) — array of step identifiers (symbols or strings) rendered in order.
+- `current_step:` (required) — identifier of the active step.
+- `translation_scope:` — I18n scope used to look up each step's display name. Defaults to `"strata.application_forms.steps"`.
+- `large_header:` — adds `font-heading-xl` to the heading text. Defaults to `false`.
+- `header_first:` — render the header above the segments (with `margin-bottom-2`) instead of below. Defaults to `false`.
+- `type:` — selects a USWDS variant. One of:
+    - `:counters` → `usa-step-indicator--counters` (numbered segments)
+    - `:counters_sm` → `usa-step-indicator--counters-sm` (small numbered segments)
+    - `:center` → `usa-step-indicator--center` (centered labels)
+    - `:no_labels` → `usa-step-indicator--no-labels` (hides segment labels)
+- `classes:` — extra CSS classes appended to the root `<div>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the root `<div>`. The component does not set `aria-label` itself; if you want one, pass `aria: { label: "…" }` (or `aria_label:` depending on call style).
+
+**Example**
+
+```erb
+<%= render Strata::US::StepIndicatorComponent.new(
+      steps: [:personal_info, :review, :submit],
+      current_step: :review
+    ) %>
+
+<%= render Strata::US::StepIndicatorComponent.new(
+      steps: [:in_progress, :submitted, :decision_made],
+      current_step: :submitted,
+      type: :counters,
+      large_header: true,
+      header_first: true
+    ) %>
 ```
 
 ---

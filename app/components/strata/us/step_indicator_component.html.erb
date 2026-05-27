@@ -1,0 +1,41 @@
+<% header_content = capture do %>
+  <div class="<%= header_classes %>">
+    <h4 class="usa-step-indicator__heading display-flex flex-align-center">
+      <span class="usa-step-indicator__heading-counter">
+        <span class="usa-sr-only"><%= t("strata.components.us.step_indicator.step") %></span>
+        <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
+        <span class="usa-step-indicator__total-steps"><%= t("strata.components.us.step_indicator.of") %> <%= total_steps %></span>
+      </span>
+      <span class="<%= heading_text_classes %>"><%= current_step_name %></span>
+    </h4>
+  </div>
+<% end %>
+
+<div class="<%= wrapper_classes %>" <%= tag.attributes(root_html_attributes) %>>
+  <% if header_first? %>
+    <%= header_content %>
+  <% end %>
+
+  <ol class="usa-step-indicator__segments">
+    <% step_indicators.each do |step_indicator| %>
+      <%= tag.li(class: segment_classes(step_indicator), "aria-current": ("true" if step_indicator[:current])) do %>
+        <span class="usa-step-indicator__segment-label">
+          <%= step_indicator[:name] %>
+          <% unless step_indicator[:current] %>
+            <span class="usa-sr-only">
+              <% if step_indicator[:complete] %>
+                <%= t("strata.components.us.step_indicator.completed") %>
+              <% else %>
+                <%= t("strata.components.us.step_indicator.not_completed") %>
+              <% end %>
+            </span>
+          <% end %>
+        </span>
+      <% end %>
+    <% end %>
+  </ol>
+
+  <% unless header_first? %>
+    <%= header_content %>
+  <% end %>
+</div>
