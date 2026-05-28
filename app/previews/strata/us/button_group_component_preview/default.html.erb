@@ -1,0 +1,8 @@
+<%= render Strata::US::ButtonGroupComponent.new do |group| %>
+  <% group.with_item do %>
+    <%= render(Strata::US::ButtonComponent.new) { "Save" } %>
+  <% end %>
+  <% group.with_item do %>
+    <%= render(Strata::US::ButtonComponent.new(variant: :outline)) { "Cancel" } %>
+  <% end %>
+<% end %>
