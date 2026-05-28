@@ -11,9 +11,7 @@ module Strata
     #       <img src="/path/to/image.jpg" alt="Description" />
     #     <% end %>
     #     <% card.with_body { "<p>Card body content.</p>".html_safe } %>
-    #     <% card.with_footer do %>
-    #       <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
-    #     <% end %>
+    #     <% card.with_footer { strata_button_to "Action", "#" } %>
     #   <% end %>
     #
     # @example Flag layout with media on the right
