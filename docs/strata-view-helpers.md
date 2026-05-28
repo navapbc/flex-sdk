@@ -108,3 +108,34 @@ The Strata form builder's `f.submit` already delegates to this helper internally
 ```
 
 See [strata-form-builder.md](./strata-form-builder.md) for the full FormBuilder API.
+
+---
+
+## Using these helpers inside a ViewComponent
+
+The "auto-included" note in the intro covers regular templates rendered by a controller (the helpers are mixed into `ActionView::Base` via `Strata::ApplicationHelper`). ViewComponents render in their own isolated context, so a bare `strata_button_to(...)` call inside a component template raises `NoMethodError: undefined method 'strata_button_to' for an instance of YourComponent`.
+
+Two options:
+
+1. **Call through the `helpers` proxy** — the convention used elsewhere in this codebase:
+
+   ```erb
+   <%# inside a component's .html.erb %>
+   <%= helpers.strata_button_to "Continue", next_path, method: :get %>
+   ```
+
+   ```ruby
+   # inside a component's .rb (e.g. a method that returns markup)
+   helpers.strata_link_to(t(".actions.continue"), path, as: :button, method: :get)
+   ```
+
+2. **Include the helper module on the component class** — handy when a component calls a helper many times and the `helpers.` prefix becomes noisy:
+
+   ```ruby
+   class MyComponent < ViewComponent::Base
+     include Strata::ButtonsHelper
+     include Strata::LinksHelper
+   end
+   ```
+
+In-tree examples of the `helpers.` proxy form: [task_list_component.html.erb](../app/components/strata/flows/task_list_component.html.erb) and [task_section_component.rb](../app/components/strata/flows/task_section_component.rb).
