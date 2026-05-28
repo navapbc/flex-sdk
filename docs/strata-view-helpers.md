@@ -2,7 +2,7 @@
 
 Strata ships a small set of Rails view helpers that wrap common Rails primitives and apply USWDS-aware styling. They're auto-included in any view rendered through Strata-using controllers (via `Strata::ApplicationHelper`), so you can use them without explicit `include` calls.
 
-## Components
+## Helpers
 
 1. [`strata_link_to`](#strata_link_to) — Rails `link_to` with opt-in styling treatments
 2. [`strata_button_to`](#strata_button_to) — Rails `button_to` with USWDS button styling
