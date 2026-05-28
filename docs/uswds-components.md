@@ -162,17 +162,11 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 <% end %>
 ```
 
-### `Strata::US::ButtonComponent.css_classes`
+### Helpers and `css_classes`
 
-For call sites where Rails owns the element rendering — `button_to` (which generates its own `<form>`), `link_to`, `form.button`, `f.submit` — rendering the component directly isn't an option. Use the class-method helper to produce a matching USWDS class string:
+For `link_to` and `button_to` call sites, use the Strata view helpers — `strata_link_to ..., as: :button` and `strata_button_to` — instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
 
-```erb
-<%= button_to "Delete", path, method: :delete,
-      class: Strata::US::ButtonComponent.css_classes(variant: :secondary) %>
-
-<%= link_to "Edit", edit_path,
-      class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
-```
+For `form.button`, a non-Strata `f.submit`, or any other call site where Rails owns the tag and no helper fits, use the class-method helper `Strata::US::ButtonComponent.css_classes(variant:, size:, inverse:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component, the helpers, and `FormBuilder#submit`.
 
 The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
 
