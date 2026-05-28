@@ -7,31 +7,12 @@ module Strata
       layout "strata/component_preview"
 
       # @label Default
-      def default
-        render Strata::US::ButtonGroupComponent.new do |group|
-          group.with_item do
-            %(<button class="#{Strata::US::ButtonComponent.css_classes}">Save</button>).html_safe
-          end
-          group.with_item do
-            %(<button class="#{Strata::US::ButtonComponent.css_classes(variant: :outline)}">Cancel</button>).html_safe
-          end
-        end
-      end
+      # Renders via the sibling `default.html.erb` template — nested `render` calls don't work inside slot blocks in a Lookbook preview method.
+      def default; end
 
       # @label Segmented
-      def segmented
-        render Strata::US::ButtonGroupComponent.new(segmented: true) do |group|
-          group.with_item do
-            %(<button class="#{Strata::US::ButtonComponent.css_classes}">Map</button>).html_safe
-          end
-          group.with_item do
-            %(<button class="#{Strata::US::ButtonComponent.css_classes}">Satellite</button>).html_safe
-          end
-          group.with_item do
-            %(<button class="#{Strata::US::ButtonComponent.css_classes}">Hybrid</button>).html_safe
-          end
-        end
-      end
+      # Renders via the sibling `segmented.html.erb` template — nested `render` calls don't work inside slot blocks in a Lookbook preview method.
+      def segmented; end
     end
   end
 end
