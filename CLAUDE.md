@@ -123,10 +123,12 @@ When working with SDK-specific features, consult these docs:
 | Topic                                                   | Doc                                                                                      |
 | ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Available SDK components                                | [strata-sdk-components.md](docs/strata-sdk-components.md)                                |
+| USWDS components                                        | [uswds-components.md](docs/uswds-components.md)                                          |
 | Strata attributes (Address, Array, MemorableDate, etc.) | [strata-attributes.md](docs/strata-attributes.md)                                        |
 | Contributing new Strata attributes                      | [contributing-strata-attributes.md](docs/contributing/contributing-strata-attributes.md) |
 | Data modeler & migration generator                      | [strata-data-modeler.md](docs/strata-data-modeler.md)                                    |
 | Form builder                                            | [strata-form-builder.md](docs/strata-form-builder.md)                                    |
+| View helpers (strata_link_to, strata_button_to)         | [strata-view-helpers.md](docs/strata-view-helpers.md)                                    |
 | Multi-page form flows                                   | [multi-page-form-flows.md](docs/multi-page-form-flows.md)                                |
 | Intake application forms                                | [intake-application-forms.md](docs/intake-application-forms.md)                          |
 | Rules engine                                            | [strata-rules-engine.md](docs/strata-rules-engine.md)                                    |

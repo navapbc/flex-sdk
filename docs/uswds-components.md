@@ -16,10 +16,13 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 
 1. [Accordion](#accordion)
 2. [Alert](#alert)
-3. [Card](#card)
-4. [Card Group](#card-group)
-5. [List](#list)
-6. [Table](#table)
+3. [Breadcrumbs](#breadcrumbs)
+4. [Button](#button)
+5. [Button Group](#button-group)
+6. [Card](#card)
+7. [Card Group](#card-group)
+8. [List](#list)
+9. [Table](#table)
 
 ---
 
@@ -81,6 +84,127 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 
 <%= render Strata::US::AlertComponent.new(type: :warning, slim: true, with_icon: false) do |alert| %>
   <% alert.with_body { "Heads up — read-only mode." } %>
+<% end %>
+```
+
+---
+
+## Breadcrumbs
+
+`Strata::US::BreadcrumbsComponent` — a navigation trail of links ending in the current page. See [USWDS Breadcrumb](https://designsystem.digital.gov/components/breadcrumb/) and the [Lookbook preview](../app/previews/strata/us/breadcrumbs_component_preview.rb).
+
+The last item is always rendered as the current page (no link, `usa-current` + `aria-current="page"`) regardless of whether an `href` was supplied.
+
+**Options**
+
+- `wrap:` — render the wrapping variant (crumbs wrap to multiple lines on narrow screens). Defaults to `false`.
+- `aria_label:` — overrides the `aria-label` on the `<nav>`. Defaults to the i18n value at `strata.components.us.breadcrumbs.aria_label` (`"Breadcrumb"` in `en`, `"Ruta de navegación"` in `es-US`).
+- `classes:` — extra CSS classes appended to the root `<nav>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<nav>`.
+
+**Slots**
+
+- `with_item(text = nil, href: nil, classes: nil, **html_attributes) { ... }` — a single crumb. Text may be passed as a positional or `text:` argument, or via a block. `href:` is optional; when omitted (or on the last crumb), the crumb renders without a link. Extra keyword arguments become HTML attributes on the `<li>`.
+- `with_items(collection)` — render an item per element. Each element is a hash matching the keyword arguments to `with_item` (e.g. `{ text:, href: }`).
+
+**Example**
+
+```erb
+<%= render Strata::US::BreadcrumbsComponent.new do |bc| %>
+  <% bc.with_item(href: root_path) { "Home" } %>
+  <% bc.with_item(href: cases_path) { "Cases" } %>
+  <% bc.with_item { "Case #12345" } %>
+<% end %>
+
+<%= render Strata::US::BreadcrumbsComponent.new(wrap: true) do |bc| %>
+  <% bc.with_items([
+       { text: "Home", href: root_path },
+       { text: "Cases", href: cases_path },
+       { text: "Case #12345" }
+     ]) %>
+<% end %>
+```
+
+---
+
+## Button
+
+`Strata::US::ButtonComponent` — a USWDS-styled button rendered as either a `<button>` or an `<a>`. See [USWDS Button](https://designsystem.digital.gov/components/button/) and the [Lookbook preview](../app/previews/strata/us/button_component_preview.rb).
+
+Pass an `href:` to render an `<a class="usa-button">`; otherwise the component renders a `<button>`.
+
+**Options**
+
+- `variant:` — visual variant. One of `:default` (primary), `:secondary`, `:accent_cool`, `:accent_warm`, `:base`, `:outline`, `:unstyled`. Defaults to `:default`.
+- `size:` — `:default` or `:big`. Defaults to `:default`.
+- `inverse:` — render the inverse modifier for use on dark backgrounds. Defaults to `false`. USWDS recommends pairing this with `:outline` or `:unstyled`.
+- `type:` — `:button`, `:submit`, or `:reset`. Only applied to `<button>` elements (ignored when `href:` is set). Defaults to `:button`.
+- `href:` — when set, renders an `<a>` element instead of a `<button>`.
+- `disabled:` — when true, adds the `disabled` attribute on `<button>` or `aria-disabled="true"` on `<a>`. Defaults to `false`.
+- `classes:` — extra CSS classes appended to the root element.
+
+Any other keyword arguments are forwarded as HTML attributes on the rendered element.
+
+**Example**
+
+```erb
+<%= render Strata::US::ButtonComponent.new do %>
+  Save
+<% end %>
+
+<%= render Strata::US::ButtonComponent.new(href: edit_path, variant: :outline) do %>
+  Edit
+<% end %>
+
+<%= render Strata::US::ButtonComponent.new(variant: :secondary, size: :big, disabled: true) do %>
+  Delete
+<% end %>
+```
+
+### Helpers and `css_classes`
+
+For `link_to` and `button_to` call sites, use the Strata view helpers — `strata_link_to ..., as: :button` and `strata_button_to` — instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
+
+For `form.button`, a non-Strata `f.submit`, or any other call site where Rails owns the tag and no helper fits, use the class-method helper `Strata::US::ButtonComponent.css_classes(variant:, size:, inverse:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component, the helpers, and `FormBuilder#submit`.
+
+The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
+
+```erb
+<%= f.submit "Save draft", variant: :outline %>
+<%= f.submit "Apply", big: true %>
+```
+
+---
+
+## Button Group
+
+`Strata::US::ButtonGroupComponent` — a `<ul class="usa-button-group">` of related buttons, with the option to render the segmented variant. See [USWDS Button group](https://designsystem.digital.gov/components/button-group/) and the [Lookbook preview](../app/previews/strata/us/button_group_component_preview.rb).
+
+The component wraps each item in `<li class="usa-button-group__item">`. The `<li>` contents are up to the caller — typically a `Strata::US::ButtonComponent`, a `link_to`, or an `f.submit`.
+
+**Options**
+
+- `segmented:` — render the segmented variant (`usa-button-group--segmented`). Defaults to `false`.
+- `classes:` — extra CSS classes appended to the root `<ul>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<ul>`.
+
+**Slots**
+
+- `with_item(classes: nil, **html_attributes) { ... }` — a single button-group entry. Extra keyword arguments are forwarded as HTML attributes on the `<li>`.
+
+**Example**
+
+```erb
+<%= render Strata::US::ButtonGroupComponent.new do |group| %>
+  <% group.with_item do %>
+    <%= render Strata::US::ButtonComponent.new do %>Save<% end %>
+  <% end %>
+  <% group.with_item do %>
+    <%= link_to "Cancel", cancel_path,
+          class: Strata::US::ButtonComponent.css_classes(variant: :outline) %>
+  <% end %>
 <% end %>
 ```
 
