@@ -1,0 +1,7 @@
+<%= render Strata::US::CardComponent.new do |card| %>
+  <% card.with_header { "Default card" } %>
+  <% card.with_body { "<p>A card with a header, body, and footer.</p>".html_safe } %>
+  <% card.with_footer do %>
+    <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+  <% end %>
+<% end %>

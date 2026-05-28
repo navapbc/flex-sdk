@@ -34,7 +34,7 @@
   <%= intro %>
 </p>
 
-<%= link_to new_button_text, new_path, class: class_names("usa-button") %>
+<%= strata_link_to new_button_text, new_path, as: :button %>
 
 <% if not application_forms.empty? %>
   <h2 class="margin-top-6"><%= in_progress_applications_heading %></h2>

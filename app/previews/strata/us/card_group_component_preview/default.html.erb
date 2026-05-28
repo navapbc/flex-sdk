@@ -1,0 +1,23 @@
+<%= render Strata::US::CardGroupComponent.new do |group| %>
+  <% group.with_card do |card| %>
+    <% card.with_header { "First card" } %>
+    <% card.with_body { "<p>Content for the first card.</p>".html_safe } %>
+    <% card.with_footer do %>
+      <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+    <% end %>
+  <% end %>
+  <% group.with_card do |card| %>
+    <% card.with_header { "Second card" } %>
+    <% card.with_body { "<p>Content for the second card.</p>".html_safe } %>
+    <% card.with_footer do %>
+      <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+    <% end %>
+  <% end %>
+  <% group.with_card do |card| %>
+    <% card.with_header { "Third card" } %>
+    <% card.with_body { "<p>Content for the third card.</p>".html_safe } %>
+    <% card.with_footer do %>
+      <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+    <% end %>
+  <% end %>
+<% end %>

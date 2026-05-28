@@ -166,6 +166,8 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 
 For `link_to` and `button_to` call sites, use the Strata view helpers — `strata_link_to ..., as: :button` and `strata_button_to` — instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
 
+Inside a ViewComponent template, invoke them through ViewComponent's `helpers` proxy (e.g. `helpers.strata_button_to ...`) — see [Using these helpers inside a ViewComponent](./strata-view-helpers.md#using-these-helpers-inside-a-viewcomponent).
+
 For `form.button`, a non-Strata `f.submit`, or any other call site where Rails owns the tag and no helper fits, use the class-method helper `Strata::US::ButtonComponent.css_classes(variant:, size:, inverse:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component, the helpers, and `FormBuilder#submit`.
 
 The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
@@ -241,7 +243,7 @@ At least one of header, media, body, or footer must be provided.
   <% end %>
   <% card.with_body { "<p>Card body content.</p>".html_safe } %>
   <% card.with_footer do %>
-    <%= button_tag "Action", class: "usa-button" %>
+    <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
   <% end %>
 <% end %>
 ```

@@ -1,0 +1,12 @@
+<%= render Strata::US::CardGroupComponent.new do |group| %>
+  <% 6.times do |i| %>
+    <% group.with_card(classes: "tablet:grid-col-6 widescreen:grid-col-4") do |card| %>
+      <% card.with_header { "Card #{i + 1}" } %>
+      <% card.with_media { image_tag(Strata::US::CardGroupComponentPreview::PREVIEW_IMAGE_URL, alt: "Card preview placeholder") } %>
+      <% card.with_body { "<p>Each card spans 6 columns at tablet width and 4 columns at widescreen.</p>".html_safe } %>
+      <% card.with_footer do %>
+        <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
