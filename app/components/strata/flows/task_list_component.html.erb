@@ -6,7 +6,7 @@
     <% end %>
 </ul>
 
-<%= strata_button_to t(".actions.review_and_submit"),
+<%= helpers.strata_button_to t(".actions.review_and_submit"),
             @flow.end_path,
             method: :get,
             class: "margin-top-2",
