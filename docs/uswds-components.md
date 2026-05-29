@@ -294,7 +294,7 @@ The component renders the standard USWDS `<svg class="usa-icon">…<use href="�
 - `title:` — Required when `decorative: false`; ignored when `decorative: true`.
 - `classes:` — extra CSS classes appended to the `<svg>`. USWDS color utilities (`text-primary`, `text-success`, `text-warning`, etc.) go here.
 
-Any other keyword arguments are forwarded as HTML attributes on the `<svg>`.
+Any other keyword arguments are forwarded as HTML attributes on the `<svg>`. `focusable` and `role` default to the USWDS-recommended values (`"false"` and `"img"`) but may be overridden. `aria-hidden` is component-managed — control it via `decorative:` rather than passing it directly.
 
 **Example**
 

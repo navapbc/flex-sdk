@@ -135,6 +135,12 @@ RSpec.describe Strata::US::IconComponent, type: :component do
 
       expect(page).not_to have_css("svg.usa-icon[aria-hidden]")
     end
+
+    it "ignores a caller-supplied aria-hidden when decorative: true" do
+      render_icon(name: :check, "aria-hidden": "false")
+
+      expect(page).to have_css('svg.usa-icon[aria-hidden="true"]')
+    end
   end
 
   describe "classes & html attributes" do
@@ -159,6 +165,22 @@ RSpec.describe Strata::US::IconComponent, type: :component do
       )
 
       expect(page).to have_css('svg.usa-icon#my-icon[data-test="yes"][aria-label="checked"]')
+    end
+
+    it "defaults focusable to 'false' but allows the caller to override" do
+      render_icon(name: :check)
+      expect(page).to have_css('svg.usa-icon[focusable="false"]')
+
+      render_icon(name: :check, focusable: "true")
+      expect(page).to have_css('svg.usa-icon[focusable="true"]')
+    end
+
+    it "defaults role to 'img' but allows the caller to override" do
+      render_icon(name: :check)
+      expect(page).to have_css('svg.usa-icon[role="img"]')
+
+      render_icon(name: :check, role: "presentation")
+      expect(page).to have_css('svg.usa-icon[role="presentation"]')
     end
   end
 end
