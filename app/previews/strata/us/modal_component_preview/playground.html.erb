@@ -1,0 +1,16 @@
+<%= render Strata::US::ModalComponent.new(
+      id: id,
+      heading_tag: heading_tag,
+      large: large,
+      forced_action: forced_action
+    ) do |m| %>
+  <% m.with_heading { heading } if heading.present? %>
+  <% m.with_content { "<p>#{body}</p>".html_safe } if body.present? %>
+  <% m.with_footer do %>
+    <%= render(Strata::US::ButtonGroupComponent.new) do |group| %>
+      <% group.with_item do %>
+        <%= render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { footer_button_label } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

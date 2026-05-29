@@ -18,6 +18,8 @@ en:
       us:
         breadcrumbs:
           aria_label: "Breadcrumb"
+        modal:
+          close_aria_label: "Close this window"
     application_forms:
       index:
         col_created_at: "Created At"

@@ -200,6 +200,72 @@ RSpec.describe Strata::LinksHelper, type: :helper do
       end
     end
 
+    context "with `modal:` keyword" do
+      it "renders an <a> with href=#id, aria-controls, and data-open-modal" do
+        result = helper.strata_link_to("Open", modal: "confirm")
+
+        expect(result).to have_element(
+          :a,
+          href: "#confirm",
+          "aria-controls": "confirm",
+          text: "Open"
+        )
+        expect(result).to have_css("a[data-open-modal]")
+      end
+
+      it "combines with `as: :button` to produce a USWDS-styled modal opener" do
+        result = helper.strata_link_to("Open", modal: "confirm", as: :button)
+
+        expect(result).to have_element(:a, href: "#confirm", class: "usa-button", text: "Open")
+        expect(result).to have_css("a[aria-controls='confirm'][data-open-modal]")
+      end
+
+      it "still applies button variant/size/inverse modifiers when combined with `as: :button`" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          as: :button,
+          variant: :outline,
+          size: :big
+        )
+
+        expect(result).to have_element(:a, class: "usa-button usa-button--outline usa-button--big")
+      end
+
+      it "raises ArgumentError when a positional URL is also passed" do
+        expect { helper.strata_link_to("Open", "/somewhere", modal: "confirm") }
+          .to raise_error(ArgumentError, /modal/)
+      end
+
+      it "raises ArgumentError when the modal id is blank" do
+        expect { helper.strata_link_to("Open", modal: "") }
+          .to raise_error(ArgumentError, /id/)
+      end
+
+      it "appends a caller-supplied :class without overwriting the opener attributes" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          as: :button,
+          class: "margin-top-4"
+        )
+
+        expect(result).to have_element(:a, class: "usa-button margin-top-4")
+        expect(result).to have_css("a[aria-controls='confirm'][data-open-modal]")
+      end
+
+      it "forwards arbitrary html_options to the anchor" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          id: "opener",
+          data: { turbo: "false" }
+        )
+
+        expect(result).to have_element(:a, id: "opener", "data-turbo": "false")
+      end
+    end
+
     context "when :alt is passed without `as: :external`" do
       it "silently drops :alt when no :as is given (no error, no stray attribute on the <a>)" do
         result = helper.strata_link_to("Read more", "/articles/1", alt: true)
