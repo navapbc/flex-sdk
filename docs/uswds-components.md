@@ -22,8 +22,9 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 6. [Card](#card)
 7. [Card Group](#card-group)
 8. [Icon](#icon)
-9. [List](#list)
-10. [Table](#table)
+9. [Link](#link)
+10. [List](#list)
+11. [Table](#table)
 
 ---
 
@@ -310,6 +311,50 @@ Any other keyword arguments are forwarded as HTML attributes on the `<svg>`. `fo
       classes: "text-warning"
     ) %>
 ```
+
+---
+
+## Link
+
+`Strata::US::LinkComponent` — a USWDS-styled `<a>`, with an opt-in external-link indicator. See [USWDS Link](https://designsystem.digital.gov/components/link/) and the [Lookbook preview](../app/previews/strata/us/link_component_preview.rb).
+
+The component applies styling only — it does not set `target` or `rel`. If you want the link to open in a new tab, pass `target: "_blank"` and `rel: "noopener noreferrer"` explicitly.
+
+**Options**
+
+- `href:` (required) — the link target.
+- `external:` — render the external-link indicator (`usa-link--external`). Defaults to `false`.
+- `alt:` — render the dark-background variant of the external indicator (`usa-link--alt`). Only meaningful in combination with `external: true`; otherwise ignored. Defaults to `false`.
+- `classes:` — extra CSS classes appended to the `<a>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<a>`.
+
+**Example**
+
+```erb
+<%= render Strata::US::LinkComponent.new(href: article_path) do %>
+  Read more
+<% end %>
+
+<%= render Strata::US::LinkComponent.new(href: "https://example.gov", external: true) do %>
+  example.gov
+<% end %>
+
+<%# External link that opens in a new tab — caller controls target/rel %>
+<%= render Strata::US::LinkComponent.new(
+      href: "https://example.gov",
+      external: true,
+      target: "_blank",
+      rel: "noopener noreferrer") do %>
+  example.gov
+<% end %>
+```
+
+### Helpers and `css_classes`
+
+For `link_to` call sites, use `strata_link_to ..., as: :external` instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
+
+For other call sites where Rails owns the tag, use the class-method helper `Strata::US::LinkComponent.css_classes(external:, alt:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component and the helper.
 
 ---
 
