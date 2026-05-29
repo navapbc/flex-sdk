@@ -141,6 +141,29 @@ RSpec.describe Strata::US::IconComponent, type: :component do
 
       expect(page).to have_css('svg.usa-icon[aria-hidden="true"]')
     end
+
+    it "strips a nested aria: { hidden: } when decorative: false" do
+      render_icon(
+        name: :warning,
+        decorative: false,
+        title: "Warning",
+        aria: { hidden: true }
+      )
+
+      expect(page).not_to have_css("svg.usa-icon[aria-hidden]")
+    end
+
+    it "preserves other entries in the aria: hash when decorative: false" do
+      render_icon(
+        name: :warning,
+        decorative: false,
+        title: "Warning",
+        aria: { describedby: "extra-help", hidden: true }
+      )
+
+      expect(page).not_to have_css("svg.usa-icon[aria-hidden]")
+      expect(page).to have_css('svg.usa-icon[aria-describedby="extra-help"]')
+    end
   end
 
   describe "classes & html attributes" do

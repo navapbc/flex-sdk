@@ -47,15 +47,20 @@ module Strata
 
       def svg_attributes
         # focusable and role default to USWDS values but may be overridden by
-        # the caller. aria-hidden is component-managed via `decorative:` and
-        # cannot be overridden.
+        # the caller. aria-hidden is component-managed via `decorative:` —
+        # strip both the flat and nested forms before applying it.
         attrs = { focusable: "false", role: "img" }.merge(@html_attributes)
         attrs[:class] = svg_classes
+
+        attrs.delete(:"aria-hidden")
+        if attrs[:aria].is_a?(Hash)
+          attrs[:aria] = attrs[:aria].except(:hidden, "hidden")
+          attrs.delete(:aria) if attrs[:aria].empty?
+        end
 
         if @decorative
           attrs[:"aria-hidden"] = "true"
         else
-          attrs.delete(:"aria-hidden")
           attrs[:"aria-labelledby"] = title_id
         end
 

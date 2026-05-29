@@ -17,8 +17,6 @@ module Strata
         search settings menu mail phone print download upload delete edit
       ].freeze
 
-      SAMPLE_COLORS = %w[default text-primary text-secondary text-success text-warning text-error].freeze
-
       # @label Playground
       # @param name select { choices: [check, close, warning, error, info, help, account_circle, arrow_back, arrow_forward, search, settings, menu, mail, phone, print, download, upload, delete, edit] }
       # @param size select { choices: [default, 3, 4, 5, 6, 7, 8, 9] }
@@ -33,7 +31,7 @@ module Strata
           name: SAMPLE_ICONS.include?(name.to_s) ? name.to_s : "check",
           size: size_arg,
           decorative: decorative,
-          title: decorative ? nil : title,
+          title: decorative ? nil : (title.presence || "Icon"),
           classes: classes
         )
       end
