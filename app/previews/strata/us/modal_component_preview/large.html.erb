@@ -1,0 +1,15 @@
+<%= strata_link_to "Open large modal", modal: "large-modal", as: :button %>
+
+<%= render Strata::US::ModalComponent.new(id: "large-modal", large: true) do |m| %>
+  <% m.with_heading { "Modal heading" } %>
+  <% m.with_content do %>
+    <p>The large variant gives more room for longer body content or denser UI elements.</p>
+  <% end %>
+  <% m.with_footer do %>
+    <%= render(Strata::US::ButtonGroupComponent.new) do |group| %>
+      <% group.with_item do %>
+        <%= render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { "OK" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

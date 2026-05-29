@@ -1,0 +1,8 @@
+<%= render Strata::US::CardComponent.new do |card| %>
+  <% card.with_header { "Card with media" } %>
+  <% card.with_media { image_tag(Strata::US::CardComponentPreview::PREVIEW_IMAGE_URL, alt: "Card preview placeholder") } %>
+  <% card.with_body { "<p>This card includes a media image above the body.</p>".html_safe } %>
+  <% card.with_footer do %>
+    <%= render Strata::US::ButtonComponent.new do %>Read more<% end %>
+  <% end %>
+<% end %>

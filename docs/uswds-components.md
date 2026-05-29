@@ -21,8 +21,11 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 5. [Button Group](#button-group)
 6. [Card](#card)
 7. [Card Group](#card-group)
-8. [List](#list)
-9. [Table](#table)
+8. [Icon](#icon)
+9. [Link](#link)
+10. [List](#list)
+11. [Modal](#modal)
+12. [Table](#table)
 
 ---
 
@@ -166,6 +169,8 @@ Any other keyword arguments are forwarded as HTML attributes on the rendered ele
 
 For `link_to` and `button_to` call sites, use the Strata view helpers — `strata_link_to ..., as: :button` and `strata_button_to` — instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
 
+Inside a ViewComponent template, invoke them through ViewComponent's `helpers` proxy (e.g. `helpers.strata_button_to ...`) — see [Using these helpers inside a ViewComponent](./strata-view-helpers.md#using-these-helpers-inside-a-viewcomponent).
+
 For `form.button`, a non-Strata `f.submit`, or any other call site where Rails owns the tag and no helper fits, use the class-method helper `Strata::US::ButtonComponent.css_classes(variant:, size:, inverse:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component, the helpers, and `FormBuilder#submit`.
 
 The Strata form builder's `f.submit` already delegates to this helper internally and accepts the same `:variant` and `:big` options:
@@ -241,7 +246,7 @@ At least one of header, media, body, or footer must be provided.
   <% end %>
   <% card.with_body { "<p>Card body content.</p>".html_safe } %>
   <% card.with_footer do %>
-    <%= button_tag "Action", class: "usa-button" %>
+    <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
   <% end %>
 <% end %>
 ```
@@ -277,6 +282,83 @@ At least one of header, media, body, or footer must be provided.
 
 ---
 
+## Icon
+
+`Strata::US::IconComponent` — an SVG icon drawn from the bundled USWDS sprite sheet. See [USWDS Icon](https://designsystem.digital.gov/components/icon/) and the [Lookbook preview](../app/previews/strata/us/icon_component_preview.rb).
+
+The component renders the standard USWDS `<svg class="usa-icon">…<use href="…sprite.svg#NAME">…</svg>` markup, including the `focusable="false"` and `role="img"` attributes USWDS expects.
+
+**Options**
+
+- `name:` (required) — Symbol or String matching a USWDS sprite ID (e.g. `:check`, `:arrow_back`, `:warning`). Not validated against the sprite — a typo will simply render an empty icon, matching USWDS default behavior.
+- `size:` — Integer from `3` to `9`, mapping to `usa-icon--size-N`. Defaults to no modifier (USWDS default of `1em`).
+- `decorative:` — Defaults to `true`. When `true`, the icon is hidden from assistive technology via `aria-hidden="true"`. When `false`, a `<title>` element is rendered inside the SVG and referenced from `aria-labelledby`, so screen readers announce the icon.
+- `title:` — Required when `decorative: false`; ignored when `decorative: true`.
+- `classes:` — extra CSS classes appended to the `<svg>`. USWDS color utilities (`text-primary`, `text-success`, `text-warning`, etc.) go here.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<svg>`. `focusable` and `role` default to the USWDS-recommended values (`"false"` and `"img"`) but may be overridden. `aria-hidden` is component-managed — control it via `decorative:` rather than passing it directly.
+
+**Example**
+
+```erb
+<%= render Strata::US::IconComponent.new(name: :check) %>
+
+<%= render Strata::US::IconComponent.new(
+      name: :arrow_back, size: 4, classes: "text-primary"
+    ) %>
+
+<%= render Strata::US::IconComponent.new(
+      name: :warning, decorative: false, title: "Warning",
+      classes: "text-warning"
+    ) %>
+```
+
+---
+
+## Link
+
+`Strata::US::LinkComponent` — a USWDS-styled `<a>`, with an opt-in external-link indicator. See [USWDS Link](https://designsystem.digital.gov/components/link/) and the [Lookbook preview](../app/previews/strata/us/link_component_preview.rb).
+
+The component applies styling only — it does not set `target` or `rel`. If you want the link to open in a new tab, pass `target: "_blank"` and `rel: "noopener noreferrer"` explicitly.
+
+**Options**
+
+- `href:` (required) — the link target.
+- `external:` — render the external-link indicator (`usa-link--external`). Defaults to `false`.
+- `alt:` — render the dark-background variant of the external indicator (`usa-link--alt`). Only meaningful in combination with `external: true`; otherwise ignored. Defaults to `false`.
+- `classes:` — extra CSS classes appended to the `<a>`.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<a>`.
+
+**Example**
+
+```erb
+<%= render Strata::US::LinkComponent.new(href: article_path) do %>
+  Read more
+<% end %>
+
+<%= render Strata::US::LinkComponent.new(href: "https://example.gov", external: true) do %>
+  example.gov
+<% end %>
+
+<%# External link that opens in a new tab — caller controls target/rel %>
+<%= render Strata::US::LinkComponent.new(
+      href: "https://example.gov",
+      external: true,
+      target: "_blank",
+      rel: "noopener noreferrer") do %>
+  example.gov
+<% end %>
+```
+
+### Helpers and `css_classes`
+
+For `link_to` call sites, use `strata_link_to ..., as: :external` instead of rendering this component. See [strata-view-helpers.md](./strata-view-helpers.md).
+
+For other call sites where Rails owns the tag, use the class-method helper `Strata::US::LinkComponent.css_classes(external:, alt:)` directly. It returns the bare USWDS class string and is the single source of truth used by the component and the helper.
+
+---
+
 ## List
 
 `Strata::US::ListComponent` — a USWDS-styled `<ul>` or `<ol>`. See [USWDS Typography — lists](https://designsystem.digital.gov/components/typography/) and the [Lookbook preview](../app/previews/strata/us/list_component_preview.rb).
@@ -304,6 +386,65 @@ At least one of header, media, body, or footer must be provided.
   <% list.with_items(["Apples", "Bananas", "Cherries"]) %>
 <% end %>
 ```
+
+---
+
+## Modal
+
+`Strata::US::ModalComponent` — a USWDS modal dialog. See [USWDS Modal](https://designsystem.digital.gov/components/modal/) and the [Lookbook preview](../app/previews/strata/us/modal_component_preview.rb).
+
+The component renders only the modal markup. Pair it with an opener element elsewhere on the page — usually a [`strata_link_to`](./strata-view-helpers.md#strata_link_to) with the `modal:` keyword.
+
+**Options**
+
+- `id:` (required) — DOM id for the modal. Openers reference this id; the heading and description ids are derived from it (`#{id}-heading`, `#{id}-description`).
+- `heading_tag:` — HTML tag for the heading. Defaults to `:h2`.
+- `large:` — render the large variant (`usa-modal--lg`). Defaults to `false`.
+- `forced_action:` — add `data-force-action` to the wrapper and omit the close button. Use when the user must pick one of the footer actions (USWDS calls this the "forced action" pattern). Defaults to `false`.
+- `classes:` — extra CSS classes appended to the `.usa-modal` wrapper.
+
+Any other keyword arguments are forwarded as HTML attributes on the wrapper.
+
+**Slots**
+
+All three slots are optional. ARIA wiring (`aria-labelledby`, `aria-describedby`) is only emitted when the corresponding slot is rendered.
+
+- `with_heading { ... }` — heading text. Rendered inside `h{heading_tag}.usa-modal__heading`.
+- `with_content { ... }` — body content (HTML allowed). Wrapped in `<div class="usa-prose">`.
+- `with_footer { ... }` — footer content. Caller decides the markup (typically a `Strata::US::ButtonGroupComponent` of buttons with `data-close-modal`).
+
+**Example**
+
+```erb
+<%= render Strata::US::ModalComponent.new(id: "confirm") do |modal| %>
+  <% modal.with_heading { "Are you sure?" } %>
+  <% modal.with_content { "<p>This cannot be undone.</p>".html_safe } %>
+  <% modal.with_footer do %>
+    <%= render Strata::US::ButtonGroupComponent.new do |group| %>
+      <% group.with_item do %>
+        <%= render Strata::US::ButtonComponent.new(data: { close_modal: "" }) { "Continue" } %>
+      <% end %>
+      <% group.with_item do %>
+        <%= render Strata::US::ButtonComponent.new(variant: :unstyled, data: { close_modal: "" }) { "Cancel" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= strata_link_to "Open modal", modal: "confirm", as: :button %>
+```
+
+### Modal openers and `opener_attrs`
+
+For `link_to` call sites, use `strata_link_to ..., modal: "id"` (optionally combined with `as: :button`). See [strata-view-helpers.md](./strata-view-helpers.md#strata_link_to).
+
+For call sites where Rails owns the tag and `strata_link_to` doesn't fit — `button_tag` inside an existing `<form>`, a custom `tag.a`, etc. — use the class-method helper directly:
+
+```erb
+<%= button_tag "Open", **Strata::US::ModalComponent.opener_attrs("confirm") %>
+```
+
+`opener_attrs(id)` returns `{ href: "#id", "aria-controls": id, "data-open-modal": "" }`. The `href` provides JS-off graceful degradation on anchors; tag helpers that don't render `href` drop it.
 
 ---
 

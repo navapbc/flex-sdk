@@ -3,9 +3,15 @@
 module Strata
   module US
     # ButtonGroupComponent renders a USWDS button group: a <ul class="usa-button-group">
-    # whose children are <li class="usa-button-group__item"> wrappers containing
-    # whatever button-styled element the caller chooses (a Strata::US::ButtonComponent,
-    # a link_to, an f.submit, etc.).
+    # whose children are <li> wrappers containing whatever button-styled element
+    # the caller chooses (a Strata::US::ButtonComponent, a link_to, an f.submit, etc.).
+    #
+    # The <li>s deliberately do *not* carry the `usa-button-group__item` class in
+    # the default variant. That class triggers a known USWDS bug where buttons
+    # inside a `.usa-form` render too tall — see
+    # https://github.com/uswds/uswds/issues/5883. The class is applied only in
+    # the segmented variant, where its CSS hooks (border rounding, connector
+    # pseudo-elements) are required for the visual treatment.
     #
     # See https://designsystem.digital.gov/components/button-group/.
     #
@@ -25,7 +31,9 @@ module Strata
     #     <% group.with_item { ... } %>
     #   <% end %>
     class ButtonGroupComponent < ViewComponent::Base
-      renders_many :items, "Strata::US::ButtonGroupComponent::ItemComponent"
+      renders_many :items, ->(**kwargs) {
+        ItemComponent.new(segmented: @segmented, **kwargs)
+      }
 
       def initialize(segmented: false, classes: nil, **html_attributes)
         @segmented = segmented
@@ -47,16 +55,21 @@ module Strata
         attrs
       end
 
-      # ItemComponent renders one entry as an <li class="usa-button-group__item">.
+      # ItemComponent renders one entry as an <li>. The `usa-button-group__item`
+      # class is applied only when the parent group is segmented; see the
+      # ButtonGroupComponent comment above for the rationale (USWDS issue 5883).
       class ItemComponent < ViewComponent::Base
-        def initialize(classes: nil, **html_attributes)
+        def initialize(segmented: false, classes: nil, **html_attributes)
+          @segmented = segmented
           @classes = classes
           @html_attributes = html_attributes
         end
 
         def call
           attrs = @html_attributes.dup
-          attrs[:class] = class_names("usa-button-group__item", @classes)
+          base_class = "usa-button-group__item" if @segmented
+          combined = class_names(base_class, @classes)
+          attrs[:class] = combined if combined.present?
 
           content_tag(:li, content, **attrs)
         end

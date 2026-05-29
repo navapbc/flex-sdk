@@ -1,0 +1,8 @@
+<%= render Strata::US::CardComponent.new(flag: true, header_first: true) do |card| %>
+  <% card.with_header { "Header first" } %>
+  <% card.with_media { image_tag(Strata::US::CardComponentPreview::PREVIEW_IMAGE_URL, alt: "Card preview placeholder") } %>
+  <% card.with_body { "<p>The header appears before the media.</p>".html_safe } %>
+  <% card.with_footer do %>
+    <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+  <% end %>
+<% end %>

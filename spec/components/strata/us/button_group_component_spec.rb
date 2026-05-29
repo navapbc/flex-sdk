@@ -12,15 +12,16 @@ RSpec.describe Strata::US::ButtonGroupComponent, type: :component do
       expect(page).to have_css("ul.usa-button-group")
     end
 
-    it "wraps each item in li.usa-button-group__item" do
+    it "wraps each item in a bare <li> by default (no usa-button-group__item)" do
       render_inline(described_class.new) do |group|
         group.with_item { "A" }
         group.with_item { "B" }
       end
 
-      expect(page).to have_css("ul.usa-button-group > li.usa-button-group__item", count: 2)
-      expect(page).to have_css("li.usa-button-group__item", text: "A")
-      expect(page).to have_css("li.usa-button-group__item", text: "B")
+      expect(page).to have_css("ul.usa-button-group > li", count: 2)
+      expect(page).to have_css("li", text: "A")
+      expect(page).to have_css("li", text: "B")
+      expect(page).not_to have_css("li.usa-button-group__item")
     end
 
     it "renders an empty <ul> when no items are added" do
@@ -42,6 +43,18 @@ RSpec.describe Strata::US::ButtonGroupComponent, type: :component do
       render_inline(described_class.new(segmented: true)) { |group| group.with_item { "A" } }
 
       expect(page).to have_css("ul.usa-button-group.usa-button-group--segmented")
+    end
+
+    it "adds usa-button-group__item to each <li> only when segmented: true" do
+      render_inline(described_class.new(segmented: true)) do |group|
+        group.with_item { "A" }
+        group.with_item { "B" }
+      end
+
+      expect(page).to have_css(
+        "ul.usa-button-group--segmented > li.usa-button-group__item",
+        count: 2
+      )
     end
   end
 
@@ -73,8 +86,17 @@ RSpec.describe Strata::US::ButtonGroupComponent, type: :component do
   end
 
   describe "item-level options" do
-    it "applies item-level classes to the <li>" do
+    it "applies item-level classes to a bare <li> in the default variant" do
       render_inline(described_class.new) do |group|
+        group.with_item(classes: "highlighted") { "A" }
+      end
+
+      expect(page).to have_css("li.highlighted", text: "A")
+      expect(page).not_to have_css("li.usa-button-group__item")
+    end
+
+    it "appends item-level classes after usa-button-group__item when segmented" do
+      render_inline(described_class.new(segmented: true)) do |group|
         group.with_item(classes: "highlighted") { "A" }
       end
 
@@ -96,7 +118,7 @@ RSpec.describe Strata::US::ButtonGroupComponent, type: :component do
         group.with_item { "<a class='usa-button' href='/x'>Go</a>".html_safe }
       end
 
-      expect(page).to have_css("li.usa-button-group__item a.usa-button[href='/x']", text: "Go")
+      expect(page).to have_css("li a.usa-button[href='/x']", text: "Go")
     end
 
     it "escapes plain string content" do
