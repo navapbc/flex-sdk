@@ -28,7 +28,7 @@ module Strata::Flows
     end
 
     def pathname
-      in_loop? ? "#{@loop.name}_#{@name}" : @name
+      in_loop? ? "#{@loop.name}_#{@name}" : @name.to_s
     end
 
     def pathnames
