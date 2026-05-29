@@ -10,6 +10,7 @@ class SampleFlow
     ]
   end
   task :employment_details, depends_on: [ :personal_information ] do
+    info_page :start_employment_details, context: :employer_name
     question_page :employer_name
   end
   task :prior_employment, depends_on: [ :employment_details ] do

@@ -47,12 +47,12 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "returns the previous path" do
         record.first_name = "John"
-        allow(task.pages[1]).to receive(:edit_path).and_return("edit_path")
+        allow(task.pages[1]).to receive(:path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
 
       it "ignores unnecessary pages" do
-        allow(task.pages[0]).to receive(:edit_path).and_return("edit_path")
+        allow(task.pages[0]).to receive(:path).and_return("edit_path")
         expect(eval.prev_path).to eq("edit_path")
       end
     end
@@ -81,12 +81,12 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "returns the next path" do
         record.first_name = "John"
-        allow(task.pages[1]).to receive(:edit_path).and_return("edit_path")
+        allow(task.pages[1]).to receive(:path).and_return("edit_path")
         expect(eval.next_path).to eq("edit_path")
       end
 
       it "ignores unnecessary pages" do
-        allow(task.pages[2]).to receive(:edit_path).and_return("edit_path")
+        allow(task.pages[2]).to receive(:path).and_return("edit_path")
         expect(eval.next_path).to eq("edit_path")
       end
     end
@@ -140,7 +140,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
     describe "#next_path on the outer page before the loop" do
       it "enters the loop at the first loop page for the first child record" do
-        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/business_name")
+        allow(loop_business_name).to receive(:path).with(flow_record, child_a).and_return("/loop/a/business_name")
         cursor = described_class.new(task, flow_record, 0)
 
         expect(cursor.next_path).to eq("/loop/a/business_name")
@@ -148,7 +148,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "skips the loop and continues to the next outer page when the relation is empty" do
         empty_flow_record = EmploymentForm.new(prior_employers: [])
-        allow(outer_after).to receive(:edit_path).with(empty_flow_record).and_return("/years_employed")
+        allow(outer_after).to receive(:path).with(empty_flow_record).and_return("/years_employed")
         cursor = described_class.new(task, empty_flow_record, 0)
 
         expect(cursor.next_path).to eq("/years_employed")
@@ -157,7 +157,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
     describe "#next_path inside the loop (not the last page)" do
       it "advances to the next loop page for the same child record" do
-        allow(loop_role).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/role")
+        allow(loop_role).to receive(:path).with(flow_record, child_a).and_return("/loop/a/role")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 0)
 
         expect(cursor.next_path).to eq("/loop/a/role")
@@ -166,14 +166,14 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
     describe "#next_path on the last loop page" do
       it "advances to the first loop page for the next child record" do
-        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_b).and_return("/loop/b/business_name")
+        allow(loop_business_name).to receive(:path).with(flow_record, child_b).and_return("/loop/b/business_name")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 1)
 
         expect(cursor.next_path).to eq("/loop/b/business_name")
       end
 
       it "exits the loop to the next outer page when on the last child's last loop page" do
-        allow(outer_after).to receive(:edit_path).with(flow_record).and_return("/years_employed")
+        allow(outer_after).to receive(:path).with(flow_record).and_return("/years_employed")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_b, loop_page_idx: 1)
 
         expect(cursor.next_path).to eq("/years_employed")
@@ -199,14 +199,14 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "treats out-of-scope records as if they don't exist when advancing past the loop" do
         # child_b is filtered out by the scope; cursor at child_a's last page exits the loop.
-        allow(outer_after).to receive(:edit_path).with(flow_record).and_return("/years_employed")
+        allow(outer_after).to receive(:path).with(flow_record).and_return("/years_employed")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 1)
 
         expect(cursor.next_path).to eq("/years_employed")
       end
 
       it "enters the loop at the first in-scope record from the outer page" do
-        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/business_name")
+        allow(loop_business_name).to receive(:path).with(flow_record, child_a).and_return("/loop/a/business_name")
         cursor = described_class.new(task, flow_record, 0)
 
         expect(cursor.next_path).to eq("/loop/a/business_name")
@@ -220,7 +220,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "skips a loop page for a child whose predicate is false, advancing to the next child" do
         # child_a.business_name == "Acme", so :role is skipped for child_a; advance to child_b's first page
-        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_b).and_return("/loop/b/business_name")
+        allow(loop_business_name).to receive(:path).with(flow_record, child_b).and_return("/loop/b/business_name")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 0)
 
         expect(cursor.next_path).to eq("/loop/b/business_name")
@@ -229,21 +229,21 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
     describe "#prev_path inside the loop" do
       it "returns the previous loop page for the same child record" do
-        allow(loop_business_name).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/business_name")
+        allow(loop_business_name).to receive(:path).with(flow_record, child_a).and_return("/loop/a/business_name")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 1)
 
         expect(cursor.prev_path).to eq("/loop/a/business_name")
       end
 
       it "wraps back to the previous child's last loop page when on the first loop page of a non-first child" do
-        allow(loop_role).to receive(:edit_path).with(flow_record, child_a).and_return("/loop/a/role")
+        allow(loop_role).to receive(:path).with(flow_record, child_a).and_return("/loop/a/role")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_b, loop_page_idx: 0)
 
         expect(cursor.prev_path).to eq("/loop/a/role")
       end
 
       it "exits the loop backwards to the outer page when on the first child's first loop page" do
-        allow(outer_before).to receive(:edit_path).with(flow_record).and_return("/employer_name")
+        allow(outer_before).to receive(:path).with(flow_record).and_return("/employer_name")
         cursor = described_class.new(task, flow_record, 1, loop_record: child_a, loop_page_idx: 0)
 
         expect(cursor.prev_path).to eq("/employer_name")
@@ -252,7 +252,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
     describe "#prev_path on the outer page after the loop" do
       it "enters the loop backwards at the last loop page of the last child record" do
-        allow(loop_role).to receive(:edit_path).with(flow_record, child_b).and_return("/loop/b/role")
+        allow(loop_role).to receive(:path).with(flow_record, child_b).and_return("/loop/b/role")
         cursor = described_class.new(task, flow_record, 2)
 
         expect(cursor.prev_path).to eq("/loop/b/role")
@@ -260,7 +260,7 @@ RSpec.describe Strata::Flows::TaskEvaluator do
 
       it "skips an empty loop and returns the outer page before it" do
         empty_flow_record = EmploymentForm.new(prior_employers: [])
-        allow(outer_before).to receive(:edit_path).with(empty_flow_record).and_return("/employer_name")
+        allow(outer_before).to receive(:path).with(empty_flow_record).and_return("/employer_name")
         cursor = described_class.new(task, empty_flow_record, 2)
 
         expect(cursor.prev_path).to eq("/employer_name")

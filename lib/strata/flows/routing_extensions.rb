@@ -28,8 +28,12 @@ module Strata
 
         member do
           flow_class.all_pages.reject(&:in_loop?).each do |page|
-            get page.edit_pathname
-            patch page.update_pathname
+            if page.is_a?(InfoPage)
+              get page.pathname
+            else
+              get page.pathname
+              patch page.update_pathname
+            end
           end
         end
 
@@ -38,8 +42,12 @@ module Strata
           resources loop_node.association, only: [], controller: target_controller do
             member do
               loop_node.pages.each do |page|
-                get page.edit_pathname
-                patch page.update_pathname
+                if page.is_a?(InfoPage)
+                  get page.pathname
+                else
+                  get page.pathname
+                  patch page.update_pathname
+                end
               end
             end
           end

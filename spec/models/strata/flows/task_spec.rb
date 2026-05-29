@@ -28,7 +28,7 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first page path" do
-      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
+      allow(incomplete_page).to receive(:path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first incomplete page path" do
-      allow(incomplete_page).to receive(:edit_path).and_return("edit_path")
+      allow(incomplete_page).to receive(:path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end
@@ -56,7 +56,7 @@ RSpec.describe Strata::Flows::Task do
     end
 
     it "returns the first page path" do
-      allow(complete_page).to receive(:edit_path).and_return("edit_path")
+      allow(complete_page).to receive(:path).and_return("edit_path")
       expect(task.path(record)).to eq("edit_path")
     end
   end

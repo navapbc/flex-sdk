@@ -67,8 +67,10 @@ module Strata::Flows
         # pages (e.g. update_prior_employer_business_name).
         flow_class.all_pages.each do |page|
           # /{record_class}/:id/edit_{question_page_name} (or nested under loop child)
-          define_method(page.edit_pathname) do
+          define_method(page.pathname) do
           end
+
+          next if page.is_a?(InfoPage)
 
           # /{record_class}/:id/update_{question_page_name} (or nested under loop child)
           define_method(page.update_pathname) do
@@ -91,7 +93,7 @@ module Strata::Flows
                 flash.now[:errors] = target_record.errors.full_messages
               end
 
-              render page.edit_pathname, status: :unprocessable_content
+              render page.pathname, status: :unprocessable_content
             end
           end
         end

@@ -53,10 +53,10 @@ module Strata::Flows
         if item.is_a?(Loop)
           item.records_for(record).each do |child|
             incomplete = item.pages.find { |p| !p.completed?(child) }
-            return incomplete.edit_path(record, child) if incomplete
+            return incomplete.path(record, child) if incomplete
           end
         elsif !item.completed?(record)
-          return item.edit_path(record)
+          return item.path(record)
         end
       end
       nil
@@ -67,9 +67,9 @@ module Strata::Flows
         first_child = item.records_for(record).first
         return nil unless first_child
         first_page = item.pages.find { |p| p.needed?(first_child) }
-        first_page&.edit_path(record, first_child)
+        first_page&.path(record, first_child)
       else
-        item.needed?(record) ? item.edit_path(record) : nil
+        item.needed?(record) ? item.path(record) : nil
       end
     end
   end

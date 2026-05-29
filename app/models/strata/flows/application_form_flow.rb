@@ -57,9 +57,7 @@ module Strata::Flows
       # Returns all routes that can be generated when used in
       # combination with ApplicationFormController
       def generated_routes
-        all_pages.flat_map do |page|
-          [ page.edit_pathname, page.update_pathname ]
-        end
+        all_pages.flat_map(&:pathnames)
       end
 
       # Validates that an explicit depends_on array only references existing task names.
@@ -94,6 +92,17 @@ module Strata::Flows
           @current_task.pages.push(page)
         end
         contexts.push(page_name)
+        validate_unique_action_names!
+      end
+
+      def info_page(page_name, if: nil, context: nil)
+        page = InfoPage.new(page_name, if:, context:, loop: @current_loop)
+        if @current_loop.present?
+          @current_loop.pages.push(page)
+        else
+          @current_task.pages.push(page)
+        end
+        context.push(page.context)
         validate_unique_action_names!
       end
 
@@ -135,7 +144,7 @@ module Strata::Flows
           task.pages.each_with_index do |item, page_idx|
             if item.is_a?(Loop)
               item.pages.each_with_index do |loop_page, loop_page_idx|
-                next unless [ loop_page.edit_pathname.to_sym, loop_page.update_pathname.to_sym ].include?(action_sym)
+                next unless loop_page.pathnames.map(&:to_sym).include?(action_sym)
 
                 loop_record = resolve_loop_record(item, flow_record, id_param)
                 return loop_page, TaskEvaluator.new(
@@ -143,7 +152,7 @@ module Strata::Flows
                   loop_record: loop_record, loop_page_idx: loop_page_idx
                 )
               end
-            elsif [ item.edit_pathname.to_sym, item.update_pathname.to_sym ].include?(action_sym)
+            elsif item.pathnames.map(&:to_sym).include?(action_sym)
               return item, TaskEvaluator.new(task, flow_record, page_idx)
             end
           end
@@ -204,7 +213,7 @@ module Strata::Flows
       end
 
       def validate_unique_action_names!
-        pathnames = all_pages.flat_map { |p| [ p.edit_pathname, p.update_pathname ] }
+        pathnames = all_pages.flat_map(&:pathnames)
         duplicates = pathnames.tally.select { |_, count| count > 1 }.keys
         return if duplicates.empty?
 

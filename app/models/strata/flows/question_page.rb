@@ -27,18 +27,18 @@ module Strata::Flows
       record.valid?(@name.to_sym)
     end
 
-    def edit_pathname
+    def pathname
       in_loop? ? "edit_#{@loop.name}_#{@name}" : "edit_#{@name}"
     end
 
-    def edit_path(flow_record, loop_record = nil)
+    def path(flow_record, loop_record = nil)
       if in_loop?
         send(
-          "#{edit_pathname}_#{flow_record.class.name.underscore}_#{@loop.association.to_s.singularize}_path",
+          "#{pathname}_#{flow_record.class.name.underscore}_#{@loop.association.to_s.singularize}_path",
           flow_record, loop_record
         )
       else
-        send("#{edit_pathname}_#{flow_record.class.name.underscore}_path", flow_record)
+        send("#{pathname}_#{flow_record.class.name.underscore}_path", flow_record)
       end
     end
 
@@ -55,6 +55,10 @@ module Strata::Flows
       else
         send("#{update_pathname}_#{flow_record.class.name.underscore}_path", flow_record)
       end
+    end
+
+    def pathnames
+      [ pathname, update_pathname ]
     end
 
     # Returns the list of permitted parameter keys for this page's fields,

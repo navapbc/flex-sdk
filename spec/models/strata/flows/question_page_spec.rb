@@ -37,7 +37,7 @@ RSpec.describe Strata::Flows::QuestionPage do
     end
 
     it "returns the correct pathnames" do
-      expect(page.edit_pathname).to eq("edit_first_name")
+      expect(page.pathname).to eq("edit_first_name")
       expect(page.update_pathname).to eq("update_first_name")
     end
 
@@ -55,8 +55,8 @@ RSpec.describe Strata::Flows::QuestionPage do
       expect(page.loop).to eq(loop_node)
     end
 
-    it "namespaces edit_pathname and update_pathname by the loop name" do
-      expect(page.edit_pathname).to eq("edit_prior_employer_business_name")
+    it "namespaces pathname and update_pathname by the loop name" do
+      expect(page.pathname).to eq("edit_prior_employer_business_name")
       expect(page.update_pathname).to eq("update_prior_employer_business_name")
     end
 
@@ -71,11 +71,11 @@ RSpec.describe Strata::Flows::QuestionPage do
       let(:flow_record) { SampleApplicationForm.new }
       let(:child_record) { SampleEmploymentDetail.new }
 
-      it "uses the nested route helper for edit_path, passing parent and child" do
+      it "uses the nested route helper for path, passing parent and child" do
         allow(page).to receive(:edit_prior_employer_business_name_sample_application_form_sample_employment_detail_path)
           .and_return("/sample_application_forms/1/sample_employment_details/2/edit_prior_employer_business_name")
 
-        expect(page.edit_path(flow_record, child_record))
+        expect(page.path(flow_record, child_record))
           .to eq("/sample_application_forms/1/sample_employment_details/2/edit_prior_employer_business_name")
         expect(page).to have_received(:edit_prior_employer_business_name_sample_application_form_sample_employment_detail_path)
           .with(flow_record, child_record)
@@ -99,7 +99,7 @@ RSpec.describe Strata::Flows::QuestionPage do
           "/stubbed"
         end
 
-        page.edit_path(flow_record, child_record)
+        page.path(flow_record, child_record)
 
         expect(captured_method.to_s).to eq("edit_prior_employer_business_name_sample_application_form_sample_employment_detail_path")
       end

@@ -80,7 +80,8 @@ module Strata::Flows
       loop_node = current_loop
       page = traverse(loop_node.pages, @loop_page_idx, direction)
              .find { |p| p.needed?(@loop_record) }
-      return page.edit_path(@record, @loop_record) if page
+
+      return page.path(@record, @loop_record) if page
 
       records = loop_node.records_for(@record)
       current_idx = records.find_index(@loop_record)
@@ -99,22 +100,22 @@ module Strata::Flows
       nil
     end
 
-    # Enter a single top-level item: a QuestionPage's edit path if needed,
+    # Enter a single top-level item: a QuestionPage's path if needed,
     # or the first reachable page of a Loop.
     def enter(item, direction)
       if item.is_a?(Loop)
         enter_loop(item, ordered(item.records_for(@record), direction), direction)
       elsif item.needed?(@record)
-        item.edit_path(@record)
+        item.path(@record)
       end
     end
 
     # Walk `records` (already ordered for the direction) and return the
-    # edit path of the first child whose first needed page exists.
+    # path of the first child whose first needed page exists.
     def enter_loop(loop_node, records, direction)
       records.each do |child|
         page = ordered(loop_node.pages, direction).find { |p| p.needed?(child) }
-        return page.edit_path(@record, child) if page
+        return page.path(@record, child) if page
       end
       nil
     end
