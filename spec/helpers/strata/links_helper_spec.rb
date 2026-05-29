@@ -115,6 +115,167 @@ RSpec.describe Strata::LinksHelper, type: :helper do
       end
     end
 
+    context "with `as: :external`" do
+      it "renders an <a> with the usa-link and usa-link--external classes" do
+        result = helper.strata_link_to("Example", "https://example.gov", as: :external)
+
+        expect(result).to have_element(
+          :a,
+          href: "https://example.gov",
+          class: "usa-link usa-link--external",
+          text: "Example"
+        )
+      end
+
+      it "adds usa-link--alt when alt: true" do
+        result = helper.strata_link_to("Example", "https://example.gov", as: :external, alt: true)
+
+        expect(result).to have_element(
+          :a,
+          class: "usa-link usa-link--external usa-link--alt"
+        )
+      end
+
+      it "does not auto-set target or rel" do
+        result = helper.strata_link_to("Example", "https://example.gov", as: :external)
+
+        expect(result).not_to have_css("a[target]")
+        expect(result).not_to have_css("a[rel]")
+      end
+
+      it "forwards an explicit target and rel from the caller" do
+        result = helper.strata_link_to(
+          "Example",
+          "https://example.gov",
+          as: :external,
+          target: "_blank",
+          rel: "noopener noreferrer"
+        )
+
+        expect(result).to have_element(
+          :a,
+          target: "_blank",
+          rel: "noopener noreferrer"
+        )
+      end
+
+      it "merges a user-provided :class with the link classes" do
+        result = helper.strata_link_to(
+          "Example",
+          "https://example.gov",
+          as: :external,
+          class: "margin-top-4"
+        )
+
+        expect(result).to have_element(:a, class: "usa-link usa-link--external margin-top-4")
+      end
+
+      it "forwards arbitrary html_options to link_to (id, data-*, aria-*)" do
+        result = helper.strata_link_to(
+          "Example",
+          "https://example.gov",
+          as: :external,
+          id: "example-link",
+          data: { turbo: "false" },
+          "aria-label": "Visit example.gov"
+        )
+
+        expect(result).to have_element(
+          :a,
+          id: "example-link",
+          "data-turbo": "false",
+          "aria-label": "Visit example.gov"
+        )
+      end
+
+      it "supports the block form" do
+        result = helper.strata_link_to("https://example.gov", as: :external) { "Example" }
+
+        expect(result).to have_element(
+          :a,
+          href: "https://example.gov",
+          class: "usa-link usa-link--external",
+          text: "Example"
+        )
+      end
+    end
+
+    context "with `modal:` keyword" do
+      it "renders an <a> with href=#id, aria-controls, and data-open-modal" do
+        result = helper.strata_link_to("Open", modal: "confirm")
+
+        expect(result).to have_element(
+          :a,
+          href: "#confirm",
+          "aria-controls": "confirm",
+          text: "Open"
+        )
+        expect(result).to have_css("a[data-open-modal]")
+      end
+
+      it "combines with `as: :button` to produce a USWDS-styled modal opener" do
+        result = helper.strata_link_to("Open", modal: "confirm", as: :button)
+
+        expect(result).to have_element(:a, href: "#confirm", class: "usa-button", text: "Open")
+        expect(result).to have_css("a[aria-controls='confirm'][data-open-modal]")
+      end
+
+      it "still applies button variant/size/inverse modifiers when combined with `as: :button`" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          as: :button,
+          variant: :outline,
+          size: :big
+        )
+
+        expect(result).to have_element(:a, class: "usa-button usa-button--outline usa-button--big")
+      end
+
+      it "raises ArgumentError when a positional URL is also passed" do
+        expect { helper.strata_link_to("Open", "/somewhere", modal: "confirm") }
+          .to raise_error(ArgumentError, /modal/)
+      end
+
+      it "raises ArgumentError when the modal id is blank" do
+        expect { helper.strata_link_to("Open", modal: "") }
+          .to raise_error(ArgumentError, /id/)
+      end
+
+      it "appends a caller-supplied :class without overwriting the opener attributes" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          as: :button,
+          class: "margin-top-4"
+        )
+
+        expect(result).to have_element(:a, class: "usa-button margin-top-4")
+        expect(result).to have_css("a[aria-controls='confirm'][data-open-modal]")
+      end
+
+      it "forwards arbitrary html_options to the anchor" do
+        result = helper.strata_link_to(
+          "Open",
+          modal: "confirm",
+          id: "opener",
+          data: { turbo: "false" }
+        )
+
+        expect(result).to have_element(:a, id: "opener", "data-turbo": "false")
+      end
+    end
+
+    context "when :alt is passed without `as: :external`" do
+      it "silently drops :alt when no :as is given (no error, no stray attribute on the <a>)" do
+        result = helper.strata_link_to("Read more", "/articles/1", alt: true)
+
+        expect(result).to have_element(:a, href: "/articles/1", text: "Read more")
+        expect(result).not_to have_css("a[alt]")
+        expect(result).not_to have_css(".usa-link--alt")
+      end
+    end
+
     context "with an unknown :as value" do
       it "raises ArgumentError" do
         expect { helper.strata_link_to("X", "/x", as: :nonsense) }

@@ -1,0 +1,8 @@
+<%= render Strata::US::CardComponent.new(flag_media_right: true) do |card| %>
+  <% card.with_header { "Media on the right" } %>
+  <% card.with_media { image_tag(Strata::US::CardComponentPreview::PREVIEW_IMAGE_URL, alt: "Card preview placeholder") } %>
+  <% card.with_body { "<p>This flag variant positions media on the right.</p>".html_safe } %>
+  <% card.with_footer do %>
+    <%= render Strata::US::ButtonComponent.new do %>Action<% end %>
+  <% end %>
+<% end %>

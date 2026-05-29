@@ -43,13 +43,17 @@
   </div>
 
   <% if @sample_application_form.submitted? %>
-    <%= link_to "Back", sample_application_form_path(@sample_application_form), class: "usa-button usa-button--outline margin-top-4" %>
+    <%= strata_link_to "Back", sample_application_form_path(@sample_application_form), as: :button, variant: :outline, class: "margin-top-4" %>
   <% else %>
     <%= form_with url: submit_sample_application_form_path(@sample_application_form), method: :patch, local: true do |f| %>
-      <div class="usa-button-group margin-top-4">
-        <%= link_to "Back", sample_application_form_path(@sample_application_form), class: "usa-button usa-button--outline" %>
-        <%= f.submit t(".submit_application"), class: "usa-button" %>
-      </div>
+      <%= render Strata::US::ButtonGroupComponent.new(classes: "margin-top-4") do |group| %>
+        <% group.with_item do %>
+          <%= strata_link_to "Back", sample_application_form_path(@sample_application_form), as: :button, variant: :outline %>
+        <% end %>
+        <% group.with_item do %>
+          <%= f.submit t(".submit_application"), class: Strata::US::ButtonComponent.css_classes %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 </div>

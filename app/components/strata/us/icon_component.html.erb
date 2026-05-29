@@ -1,0 +1,4 @@
+<svg <%= tag.attributes(svg_attributes) %>>
+  <% if show_title? %><title id="<%= title_id %>"><%= title_text %></title><% end %>
+  <use href="<%= sprite_href %>"></use>
+</svg>
