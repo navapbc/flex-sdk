@@ -1,0 +1,18 @@
+<%= strata_link_to "Open forced-action modal", modal: "forced-modal", as: :button %>
+
+<%= render Strata::US::ModalComponent.new(id: "forced-modal", forced_action: true) do |m| %>
+  <% m.with_heading { "Session expiring" } %>
+  <% m.with_content do %>
+    <p>You'll be signed out in 30 seconds. Choose an option to continue.</p>
+  <% end %>
+  <% m.with_footer do %>
+    <%= render(Strata::US::ButtonGroupComponent.new) do |group| %>
+      <% group.with_item do %>
+        <%= render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { "Stay signed in" } %>
+      <% end %>
+      <% group.with_item do %>
+        <%= render(Strata::US::ButtonComponent.new(variant: :secondary, data: { close_modal: "" })) { "Sign out" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

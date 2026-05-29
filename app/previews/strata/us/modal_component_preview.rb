@@ -3,9 +3,9 @@
 module Strata
   module US
     # ModalComponentPreview shows the Strata::US::ModalComponent in its common
-    # configurations. Lookbook only renders the modal markup itself (no
-    # JavaScript-driven open/close) — the previews include a button-styled
-    # opener anchor so the relationship between trigger and dialog is visible.
+    # configurations. Each preview renders a button-styled opener via
+    # +strata_link_to ..., modal: id, as: :button+ next to the modal markup so
+    # the preview is interactive — USWDS JS is loaded in the preview layout.
     class ModalComponentPreview < Lookbook::Preview
       layout "strata/component_preview"
 
@@ -42,61 +42,13 @@ module Strata
       end
 
       # @label Basic
-      def basic
-        render Strata::US::ModalComponent.new(id: "basic-modal") do |m|
-          m.with_heading { "You have unsaved changes" }
-          m.with_content do
-            "<p>Your changes will be lost if you leave this page without saving.</p>".html_safe
-          end
-          m.with_footer do
-            render(Strata::US::ButtonGroupComponent.new) do |group|
-              group.with_item do
-                render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { "Continue" }
-              end
-              group.with_item do
-                render(Strata::US::ButtonComponent.new(variant: :unstyled, data: { close_modal: "" })) { "Go back" }
-              end
-            end
-          end
-        end
-      end
+      def basic; end
 
       # @label Large
-      def large
-        render Strata::US::ModalComponent.new(id: "large-modal", large: true) do |m|
-          m.with_heading { "Modal heading" }
-          m.with_content do
-            "<p>The large variant gives more room for longer body content or denser UI elements.</p>".html_safe
-          end
-          m.with_footer do
-            render(Strata::US::ButtonGroupComponent.new) do |group|
-              group.with_item do
-                render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { "OK" }
-              end
-            end
-          end
-        end
-      end
+      def large; end
 
       # @label Forced action (no close button)
-      def forced_action
-        render Strata::US::ModalComponent.new(id: "forced-modal", forced_action: true) do |m|
-          m.with_heading { "Session expiring" }
-          m.with_content do
-            "<p>You'll be signed out in 30 seconds. Choose an option to continue.</p>".html_safe
-          end
-          m.with_footer do
-            render(Strata::US::ButtonGroupComponent.new) do |group|
-              group.with_item do
-                render(Strata::US::ButtonComponent.new(data: { close_modal: "" })) { "Stay signed in" }
-              end
-              group.with_item do
-                render(Strata::US::ButtonComponent.new(variant: :secondary, data: { close_modal: "" })) { "Sign out" }
-              end
-            end
-          end
-        end
-      end
+      def forced_action; end
     end
   end
 end
