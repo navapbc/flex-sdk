@@ -1,0 +1,26 @@
+<div <%= tag.attributes(wrapper_attributes) %>>
+  <div class="usa-modal__content">
+    <div class="usa-modal__main">
+      <% if heading? %>
+        <%= content_tag @heading_tag, heading, class: "usa-modal__heading", id: heading_id %>
+      <% end %>
+      <% if content_section? %>
+        <div class="usa-prose" id="<%= description_id %>">
+          <%= content_section %>
+        </div>
+      <% end %>
+      <% if footer? %>
+        <div class="usa-modal__footer">
+          <%= footer %>
+        </div>
+      <% end %>
+    </div>
+    <% if show_close_button? %>
+      <button type="button" class="usa-button usa-modal__close" aria-label="<%= close_aria_label %>" data-close-modal>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+        </svg>
+      </button>
+    <% end %>
+  </div>
+</div>

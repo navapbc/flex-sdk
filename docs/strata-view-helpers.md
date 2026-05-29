@@ -15,18 +15,19 @@ For the underlying ViewComponents, see [Strata::US::ButtonComponent](./uswds-com
 
 Defined in [Strata::LinksHelper](../app/helpers/strata/links_helper.rb).
 
-A wrapper around Rails' `link_to`. Without an `:as` keyword it's a pure passthrough — the helper exists as a single entry point for any Strata link styling. Pass `as: :button` to opt into USWDS button styling, or `as: :external` for the USWDS external-link treatment.
+A wrapper around Rails' `link_to`. Without an `:as` keyword it's a pure passthrough — the helper exists as a single entry point for any Strata link styling. Pass `as: :button` to opt into USWDS button styling, or `as: :external` for the USWDS external-link treatment. Pass `modal: "id"` to render a USWDS modal opener.
 
 **Signature**
 
 ```ruby
-strata_link_to(*args, as: nil, **html_options, &block)
+strata_link_to(*args, as: nil, modal: nil, **html_options, &block)
 ```
 
 `*args`, `**html_options`, and `&block` match Rails' `link_to`. The recognized treatments:
 
 - `as: :button` — applies USWDS button styling. Accepts the additional keywords `:variant`, `:size`, and `:inverse` (same values as [`Strata::US::ButtonComponent`](./uswds-components.md#button)).
 - `as: :external` — applies USWDS external-link styling (`usa-link usa-link--external`). Accepts `:alt` for the dark-background variant (`usa-link--alt`). The helper does not set `target` or `rel`; pass them explicitly if you want the link to open in a new tab.
+- `modal: "id"` — renders a USWDS modal opener targeting the modal with the given id. The `href`, `aria-controls`, and `data-open-modal` attributes come from [`Strata::US::ModalComponent.opener_attrs`](./uswds-components.md#modal-openers-and-opener_attrs). Combine with `as: :button` (the common case) or use standalone. Passing both `modal:` and a positional URL is an error — the `href` would be ambiguous.
 
 A caller-supplied `:class` is appended to the treatment's classes.
 
@@ -34,6 +35,7 @@ A caller-supplied `:class` is appended to the treatment's classes.
 
 - Raises `ArgumentError` if `:variant`, `:size`, or `:inverse` are passed without `as: :button` — catches the "forgot to opt in" mistake that would otherwise silently produce a plain link.
 - Raises `ArgumentError` on an unrecognized `:as` value (currently `:button` and `:external` are supported).
+- Raises `ArgumentError` if `modal:` is combined with a positional URL argument.
 
 **Examples**
 
@@ -53,6 +55,12 @@ A caller-supplied `:class` is appended to the treatment's classes.
 <%# External link that opens in a new tab — caller controls target/rel %>
 <%= strata_link_to "USWDS docs", "https://designsystem.digital.gov/",
       as: :external, target: "_blank", rel: "noopener noreferrer" %>
+
+<%# Modal opener (button-styled) %>
+<%= strata_link_to "Open", modal: "confirm", as: :button %>
+
+<%# Modal opener as a plain link %>
+<%= strata_link_to "Open", modal: "confirm" %>
 
 <%# Block form %>
 <%= strata_link_to article_path, as: :button do %>
