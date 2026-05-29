@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.homepage    = "https://github.com/navapbc/strata-sdk-rails"
   spec.summary     = "Strata SDK for Rails"
   spec.description = "Strata SDK for building government digital services with Rails."
+  spec.license     = "Apache-2.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/navapbc/strata-sdk-rails"
