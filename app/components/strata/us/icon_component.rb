@@ -29,13 +29,13 @@ module Strata
       ALLOWED_SIZES = (3..9).freeze
 
       def initialize(name:, size: nil, decorative: true, title: nil, classes: nil, **html_attributes)
-        raise ArgumentError, "name is required" if name.nil? || name.to_s.empty?
+        raise ArgumentError, "name is required" if name.blank?
         validate_size!(size) unless size.nil?
 
         @decorative = decorative
         @title = title
 
-        if !@decorative && (@title.nil? || @title.to_s.empty?)
+        if !@decorative && @title.blank?
           raise ArgumentError, "title is required when decorative: false"
         end
 
@@ -54,6 +54,9 @@ module Strata
         if @decorative
           attrs[:"aria-hidden"] = "true"
         else
+          # Strip any caller-supplied aria-hidden so a meaningful icon can't be
+          # silently hidden from AT.
+          attrs.delete(:"aria-hidden")
           attrs[:"aria-labelledby"] = title_id
         end
 

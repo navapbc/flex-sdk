@@ -59,6 +59,10 @@ RSpec.describe Strata::US::IconComponent, type: :component do
     it "raises ArgumentError when name is blank" do
       expect { render_icon(name: "") }.to raise_error(ArgumentError, /name/)
     end
+
+    it "raises ArgumentError when name is whitespace-only" do
+      expect { render_icon(name: "   ") }.to raise_error(ArgumentError, /name/)
+    end
   end
 
   describe "size" do
@@ -108,11 +112,28 @@ RSpec.describe Strata::US::IconComponent, type: :component do
       }.to raise_error(ArgumentError, /title/)
     end
 
+    it "raises ArgumentError when decorative: false and title is whitespace-only" do
+      expect {
+        render_icon(name: :warning, decorative: false, title: "   ")
+      }.to raise_error(ArgumentError, /title/)
+    end
+
     it "ignores title when decorative: true (the default)" do
       render_icon(name: :check, title: "Ignored")
 
       expect(page).to have_css('svg.usa-icon[aria-hidden="true"]')
       expect(page).not_to have_css("svg.usa-icon title", visible: :all)
+    end
+
+    it "strips a caller-supplied aria-hidden when decorative: false" do
+      render_icon(
+        name: :warning,
+        decorative: false,
+        title: "Warning",
+        "aria-hidden": "true"
+      )
+
+      expect(page).not_to have_css("svg.usa-icon[aria-hidden]")
     end
   end
 
