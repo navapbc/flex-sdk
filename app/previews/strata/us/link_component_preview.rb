@@ -21,15 +21,7 @@ module Strata
       end
 
       # @label External (alt) on a dark background
-      def external_alt
-        content_tag(
-          :div,
-          render(Strata::US::LinkComponent.new(href: "https://designsystem.digital.gov/", external: true, alt: true) do
-            "USWDS"
-          end),
-          style: "background-color: #1b1b1b; color: white; padding: 1rem;"
-        )
-      end
+      def external_alt; end
 
       # @label Opens in a new tab (caller-controlled target/rel)
       def new_tab
