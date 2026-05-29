@@ -21,8 +21,9 @@ Every component accepts a `classes:` keyword for additional CSS classes and forw
 5. [Button Group](#button-group)
 6. [Card](#card)
 7. [Card Group](#card-group)
-8. [List](#list)
-9. [Table](#table)
+8. [Icon](#icon)
+9. [List](#list)
+10. [Table](#table)
 
 ---
 
@@ -275,6 +276,39 @@ At least one of header, media, body, or footer must be provided.
     <% card.with_body { "Body" } %>
   <% end %>
 <% end %>
+```
+
+---
+
+## Icon
+
+`Strata::US::IconComponent` — an SVG icon drawn from the bundled USWDS sprite sheet. See [USWDS Icon](https://designsystem.digital.gov/components/icon/) and the [Lookbook preview](../app/previews/strata/us/icon_component_preview.rb).
+
+The component renders the standard USWDS `<svg class="usa-icon">…<use href="…sprite.svg#NAME">…</svg>` markup, including the `focusable="false"` and `role="img"` attributes USWDS expects.
+
+**Options**
+
+- `name:` (required) — Symbol or String matching a USWDS sprite ID (e.g. `:check`, `:arrow_back`, `:warning`). Not validated against the sprite — a typo will simply render an empty icon, matching USWDS default behavior.
+- `size:` — Integer from `3` to `9`, mapping to `usa-icon--size-N`. Defaults to no modifier (USWDS default of `1em`).
+- `decorative:` — Defaults to `true`. When `true`, the icon is hidden from assistive technology via `aria-hidden="true"`. When `false`, a `<title>` element is rendered inside the SVG and referenced from `aria-labelledby`, so screen readers announce the icon.
+- `title:` — Required when `decorative: false`; ignored when `decorative: true`.
+- `classes:` — extra CSS classes appended to the `<svg>`. USWDS color utilities (`text-primary`, `text-success`, `text-warning`, etc.) go here.
+
+Any other keyword arguments are forwarded as HTML attributes on the `<svg>`.
+
+**Example**
+
+```erb
+<%= render Strata::US::IconComponent.new(name: :check) %>
+
+<%= render Strata::US::IconComponent.new(
+      name: :arrow_back, size: 4, classes: "text-primary"
+    ) %>
+
+<%= render Strata::US::IconComponent.new(
+      name: :warning, decorative: false, title: "Warning",
+      classes: "text-warning"
+    ) %>
 ```
 
 ---
