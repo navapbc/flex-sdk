@@ -46,8 +46,8 @@ module Strata
         render Strata::US::IconComponent.new(name: :check, size: 5)
       end
 
-      # @label Colored
-      def colored
+      # @label With color
+      def with_color
         render Strata::US::IconComponent.new(name: :check, classes: "text-success")
       end
 
