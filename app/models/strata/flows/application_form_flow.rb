@@ -102,7 +102,7 @@ module Strata::Flows
         else
           @current_task.pages.push(page)
         end
-        context.push(page.context)
+        contexts.push(page.context)
         validate_unique_action_names!
       end
 
