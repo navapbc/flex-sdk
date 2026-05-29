@@ -7,7 +7,7 @@ Strata ships a small set of Rails view helpers that wrap common Rails primitives
 1. [`strata_link_to`](#strata_link_to) — Rails `link_to` with opt-in styling treatments
 2. [`strata_button_to`](#strata_button_to) — Rails `button_to` with USWDS button styling
 
-For the underlying ViewComponent, see [Strata::US::ButtonComponent in uswds-components.md](./uswds-components.md#button).
+For the underlying ViewComponents, see [Strata::US::ButtonComponent](./uswds-components.md#button) and [Strata::US::LinkComponent](./uswds-components.md#link) in [uswds-components.md](./uswds-components.md).
 
 ---
 
@@ -15,7 +15,7 @@ For the underlying ViewComponent, see [Strata::US::ButtonComponent in uswds-comp
 
 Defined in [Strata::LinksHelper](../app/helpers/strata/links_helper.rb).
 
-A wrapper around Rails' `link_to`. Without an `:as` keyword it's a pure passthrough — the helper exists as a single entry point for any Strata link styling. Pass `as: :button` to opt into USWDS button styling.
+A wrapper around Rails' `link_to`. Without an `:as` keyword it's a pure passthrough — the helper exists as a single entry point for any Strata link styling. Pass `as: :button` to opt into USWDS button styling, or `as: :external` for the USWDS external-link treatment.
 
 **Signature**
 
@@ -26,13 +26,14 @@ strata_link_to(*args, as: nil, **html_options, &block)
 `*args`, `**html_options`, and `&block` match Rails' `link_to`. The recognized treatments:
 
 - `as: :button` — applies USWDS button styling. Accepts the additional keywords `:variant`, `:size`, and `:inverse` (same values as [`Strata::US::ButtonComponent`](./uswds-components.md#button)).
+- `as: :external` — applies USWDS external-link styling (`usa-link usa-link--external`). Accepts `:alt` for the dark-background variant (`usa-link--alt`). The helper does not set `target` or `rel`; pass them explicitly if you want the link to open in a new tab.
 
 A caller-supplied `:class` is appended to the treatment's classes.
 
 **Errors**
 
 - Raises `ArgumentError` if `:variant`, `:size`, or `:inverse` are passed without `as: :button` — catches the "forgot to opt in" mistake that would otherwise silently produce a plain link.
-- Raises `ArgumentError` on an unrecognized `:as` value (currently only `:button` is supported).
+- Raises `ArgumentError` on an unrecognized `:as` value (currently `:button` and `:external` are supported).
 
 **Examples**
 
@@ -45,6 +46,13 @@ A caller-supplied `:class` is appended to the treatment's classes.
 
 <%# Button-styled link with extra layout classes %>
 <%= strata_link_to "Continue", next_path, as: :button, variant: :secondary, class: "margin-top-4" %>
+
+<%# External link %>
+<%= strata_link_to "USWDS docs", "https://designsystem.digital.gov/", as: :external %>
+
+<%# External link that opens in a new tab — caller controls target/rel %>
+<%= strata_link_to "USWDS docs", "https://designsystem.digital.gov/",
+      as: :external, target: "_blank", rel: "noopener noreferrer" %>
 
 <%# Block form %>
 <%= strata_link_to article_path, as: :button do %>
