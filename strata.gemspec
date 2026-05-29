@@ -11,14 +11,12 @@ Gem::Specification.new do |spec|
   spec.summary     = "Strata SDK for Rails"
   spec.description = "Strata SDK for building government digital services with Rails."
 
-  spec.metadata["allowed_push_host"] = "https://example.com"
-
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/navapbc/strata-sdk-rails"
   spec.metadata["changelog_uri"] = "https://github.com/navapbc/strata-sdk-rails/commits/main/"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+    Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md"]
   end
 
   spec.add_dependency "rails", ">= 7.2.2.2"
