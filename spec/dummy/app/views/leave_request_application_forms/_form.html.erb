@@ -1,0 +1,10 @@
+<%= strata_form_with(model: leave_request_application_form) do |f| %>
+  <%= f.text_field :first_name, label: t(".first_name") %>
+  <%= f.text_field :last_name, label: t(".last_name") %>
+  <%= f.memorable_date :date_of_birth %>
+  <%= f.text_field :street_address, label: t(".street_address") %>
+  <%= f.text_field :zip_code, label: t(".zip_code") %>
+
+  <%= f.submit "Save", value: "Save", big: true %>
+  <%= f.submit t(".submit"), value: "Submit", big: true %>
+<% end %>

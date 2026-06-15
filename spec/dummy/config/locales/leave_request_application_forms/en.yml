@@ -1,0 +1,25 @@
+en:
+  leave_request_application_forms:
+    index:
+      title: "Leave Requests"
+      intro: "You can submit a new leave request or continue an existing one."
+      new_button: "New Request"
+      in_progress_applications:
+        heading: "Existing requests"
+    form:
+      first_name: "First name"
+      last_name: "Last name"
+      street_address: "Street address"
+      zip_code: "ZIP code"
+      submit: "Submit"
+    show:
+      back: "Back to leave requests"
+      title: "Leave Request"
+      submitted_on: "Date submitted"
+      name: "Name"
+      date_of_birth: "Date of birth"
+      address: "Address"
+      next_step:
+        status:
+          in_progress: "Your leave request is in progress."
+          submitted: "Your request has been received. We will notify you of the decision or if further action is needed on your part."

@@ -1,0 +1,13 @@
+<%= render template: "strata/application_forms/index", locals: {
+  title: t(".title"),
+  intro: t(".intro"),
+  new_button_text: t(".new_button"),
+  new_path: new_leave_request_application_form_path,
+  in_progress_applications_heading: t(".in_progress_applications.heading"),
+  application_forms: @leave_request_application_forms.map { |form| {
+    created_at: form.created_at.strftime("%B %d, %Y at %I:%M %p"),
+    path: leave_request_application_form_path(form),
+    status: form.status
+  }},
+  row_view: "leave_request_application_forms/row"
+} %>

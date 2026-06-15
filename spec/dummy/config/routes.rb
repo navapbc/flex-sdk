@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   resources :passport_application_forms, only: [ :index, :new, :show, :create, :edit, :update ]
 
+  resources :leave_request_application_forms, only: [ :index, :new, :show, :create, :edit, :update ]
+
   resources :sample_application_forms, only: [ :index, :new, :show, :create ] do
     member do
       SampleFlow.pages.each do |page|

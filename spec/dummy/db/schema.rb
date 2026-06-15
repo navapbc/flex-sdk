@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_15_162948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
     t.string "business_process_current_step"
     t.uuid "application_form_id"
     t.jsonb "facts", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "leave_request_application_forms", force: :cascade do |t|
+    t.uuid "user_id"
+    t.integer "status"
+    t.datetime "submitted_at"
+    t.string "first_name"
+    t.string "last_name"
+    t.date "date_of_birth"
+    t.string "street_address"
+    t.string "zip_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
