@@ -51,7 +51,7 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
       expect(File.exist?(business_process_file)).to be true
     end
 
-    it "updates application.rb with start_listening_for_events call" do
+    it "registers the business process with the event router in a to_prepare block" do
       content = File.read("#{destination_root}/config/application.rb")
 
       expected = <<~RUBY
@@ -69,8 +69,8 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
               g.factory_bot suffix: "factory"
             end
 
-            config.after_initialize do
-              TestBusinessProcess.start_listening_for_events
+            config.to_prepare do
+              Strata::Events.register "TestBusinessProcess"
             end
           end
         end
@@ -156,12 +156,12 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
     end
   end
 
-  describe "when config.after_initialize already exists" do
+  describe "when config.to_prepare already exists" do
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         module Dummy
           class Application < Rails::Application
-            config.after_initialize do
+            config.to_prepare do
               # existing code
             end
           end
@@ -174,15 +174,15 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
       generator_with_existing_config.invoke_all
     end
 
-    it "appends to existing after_initialize block" do
+    it "appends to the existing to_prepare block" do
       content = File.read("#{destination_root}/config/application.rb")
 
       expected = <<~RUBY
         module Dummy
           class Application < Rails::Application
-            config.after_initialize do
+            config.to_prepare do
               # existing code
-              TestBusinessProcess.start_listening_for_events
+              Strata::Events.register "TestBusinessProcess"
             end
           end
         end
@@ -193,15 +193,15 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
     end
   end
 
-  describe "when config.after_initialize is commented out" do
+  describe "when config.to_prepare is commented out" do
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         module Dummy
           class Application < Rails::Application
             config.load_defaults Rails::VERSION::STRING.to_f
 
-            # config.after_initialize do
-            #   OldBusinessProcess.start_listening_for_events
+            # config.to_prepare do
+            #   Strata::Events.register "TestBusinessProcess"
             # end
           end
         end
@@ -213,16 +213,16 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
       generator_with_commented_config.invoke_all
     end
 
-    it "creates new uncommented config.after_initialize block" do
+    it "creates a new uncommented config.to_prepare block" do
       content = File.read("#{destination_root}/config/application.rb")
 
       # Verify new uncommented block exists
-      expect(content).to match(/^\s+config\.after_initialize do/)
-      expect(content).to include("TestBusinessProcess.start_listening_for_events")
+      expect(content).to match(/^\s+config\.to_prepare do/)
+      expect(content).to include('Strata::Events.register "TestBusinessProcess"')
 
       # Verify commented block is preserved
-      expect(content).to include("# config.after_initialize do")
-      expect(content).to include("#   OldBusinessProcess.start_listening_for_events")
+      expect(content).to include("# config.to_prepare do")
+      expect(content).to include('#   Strata::Events.register "TestBusinessProcess"')
 
       # Verify the uncommented block is inside Application class (before closing end)
       lines = content.lines
@@ -244,14 +244,14 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
         end
       end
 
-      config_block_line = lines.find_index { |l| l.match?(/^\s+config\.after_initialize do/) && !l.strip.start_with?("#") }
+      config_block_line = lines.find_index { |l| l.match?(/^\s+config\.to_prepare do/) && !l.strip.start_with?("#") }
       expect(config_block_line).to be > app_class_line
       expect(app_class_end_line).not_to be_nil, "Could not find Application class end"
       expect(config_block_line).to be < app_class_end_line
     end
   end
 
-  describe "when start_listening_for_events already exists" do
+  describe "when the business process is already registered" do
     before do
       File.write("#{destination_root}/config/application.rb", <<~RUBY)
         require_relative "boot"
@@ -264,8 +264,8 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
           class Application < Rails::Application
             config.load_defaults Rails::VERSION::STRING.to_f
 
-            config.after_initialize do
-              TestBusinessProcess.start_listening_for_events
+            config.to_prepare do
+              Strata::Events.register 'TestBusinessProcess'
             end
           end
         end
@@ -279,7 +279,7 @@ RSpec.describe Strata::Generators::BusinessProcessGenerator, type: :generator do
 
     it "does not duplicate the call" do
       content = File.read("#{destination_root}/config/application.rb")
-      occurrences = content.scan(/TestBusinessProcess\.start_listening_for_events/).length
+      occurrences = content.scan(/Strata::Events\.register ["']TestBusinessProcess["']/).length
       expect(occurrences).to eq(1)
     end
   end

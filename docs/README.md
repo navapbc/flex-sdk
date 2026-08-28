@@ -17,6 +17,7 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 - [Strata View Helpers](./strata-view-helpers.md) - View helpers like `strata_link_to` and `strata_button_to` that wrap Rails primitives with USWDS-aware styling.
 - [Multi-Page Form Flows](./multi-page-form-flows.md) - Create complex forms that span multiple pages
 - [Business process family tree](./business-process-family-tree.md) - Understanding business process hierarchies
+- [Case management business processes](./case-management-business-process.md) - Advance cases through durable, event-driven workflows
 - [Strata Rules Engine](./strata-rules-engine.md) - Introduction to the rules engine for business logic
 - [Strata Audit Log](./strata-audit-log.md) - Record an immutable trail of actions, atomic with the surrounding domain writes
 
@@ -32,3 +33,4 @@ Welcome to the Strata SDK documentation. This index provides an organized overvi
 
 - [Strata attributes](./strata-attributes.md) - Detailed documentation on all Strata attributes
 - [Generators](./generators.md) - Generate boilerplate code with Strata generators
+- [Architecture decisions](./decisions/) - Decisions and tradeoffs behind major Strata designs

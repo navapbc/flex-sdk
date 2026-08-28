@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Strata
-  # EventManager is a pub/sub system for workflow events.
-  # It allows components to communicate with each other asynchronously
-  # through event publishing and subscription.
+  # Persists domain events and emits matching ActiveSupport notifications for
+  # instrumentation. Durable domain handlers must be registered through
+  # {Strata::Events}; notification subscribers are intentionally synchronous.
   #
   # This class is used throughout the Strata SDK for handling transitions
   # between workflow steps and notifying components of state changes.
@@ -26,7 +26,10 @@ module Strata
       # @param [String] event_key The name of the event to subscribe to
       # @param [Proc, Method] callback The callback to execute when the event occurs
       # @return [Object] The subscription object, which can be used to unsubscribe
-      def subscribe(event_key, callback)
+      def subscribe(event_key, callback = nil, &block)
+        callback ||= block
+        raise ArgumentError, "Event subscription requires a callback" unless callback
+
         subscription = ActiveSupport::Notifications.subscribe(event_key) do |name, _started, _finished, _unique_id, payload|
           callback.call({
             name: name,
@@ -43,10 +46,11 @@ module Strata
       # @param [Object] subscription The subscription object returned by subscribe
       def unsubscribe(subscription)
         ActiveSupport::Notifications.unsubscribe(subscription)
+        @@subscriptions.delete(subscription)
       end
 
-      # Unsubscribes from all events that have been registered.
-      # Used when Zeitwerk is unloading EventManager during class reloading.
+      # Unsubscribes from all instrumentation events registered through this
+      # wrapper. Domain handlers are registered separately through Events.
       #
       # @return [void]
       def unsubscribe_all
@@ -60,10 +64,24 @@ module Strata
       #
       # @param [String] event_key The name of the event to publish
       # @param [Hash] payload The event payload data
-      # @return [void]
+      # @return [Strata::Event] the persisted domain event
       def publish(event_key, payload = {})
-        Rails.logger.debug "Event Manager: Publishing event '#{event_key}' with payload: #{payload.inspect}"
+        current_event = Strata::Events.current_event
+        event = Strata::Event.create!(
+          name: event_key,
+          payload: payload,
+          occurred_at: Time.current,
+          correlation_id: current_event&.correlation_id || current_event&.id || SecureRandom.uuid,
+          causation_id: current_event&.id
+        )
+
+        Rails.logger.info(
+          "Event Manager: Published event '#{event_key}' " \
+          "(id=#{event.id}, correlation_id=#{event.correlation_id})"
+        )
+        Strata::Events.dispatcher.dispatch(event)
         ActiveSupport::Notifications.instrument(event_key, payload)
+        event
       end
     end
 

@@ -33,6 +33,7 @@ This command will:
 - Generate a business process in `app/business_processes/passport_business_process.rb`
 - Set up the necessary database migrations
 - Create task models and views
+- Register the business process with the event router in `config.to_prepare`
 
 ### 2. Define the Business Process
 
@@ -60,6 +61,70 @@ class PassportBusinessProcess < Strata::BusinessProcess
 end
 ```
 
+### 3. Install durable events
+
+Strata uses a transactional outbox for the domain events that advance a case.
+Install its tables once in each host application:
+
+```shell
+bin/rails generate strata:events
+bin/rails db:migrate
+```
+
+The business process generator adds a reload-safe registration by class name:
+
+```ruby
+config.to_prepare do
+  Strata::Events.register "PassportBusinessProcess"
+end
+```
+
+Registration does not subscribe a class object to a process-global
+notification bus. The router stores the name and resolves the current class
+when it dispatches an event, so Rails code reloads cannot leave a stale or
+missing business process subscriber.
+
+Calling `Strata::EventManager.publish` writes an event in the same database
+transaction as the change that caused it. After that transaction commits, the
+router creates per-handler deliveries and dispatches them. The default inline
+dispatcher needs no queue; applications that need cross-process delivery can
+select the Active Job dispatcher and use their existing queue backend.
+
+```ruby
+Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
+
+Strata::Events.configure do |config|
+  config.max_attempts = 5
+  config.retry_base_delay = 1.minute
+  config.retention_days = 90 # optional; no retention window is assumed
+end
+```
+
+Domain handlers other than business processes can use the same durable path.
+Register the class name and expose the event names plus a class-level
+`handle_event` (or `call`) method:
+
+```ruby
+class ClaimantNotificationHandler
+  def self.event_names
+    [ "ApplicationApproved", "ApplicationDenied" ]
+  end
+
+  def self.handle_event(event)
+    NotificationSender.deliver(
+      event[:payload],
+      idempotency_key: Strata::Events.current_delivery.id
+    )
+  end
+end
+
+Strata::Events.register "ClaimantNotificationHandler"
+```
+
+During handler execution, `Strata::Events.current_event` and
+`Strata::Events.current_delivery` expose durable identifiers that external
+services can use as correlation and idempotency keys.
+
 ### 4. Generate Task Views
 
 For each task in your business process, generate the necessary views:
@@ -85,6 +150,25 @@ kase.business_process_instance.current_step
 form.submit_application
 kase.business_process_instance.current_step
 # => "verify_identity"
+```
+
+Domain event history is available through `Strata::Event`, and individual
+handler attempts and outcomes are available through
+`Strata::EventDelivery`. A recovery sweep can redispatch committed events that
+were not dispatched before a process stopped:
+
+```shell
+bin/rails strata:events:sweep
+```
+
+Event history is retained until the host chooses a retention window. Pruning
+never deletes an event with non-terminal deliveries and supports a dry run:
+
+```shell
+bin/rails generate strata:audit_log # once; pruning requires an audit trail
+bin/rails db:migrate
+bin/rails "strata:events:prune[90]" DRY_RUN=1
+bin/rails "strata:events:prune[90]"
 ```
 
 ## Next Steps

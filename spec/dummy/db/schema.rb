@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_28_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,6 +86,35 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
     t.index ["determined_at"], name: "index_strata_determinations_on_determined_at"
     t.index ["determined_by_id"], name: "index_strata_determinations_on_determined_by_id"
     t.index ["subject_id", "subject_type"], name: "index_strata_determinations_on_polymorphic_subject"
+  end
+
+  create_table "strata_event_deliveries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "strata_event_id", null: false
+    t.string "handler", null: false
+    t.string "target_type"
+    t.string "target_id"
+    t.integer "status", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.datetime "next_attempt_at"
+    t.text "last_error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status", "next_attempt_at"], name: "index_strata_event_deliveries_on_status_and_next_attempt_at"
+    t.index ["strata_event_id", "handler", "target_type", "target_id"], name: "index_strata_event_deliveries_uniqueness", unique: true, nulls_not_distinct: true
+    t.index ["strata_event_id"], name: "index_strata_event_deliveries_on_strata_event_id"
+  end
+
+  create_table "strata_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "correlation_id"
+    t.uuid "causation_id"
+    t.datetime "occurred_at", null: false
+    t.datetime "dispatched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dispatched_at"], name: "index_strata_events_on_dispatched_at"
+    t.index ["name", "occurred_at"], name: "index_strata_events_on_name_and_occurred_at"
   end
 
   create_table "strata_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -177,5 +206,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_04_221320) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "strata_event_deliveries", "strata_events"
   add_foreign_key "strata_tasks", "users", column: "assignee_id", on_delete: :nullify
 end

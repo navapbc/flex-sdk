@@ -50,35 +50,38 @@ module Strata
     end
 
     def start_from_event(event)
-      Rails.logger.debug "Starting business process from event: #{event[:name]} with payload: #{event[:payload]}"
+      Rails.logger.info "Starting business process from event '#{event[:name]}'"
       self.current_step = business_process.start_step_name
       self.case.save!
       execute_current_step
+      :handled
     end
 
     def transition_to_next_step(event)
       next_step = get_next_step(event[:name])
-      return unless next_step
+      unless next_step
+        Rails.logger.warn(
+          "No transition from step '#{current_step}' for event '#{event[:name]}' " \
+          "on #{self.case.class.name} #{self.case.id}"
+        )
+        return :no_transition
+      end
 
-      Rails.logger.debug "Transitioning to step #{next_step} and executing the step"
+      Rails.logger.info "Transitioning #{self.case.class.name} #{self.case.id} to step '#{next_step}'"
       self.current_step = next_step
       self.case.save!
       execute_current_step
+      :handled
     end
 
     private
 
     def execute_current_step
-      begin
-        Rails.logger.debug "Executing current step: #{current_step} for case ID: #{self.case.id}"
-        if current_step == "end"
-          self.case.close
-        else
-          business_process.steps[current_step].execute(self.case)
-        end
-      rescue Exception => e
-        Rails.logger.error "Error executing step #{current_step} for case ID: #{self.case.id} - #{e.message}"
-        Rails.logger.error e.backtrace.join("\n")
+      Rails.logger.info "Executing step '#{current_step}' for #{self.case.class.name} #{self.case.id}"
+      if current_step == "end"
+        self.case.close!
+      else
+        business_process.steps.fetch(current_step).execute(self.case)
       end
     end
 

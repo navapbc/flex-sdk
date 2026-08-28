@@ -41,24 +41,26 @@ module Strata
       end
 
       # Updates the host application's config/application.rb to register the business process
-      # for event listening. This ensures the business process starts listening for events
+      # with the durable event router. Class names are registered in to_prepare so Rails
+      # re-applies the configuration after a development code reload.
       def update_application_config
         application_rb_path = File.join(destination_root, "config/application.rb")
         content = File.read(application_rb_path)
-        start_listening_call = "    #{business_process_name}BusinessProcess.start_listening_for_events"
+        handler_name = "#{business_process_name}BusinessProcess"
+        registration_call = "Strata::Events.register \"#{handler_name}\""
 
         # Early return if already configured (makes generator idempotent)
-        return if content.include?(start_listening_call.strip)
+        return if business_process_registered?(content, handler_name)
 
-        # Try to find existing uncommented config.after_initialize block
-        existing_block_index = find_existing_after_initialize_block(content)
+        # Try to find an existing uncommented config.to_prepare block.
+        existing_block_index = find_existing_to_prepare_block(content)
 
         if existing_block_index
-          # Insert into existing block to avoid creating multiple config.after_initialize blocks
-          content = insert_into_existing_block(content, existing_block_index, start_listening_call)
+          # Insert into the existing block to avoid creating multiple config.to_prepare blocks.
+          content = insert_into_existing_block(content, existing_block_index, registration_call)
         else
-          # No existing block found, create new one inside Application class
-          content = create_new_after_initialize_block(content, start_listening_call)
+          # No existing block found, create a new one inside the Application class.
+          content = create_new_to_prepare_block(content, registration_call)
         end
 
         File.write(application_rb_path, content)
@@ -66,50 +68,58 @@ module Strata
 
       private
 
-      # Finds an uncommented config.after_initialize block in the content.
-      def find_existing_after_initialize_block(content)
+      def business_process_registered?(content, handler_name)
+        quoted_name = Regexp.escape(handler_name)
+        registration_pattern = /Strata::Events\.register\s*(?:\(\s*)?["']#{quoted_name}["']\s*\)?/
+
+        content.each_line.any? do |line|
+          !line.strip.start_with?("#") && line.match?(registration_pattern)
+        end
+      end
+
+      # Finds an uncommented config.to_prepare block in the content.
+      def find_existing_to_prepare_block(content)
         lines = content.lines
         lines.each_with_index do |line, index|
           stripped = line.strip
-          # Check if this is an uncommented config.after_initialize line
+          # Check if this is an uncommented config.to_prepare line
           # The regex \b ensures we match whole words, not partial matches
-          if !stripped.start_with?("#") && stripped.match?(/\bconfig\.after_initialize\s+do(\s*\|[^|]*\|)?\s*$/)
+          if !stripped.start_with?("#") && stripped.match?(/\bconfig\.to_prepare\s+do(\s*\|[^|]*\|)?\s*$/)
             return index
           end
         end
         nil
       end
 
-      # Inserts the start_listening call into an existing config.after_initialize block.
-      def insert_into_existing_block(content, block_start_index, start_listening_call)
+      # Inserts the registration into an existing config.to_prepare block.
+      def insert_into_existing_block(content, block_start_index, registration_call)
         lines = content.lines
         # Extract the indentation from the block start line to match the block's style
         block_indent = lines[block_start_index][/^\s*/]
 
         # Find the matching end for this block (handles nested blocks correctly)
         block_end_index = find_matching_end(lines, block_start_index, 1)
-        raise "Could not find matching end for config.after_initialize block" unless block_end_index
+        raise "Could not find matching end for config.to_prepare block" unless block_end_index
 
-        # Insert the start_listening call before the closing end
-        call_without_indent = start_listening_call.strip
-        insert_line = "#{block_indent}  #{call_without_indent}"
+        # Insert the registration before the closing end
+        insert_line = "#{block_indent}  #{registration_call}"
         lines.insert(block_end_index, insert_line)
 
         # Normalize newlines to prevent formatting issues
         lines.map(&:chomp).join("\n") + "\n"
       end
 
-      # Creates a new config.after_initialize block inside the Application class.
-      def create_new_after_initialize_block(content, start_listening_call)
+      # Creates a new config.to_prepare block inside the Application class.
+      def create_new_to_prepare_block(content, registration_call)
         lines = content.lines
 
         # Find the Application class start - must be inside the class, not outside
         class_start_index = find_application_class_start(lines)
-        raise "Could not find Application class to insert config.after_initialize block" unless class_start_index
+        raise "Could not find Application class to insert config.to_prepare block" unless class_start_index
 
         # Find the matching end for the Application class
         application_end_index = find_matching_end(lines, class_start_index, 1)
-        raise "Could not find matching end for Application class to insert config.after_initialize block" unless application_end_index
+        raise "Could not find matching end for Application class to insert config.to_prepare block" unless application_end_index
 
         # Split the file into lines before and after the Application class end
         before_lines = lines[0...application_end_index].map(&:chomp)
@@ -117,15 +127,15 @@ module Strata
 
         # Standard Rails Application class uses 4 spaces for indentation
         class_body_indent = "    "
-        after_initialize_lines = [
+        to_prepare_lines = [
           "", # Empty line before the block for readability
-          "#{class_body_indent}config.after_initialize do",
-          "#{class_body_indent}  #{start_listening_call.strip}", # 2 spaces for block body
+          "#{class_body_indent}config.to_prepare do",
+          "#{class_body_indent}  #{registration_call}", # 2 spaces for block body
           "#{class_body_indent}end"
         ]
 
         # Combine all lines and normalize newlines
-        new_lines = before_lines + after_initialize_lines + after_lines
+        new_lines = before_lines + to_prepare_lines + after_lines
         new_lines.join("\n") + "\n"
       end
 

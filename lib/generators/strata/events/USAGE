@@ -1,0 +1,51 @@
+Description:
+    Installs the transactional outbox tables into the host application. The
+    Strata event models, router, dispatchers, and jobs are shipped by the
+    engine directly — only the migration is copied.
+
+Usage:
+    bin/rails generate strata:events
+
+This will create:
+    - db/migrate/<timestamp>_create_strata_events.rb
+
+Options:
+    --skip-migration-check         Skip checking if the Strata event tables exist
+
+After generating:
+    bin/rails db:migrate
+
+About domain events:
+    Strata::EventManager.publish keeps its existing name and payload arguments,
+    but records a durable Strata::Event in the caller's database transaction.
+    Dispatch happens after commit so a rolled-back domain change cannot leave
+    behind an event.
+
+    Register business processes by class name. The generator normally adds this
+    configuration automatically:
+
+        config.to_prepare do
+          Strata::Events.register "PassportBusinessProcess"
+        end
+
+    The default inline dispatcher requires no queue backend. Hosts can select
+    the Active Job dispatcher when they need delivery across processes.
+
+        Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
+
+    Configure retention explicitly, then schedule the prune job or rake task:
+
+        bin/rails generate strata:audit_log # required for accountable pruning
+        bin/rails db:migrate
+
+        Strata::Events.configure do |config|
+          config.retention_days = 90
+        end
+
+        Strata::Events::PruneJob.perform_later
+
+    Recovery and one-off retention tasks:
+
+        bin/rails strata:events:sweep
+        bin/rails "strata:events:prune[90]" DRY_RUN=1
+        bin/rails "strata:events:prune[90]"

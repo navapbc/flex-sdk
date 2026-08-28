@@ -29,33 +29,14 @@ module Strata
   # See app/models/strata/business_process_builder.rb for more step options
   # and docs/case-management-business-process.md for more details.
   #
-  # The process automatically listens for events and transitions between steps
-  # based on the defined transitions. Events can be triggered by either user actions
-  # or system processes. When a step transitions to 'end', the case is automatically closed.
+  # Registered processes receive durable events through {Strata::Events}. Events
+  # can be triggered by user actions or system processes. When a step transitions
+  # to 'end', the case is automatically closed.
   #
   # Event payloads must contain either case_id or application_form_id to identify the case.
   #
   # @see Strata::StaffTask
   # @see Strata::SystemProcess
-  #
-  # Key Methods:
-  # - start_listening_for_events: Starts listening for events that trigger transitions
-  # - stop_listening_for_events: Stops listening for events (useful for cleanup)
-  #
-  # Class Methods:
-  # @method define(name, case_class)
-  #   Creates a new BusinessProcess definition. Also automatically starts listening for events.
-  #   @param [Symbol] name The name of the business process
-  #   @param [Class] case_class The case class this process operates on
-  #   @yield [BusinessProcessBuilder] builder DSL for defining the process steps and transitions
-  #   @return [BusinessProcess] The configured and activated business process
-  #
-  # Instance Methods:
-  # @method start_listening_for_events
-  #   Starts listening for events that can trigger transitions. Called automatically by define.
-  #
-  # @method stop_listening_for_events
-  #   Stops listening for events and cleans up subscriptions. Useful for cleanup in tests.
   #
   class BusinessProcess
     include BusinessProcessBuilder
@@ -98,66 +79,39 @@ module Strata
     end
 
     class << self
-      def subscriptions
-        @subscriptions ||= {}
+      def event_names
+        transitions.values.flat_map(&:keys).uniq | start_events.keys
       end
 
-      def start_listening_for_events
-        @listening ||= false
-        if @listening
-          Rails.logger.debug "Strata::BusinessProcess with name #{name} already listening for events"
-          return
-        end
+      def targets_for_event(event)
+        return [ nil ] if start_event?(event[:name])
 
-        get_event_names.each do |event_name|
-          Rails.logger.debug "Strata::BusinessProcess with name #{name} subscribing to event: #{event_name}"
-          subscriptions[event_name] = Strata::EventManager.subscribe(event_name, method(:handle_event))
-        end
-
-        @listening = true
+        case_class.for_event(event).to_a
       end
 
-      def stop_listening_for_events
-        Rails.logger.debug "Strata::BusinessProcess with name #{name} stopping listening for events"
+      def handle_event(event, target: nil)
+        Rails.logger.info "Handling durable event '#{event[:name]}' with #{name}"
 
-        subscriptions.each do |event_name, subscription|
-          Rails.logger.debug "Strata::BusinessProcess with name #{name} unsubscribing from event: #{event_name}"
-          Strata::EventManager.unsubscribe(subscription)
+        if start_event?(event[:name])
+          kase = create_case_from_event(event)
+          kase.business_process_instance.start_from_event(event)
+        elsif target
+          target.with_lock do
+            target.business_process_instance.transition_to_next_step(event)
+          end
+        else
+          :no_target
         end
-        subscriptions.clear
-        @listening = false
       end
-    end
 
-    private
-
-    class << self
       def create_case_from_event(event)
-        Rails.logger.debug "Creating case from event: #{event[:name]} with payload: #{event[:payload]}"
+        Rails.logger.info "Creating #{case_class.name} from event '#{event[:name]}'"
         handler = start_events[event[:name]]
         raise RuntimeError, "No handler defined for start event '#{event[:name]}'" unless handler
 
         kase = handler.call(event)
         kase.save!
         kase
-      end
-
-      def get_event_names
-        transitions.values.flat_map(&:keys).uniq | start_events.keys
-      end
-
-      def handle_event(event)
-        Rails.logger.debug "Handling event: #{event[:name]} with payload: #{event[:payload]}"
-
-        if start_event?(event[:name])
-          kase = create_case_from_event(event)
-          kase.business_process_instance.start_from_event(event)
-        else
-          cases = case_class.for_event(event)
-          cases.each do |kase|
-            kase.business_process_instance.transition_to_next_step(event)
-          end
-        end
       end
 
       def from_event(event)
@@ -168,6 +122,8 @@ module Strata
       def start_event?(event_name)
         start_events.key?(event_name)
       end
+
+      private :create_case_from_event, :from_event, :start_event?
     end
   end
 end

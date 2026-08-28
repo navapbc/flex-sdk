@@ -78,7 +78,8 @@ RSpec.describe 'strata:events', type: :task do
     end
 
     describe 'successful event emission' do
-      let(:test_case) { instance_double(TestCase) }
+      let(:test_case) { instance_double(TestCase, id: case_id) }
+      let(:case_id) { Faker::Number.between(from: 1, to: 1000) }
 
       before do
         allow(Rails.logger).to receive(:info)
@@ -87,13 +88,62 @@ RSpec.describe 'strata:events', type: :task do
 
       it 'finds the case, publishes the event, and outputs a message' do
         event_name = Faker::Alphanumeric.alpha(number: rand(5..15))
-        case_id = Faker::Number.between(from: 1, to: 1000)
-
         task.invoke(event_name, "TestCase", case_id)
 
-        expect(Strata::EventManager).to have_received(:publish).with(event_name, hash_including(kase: test_case))
+        expect(Strata::EventManager).to have_received(:publish).with(event_name, case_id: case_id)
         expect(Rails.logger).to have_received(:info).with(/Event '#{event_name}' emitted for 'TestCase' with ID '#{case_id}'/)
       end
+    end
+  end
+
+  describe 'sweep' do
+    let(:task) { Rake::Task['strata:events:sweep'] }
+    let(:result) { Strata::Events::Sweeper::Result.new(events: 2, deliveries: 3) }
+
+    after do
+      task.reenable
+    end
+
+    it 'delegates recovery work to the event sweeper' do
+      allow(Strata::Events::Sweeper).to receive(:call).and_return(result)
+      allow(Rails.logger).to receive(:info)
+
+      task.invoke
+
+      expect(Strata::Events::Sweeper).to have_received(:call)
+      expect(Rails.logger).to have_received(:info).with(/processed 2 events and 3 deliveries/)
+    end
+  end
+
+  describe 'prune' do
+    let(:task) { Rake::Task['strata:events:prune'] }
+    let(:cutoff) { 90.days.ago }
+    let(:result) do
+      Strata::Events::Pruner::Result.new(
+        cutoff: cutoff,
+        events: 4,
+        deliveries: 5,
+        duration: 0.1,
+        dry_run: true
+      )
+    end
+
+    after do
+      task.reenable
+    end
+
+    it 'delegates an explicit dry-run retention policy to the pruner' do
+      allow(ENV).to receive(:fetch).with("DRY_RUN", false).and_return("1")
+      allow(Strata::Events::Pruner).to receive(:call).and_return(result)
+      allow(Rails.logger).to receive(:info)
+
+      task.invoke("90")
+
+      expect(Strata::Events::Pruner).to have_received(:call).with(
+        older_than_days: "90",
+        dry_run: true
+      )
+      expect(Rails.logger).to have_received(:info).with(/would prune 4 events and 5 deliveries/)
     end
   end
 end
