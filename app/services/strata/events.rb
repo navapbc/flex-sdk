@@ -6,17 +6,17 @@ module Strata
     # Host-controlled delivery, retry, and retention settings.
     class Configuration
       attr_accessor :retention_days,
-        :delivery_retention_days,
         :max_attempts,
         :retry_base_delay,
+        :routing_retry_delay,
         :batch_size,
         :prune_time_budget
 
       def initialize
         @retention_days = nil
-        @delivery_retention_days = nil
         @max_attempts = 5
         @retry_base_delay = 1.minute
+        @routing_retry_delay = 5.minutes
         @batch_size = 100
         @prune_time_budget = 30.seconds
       end
@@ -28,7 +28,7 @@ module Strata
       end
 
       def config
-        @config ||= Configuration.new
+        state.configuration ||= Configuration.new
       end
 
       def register(handler)
@@ -48,7 +48,7 @@ module Strata
       end
 
       def dispatcher
-        @dispatcher ||= Strata::Events::Dispatcher::Inline.new
+        state.dispatcher ||= Strata::Events::Dispatcher::Inline.new
       end
 
       def dispatcher=(dispatcher)
@@ -56,7 +56,7 @@ module Strata
           raise ArgumentError, "Dispatcher must be a subclass of Strata::Events::Dispatcher::Base"
         end
 
-        @dispatcher = dispatcher
+        state.dispatcher = dispatcher
       end
 
       def current_event
@@ -80,14 +80,20 @@ module Strata
 
       # Primarily useful for test isolation and development-console reconfiguration.
       def reset!
-        @config = Configuration.new
-        @dispatcher = nil
+        state.configuration = Configuration.new
+        state.dispatcher = nil
         @handler_names = []
         ActiveSupport::IsolatedExecutionState.delete(:strata_current_event)
         ActiveSupport::IsolatedExecutionState.delete(:strata_current_delivery)
       end
 
       private
+
+      # Engine configuration is not reloadable, so host settings survive when
+      # Zeitwerk replaces the Strata::Events module in development.
+      def state
+        Strata::Engine.events_state
+      end
 
       # Rails may replace the Base constant during a development reload before
       # host configuration assigns a fresh adapter. Matching the named ancestor

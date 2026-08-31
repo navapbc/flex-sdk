@@ -16,7 +16,7 @@ module Strata
       end
 
       def self.deliver(delivery)
-        Strata::EventDelivery.transaction do
+        Strata::EventDelivery.transaction(requires_new: true) do
           delivery.lock!
           return delivery if delivery.terminal?
           return delivery if delivery.failed? && delivery.next_attempt_at&.future?

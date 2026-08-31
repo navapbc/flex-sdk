@@ -96,6 +96,7 @@ Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
 Strata::Events.configure do |config|
   config.max_attempts = 5
   config.retry_base_delay = 1.minute
+  config.routing_retry_delay = 5.minutes
   config.retention_days = 90 # optional; no retention window is assumed
 end
 ```
@@ -162,7 +163,9 @@ bin/rails strata:events:sweep
 ```
 
 Event history is retained until the host chooses a retention window. Pruning
-never deletes an event with non-terminal deliveries and supports a dry run:
+never deletes an event with non-terminal deliveries, retains delivery
+idempotency markers until their parent event is removed, audits every committed
+deletion batch, and supports a dry run:
 
 ```shell
 bin/rails generate strata:audit_log # once; pruning requires an audit trail

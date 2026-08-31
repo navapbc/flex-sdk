@@ -62,10 +62,14 @@ outcome together. Exceptions roll back the handler
 transaction and remain visible for retry.
 
 A recovery sweep claims undispatched events with `FOR UPDATE SKIP LOCKED`.
+Unrecognized events are deferred before another routing attempt, and persisted
+failed deliveries are retried directly rather than reconstructed from current
+router output.
 Retention is explicit rather than assumed: pruning requires either a supplied
 window or host configuration, never removes events with non-terminal
-deliveries, works in batches, supports dry runs, and records deletion in the
-audit log.
+deliveries, keeps delivery idempotency markers for the lifetime of their event,
+works in batches, supports dry runs, and atomically records an audit line for
+each deletion batch.
 
 The install generator copies the two-table migration into the host
 application. Polymorphic target identifiers use strings because the engine

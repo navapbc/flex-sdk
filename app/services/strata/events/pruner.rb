@@ -21,14 +21,9 @@ module Strata
         scope = eligible_events(cutoff)
         ensure_audit_log! unless dry_run
 
-        result = if dry_run
-          dry_run_result(scope, cutoff, started_at)
-        else
-          prune(scope, cutoff, started_at)
-        end
+        return dry_run_result(scope, cutoff, started_at) if dry_run
 
-        audit(result) unless dry_run
-        result
+        prune(scope, cutoff, started_at)
       end
 
       def self.eligible_events(cutoff)
@@ -63,38 +58,39 @@ module Strata
           ids = scope.limit(Strata::Events.config.batch_size).pluck(:id)
           break if ids.empty?
 
-          Strata::Event.transaction do
-            delivery_count += Strata::EventDelivery.where(strata_event_id: ids).delete_all
-            event_count += Strata::Event.where(id: ids).delete_all
-          end
+          batch_result = prune_batch(ids, cutoff, started_at)
+          delivery_count += batch_result.deliveries
+          event_count += batch_result.events
         end
 
-        delivery_count += prune_old_deliveries(cutoff)
-        Result.new(
+        result = Result.new(
           cutoff: cutoff,
           events: event_count,
           deliveries: delivery_count,
           duration: monotonic_time - started_at,
           dry_run: false
         )
+        audit(result) if result.events.zero?
+        result
       end
       private_class_method :prune
 
-      def self.prune_old_deliveries(event_cutoff)
-        days = Strata::Events.config.delivery_retention_days
-        return 0 unless days
-
-        validate_days!(days)
-        cutoff = days.to_i.days.ago
-        return 0 unless cutoff > event_cutoff
-
-        Strata::EventDelivery
-          .terminal
-          .joins(:event)
-          .where(strata_events: { occurred_at: ...cutoff })
-          .delete_all
+      def self.prune_batch(ids, cutoff, started_at)
+        Strata::Event.transaction do
+          deliveries = Strata::EventDelivery.where(strata_event_id: ids).delete_all
+          events = Strata::Event.where(id: ids).delete_all
+          result = Result.new(
+            cutoff: cutoff,
+            events: events,
+            deliveries: deliveries,
+            duration: monotonic_time - started_at,
+            dry_run: false
+          )
+          audit(result)
+          result
+        end
       end
-      private_class_method :prune_old_deliveries
+      private_class_method :prune_batch
 
       def self.audit(result)
         Strata::AuditLog.write!(

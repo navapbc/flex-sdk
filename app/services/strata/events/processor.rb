@@ -27,9 +27,10 @@ module Strata
           event.lock!
           routes = Strata::Events::Router.routes_for(event)
           if routes.empty?
+            event.update!(next_attempt_at: Time.current + Strata::Events.config.routing_retry_delay)
             Rails.logger.warn(
               "No registered durable handler recognizes event '#{event.name}' (id=#{event.id}); " \
-              "leaving it undispatched for the sweeper"
+              "deferring another routing attempt until #{event.next_attempt_at.iso8601}"
             )
             next
           end
@@ -37,7 +38,7 @@ module Strata
           routes.each do |route|
             deliveries << find_or_create_delivery(event, route)
           end
-          event.update!(dispatched_at: Time.current)
+          event.update!(dispatched_at: Time.current, next_attempt_at: nil)
         end
 
         deliveries

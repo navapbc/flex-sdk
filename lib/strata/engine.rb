@@ -9,6 +9,11 @@ module Strata
   class Engine < ::Rails::Engine
     isolate_namespace Strata
 
+    class << self
+      attr_accessor :events_state
+    end
+    self.events_state = ActiveSupport::OrderedOptions.new
+
     initializer "strata.helpers" do
       ActiveSupport.on_load :action_controller do
         helper Strata::ApplicationHelper

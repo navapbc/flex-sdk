@@ -39,6 +39,7 @@ About domain events:
         bin/rails db:migrate
 
         Strata::Events.configure do |config|
+          config.routing_retry_delay = 5.minutes
           config.retention_days = 90
         end
 

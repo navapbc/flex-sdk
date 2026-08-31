@@ -22,8 +22,9 @@ RSpec.describe Strata::Events::Processor do
     described_class.call(event.id, raise_on_failure: true)
 
     expect(event.reload.dispatched_at).to be_nil
+    expect(event.next_attempt_at).to be > Time.current
     expect(event.deliveries).to be_empty
-    expect(Rails.logger).to have_received(:warn).with(/leaving it undispatched for the sweeper/)
+    expect(Rails.logger).to have_received(:warn).with(/deferring another routing attempt/)
   end
 
   it "fans out to each registered handler and deduplicates targetless deliveries" do

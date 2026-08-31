@@ -64,6 +64,7 @@ RSpec.describe Strata::Generators::EventsGenerator, type: :generator do
       expect(migration_content).to include('t.uuid :causation_id')
       expect(migration_content).to match(/t\.datetime\s+:occurred_at,\s+null:\s+false/)
       expect(migration_content).to include('t.datetime :dispatched_at')
+      expect(migration_content).to include('t.datetime :next_attempt_at')
     end
 
     it 'defines per-handler delivery state' do
@@ -82,14 +83,17 @@ RSpec.describe Strata::Generators::EventsGenerator, type: :generator do
     end
 
     it 'defines the dispatch and event-name indexes' do
-      expect(migration_content).to include('add_index :strata_events, :dispatched_at')
+      expect(migration_content).to include('add_index :strata_events, [ :dispatched_at, :next_attempt_at ]')
       expect(migration_content).to include('add_index :strata_events, [ :name, :occurred_at ]')
     end
 
     it 'defines the delivery idempotency and retry indexes' do
-      expect(migration_content).to include('index_strata_event_deliveries_uniqueness')
+      expect(migration_content).to include('index_strata_event_deliveries_targetless_uniqueness')
+      expect(migration_content).to include('index_strata_event_deliveries_targeted_uniqueness')
       expect(migration_content).to include('unique: true')
-      expect(migration_content).to include('nulls_not_distinct: true')
+      expect(migration_content).to include('target_type IS NULL AND target_id IS NULL')
+      expect(migration_content).to include('target_type IS NOT NULL AND target_id IS NOT NULL')
+      expect(migration_content).not_to include('nulls_not_distinct: true')
       expect(migration_content).to include('add_index :strata_event_deliveries, [ :status, :next_attempt_at ]')
     end
   end

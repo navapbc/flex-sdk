@@ -100,8 +100,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_28_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status", "next_attempt_at"], name: "index_strata_event_deliveries_on_status_and_next_attempt_at"
-    t.index ["strata_event_id", "handler", "target_type", "target_id"], name: "index_strata_event_deliveries_uniqueness", unique: true, nulls_not_distinct: true
+    t.index ["strata_event_id", "handler", "target_type", "target_id"], name: "index_strata_event_deliveries_targeted_uniqueness", unique: true, where: "((target_type IS NOT NULL) AND (target_id IS NOT NULL))"
+    t.index ["strata_event_id", "handler"], name: "index_strata_event_deliveries_targetless_uniqueness", unique: true, where: "((target_type IS NULL) AND (target_id IS NULL))"
     t.index ["strata_event_id"], name: "index_strata_event_deliveries_on_strata_event_id"
+    t.check_constraint "(target_type IS NULL) = (target_id IS NULL)", name: "strata_event_deliveries_target_presence"
   end
 
   create_table "strata_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -111,9 +113,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_28_000000) do
     t.uuid "causation_id"
     t.datetime "occurred_at", null: false
     t.datetime "dispatched_at"
+    t.datetime "next_attempt_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["dispatched_at"], name: "index_strata_events_on_dispatched_at"
+    t.index ["dispatched_at", "next_attempt_at"], name: "index_strata_events_on_dispatched_at_and_next_attempt_at"
     t.index ["name", "occurred_at"], name: "index_strata_events_on_name_and_occurred_at"
   end
 

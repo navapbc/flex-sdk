@@ -5,12 +5,9 @@ require "rails_helper"
 RSpec.describe Strata::Events::Pruner do
   around do |example|
     retention_days = Strata::Events.config.retention_days
-    delivery_retention_days = Strata::Events.config.delivery_retention_days
-    Strata::Events.config.delivery_retention_days = nil
     example.run
   ensure
     Strata::Events.config.retention_days = retention_days
-    Strata::Events.config.delivery_retention_days = delivery_retention_days
   end
 
   def create_event(age:, status: :handled)
@@ -45,6 +42,18 @@ RSpec.describe Strata::Events::Pruner do
     }.to raise_error(RuntimeError, /Install Strata::AuditLog/)
 
     expect(Strata::Event.where(id: old_event.id)).to exist
+  end
+
+  it "rolls back a deletion batch when writing its audit record fails" do
+    old_event = create_event(age: 100.days)
+    allow(Strata::AuditLog).to receive(:write!).and_raise("audit unavailable")
+
+    expect {
+      described_class.call(older_than_days: 90)
+    }.to raise_error(RuntimeError, "audit unavailable")
+
+    expect(Strata::Event.where(id: old_event.id)).to exist
+    expect(Strata::EventDelivery.where(strata_event_id: old_event.id)).to exist
   end
 
   it "uses the configured window when an explicit argument is absent" do

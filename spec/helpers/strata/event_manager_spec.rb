@@ -22,7 +22,7 @@ RSpec.describe Strata::EventManager do
     Strata::Events.dispatcher = dispatcher
     example.run
   ensure
-    Strata::Events.instance_variable_set(:@dispatcher, original_dispatcher)
+    Strata::Events.dispatcher = original_dispatcher
   end
 
   describe ".publish" do

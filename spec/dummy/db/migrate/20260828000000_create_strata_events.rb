@@ -9,10 +9,11 @@ class CreateStrataEvents < ActiveRecord::Migration[7.2]
       t.uuid :causation_id
       t.datetime :occurred_at, null: false
       t.datetime :dispatched_at
+      t.datetime :next_attempt_at
       t.timestamps
     end
 
-    add_index :strata_events, :dispatched_at
+    add_index :strata_events, [ :dispatched_at, :next_attempt_at ]
     add_index :strata_events, [ :name, :occurred_at ]
 
     create_table :strata_event_deliveries, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
@@ -27,11 +28,19 @@ class CreateStrataEvents < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
+    add_check_constraint :strata_event_deliveries,
+      "(target_type IS NULL) = (target_id IS NULL)",
+      name: "strata_event_deliveries_target_presence"
+    add_index :strata_event_deliveries,
+      [ :strata_event_id, :handler ],
+      unique: true,
+      where: "target_type IS NULL AND target_id IS NULL",
+      name: "index_strata_event_deliveries_targetless_uniqueness"
     add_index :strata_event_deliveries,
       [ :strata_event_id, :handler, :target_type, :target_id ],
       unique: true,
-      nulls_not_distinct: true,
-      name: "index_strata_event_deliveries_uniqueness"
+      where: "target_type IS NOT NULL AND target_id IS NOT NULL",
+      name: "index_strata_event_deliveries_targeted_uniqueness"
     add_index :strata_event_deliveries, [ :status, :next_attempt_at ]
   end
 end

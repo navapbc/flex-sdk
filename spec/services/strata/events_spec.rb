@@ -32,4 +32,14 @@ RSpec.describe Strata::Events do
       described_class.dispatcher = Object.new
     }.to raise_error(ArgumentError, /Dispatcher must be a subclass/)
   end
+
+  it "stores host configuration outside the reloadable Events module" do
+    described_class.config.max_attempts = 17
+    dispatcher = Strata::Events::Dispatcher::ActiveJob.new
+    described_class.dispatcher = dispatcher
+
+    state = Strata::Engine.events_state
+    expect(state.configuration.max_attempts).to eq(17)
+    expect(state.dispatcher).to equal(dispatcher)
+  end
 end

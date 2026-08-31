@@ -8,30 +8,25 @@ module Strata
 
       def self.call(limit: Strata::Events.config.batch_size)
         processed_event_ids = sweep_events(limit)
-        remaining = [ limit - processed_event_ids.size, 0 ].max
-        processed_delivery_ids = sweep_deliveries(remaining, excluding: processed_event_ids)
+        processed_delivery_ids = sweep_deliveries(limit)
         Result.new(events: processed_event_ids.size, deliveries: processed_delivery_ids.size)
       end
 
       def self.sweep_events(limit)
-        process_locked(Strata::Event.undispatched, limit) do |event|
+        process_locked(Strata::Event.ready_for_routing, limit) do |event|
           Strata::Events::Processor.call(event.id, raise_on_failure: false)
         end
       end
       private_class_method :sweep_events
 
-      def self.sweep_deliveries(limit, excluding:)
+      def self.sweep_deliveries(limit)
         return [] unless limit.positive?
 
-        scope = Strata::EventDelivery.ready_for_retry
-        scope = scope.where.not(strata_event_id: excluding) if excluding.any?
-        processed_event_ids = []
-
-        process_locked(scope, limit) do |delivery|
-          next if processed_event_ids.include?(delivery.strata_event_id)
-
-          Strata::Events::Processor.call(delivery.strata_event_id, raise_on_failure: false)
-          processed_event_ids << delivery.strata_event_id
+        process_locked(Strata::EventDelivery.ready_for_retry, limit) do |delivery|
+          Strata::Events::Deliverer.call(delivery)
+        rescue StandardError
+          # Deliverer persisted and reported the failure. Continue so one
+          # poison delivery cannot prevent other due work from being retried.
         end
       end
       private_class_method :sweep_deliveries
