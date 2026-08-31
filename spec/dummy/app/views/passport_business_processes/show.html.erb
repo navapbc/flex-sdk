@@ -1,0 +1,213 @@
+<% content_for :title, "Interactive passport process" %>
+
+<div class="passport-process-demo">
+  <nav class="passport-process-demo__breadcrumb" aria-label="Breadcrumb">
+    <%= link_to "Dummy app", root_path, class: "usa-link" %>
+    <span aria-hidden="true">/</span>
+    <span>Interactive passport process</span>
+  </nav>
+
+  <div class="passport-process-demo__header">
+    <div>
+      <p class="passport-process-demo__eyebrow">Transactional outbox demo</p>
+      <h1>Follow a passport application from start to finish</h1>
+      <p class="passport-process-demo__lede">
+        Each action below changes real dummy-app records. Watch the workflow advance,
+        then inspect the durable events and handler deliveries produced along the way.
+      </p>
+    </div>
+
+    <%= button_to @application_form ? "Start a new run" : "Start the workflow",
+      start_passport_business_process_path,
+      class: "usa-button passport-process-demo__start" %>
+  </div>
+
+  <% if notice.present? %>
+    <div class="usa-alert usa-alert--success margin-top-4" role="status">
+      <div class="usa-alert__body"><p class="usa-alert__text"><%= notice %></p></div>
+    </div>
+  <% end %>
+
+  <% if alert.present? %>
+    <div class="usa-alert usa-alert--warning margin-top-4" role="alert">
+      <div class="usa-alert__body"><p class="usa-alert__text"><%= alert %></p></div>
+    </div>
+  <% end %>
+
+  <section class="passport-process-demo__canvas" aria-labelledby="workflow-heading">
+    <div class="passport-process-demo__section-heading">
+      <div>
+        <p class="passport-process-demo__eyebrow">Live workflow</p>
+        <h2 id="workflow-heading">Passport business process</h2>
+      </div>
+
+      <% if @passport_case %>
+        <span class="passport-process-demo__case-status passport-process-demo__case-status--<%= @passport_case.status %>">
+          Case <%= @passport_case.status %>
+        </span>
+      <% end %>
+    </div>
+
+    <% current_step = @passport_case&.business_process_current_step %>
+    <% current_index = @flow_steps.index { |step| step[:key] == current_step } %>
+
+    <ol class="passport-process-flow">
+      <% @flow_steps.each_with_index do |step, index| %>
+        <% state = if current_index.nil?
+          "upcoming"
+        elsif index < current_index
+          "complete"
+        elsif index == current_index
+          "current"
+        else
+          "upcoming"
+        end %>
+        <li class="passport-process-flow__step passport-process-flow__step--<%= state %>"<%= " aria-current=step" if state == "current" %>>
+          <div class="passport-process-flow__marker" aria-hidden="true">
+            <%= state == "complete" ? "✓" : step[:number] %>
+          </div>
+          <div class="passport-process-flow__content">
+            <p class="passport-process-flow__kind"><%= step[:kind] %></p>
+            <h3><%= step[:title] %></h3>
+            <p><%= step[:description] %></p>
+            <% if step[:event] %>
+              <code><%= step[:event] %></code>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+
+    <div class="passport-process-demo__workspace">
+      <section class="passport-process-action" aria-labelledby="action-heading">
+        <p class="passport-process-demo__eyebrow">Your next action</p>
+
+        <% if @application_form.nil? %>
+          <h2 id="action-heading">Create a demonstration application</h2>
+          <p>Start the workflow to persist an application and route its creation event.</p>
+          <%= button_to "Start the workflow",
+            start_passport_business_process_path,
+            class: "usa-button" %>
+        <% elsif current_step == "submit_application" %>
+          <h2 id="action-heading">Submit Avery Rivera’s application</h2>
+          <p>
+            This fills in sample applicant details and publishes
+            <code>PassportApplicationFormSubmitted</code>.
+          </p>
+          <%= button_to "Complete and submit application",
+            advance_passport_business_process_path,
+            params: { transition: "submit_application" },
+            class: "usa-button" %>
+        <% elsif current_step == "verify_identity" %>
+          <h2 id="action-heading">Identity verification is running</h2>
+          <p>The system step requires no user action. Refresh to observe its completion.</p>
+          <%= link_to "Refresh workflow", passport_business_process_path, class: "usa-button" %>
+        <% elsif current_step == "review_passport_photo" %>
+          <h2 id="action-heading">Review the passport photo</h2>
+          <p>
+            Act as the passport specialist and approve the pending photo-review task.
+            This publishes <code>PassportPhotoApproved</code>.
+          </p>
+          <% if @photo_task %>
+            <p class="passport-process-action__task">
+              Task <code><%= @photo_task.id.to_s.first(8) %></code>
+              <span>·</span>
+              <strong><%= @photo_task.status.humanize %></strong>
+            </p>
+          <% end %>
+          <%= button_to "Approve passport photo",
+            advance_passport_business_process_path,
+            params: { transition: "approve_photo" },
+            class: "usa-button" %>
+        <% elsif current_step == "end" %>
+          <h2 id="action-heading">Passport approved</h2>
+          <p>The case reached the end step and was closed successfully.</p>
+          <%= button_to "Run the process again",
+            start_passport_business_process_path,
+            class: "usa-button" %>
+        <% else %>
+          <h2 id="action-heading">Waiting for workflow state</h2>
+          <p>The application exists, but its passport case has not been created yet.</p>
+          <%= link_to "Refresh workflow", passport_business_process_path, class: "usa-button" %>
+        <% end %>
+      </section>
+
+      <aside class="passport-process-summary" aria-labelledby="summary-heading">
+        <p class="passport-process-demo__eyebrow">Current run</p>
+        <h2 id="summary-heading">Runtime state</h2>
+        <dl>
+          <div>
+            <dt>Application</dt>
+            <dd><%= @application_form ? @application_form.id.to_s.first(8) : "Not started" %></dd>
+          </div>
+          <div>
+            <dt>Case</dt>
+            <dd><%= @passport_case ? @passport_case.id.to_s.first(8) : "Not created" %></dd>
+          </div>
+          <div>
+            <dt>Current step</dt>
+            <dd><%= current_step&.humanize || "—" %></dd>
+          </div>
+          <div>
+            <dt>Durable events</dt>
+            <dd><%= @events.size %></dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="passport-process-demo__events" aria-labelledby="events-heading">
+    <div class="passport-process-demo__section-heading">
+      <div>
+        <p class="passport-process-demo__eyebrow">Under the hood</p>
+        <h2 id="events-heading">Outbox event history</h2>
+      </div>
+      <div class="passport-process-demo__section-actions">
+        <span><%= pluralize(@events.size, "event") %></span>
+        <%= link_to "View ActiveJob runs", active_job_runs_path, class: "usa-link" %>
+      </div>
+    </div>
+
+    <% if @events.any? %>
+      <div class="passport-event-list">
+        <% @events.each_with_index do |event, index| %>
+          <article class="passport-event-card">
+            <div class="passport-event-card__sequence"><%= index + 1 %></div>
+            <div class="passport-event-card__body">
+              <div class="passport-event-card__heading">
+                <h3><%= event.name %></h3>
+                <span class="passport-event-card__status passport-event-card__status--<%= event.dispatched_at? ? "dispatched" : "waiting" %>">
+                  <%= event.dispatched_at? ? "Dispatched" : "Waiting" %>
+                </span>
+              </div>
+              <p class="passport-event-card__meta">
+                Event <code><%= event.id.to_s.first(8) %></code>
+                <% if event.causation_id %>
+                  <span>·</span> caused by <code><%= event.causation_id.to_s.first(8) %></code>
+                <% end %>
+              </p>
+              <% if event.deliveries.any? %>
+                <ul class="passport-event-card__deliveries">
+                  <% event.deliveries.each do |delivery| %>
+                    <li>
+                      <span><%= delivery.handler %></span>
+                      <strong class="passport-event-card__delivery-status"><%= delivery.status.humanize %></strong>
+                      <span><%= pluralize(delivery.attempts, "attempt") %></span>
+                    </li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <p class="passport-event-card__empty">No handler delivery was created for this event.</p>
+              <% end %>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="passport-process-demo__empty">
+        <p>Start the workflow to see persisted events and delivery outcomes appear here.</p>
+      </div>
+    <% end %>
+  </section>
+</div>

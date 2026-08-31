@@ -9,6 +9,13 @@ Rails.application.routes.draw do
 
   resources :passport_application_forms, only: [ :index, :new, :show, :create, :edit, :update ]
 
+  resource :passport_business_process, only: :show do
+    post :start
+    post :advance
+  end
+
+  resources :active_job_runs, only: :index
+
   resources :sample_application_forms, only: [ :index, :new, :show, :create ] do
     member do
       SampleFlow.pages.each do |page|

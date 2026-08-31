@@ -10,9 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_28_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_job_runs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "job_id", null: false
+    t.string "job_class", null: false
+    t.string "queue_name", null: false
+    t.string "status", null: false
+    t.jsonb "arguments", default: [], null: false
+    t.datetime "enqueued_at"
+    t.datetime "started_at", null: false
+    t.datetime "finished_at"
+    t.integer "duration_ms"
+    t.string "error_class"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "executions", default: 1, null: false
+    t.index ["job_id", "executions"], name: "index_active_job_runs_on_job_id_and_executions", unique: true
+    t.index ["job_id"], name: "index_active_job_runs_on_job_id"
+    t.index ["started_at"], name: "index_active_job_runs_on_started_at"
+    t.index ["status", "started_at"], name: "index_active_job_runs_on_status_and_started_at"
+  end
 
   create_table "foo_test_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "status", default: 0
