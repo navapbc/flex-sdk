@@ -31,12 +31,12 @@ Several other failure modes were difficult or impossible to diagnose:
 - external work performed before commit had neither a durable retry nor an
   idempotency key.
 
-Domain events require different guarantees than instrumentation events.
+Domain events require durable delivery guarantees.
 
 ## Decision
 
-Keep `ActiveSupport::Notifications` available for instrumentation, but move
-domain workflow delivery to a PostgreSQL transactional outbox.
+Replace the process-local notification bus with a PostgreSQL transactional
+outbox for domain workflow delivery.
 
 `Strata::EventManager.publish` retains its public name-and-payload API. It
 inserts an immutable `Strata::Event` in the caller's current transaction. The

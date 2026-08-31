@@ -49,18 +49,6 @@ RSpec.describe Strata::EventManager do
       }.not_to change(Strata::Event, :count)
     end
 
-    it "preserves synchronous ActiveSupport notifications for instrumentation" do
-      callback = instance_double(Proc)
-      allow(callback).to receive(:call)
-      subscription = described_class.subscribe("Instrumented", callback)
-
-      described_class.publish("Instrumented", value: 42)
-
-      expect(callback).to have_received(:call).with(name: "Instrumented", payload: { value: 42 })
-    ensure
-      described_class.unsubscribe(subscription) if subscription
-    end
-
     it "propagates correlation and causation from the event being handled" do
       cause = Strata::Event.create!(
         name: "Cause",
