@@ -7,21 +7,21 @@ Usage:
 Examples:
     bin/rails generate strata:business_process Alien
     bin/rails generate strata:business_process Sunny --case Moon
-    bin/rails generate strata:business_process Kitty --case Doggy --application_form Rabbit
+    bin/rails generate strata:business_process Kitty --case Doggy --application-form Rabbit
 
 Options:
     --case CLASS_NAME: Custom case class name (optional)
         Default: {NAME}Case (e.g., "AlienCase")
         Example: --case MoonCase
 
-    --application_form FORM_NAME: Custom application form name (optional)
+    --application-form FORM_NAME: Custom application form name (optional)
         Default: {NAME}ApplicationForm (e.g., "AlienApplicationForm")
-        Example: --application_form RabbitApplicationForm
+        Example: --application-form RabbitApplicationForm
 
-    --skip-generating-application-form: Skip application form generation check (optional)
+    --skip-application-form: Skip application form generation check (optional)
         Use this flag to bypass checking if the application form exists
 
-    --force-generating-application-form: Generate application form without prompting (optional)
+    --force-application-form: Generate application form without prompting (optional)
         Use this flag to automatically generate the application form if it doesn't exist
 
 This will create:

@@ -17,9 +17,10 @@ After generating:
 
 About domain events:
     Strata::EventManager.publish keeps its existing name and payload arguments,
-    but records a durable Strata::Event in the caller's database transaction.
-    Dispatch happens after commit so a rolled-back domain change cannot leave
-    behind an event.
+    but records a durable Strata::Event in the caller's current database
+    transaction. Wrap the domain change and publish call in one explicit
+    transaction when they must be atomic. Dispatch happens after commit so a
+    rolled-back domain change cannot leave behind an event.
 
     Register business processes by class name. The generator normally adds this
     configuration automatically:
@@ -33,7 +34,22 @@ About domain events:
 
         Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
 
-    Configure retention explicitly, then schedule the prune job or rake task:
+    The Active Job dispatcher uses the host application's configured queue
+    adapter. Production hosts must configure a durable adapter and run its
+    workers. Rails' default AsyncAdapter is process-local and does not survive
+    restarts.
+
+        # config/environments/production.rb (example)
+        config.active_job.queue_adapter = :solid_queue
+
+    Strata persists delivery failures and retry times instead of using Active
+    Job retry scheduling. Run the sweep task repeatedly from cron or another
+    scheduler to recover undispatched events and retry due deliveries:
+
+        bin/rails strata:events:sweep
+
+    Configure retention explicitly, then invoke the prune job or rake task
+    periodically from a recurring scheduler:
 
         bin/rails generate strata:audit_log # required for accountable pruning
         bin/rails db:migrate
@@ -43,9 +59,9 @@ About domain events:
           config.retention_days = 90
         end
 
-        Strata::Events::PruneJob.perform_later
+        Strata::Events::PruneJob.perform_later # performs one pruning run
 
-    Recovery and one-off retention tasks:
+    One-off recovery and retention tasks:
 
         bin/rails strata:events:sweep
         bin/rails "strata:events:prune[90]" DRY_RUN=1

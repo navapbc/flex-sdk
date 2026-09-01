@@ -6,7 +6,7 @@ After creating an application form, the next step is to define how that applicat
 
 A case management business process consists of:
 
-- A case model that tracks the state of the business processs
+- A case model that tracks the state of the business process
 - A sequence of steps that can include:
   - Tasks performed by staff members (such as verifying documents or making determinations)
   - Tasks performed by applicants (such as submitting applications or providing additional information)
@@ -21,19 +21,25 @@ Creating a case management business process involves generating a case model tha
 
 ### 1. Generate the Case and Business Process
 
-First, generate the case model and business process files:
+First, generate the case model and tell the generator which business process
+and application form it should use:
 
 ```shell
-bin/rails generate strata:case PassportCase
+bin/rails generate strata:case PassportCase \
+  --business-process PassportBusinessProcess \
+  --application-form PassportApplicationForm
 ```
 
 This command will:
 
-- Create a case model in `app/models/strata/passport_case.rb`
-- Generate a business process in `app/business_processes/passport_business_process.rb`
-- Set up the necessary database migrations
-- Create task models and views
-- Register the business process with the event router in `config.to_prepare`
+- Create `app/models/passport_case.rb`, its migration, controller, views, and routes
+- Generate `app/business_processes/passport_business_process.rb` if it does not exist
+- Use the existing `PassportApplicationForm`, or generate it if it does not exist
+- Register the generated business process with the event router in `config.to_prepare`
+
+Without the `--business-process` and `--application-form` options, the case
+generator prompts before generating either missing class. Staff task classes
+are generated separately after the process has been defined.
 
 ### 2. Define the Business Process
 
@@ -84,13 +90,32 @@ notification bus. The router stores the name and resolves the current class
 when it dispatches an event, so Rails code reloads cannot leave a stale or
 missing business process subscriber.
 
-Calling `Strata::EventManager.publish` writes an event in the same database
-transaction as the change that caused it. After that transaction commits, the
-router creates per-handler deliveries and dispatches them. The default inline
-dispatcher needs no queue; applications that need cross-process delivery can
-select the Active Job dispatcher and use their existing queue backend.
+`Strata::EventManager.publish` joins the current Active Record transaction. Put
+the domain change and publish call inside the same explicit transaction when
+they must commit or roll back atomically:
 
 ```ruby
+# Both records commit, or neither does.
+ApplicationRecord.transaction do
+  application.update!(status: :submitted)
+  Strata::EventManager.publish(
+    "ApplicationSubmitted",
+    application_form_id: application.id
+  )
+end
+```
+
+Dispatch starts only after every currently open Active Record transaction
+commits. A rollback prevents dispatch. If no transaction is open, the event is
+committed and dispatched immediately; publishing after a separate domain
+transaction does not make the two writes atomic.
+
+The default inline dispatcher processes committed events in the application
+process and requires no queue. Applications that need cross-process delivery
+can select the Active Job dispatcher:
+
+```ruby
+# config/initializers/strata_events.rb
 Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
 
 Strata::Events.configure do |config|
@@ -100,6 +125,21 @@ Strata::Events.configure do |config|
   config.retention_days = 90 # optional; no retention window is assumed
 end
 ```
+
+The Active Job dispatcher uses the host application's configured adapter. For
+production, configure a durable backend such as Solid Queue, Sidekiq, or
+GoodJob and run its worker processes. Rails' default `AsyncAdapter` keeps jobs
+only in the web process's memory and does not survive a restart.
+
+```ruby
+# config/environments/production.rb (example)
+config.active_job.queue_adapter = :solid_queue
+```
+
+Active Job transports each committed event ID to
+`Strata::Events::DispatchJob`; the event and delivery tables remain the source
+of truth. Strata records handler failures and retry times in
+`Strata::EventDelivery` rather than relying on Active Job retry scheduling.
 
 Domain handlers other than business processes can use the same durable path.
 Register the class name and expose the event names plus a class-level
@@ -118,49 +158,80 @@ class ClaimantNotificationHandler
     )
   end
 end
+```
 
-Strata::Events.register "ClaimantNotificationHandler"
+Add the handler beside the generated business-process registration:
+
+```ruby
+# config/application.rb
+config.to_prepare do
+  Strata::Events.register "ClaimantNotificationHandler"
+end
 ```
 
 During handler execution, `Strata::Events.current_event` and
 `Strata::Events.current_delivery` expose durable identifiers that external
 services can use as correlation and idempotency keys.
 
-### 4. Generate Task Views
+### 4. Generate Staff Task Classes
 
-For each task in your business process, generate the necessary views:
+Generate a task class for each `staff_task` referenced by the process. Do not
+generate task records for applicant, third-party, or system-process steps.
 
 ```shell
-bin/rails generate strata:task verify_identity PassportCase
-bin/rails generate strata:task review_documents PassportCase
-bin/rails generate strata:task process_payment PassportCase
-bin/rails generate strata:task make_determination PassportCase
+bin/rails generate strata:task Passport
 ```
+
+This creates `PassportTask`, matching the `staff_task` declaration above. The
+task generator accepts one task name; it does not take a case class as a second
+positional argument. See [Implementing task views](./implementing-tasks-views.md)
+for rendering and interacting with task records.
 
 ### 5. Test the Business Process
 
-Test your business process in the Rails console:
+For a deterministic console check, temporarily use the inline dispatcher. A
+system process executes immediately and may publish another event, so inspect
+the reloaded case after the complete event chain rather than assuming the case
+will pause on the system step:
 
 ```ruby
-form = PassportApplicationForm.create
-kase = PassportCase.find_by(application_form_id: form.id)
+original_dispatcher = Strata::Events.dispatcher
+Strata::Events.dispatcher = Strata::Events::Dispatcher::Inline.new
 
-kase.business_process_instance.current_step
-# => "submit_application"
+begin
+  form = PassportApplicationForm.create!
+  kase = PassportCase.find_by!(application_form_id: form.id)
 
-form.submit_application
-kase.business_process_instance.current_step
-# => "verify_identity"
+  kase.reload.business_process_instance.current_step
+  # => "submit_application"
+
+  form.submit_application
+  kase.reload.business_process_instance.current_step
+  # => "review_application"
+ensure
+  Strata::Events.dispatcher = original_dispatcher
+end
 ```
+
+With the Active Job dispatcher, case creation and transitions are eventually
+consistent. Run a queue worker and wait for the relevant dispatch jobs before
+looking up or reloading the case; an immediate query may return `nil` or the
+previous step.
 
 Domain event history is available through `Strata::Event`, and individual
 handler attempts and outcomes are available through
-`Strata::EventDelivery`. A recovery sweep can redispatch committed events that
-were not dispatched before a process stopped:
+`Strata::EventDelivery`. The dispatch job deliberately does not use Active Job
+retries. Schedule the recovery sweep in cron, a platform scheduler, or another
+recurring-job facility to dispatch events stranded by process failure and to
+retry deliveries whose `next_attempt_at` has arrived:
 
 ```shell
 bin/rails strata:events:sweep
 ```
+
+Choose an interval no longer than the retry responsiveness your application
+requires. Running multiple sweepers is supported; rows are claimed with
+`FOR UPDATE SKIP LOCKED`.
 
 Event history is retained until the host chooses a retention window. Pruning
 never deletes an event with non-terminal deliveries, retains delivery
@@ -173,6 +244,23 @@ bin/rails db:migrate
 bin/rails "strata:events:prune[90]" DRY_RUN=1
 bin/rails "strata:events:prune[90]"
 ```
+
+Schedule pruning periodically if a retention window is configured. The
+`Strata::Events::PruneJob` entry point is also available for a recurring-job
+backend.
+
+## Branching and concurrency
+
+A process may define several alternative transitions from one step, keyed by
+different event names. Each case stores one `business_process_current_step`,
+so it follows only one active path at a time. If competing events arrive for
+the same case, the case lock serializes them: the first valid event advances
+the case and a later event that is no longer valid is recorded as
+`no_transition`.
+
+Parallel fork/join branches are not currently supported. Model independent
+parallel work as separate cases or explicit child records and publish a single
+event when the required work has joined.
 
 ## Next Steps
 
