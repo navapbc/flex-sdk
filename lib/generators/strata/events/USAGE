@@ -1,0 +1,68 @@
+Description:
+    Installs the transactional outbox tables into the host application. The
+    Strata event models, router, and jobs are shipped by the
+    engine directly — only the migration is copied.
+
+Usage:
+    bin/rails generate strata:events
+
+This will create:
+    - db/migrate/<timestamp>_create_strata_events.rb
+
+Options:
+    --skip-migration-check         Skip checking if the Strata event tables exist
+
+After generating:
+    bin/rails db:migrate
+
+About domain events:
+    Strata::EventManager.publish keeps its existing name and payload arguments,
+    but records a durable Strata::Event in the caller's current database
+    transaction. Wrap the domain change and publish call in one explicit
+    transaction when they must be atomic. Dispatch happens after commit so a
+    rolled-back domain change cannot leave behind an event.
+
+    Register business processes by class name. The generator normally adds this
+    configuration automatically:
+
+        config.to_prepare do
+          Strata::Events.register "PassportBusinessProcess"
+        end
+
+    Each committed event is processed by a Strata dispatch job, which inherits
+    the host application's configured Active Job adapter. The job routes the
+    event and attempts its handler deliveries sequentially. Hosts can use
+    :inline for synchronous in-process work or a durable adapter for
+    cross-process delivery.
+
+    Production hosts must configure a durable application adapter and run its
+    workers. Strata jobs inherit that adapter automatically. Rails' default
+    AsyncAdapter is process-local and does not survive restarts.
+
+        # config/environments/production.rb (example)
+        config.active_job.queue_adapter = :solid_queue
+
+    Strata persists delivery failures and retry times instead of using Active
+    Job retry scheduling. Run the sweep task repeatedly from cron or another
+    scheduler to recover undispatched events and retry due deliveries:
+
+        bin/rails strata:events:sweep
+
+    Configure retention explicitly, then invoke the prune job or rake task
+    periodically from a recurring scheduler:
+
+        bin/rails generate strata:audit_log # required for accountable pruning
+        bin/rails db:migrate
+
+        Strata::Events.configure do |config|
+          config.routing_retry_delay = 5.minutes
+          config.retention_days = 90
+        end
+
+        Strata::Events::PruneJob.perform_later # performs one pruning run
+
+    One-off recovery and retention tasks:
+
+        bin/rails strata:events:sweep
+        bin/rails "strata:events:prune[90]" DRY_RUN=1
+        bin/rails "strata:events:prune[90]"

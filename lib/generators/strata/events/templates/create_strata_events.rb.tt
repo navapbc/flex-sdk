@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+class CreateStrataEvents < ActiveRecord::Migration[7.2]
+  def change
+    create_table :strata_events, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
+      t.string :name, null: false
+      t.jsonb :payload, null: false, default: {}
+      t.string :correlation_id
+      t.uuid :causation_id
+      t.datetime :occurred_at, null: false
+      t.datetime :dispatched_at
+      t.datetime :next_attempt_at
+      t.timestamps
+    end
+
+    add_index :strata_events, [ :dispatched_at, :next_attempt_at ]
+    add_index :strata_events, [ :name, :occurred_at ]
+
+    create_table :strata_event_deliveries, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
+      t.references :strata_event, null: false, type: :uuid, foreign_key: true
+      t.string :handler, null: false
+      t.string :target_type
+      t.string :target_id
+      t.integer :status, null: false, default: 0
+      t.integer :attempts, null: false, default: 0
+      t.datetime :next_attempt_at
+      t.text :last_error
+      t.timestamps
+    end
+
+    add_check_constraint :strata_event_deliveries,
+      "(target_type IS NULL) = (target_id IS NULL)",
+      name: "strata_event_deliveries_target_presence"
+    add_index :strata_event_deliveries,
+      [ :strata_event_id, :handler ],
+      unique: true,
+      where: "target_type IS NULL AND target_id IS NULL",
+      name: "index_strata_event_deliveries_targetless_uniqueness"
+    add_index :strata_event_deliveries,
+      [ :strata_event_id, :handler, :target_type, :target_id ],
+      unique: true,
+      where: "target_type IS NOT NULL AND target_id IS NOT NULL",
+      name: "index_strata_event_deliveries_targeted_uniqueness"
+    add_index :strata_event_deliveries, [ :status, :next_attempt_at ]
+  end
+end

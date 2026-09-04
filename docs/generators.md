@@ -9,7 +9,8 @@ When starting a new project with Strata, you'll typically want to follow this or
 1. Generate your application form using [`strata:application_form`](../lib/generators/strata/application_form/USAGE)
 2. Generate your case model using [`strata:case`](../lib/generators/strata/case/USAGE)
 3. Generate your business process using [`strata:business_process`](../lib/generators/strata/business_process/USAGE)
-4. Add any additional tasks using [`strata:task`](../lib/generators/strata/task/USAGE)
+4. Install durable event storage using [`strata:events`](../lib/generators/strata/events/USAGE)
+5. Add any additional tasks using [`strata:task`](../lib/generators/strata/task/USAGE)
 
 ## Available Generators
 
@@ -39,10 +40,20 @@ bin/rails generate strata:case NAME [attributes] [options]
 
 ### strata:business_process
 
-Creates a business process file that defines the workflow and event handling for your cases. This generator automatically configures your Rails application to listen for events. [See full usage guide](../lib/generators/strata/business_process/USAGE)
+Creates a business process file that defines the workflow and event handling for your cases. This generator automatically registers the process with the durable event router in a reload-safe `config.to_prepare` block. [See full usage guide](../lib/generators/strata/business_process/USAGE)
 
 ```bash
 bin/rails generate strata:business_process NAME [options]
+```
+
+### strata:events
+
+Installs the `strata_events` transactional outbox and per-handler
+`strata_event_deliveries` tables in the host application. The engine ships the
+models and dispatch code. [See full usage guide](../lib/generators/strata/events/USAGE)
+
+```bash
+bin/rails generate strata:events
 ```
 
 ### strata:task

@@ -66,12 +66,14 @@ module Strata
       return false unless valid?(:submit)
 
       # Then proceed with callbacks as before
-      success = run_callbacks :submit do
-        Rails.logger.debug "Submitting application with ID: #{id}"
-        self[:status] = :submitted
-        self[:submitted_at] = Time.current
-        save!
-        publish_submitted
+      success = self.class.transaction do
+        run_callbacks :submit do
+          Rails.logger.debug "Submitting application with ID: #{id}"
+          self[:status] = :submitted
+          self[:submitted_at] = Time.current
+          save!
+          publish_submitted
+        end
       end
       success != false
     end

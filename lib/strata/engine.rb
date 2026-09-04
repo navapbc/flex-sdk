@@ -4,11 +4,15 @@ module Strata
   # Engine is the Rails engine for the Strata SDK.
   # It provides configuration for integrating Strata components into a Rails application.
   #
-  # The engine handles namespace isolation, helper loading, preview path configuration,
-  # and event manager cleanup during code reloading.
+  # The engine handles namespace isolation, helper loading, and preview paths.
   #
   class Engine < ::Rails::Engine
     isolate_namespace Strata
+
+    class << self
+      attr_accessor :events_state
+    end
+    self.events_state = ActiveSupport::OrderedOptions.new
 
     initializer "strata.helpers" do
       ActiveSupport.on_load :action_controller do
@@ -46,12 +50,6 @@ module Strata
     initializer "strata.assets" do |app|
       app.config.assets.paths << Engine.root.join("app/components")
       app.config.assets.precompile += Dir[Engine.root.join("app/components/strata/**/*.js")].map { |f| f.sub(%r{.*/app/components/}, "") }
-    end
-
-    config.after_initialize do
-      Rails.autoloaders.main.on_unload("Strata::EventManager") do |klass|
-        klass.unsubscribe_all
-      end
     end
   end
 end

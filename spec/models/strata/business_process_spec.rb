@@ -9,17 +9,29 @@ RSpec.describe Strata::BusinessProcess do
   let(:business_process) { TestBusinessProcess }
 
   before do
-    business_process.start_listening_for_events
+    allow(Strata::Events).to receive(:enqueue)
+    Strata::Events.register business_process
   end
 
   after do
-    # Clean up any subscriptions to avoid side effects in other tests
-    business_process.stop_listening_for_events
+    Strata::Events.unregister business_process
+  end
+
+  def dispatch_pending_events
+    20.times do
+      event = Strata::Event.ready_for_routing.first
+      break unless event
+
+      Strata::Events::Processor.call(event.id)
+    end
+
+    raise "Too many immediately routable events" if Strata::Event.ready_for_routing.exists?
   end
 
   describe '#handle_event' do
     before do
       application_form.save!
+      dispatch_pending_events
     end
 
     it 'executes the complete process chain' do
@@ -27,19 +39,23 @@ RSpec.describe Strata::BusinessProcess do
 
       Strata::EventManager.publish('event1', { case_id: kase.id })
       # system_process automatically publishes event2
+      dispatch_pending_events
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('staff_task_2')
 
       Strata::EventManager.publish('event3', { case_id: kase.id })
+      dispatch_pending_events
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('applicant_task')
 
       Strata::EventManager.publish('event4', { case_id: kase.id })
+      dispatch_pending_events
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('third_party_task')
 
       Strata::EventManager.publish('event5', { case_id: kase.id })
       # system_process_2 automatically publishes event6
+      dispatch_pending_events
       kase.reload
       expect(kase).to be_closed
       expect(kase.business_process_instance.current_step).to eq('end')
@@ -50,6 +66,7 @@ RSpec.describe Strata::BusinessProcess do
         [ 'event2', 'event3', 'event4' ].each do |event|
           Strata::EventManager.publish(event, { case_id: kase.id })
         end
+        dispatch_pending_events
         expect(kase.business_process_instance.current_step).to eq('staff_task')
       end
 
@@ -58,34 +75,37 @@ RSpec.describe Strata::BusinessProcess do
         [ 'event2', 'event3', 'event4' ].each do |event|
           Strata::EventManager.publish(event, { case_id: kase.id })
         end
+        dispatch_pending_events
         expect(Strata::TaskService.get).not_to have_received(:create_task)
       end
     end
   end
 
-  describe '#stop_listening_for_events' do
+  describe 'handler registration' do
     before do
       application_form.save!
+      dispatch_pending_events
     end
 
-    it 'unsubscribes from all events' do
-      business_process.stop_listening_for_events
+    it 'stops routing events after the handler is unregistered' do
+      Strata::Events.unregister business_process
 
       expect(kase.business_process_instance.current_step).to eq('staff_task')
 
       # Try publishing various events
 
-      Strata::EventManager.publish('event1', { case_id: kase.id })
+      event1 = Strata::EventManager.publish('event1', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
 
-      Strata::EventManager.publish('event2', { case_id: kase.id })
+      event2 = Strata::EventManager.publish('event2', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
 
-      Strata::EventManager.publish('event3', { case_id: kase.id })
+      event3 = Strata::EventManager.publish('event3', { case_id: kase.id })
       kase.reload
       expect(kase.business_process_instance.current_step).to eq('staff_task') # Should not change
+      expect([ event1, event2, event3 ]).to all(have_attributes(dispatched_at: nil))
     end
   end
 end

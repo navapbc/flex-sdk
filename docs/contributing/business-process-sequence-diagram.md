@@ -4,43 +4,63 @@
 
 ```mermaid
 sequenceDiagram
-  participant PBPM as PassportBusinessProcessManager
-  participant BP as BusinessProcess.initialize
+  participant Rails as Rails reloader
+  participant Config as config.to_prepare
+  participant Router as Strata::Events router
 
-  note over PBPM: create passport business process
-  PBPM ->> BP: new BusinessProcess(steps, transitions)
-  note over BP: @steps = steps
-  note over BP: @transitions = transitions
-  note over BP: hook up event listeners
-  note over BP: for event_name in get_event_names() subscribe(event_name, self.handle_event)
-
-  BP ->> PBPM: return
+  Rails ->> Config: run at boot or after code reload
+  Config ->> Router: register "PassportBusinessProcess"
+  note over Router: Store a class-name string<br/>and deduplicate registration
 ```
 
-## Response to event
+## Publish and dispatch
 
 ```mermaid
 sequenceDiagram
   actor U as User
-  participant BP as BusinessProcess.handle_event
-  participant V as VerifyIdentityStep.execute
-  participant R as ReviewPhotoStep.execute
+  participant App as Application service
+  participant DB as PostgreSQL
+  participant Job as DispatchJob
+  participant Router as Event router
+  participant BP as PassportBusinessProcess
 
   note over U: user submits application
-  U ->> BP: publish("app_submitted", PassportCase.find(app.case_id))
+  U ->> App: submit application
+  App ->> DB: begin transaction
+  App ->> DB: update application
+  App ->> DB: insert Strata::Event
+  App ->> DB: commit
+  DB -->> Job: enqueue after_all_transactions_commit
+  Job ->> Router: route event id
+  Router ->> Router: resolve registered class names lazily
+  Router ->> DB: create unique delivery per handler and case
+  Router ->> DB: commit routing transaction
+  Job ->> BP: handle each delivery sequentially
+```
 
-  note over BP: next_step = @transitions[kase.current_step][event_name]
-  note over BP: kase.current_step = next_step
+## Handle a business-process delivery
 
-  BP ->> V: @steps[next_step].execute(kase)
-  note over V: create a task
+```mermaid
+sequenceDiagram
+  participant Job as DispatchJob or recovery sweep
+  participant DB as PostgreSQL
+  participant BP as PassportBusinessProcess
+  participant Step as Next step
 
-  note over U: admin verifies identity
-  U ->> BP: publish("identity_verified", kase)
-
-  note over BP: next_step = @transitions[kase.current_step][event_name]
-  note over BP: kase.current_step = next_step
-
-  BP ->> R: @steps[next_step].execute(kase)
-  note over R: create a task
+  Job ->> BP: deliver event
+  BP ->> DB: begin transaction and lock case
+  DB -->> BP: current business_process_current_step
+  BP ->> BP: find transition for current step and event
+  alt transition applies to the locked current step
+    BP ->> DB: compare-and-set next step
+    BP ->> Step: execute side effect
+    Step ->> DB: persist task or other result
+    BP ->> DB: mark delivery handled and commit
+  else no transition or target
+    BP ->> DB: record terminal delivery outcome and commit
+  end
+  opt handler raises
+    BP ->> DB: roll back step change and side effect
+    Job ->> DB: record error and retry state
+  end
 ```

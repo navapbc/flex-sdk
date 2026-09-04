@@ -6,16 +6,28 @@ RSpec.describe PassportBusinessProcess, type: :model do
   let(:test_form) { build(:passport_application_form) }
 
   before do
-    described_class.start_listening_for_events
+    allow(Strata::Events).to receive(:enqueue)
+    Strata::Events.register described_class
   end
 
   after do
-    described_class.stop_listening_for_events
+    Strata::Events.unregister described_class
+  end
+
+  def dispatch_pending_events
+    20.times do
+      event = Strata::Event.ready_for_routing.first
+      break unless event
+
+      Strata::Events::Processor.call(event.id)
+    end
+    raise "Too many immediately routable events" if Strata::Event.ready_for_routing.exists?
   end
 
   it "creates a passport case upon starting a passport application form and properly progresses through steps" do
     # create new application
     test_form.save!
+    dispatch_pending_events
 
     # check case created and open with correct current step
     kase = PassportCase.find_by_application_form_id(test_form.id)
@@ -28,11 +40,13 @@ RSpec.describe PassportBusinessProcess, type: :model do
     test_form.date_of_birth = Date.new(1990, 1, 1)
     test_form.save!
     test_form.submit_application
+    dispatch_pending_events
     kase.reload
     expect(kase.business_process_instance.current_step).to eq ("review_passport_photo")
 
     # approve passport photo
     Strata::EventManager.publish("PassportPhotoApproved", { case_id: kase.id })
+    dispatch_pending_events
 
     # check case status
     kase.reload

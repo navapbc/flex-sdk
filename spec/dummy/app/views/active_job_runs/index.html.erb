@@ -1,0 +1,119 @@
+<% content_for :title, "ActiveJob run history" %>
+
+<div class="job-runs">
+  <%= render Strata::US::BreadcrumbsComponent.new(classes: "job-runs__breadcrumb") do |breadcrumbs| %>
+    <% breadcrumbs.with_item(href: root_path) { "Dummy app" } %>
+    <% breadcrumbs.with_item { "ActiveJob run history" } %>
+  <% end %>
+
+  <header class="job-runs__header">
+    <div>
+      <p class="job-runs__eyebrow">Developer tools</p>
+      <h1>ActiveJob run history</h1>
+      <p class="job-runs__lede">
+        Inspect jobs that actually ran in this dummy application. Records are captured
+        from the lifecycle notifications that ActiveJob publishes while each job executes.
+      </p>
+    </div>
+    <div class="job-runs__actions">
+      <%= link_to "Run the passport flow", passport_business_process_path, class: "usa-button" %>
+      <%= link_to "Refresh", active_job_runs_path, class: "usa-button usa-button--outline" %>
+    </div>
+  </header>
+
+  <dl class="job-runs__configuration" aria-label="ActiveJob runtime configuration">
+    <div>
+      <dt>Queue adapter</dt>
+      <dd><code><%= @queue_adapter_name %></code></dd>
+    </div>
+  </dl>
+
+  <section class="job-runs__summary" aria-label="Job run summary">
+    <div>
+      <span>Total recorded</span>
+      <strong><%= @total_count %></strong>
+    </div>
+    <div>
+      <span>Succeeded</span>
+      <strong class="job-runs__count--succeeded"><%= @status_counts.fetch("succeeded", 0) %></strong>
+    </div>
+    <div>
+      <span>Failed</span>
+      <strong class="job-runs__count--failed"><%= @status_counts.fetch("failed", 0) %></strong>
+    </div>
+    <div>
+      <span>Running</span>
+      <strong><%= @status_counts.fetch("running", 0) %></strong>
+    </div>
+  </section>
+
+  <section class="job-runs__ledger" aria-labelledby="job-ledger-heading">
+    <div class="job-runs__section-heading">
+      <div>
+        <p class="job-runs__eyebrow">Execution ledger</p>
+        <h2 id="job-ledger-heading">Most recent jobs</h2>
+      </div>
+      <span>Showing up to <%= ActiveJobRunsController::DISPLAY_LIMIT %></span>
+    </div>
+
+    <% if @runs.any? %>
+      <div class="job-run-list">
+        <% @runs.each do |run| %>
+          <article class="job-run-card">
+            <div class="job-run-card__heading">
+              <div>
+                <p class="job-run-card__queue">
+                  <%= run.queue_name %> queue · execution <%= run.executions %>
+                </p>
+                <h3><%= run.job_class %></h3>
+              </div>
+              <span class="job-run-card__status job-run-card__status--<%= run.status %>">
+                <%= run.status.humanize %>
+              </span>
+            </div>
+
+            <dl class="job-run-card__facts">
+              <div>
+                <dt>Job ID</dt>
+                <dd><code><%= run.job_id %></code></dd>
+              </div>
+              <div>
+                <dt>Started</dt>
+                <dd><%= run.started_at.to_fs(:long) %></dd>
+              </div>
+              <div>
+                <dt>Duration</dt>
+                <dd><%= run.duration_ms ? "#{run.duration_ms} ms" : "In progress" %></dd>
+              </div>
+              <% if run.enqueued_at %>
+                <div>
+                  <dt>Queue wait</dt>
+                  <dd><%= ((run.started_at - run.enqueued_at) * 1000).round %> ms</dd>
+                </div>
+              <% end %>
+            </dl>
+
+            <details class="job-run-card__details">
+              <summary>Arguments and diagnostics</summary>
+              <div>
+                <p><strong>Arguments</strong></p>
+                <pre><%= JSON.pretty_generate(run.arguments) %></pre>
+                <% if run.status == "failed" %>
+                  <p><strong><%= run.error_class %></strong></p>
+                  <pre><%= run.error_message %></pre>
+                <% end %>
+              </div>
+            </details>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="job-runs__empty">
+        <span aria-hidden="true">◎</span>
+        <h3>No jobs have run yet</h3>
+        <p>Walk through the passport process, then return here to inspect each dispatch job.</p>
+        <%= link_to "Open passport process", passport_business_process_path, class: "usa-button" %>
+      </div>
+    <% end %>
+  </section>
+</div>
