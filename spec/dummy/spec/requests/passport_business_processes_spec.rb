@@ -5,13 +5,25 @@ require "rails_helper"
 RSpec.describe "Interactive passport business process", type: :request do
   around do |example|
     original_handlers = Strata::Events.handler_names.dup
-    original_dispatcher = Strata::Events.dispatcher
     Strata::Events.register("PassportBusinessProcess")
-    Strata::Events.dispatcher = Strata::Events::Dispatcher::Inline.new
     example.run
   ensure
     Strata::Events.handler_names.replace(original_handlers)
-    Strata::Events.dispatcher = original_dispatcher
+  end
+
+  before do
+    allow(Strata::Events).to receive(:enqueue)
+  end
+
+  def dispatch_pending_events
+    20.times do
+      event = Strata::Event.ready_for_routing.first
+      break unless event
+
+      Strata::Events::Processor.call(event.id)
+    end
+
+    raise "Too many immediately routable events" if Strata::Event.ready_for_routing.exists?
   end
 
   it "walks a real passport application through the complete workflow" do
@@ -23,6 +35,7 @@ RSpec.describe "Interactive passport business process", type: :request do
 
     expect {
       post start_passport_business_process_path
+      dispatch_pending_events
     }.to change(PassportApplicationForm, :count).by(1)
       .and change(PassportCase, :count).by(1)
 
@@ -33,6 +46,7 @@ RSpec.describe "Interactive passport business process", type: :request do
 
     post advance_passport_business_process_path,
       params: { transition: "submit_application" }
+    dispatch_pending_events
 
     expect(response).to redirect_to(passport_business_process_path)
     expect(application_form.reload).to be_submitted
@@ -47,6 +61,7 @@ RSpec.describe "Interactive passport business process", type: :request do
 
     post advance_passport_business_process_path,
       params: { transition: "approve_photo" }
+    dispatch_pending_events
 
     expect(response).to redirect_to(passport_business_process_path)
     expect(passport_case.reload).to be_closed

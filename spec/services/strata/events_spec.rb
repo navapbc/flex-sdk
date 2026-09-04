@@ -5,13 +5,11 @@ require "rails_helper"
 RSpec.describe Strata::Events do
   around do |example|
     original_handlers = described_class.handler_names.dup
-    original_dispatcher = described_class.dispatcher
     described_class.handler_names.clear
     example.run
   ensure
     described_class.reset!
     original_handlers.each { |handler| described_class.register(handler) }
-    described_class.dispatcher = original_dispatcher
   end
 
   it "registers deduplicated class-name strings without resolving constants" do
@@ -21,25 +19,31 @@ RSpec.describe Strata::Events do
     expect(described_class.handler_names).to eq([ "ReloadableBusinessProcess" ])
   end
 
-  it "defaults to the inline dispatcher" do
-    described_class.reset!
+  it "enqueues event jobs through the common helper" do
+    allow(Strata::Events::DispatchJob).to receive(:perform_later).with("event-id").and_return(:job)
 
-    expect(described_class.dispatcher).to be_a(Strata::Events::Dispatcher::Inline)
+    expect(described_class.enqueue(Strata::Events::DispatchJob, "event-id")).to eq(:job)
   end
 
-  it "rejects objects that do not implement the dispatcher base interface" do
+  it "reports enqueue failures without raising after commit" do
+    allow(Strata::Events::DispatchJob).to receive(:perform_later).and_raise("queue unavailable")
+    allow(Rails.error).to receive(:report)
+    allow(Rails.logger).to receive(:error)
+
     expect {
-      described_class.dispatcher = Object.new
-    }.to raise_error(ArgumentError, /Dispatcher must be a subclass/)
+      described_class.enqueue(Strata::Events::DispatchJob, "event-id")
+    }.not_to raise_error
+    expect(Rails.error).to have_received(:report).with(
+      instance_of(RuntimeError),
+      handled: true,
+      context: hash_including(job_class: "Strata::Events::DispatchJob")
+    )
   end
 
   it "stores host configuration outside the reloadable Events module" do
     described_class.config.max_attempts = 17
-    dispatcher = Strata::Events::Dispatcher::ActiveJob.new
-    described_class.dispatcher = dispatcher
 
     state = Strata::Engine.events_state
     expect(state.configuration.max_attempts).to eq(17)
-    expect(state.dispatcher).to equal(dispatcher)
   end
 end

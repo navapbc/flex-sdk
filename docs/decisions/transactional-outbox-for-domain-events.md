@@ -43,10 +43,10 @@ inserts an immutable `Strata::Event` in the caller's current transaction. The
 event commits or rolls back with the domain change that caused it; publishing
 does not invoke domain handlers inline.
 
-After commit, a dispatcher passes the event identifier to a router. The
-default inline dispatcher requires no queue. An Active Job dispatcher supports
-hosts using Sidekiq, Solid Queue, GoodJob, Resque, or another Active Job
-adapter, without adding a queue dependency to the gem.
+After commit, an Active Job receives the event identifier and passes it to the
+router. Strata jobs inherit the host application's Active Job adapter, whether
+that is the built-in inline or async adapter, Sidekiq, Solid Queue, GoodJob,
+Resque, or another backend.
 
 The router keeps registered handler class names as strings and constantizes
 them only at dispatch. Host applications register business processes from
@@ -54,17 +54,21 @@ them only at dispatch. Host applications register business processes from
 are no global business-process subscriptions for Zeitwerk to tear down.
 
 Routing creates a `Strata::EventDelivery` for every event, handler, and target
-case. A unique database index on that tuple is the idempotency key. Each
+case. The dispatch job then attempts those deliveries sequentially. A unique
+database index on that tuple is the idempotency key. Each
 delivery records its status, attempts, retry time, and last error. Handler
 execution locks and re-reads the target case, applies only a transition defined
 for its current step, and commits the step change, side effect, and successful
 outcome together. Exceptions roll back the handler
 transaction and remain visible for retry.
 
-A recovery sweep claims undispatched events with `FOR UPDATE SKIP LOCKED`.
-Unrecognized events are deferred before another routing attempt, and persisted
-failed deliveries are retried directly rather than reconstructed from current
-router output.
+A recovery sweep processes each due event or delivery in its own
+`FOR UPDATE SKIP LOCKED` transaction. A failure rolls back only that record's
+work, so one poison record cannot disable the rest of the sweep. Unrecognized
+events are deferred before another routing attempt. Persisted failed deliveries
+are retried directly rather than reconstructed from current router output.
+Adapter-native retries are disabled; persisted retry timestamps and the sweeper
+remain authoritative.
 Retention is explicit rather than assumed: pruning requires either a supplied
 window or host configuration, never removes events with non-terminal
 deliveries, keeps delivery idempotency markers for the lifetime of their event,
@@ -84,8 +88,8 @@ cannot assume the host application's primary-key type.
 - Business-process registration is reload safe and does not retain stale class
   objects.
 - Step changes and step side effects share one locked transaction.
-- Hosts without a queue can use inline after-commit dispatch; hosts that need
-  cross-process durability can use their existing Active Job backend.
+- Strata inherits the host application's Active Job adapter rather than owning
+  separate queue configuration.
 - Hosts must install and migrate the outbox tables, and should schedule the
   recovery sweep when process-death recovery is required.
 - Event and delivery tables grow until a host chooses and schedules an
@@ -105,8 +109,7 @@ observability, retries, idempotency, or cross-process delivery.
 Rails Event Store is mature, but imposing its event API and dependencies on
 every engine host would conflict with Strata's existing string-based event DSL.
 Guaranteed outbox delivery also requires additional runtime infrastructure.
-The dispatcher seam leaves hosts free to integrate another event system when
-needed.
+The Active Job seam leaves hosts free to select their existing job backend.
 
 ### Full event sourcing
 

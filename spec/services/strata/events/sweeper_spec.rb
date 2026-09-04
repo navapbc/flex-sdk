@@ -134,7 +134,7 @@ RSpec.describe Strata::Events::Sweeper do
     expect(deferred.reload.dispatched_at).to be_nil
   end
 
-  it "rolls back handler side effects inside the sweep transaction" do
+  it "rolls back handler side effects inside the delivery transaction" do
     handler = Class.new do
       def self.event_names = [ "FailDuringSweep" ]
 
@@ -161,5 +161,31 @@ RSpec.describe Strata::Events::Sweeper do
 
     expect(kase.reload.business_process_current_step).to eq("original")
     expect(event.deliveries.sole.reload).to be_failed
+  end
+
+  it "continues routing after a poison event" do
+    poison_handler = Class.new do
+      def self.event_names = [ "PoisonEvent" ]
+      def self.targets_for_event(_event) = raise("cannot route")
+    end
+    healthy_handler = Class.new do
+      def self.event_names = [ "HealthyEvent" ]
+      def self.handle_event(_event) = :handled
+    end
+    stub_const("PoisonSweepHandler", poison_handler)
+    stub_const("HealthySweepHandler", healthy_handler)
+    Strata::Events.register("PoisonSweepHandler")
+    Strata::Events.register("HealthySweepHandler")
+    healthy_before = Strata::Event.create!(name: "HealthyEvent", payload: {}, occurred_at: 2.minutes.ago)
+    poison = Strata::Event.create!(name: "PoisonEvent", payload: {}, occurred_at: 1.minute.ago)
+    healthy_after = Strata::Event.create!(name: "HealthyEvent", payload: {}, occurred_at: Time.current)
+    allow(Rails.error).to receive(:report)
+
+    result = described_class.call
+
+    expect(result.events).to eq(3)
+    expect(poison.reload.dispatched_at).to be_nil
+    expect([ healthy_before, healthy_after ]).to all(satisfy { |event| event.reload.dispatched_at.present? })
+    expect([ healthy_before, healthy_after ]).to all(satisfy { |event| event.deliveries.sole.handled? })
   end
 end

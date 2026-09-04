@@ -30,7 +30,9 @@ module Strata
           "Event Manager: Published event '#{event_key}' " \
           "(id=#{event.id}, correlation_id=#{event.correlation_id})"
         )
-        Strata::Events.dispatcher.dispatch(event)
+        ActiveRecord.after_all_transactions_commit do
+          Strata::Events.enqueue(Strata::Events::DispatchJob, event.id)
+        end
         event
       end
     end

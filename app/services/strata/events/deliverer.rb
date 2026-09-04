@@ -5,22 +5,31 @@ module Strata
     # Executes one delivery atomically with its database-backed side effects.
     class Deliverer
       def self.call(delivery)
-        return delivery if delivery.terminal?
-        return delivery if delivery.failed? && delivery.next_attempt_at&.future?
+        error = nil
+        result = Strata::EventDelivery.transaction do
+          delivery.lock!
+          next delivery if delivery.terminal?
+          next delivery if delivery.failed? && delivery.next_attempt_at&.future?
 
-        deliver(delivery)
-      rescue StandardError => error
-        record_failure(delivery, error)
-        report(error, delivery)
-        raise
+          begin
+            deliver(delivery)
+          rescue StandardError => caught_error
+            record_failure(delivery, caught_error)
+            error = caught_error
+            delivery
+          end
+        end
+
+        if error
+          report(error, delivery)
+          raise error
+        end
+
+        result
       end
 
       def self.deliver(delivery)
         Strata::EventDelivery.transaction(requires_new: true) do
-          delivery.lock!
-          return delivery if delivery.terminal?
-          return delivery if delivery.failed? && delivery.next_attempt_at&.future?
-
           event = delivery.event
           result = Strata::Events.with_current_event(event, delivery: delivery) do
             invoke_handler(delivery, event.message)
@@ -84,18 +93,14 @@ module Strata
       private_class_method :normalize_result
 
       def self.record_failure(delivery, error)
-        delivery.with_lock do
-          attempts = delivery.attempts + 1
-          exhausted = attempts >= Strata::Events.config.max_attempts
-          delivery.update!(
-            status: exhausted ? :dead_letter : :failed,
-            attempts: attempts,
-            next_attempt_at: exhausted ? nil : retry_at(attempts),
-            last_error: error_description(error)
-          )
-        end
-      rescue ActiveRecord::RecordNotFound
-        Rails.logger.error("Could not record failure for deleted event delivery #{delivery.id}")
+        attempts = delivery.attempts + 1
+        exhausted = attempts >= Strata::Events.config.max_attempts
+        delivery.update!(
+          status: exhausted ? :dead_letter : :failed,
+          attempts: attempts,
+          next_attempt_at: exhausted ? nil : retry_at(attempts),
+          last_error: error_description(error)
+        )
       end
       private_class_method :record_failure
 

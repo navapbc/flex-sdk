@@ -39,9 +39,6 @@ module Dummy
 
     config.to_prepare do
       Strata::Events.register "PassportBusinessProcess"
-      if Rails.env.development?
-        Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
-      end
     end
   end
 end

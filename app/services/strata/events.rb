@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Strata
-  # Configuration, handler registry, and dispatcher locator for domain events.
+  # Configuration and reload-safe handler registry for domain events.
   module Events
     # Host-controlled delivery, retry, and retention settings.
     class Configuration
@@ -47,16 +47,15 @@ module Strata
         @handler_names ||= []
       end
 
-      def dispatcher
-        state.dispatcher ||= Strata::Events::Dispatcher::Inline.new
-      end
-
-      def dispatcher=(dispatcher)
-        unless valid_dispatcher?(dispatcher)
-          raise ArgumentError, "Dispatcher must be a subclass of Strata::Events::Dispatcher::Base"
-        end
-
-        state.dispatcher = dispatcher
+      # Enqueues through the host application's Active Job adapter.
+      # Enqueue failures are reported but do not escape after commit; the
+      # persisted event remains eligible for a later sweep.
+      def enqueue(job_class, *arguments)
+        job_class.perform_later(*arguments)
+      rescue StandardError => error
+        report_enqueue_failure(error, job_class, arguments)
+        Rails.logger.error("Unable to enqueue #{job_class.name}: #{error.message}")
+        nil
       end
 
       def current_event
@@ -81,7 +80,6 @@ module Strata
       # Primarily useful for test isolation and development-console reconfiguration.
       def reset!
         state.configuration = Configuration.new
-        state.dispatcher = nil
         @handler_names = []
         ActiveSupport::IsolatedExecutionState.delete(:strata_current_event)
         ActiveSupport::IsolatedExecutionState.delete(:strata_current_delivery)
@@ -95,12 +93,14 @@ module Strata
         Strata::Engine.events_state
       end
 
-      # Rails may replace the Base constant during a development reload before
-      # host configuration assigns a fresh adapter. Matching the named ancestor
-      # keeps an already-configured adapter valid across that narrow window.
-      def valid_dispatcher?(dispatcher)
-        dispatcher.is_a?(Strata::Events::Dispatcher::Base) ||
-          dispatcher.class.ancestors.any? { |ancestor| ancestor.name == "Strata::Events::Dispatcher::Base" }
+      def report_enqueue_failure(error, job_class, arguments)
+        Rails.error.report(
+          error,
+          handled: true,
+          context: { job_class: job_class.name, arguments: arguments }
+        )
+      rescue StandardError => reporting_error
+        Rails.logger.error("Unable to report job enqueue failure: #{reporting_error.message}")
       end
     end
   end

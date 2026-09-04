@@ -1,6 +1,6 @@
 Description:
     Installs the transactional outbox tables into the host application. The
-    Strata event models, router, dispatchers, and jobs are shipped by the
+    Strata event models, router, and jobs are shipped by the
     engine directly — only the migration is copied.
 
 Usage:
@@ -29,15 +29,15 @@ About domain events:
           Strata::Events.register "PassportBusinessProcess"
         end
 
-    The default inline dispatcher requires no queue backend. Hosts can select
-    the Active Job dispatcher when they need delivery across processes.
+    Each committed event is processed by a Strata dispatch job, which inherits
+    the host application's configured Active Job adapter. The job routes the
+    event and attempts its handler deliveries sequentially. Hosts can use
+    :inline for synchronous in-process work or a durable adapter for
+    cross-process delivery.
 
-        Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
-
-    The Active Job dispatcher uses the host application's configured queue
-    adapter. Production hosts must configure a durable adapter and run its
-    workers. Rails' default AsyncAdapter is process-local and does not survive
-    restarts.
+    Production hosts must configure a durable application adapter and run its
+    workers. Strata jobs inherit that adapter automatically. Rails' default
+    AsyncAdapter is process-local and does not survive restarts.
 
         # config/environments/production.rb (example)
         config.active_job.queue_adapter = :solid_queue

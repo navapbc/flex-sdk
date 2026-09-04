@@ -15,11 +15,24 @@ RSpec.describe Strata::Events::Processor do
     Strata::Event.create!(name: name, payload: payload, occurred_at: Time.current)
   end
 
-  it "leaves an unrecognized event undispatched for a later code version" do
+  def process_event_chain(event)
+    scheduled_jobs = []
+    allow(Strata::Events).to receive(:enqueue) do |job_class, id|
+      scheduled_jobs << [ job_class, id ]
+    end
+
+    described_class.call(event.id)
+    until scheduled_jobs.empty?
+      job_class, id = scheduled_jobs.shift
+      job_class.perform_now(id)
+    end
+  end
+
+  it "backs off an unrecognized event for a later code version" do
     allow(Rails.logger).to receive(:warn)
     event = create_event("FutureVersionEvent")
 
-    described_class.call(event.id, raise_on_failure: true)
+    described_class.call(event.id)
 
     expect(event.reload.dispatched_at).to be_nil
     expect(event.next_attempt_at).to be > Time.current
@@ -103,7 +116,7 @@ RSpec.describe Strata::Events::Processor do
     kase = TestCase.create!(business_process_current_step: "staff_task")
     event = create_event("event1", case_id: kase.id)
 
-    described_class.call(event.id, raise_on_failure: true)
+    process_event_chain(event)
 
     expect(event.deliveries.sole).to be_handled
     expect(kase.reload.business_process_current_step).to eq("staff_task_2")

@@ -20,7 +20,7 @@ sequenceDiagram
   actor U as User
   participant App as Application service
   participant DB as PostgreSQL
-  participant Dispatcher as Event dispatcher
+  participant Job as DispatchJob
   participant Router as Event router
   participant BP as PassportBusinessProcess
 
@@ -30,23 +30,24 @@ sequenceDiagram
   App ->> DB: update application
   App ->> DB: insert Strata::Event
   App ->> DB: commit
-  DB -->> Dispatcher: after_all_transactions_commit
-  Dispatcher ->> Router: dispatch event id
+  DB -->> Job: enqueue after_all_transactions_commit
+  Job ->> Router: route event id
   Router ->> Router: resolve registered class names lazily
   Router ->> DB: create unique delivery per handler and case
-  Router ->> BP: handle delivery
+  Router ->> DB: commit routing transaction
+  Job ->> BP: handle each delivery sequentially
 ```
 
 ## Handle a business-process delivery
 
 ```mermaid
 sequenceDiagram
-  participant Dispatcher as Event dispatcher
+  participant Job as DispatchJob or recovery sweep
   participant DB as PostgreSQL
   participant BP as PassportBusinessProcess
   participant Step as Next step
 
-  Dispatcher ->> BP: deliver event
+  Job ->> BP: deliver event
   BP ->> DB: begin transaction and lock case
   DB -->> BP: current business_process_current_step
   BP ->> BP: find transition for current step and event
@@ -60,6 +61,6 @@ sequenceDiagram
   end
   opt handler raises
     BP ->> DB: roll back step change and side effect
-    Dispatcher ->> DB: record error and retry state
+    Job ->> DB: record error and retry state
   end
 ```

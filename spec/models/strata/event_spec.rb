@@ -35,7 +35,10 @@ RSpec.describe Strata::Event do
     event.save!
 
     expect {
-      event.update!(dispatched_at: Time.current, next_attempt_at: 1.minute.from_now)
+      event.update!(
+        dispatched_at: Time.current,
+        next_attempt_at: 1.minute.from_now
+      )
     }.not_to raise_error
 
     expect {

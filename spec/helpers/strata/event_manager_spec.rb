@@ -3,30 +3,12 @@
 require "rails_helper"
 
 RSpec.describe Strata::EventManager do
-  let(:dispatcher) do
-    Class.new(Strata::Events::Dispatcher::Base) do
-      attr_reader :events
-
-      def initialize
-        @events = []
-      end
-
-      def dispatch(event)
-        events << event
-      end
-    end.new
-  end
-
-  around do |example|
-    original_dispatcher = Strata::Events.dispatcher
-    Strata::Events.dispatcher = dispatcher
-    example.run
-  ensure
-    Strata::Events.dispatcher = original_dispatcher
+  before do
+    allow(Strata::Events).to receive(:enqueue)
   end
 
   describe ".publish" do
-    it "persists an event and schedules it with the configured dispatcher" do
+    it "persists an event and schedules its routing job after commit" do
       event = described_class.publish("BenefitApplicationSubmitted", case_id: "case-123")
 
       expect(event).to be_persisted
@@ -37,7 +19,7 @@ RSpec.describe Strata::EventManager do
       )
       expect(event.correlation_id).to be_present
       expect(event.occurred_at).to be_within(1.second).of(Time.current)
-      expect(dispatcher.events).to include(event)
+      expect(Strata::Events).to have_received(:enqueue).with(Strata::Events::DispatchJob, event.id)
     end
 
     it "remains atomic with the transaction that publishes it" do
@@ -47,6 +29,7 @@ RSpec.describe Strata::EventManager do
           raise ActiveRecord::Rollback
         end
       }.not_to change(Strata::Event, :count)
+      expect(Strata::Events).not_to have_received(:enqueue)
     end
 
     it "propagates correlation and causation from the event being handled" do

@@ -27,7 +27,6 @@ RSpec.describe "ActiveJob run history", type: :request do
     expect(response.body).to include("event-456")
     expect(response.body).to include("Succeeded")
     expect(response.body).to include("execution 2")
-    expect(response.body).to include("Strata dispatcher")
     expect(response.body).to include("Queue adapter")
   end
 

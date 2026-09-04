@@ -9,6 +9,7 @@ RSpec.describe Strata::BusinessProcess do
   let(:business_process) { TestBusinessProcess }
 
   before do
+    allow(Strata::Events).to receive(:enqueue)
     Strata::Events.register business_process
   end
 
@@ -17,12 +18,14 @@ RSpec.describe Strata::BusinessProcess do
   end
 
   def dispatch_pending_events
-    loop do
-      event = Strata::Event.undispatched.order(:occurred_at, :created_at).first
+    20.times do
+      event = Strata::Event.ready_for_routing.first
       break unless event
 
-      Strata::Events::Processor.call(event.id, raise_on_failure: true)
+      Strata::Events::Processor.call(event.id)
     end
+
+    raise "Too many immediately routable events" if Strata::Event.ready_for_routing.exists?
   end
 
   describe '#handle_event' do
@@ -81,6 +84,7 @@ RSpec.describe Strata::BusinessProcess do
   describe 'handler registration' do
     before do
       application_form.save!
+      dispatch_pending_events
     end
 
     it 'stops routing events after the handler is unregistered' do

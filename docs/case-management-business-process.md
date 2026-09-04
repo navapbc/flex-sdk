@@ -110,14 +110,12 @@ commits. A rollback prevents dispatch. If no transaction is open, the event is
 committed and dispatched immediately; publishing after a separate domain
 transaction does not make the two writes atomic.
 
-The default inline dispatcher processes committed events in the application
-process and requires no queue. Applications that need cross-process delivery
-can select the Active Job dispatcher:
+Committed events are processed by `Strata::Events::DispatchJob`, which inherits
+the host application's configured Active Job adapter. Applications can use the
+inline adapter for synchronous in-process processing or a durable adapter for
+cross-process processing:
 
 ```ruby
-# config/initializers/strata_events.rb
-Strata::Events.dispatcher = Strata::Events::Dispatcher::ActiveJob.new
-
 Strata::Events.configure do |config|
   config.max_attempts = 5
   config.retry_base_delay = 1.minute
@@ -126,20 +124,18 @@ Strata::Events.configure do |config|
 end
 ```
 
-The Active Job dispatcher uses the host application's configured adapter. For
-production, configure a durable backend such as Solid Queue, Sidekiq, or
-GoodJob and run its worker processes. Rails' default `AsyncAdapter` keeps jobs
-only in the web process's memory and does not survive a restart.
+For production, configure a durable backend for the application and run its
+worker processes. Strata jobs inherit this setting automatically.
 
 ```ruby
 # config/environments/production.rb (example)
 config.active_job.queue_adapter = :solid_queue
 ```
 
-Active Job transports each committed event ID to
-`Strata::Events::DispatchJob`; the event and delivery tables remain the source
-of truth. Strata records handler failures and retry times in
-`Strata::EventDelivery` rather than relying on Active Job retry scheduling.
+`Strata::Events::DispatchJob` routes one committed event and attempts its
+handler deliveries sequentially. The event and delivery tables remain the
+source of truth. Strata records handler failures and retry times in PostgreSQL
+rather than relying on Active Job retry scheduling.
 
 Domain handlers other than business processes can use the same durable path.
 Register the class name and expose the event names plus a class-level
@@ -189,14 +185,14 @@ for rendering and interacting with task records.
 
 ### 5. Test the Business Process
 
-For a deterministic console check, temporarily use the inline dispatcher. A
+For a deterministic console check, temporarily use the inline adapter. A
 system process executes immediately and may publish another event, so inspect
 the reloaded case after the complete event chain rather than assuming the case
 will pause on the system step:
 
 ```ruby
-original_dispatcher = Strata::Events.dispatcher
-Strata::Events.dispatcher = Strata::Events::Dispatcher::Inline.new
+original_adapter = ActiveJob::Base.queue_adapter
+ActiveJob::Base.queue_adapter = :inline
 
 begin
   form = PassportApplicationForm.create!
@@ -209,21 +205,20 @@ begin
   kase.reload.business_process_instance.current_step
   # => "review_application"
 ensure
-  Strata::Events.dispatcher = original_dispatcher
+  ActiveJob::Base.queue_adapter = original_adapter
 end
 ```
 
-With the Active Job dispatcher, case creation and transitions are eventually
-consistent. Run a queue worker and wait for the relevant dispatch jobs before
+With a queued adapter, case creation and transitions are eventually consistent.
+Run a queue worker and wait for the relevant dispatch jobs before
 looking up or reloading the case; an immediate query may return `nil` or the
 previous step.
 
 Domain event history is available through `Strata::Event`, and individual
-handler attempts and outcomes are available through
-`Strata::EventDelivery`. The dispatch job deliberately does not use Active Job
-retries. Schedule the recovery sweep in cron, a platform scheduler, or another
-recurring-job facility to dispatch events stranded by process failure and to
-retry deliveries whose `next_attempt_at` has arrived:
+handler attempts and outcomes are available through `Strata::EventDelivery`.
+The dispatch job deliberately does not use Active Job retries. Schedule the
+recovery sweep in cron, a platform scheduler, or another recurring-job facility
+to process events stranded by process failure and retry due deliveries:
 
 ```shell
 bin/rails strata:events:sweep

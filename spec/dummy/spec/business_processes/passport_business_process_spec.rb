@@ -6,6 +6,7 @@ RSpec.describe PassportBusinessProcess, type: :model do
   let(:test_form) { build(:passport_application_form) }
 
   before do
+    allow(Strata::Events).to receive(:enqueue)
     Strata::Events.register described_class
   end
 
@@ -14,12 +15,13 @@ RSpec.describe PassportBusinessProcess, type: :model do
   end
 
   def dispatch_pending_events
-    loop do
-      event = Strata::Event.undispatched.order(:occurred_at, :created_at).first
+    20.times do
+      event = Strata::Event.ready_for_routing.first
       break unless event
 
-      Strata::Events::Processor.call(event.id, raise_on_failure: true)
+      Strata::Events::Processor.call(event.id)
     end
+    raise "Too many immediately routable events" if Strata::Event.ready_for_routing.exists?
   end
 
   it "creates a passport case upon starting a passport application form and properly progresses through steps" do

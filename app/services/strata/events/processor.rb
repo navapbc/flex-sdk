@@ -5,8 +5,16 @@ module Strata
     # Creates idempotent delivery rows and attempts all work for an event.
     class Processor
       def self.call(event_id, raise_on_failure: false)
-        event = Strata::Event.find(event_id)
-        deliveries = create_deliveries(event)
+        event = Strata::Event.find_by(id: event_id)
+        return unless event
+
+        begin
+          deliveries = create_deliveries(event)
+        rescue StandardError => error
+          report(error, event)
+          return event
+        end
+
         failures = []
 
         deliveries.each do |delivery|
@@ -23,8 +31,10 @@ module Strata
       def self.create_deliveries(event)
         deliveries = []
 
-        Strata::Event.transaction do
+        Strata::Event.transaction(requires_new: true) do
           event.lock!
+          next if event.dispatched_at? || event.next_attempt_at&.future?
+
           routes = Strata::Events::Router.routes_for(event)
           if routes.empty?
             event.update!(next_attempt_at: Time.current + Strata::Events.config.routing_retry_delay)
@@ -64,6 +74,17 @@ module Strata
         end
       end
       private_class_method :create_delivery
+
+      def self.report(error, event)
+        Rails.error.report(
+          error,
+          handled: true,
+          context: { strata_event_id: event.id, event_name: event.name }
+        )
+      rescue StandardError => reporting_error
+        Rails.logger.error("Unable to report event routing failure: #{reporting_error.message}")
+      end
+      private_class_method :report
     end
   end
 end

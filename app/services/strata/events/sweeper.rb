@@ -13,35 +13,47 @@ module Strata
       end
 
       def self.sweep_events(limit)
-        process_locked(Strata::Event.ready_for_routing, limit) do |event|
+        process_each(Strata::Event.ready_for_routing, limit) do |event|
           Strata::Events::Processor.call(event.id, raise_on_failure: false)
         end
       end
       private_class_method :sweep_events
 
       def self.sweep_deliveries(limit)
-        return [] unless limit.positive?
-
-        process_locked(Strata::EventDelivery.ready_for_retry, limit) do |delivery|
+        process_each(Strata::EventDelivery.ready_for_retry, limit) do |delivery|
           Strata::Events::Deliverer.call(delivery)
-        rescue StandardError
-          # Deliverer persisted and reported the failure. Continue so one
-          # poison delivery cannot prevent other due work from being retried.
         end
       end
       private_class_method :sweep_deliveries
 
-      def self.process_locked(scope, limit)
+      # Process each record in a separate transaction so a poison record rolls
+      # back only its own work and cannot disable the rest of the sweep.
+      def self.process_each(scope, limit)
+        return [] unless limit.positive?
+
         processed_ids = []
-        scope.model.transaction do
-          scope.lock("FOR UPDATE SKIP LOCKED").limit(limit).each do |record|
-            yield(record)
+        limit.times do
+          found = false
+          scope.model.transaction do
+            relation = processed_ids.empty? ? scope : scope.where.not(id: processed_ids)
+            record = relation.lock("FOR UPDATE SKIP LOCKED").first
+            next unless record
+
+            found = true
             processed_ids << record.id
+            begin
+              yield(record)
+            rescue StandardError
+              # Processor and Deliverer report their own failures. Rescue here
+              # so failure bookkeeping commits before the sweep continues.
+            end
           end
+          break unless found
         end
+
         processed_ids
       end
-      private_class_method :process_locked
+      private_class_method :process_each
     end
   end
 end
