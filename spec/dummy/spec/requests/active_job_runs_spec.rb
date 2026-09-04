@@ -21,6 +21,7 @@ RSpec.describe "ActiveJob run history", type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response.body).to include("ActiveJob run history")
+    expect(response.body).to include("usa-breadcrumb__list")
     expect(response.body).to include("Strata::Events::DispatchJob")
     expect(response.body).to include("job-123")
     expect(response.body).to include("event-456")

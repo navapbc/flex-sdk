@@ -2,6 +2,17 @@
 
 module Strata
   # Per-handler work state for a durable {Event}.
+  #
+  # Columns:
+  # - `id` (UUID): delivery identifier.
+  # - `strata_event_id` (UUID): event being delivered.
+  # - `handler` (String): registered handler class name.
+  # - `target_type` / `target_id` (String): optional polymorphic target.
+  # - `status` (Integer): delivery outcome, exposed through the status enum.
+  # - `attempts` (Integer): number of delivery attempts.
+  # - `next_attempt_at` (DateTime): earliest time a failed delivery may retry.
+  # - `last_error` (Text): most recent handler error.
+  # - `created_at` / `updated_at` (DateTime): lifecycle timestamps.
   class EventDelivery < ApplicationRecord
     self.table_name = "strata_event_deliveries"
 

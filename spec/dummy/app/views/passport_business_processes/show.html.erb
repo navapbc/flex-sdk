@@ -1,11 +1,10 @@
 <% content_for :title, "Interactive passport process" %>
 
 <div class="passport-process-demo">
-  <nav class="passport-process-demo__breadcrumb" aria-label="Breadcrumb">
-    <%= link_to "Dummy app", root_path, class: "usa-link" %>
-    <span aria-hidden="true">/</span>
-    <span>Interactive passport process</span>
-  </nav>
+  <%= render Strata::US::BreadcrumbsComponent.new(classes: "passport-process-demo__breadcrumb") do |breadcrumbs| %>
+    <% breadcrumbs.with_item(href: root_path) { "Dummy app" } %>
+    <% breadcrumbs.with_item { "Interactive passport process" } %>
+  <% end %>
 
   <div class="passport-process-demo__header">
     <div>
@@ -23,15 +22,15 @@
   </div>
 
   <% if notice.present? %>
-    <div class="usa-alert usa-alert--success margin-top-4" role="status">
-      <div class="usa-alert__body"><p class="usa-alert__text"><%= notice %></p></div>
-    </div>
+    <%= render Strata::US::AlertComponent.new(type: :success, role: "status", classes: "margin-top-4") do |component| %>
+      <% component.with_body { notice } %>
+    <% end %>
   <% end %>
 
   <% if alert.present? %>
-    <div class="usa-alert usa-alert--warning margin-top-4" role="alert">
-      <div class="usa-alert__body"><p class="usa-alert__text"><%= alert %></p></div>
-    </div>
+    <%= render Strata::US::AlertComponent.new(type: :warning, role: "alert", classes: "margin-top-4") do |component| %>
+      <% component.with_body { alert } %>
+    <% end %>
   <% end %>
 
   <section class="passport-process-demo__canvas" aria-labelledby="workflow-heading">

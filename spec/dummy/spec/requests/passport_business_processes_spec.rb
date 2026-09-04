@@ -19,6 +19,7 @@ RSpec.describe "Interactive passport business process", type: :request do
 
     expect(response).to have_http_status(:success)
     expect(response.body).to include("Follow a passport application from start to finish")
+    expect(response.body).to include("usa-breadcrumb__list")
 
     expect {
       post start_passport_business_process_path
@@ -64,6 +65,7 @@ RSpec.describe "Interactive passport business process", type: :request do
 
     expect(response).to redirect_to(passport_business_process_path)
     follow_redirect!
+    expect(response.body).to include("usa-alert usa-alert--warning")
     expect(response.body).to include("Start a workflow run before advancing it")
   end
 end

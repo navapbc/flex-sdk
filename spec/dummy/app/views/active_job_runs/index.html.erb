@@ -1,11 +1,10 @@
 <% content_for :title, "ActiveJob run history" %>
 
 <div class="job-runs">
-  <nav class="job-runs__breadcrumb" aria-label="Breadcrumb">
-    <%= link_to "Dummy app", root_path, class: "usa-link" %>
-    <span aria-hidden="true">/</span>
-    <span>ActiveJob run history</span>
-  </nav>
+  <%= render Strata::US::BreadcrumbsComponent.new(classes: "job-runs__breadcrumb") do |breadcrumbs| %>
+    <% breadcrumbs.with_item(href: root_path) { "Dummy app" } %>
+    <% breadcrumbs.with_item { "ActiveJob run history" } %>
+  <% end %>
 
   <header class="job-runs__header">
     <div>
