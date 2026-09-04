@@ -101,12 +101,12 @@ module Strata
     end
 
     def publish_created
-      Rails.logger.info "Publishing event #{self.class.name}Created for application with ID: #{id}"
+      Rails.logger.debug "Publishing event #{self.class.name}Created for application with ID: #{id}"
       Strata::EventManager.publish("#{self.class.name}Created", event_payload)
     end
 
     def publish_submitted
-      Rails.logger.info "Publishing event #{self.class.name}Submitted for application with ID: #{id}"
+      Rails.logger.debug "Publishing event #{self.class.name}Submitted for application with ID: #{id}"
       Strata::EventManager.publish("#{self.class.name}Submitted", event_payload)
     end
   end

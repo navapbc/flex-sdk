@@ -75,11 +75,11 @@ module Strata
     scope :for_event, ->(event) do
       if event[:payload].key?(:case_id)
         raise ArgumentError, "case_id cannot be nil" unless event[:payload][:case_id]
-        Rails.logger.info "Finding cases for event with case_id: #{event[:payload][:case_id]}"
+        Rails.logger.debug "Finding cases for event with case_id: #{event[:payload][:case_id]}"
         where(id: event[:payload][:case_id])
       elsif event[:payload].key?(:application_form_id)
         raise ArgumentError, "application_form_id cannot be nil" unless event[:payload][:application_form_id]
-        Rails.logger.info "Finding cases for event with application_form_id: #{event[:payload][:application_form_id]}"
+        Rails.logger.debug "Finding cases for event with application_form_id: #{event[:payload][:application_form_id]}"
         for_application_form(event[:payload][:application_form_id])
       else
         Rails.logger.warn "Event payload names neither a case_id nor an application_form_id"

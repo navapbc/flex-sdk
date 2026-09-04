@@ -90,7 +90,7 @@ module Strata
       end
 
       def handle_event(event, target: nil)
-        Rails.logger.info "Handling durable event '#{event[:name]}' with #{name}"
+        Rails.logger.debug "Handling durable event '#{event[:name]}' with #{name}"
 
         if start_event?(event[:name])
           kase = create_case_from_event(event)
@@ -105,7 +105,7 @@ module Strata
       end
 
       def create_case_from_event(event)
-        Rails.logger.info "Creating #{case_class.name} from event '#{event[:name]}'"
+        Rails.logger.debug "Creating #{case_class.name} from event '#{event[:name]}'"
         handler = start_events[event[:name]]
         raise RuntimeError, "No handler defined for start event '#{event[:name]}'" unless handler
 

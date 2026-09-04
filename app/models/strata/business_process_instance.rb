@@ -50,7 +50,7 @@ module Strata
     end
 
     def start_from_event(event)
-      Rails.logger.info "Starting business process from event '#{event[:name]}'"
+      Rails.logger.debug "Starting business process from event '#{event[:name]}'"
       self.current_step = business_process.start_step_name
       self.case.save!
       execute_current_step
@@ -67,7 +67,7 @@ module Strata
         return :no_transition
       end
 
-      Rails.logger.info "Transitioning #{self.case.class.name} #{self.case.id} to step '#{next_step}'"
+      Rails.logger.debug "Transitioning #{self.case.class.name} #{self.case.id} to step '#{next_step}'"
       self.current_step = next_step
       self.case.save!
       execute_current_step
@@ -77,7 +77,7 @@ module Strata
     private
 
     def execute_current_step
-      Rails.logger.info "Executing step '#{current_step}' for #{self.case.class.name} #{self.case.id}"
+      Rails.logger.debug "Executing step '#{current_step}' for #{self.case.class.name} #{self.case.id}"
       if current_step == "end"
         self.case.close!
       else
