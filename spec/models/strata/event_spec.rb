@@ -18,6 +18,19 @@ RSpec.describe Strata::Event do
     )
   end
 
+  describe ".dispatched" do
+    it "returns only events with a dispatch timestamp" do
+      dispatched = described_class.create!(
+        name: "DispatchedEvent",
+        occurred_at: 1.minute.ago,
+        dispatched_at: Time.current
+      )
+      described_class.create!(name: "UndispatchedEvent", occurred_at: Time.current)
+
+      expect(described_class.dispatched).to contain_exactly(dispatched)
+    end
+  end
+
   it "allows dispatch bookkeeping while preventing persisted content changes" do
     event.save!
 

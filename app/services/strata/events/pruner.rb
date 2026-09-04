@@ -29,8 +29,8 @@ module Strata
       def self.eligible_events(cutoff)
         unfinished_event_ids = Strata::EventDelivery.non_terminal.select(:strata_event_id)
         Strata::Event
+          .dispatched
           .occurred_before(cutoff)
-          .where.not(dispatched_at: nil)
           .where.not(id: unfinished_event_ids)
           .order(:occurred_at, :id)
       end

@@ -19,6 +19,7 @@ module Strata
     before_update :prevent_content_changes
     before_destroy :prevent_destruction, prepend: true
 
+    scope :dispatched, -> { where.not(dispatched_at: nil) }
     scope :undispatched, -> { where(dispatched_at: nil) }
     scope :ready_for_routing, ->(now = Time.current) {
       undispatched
