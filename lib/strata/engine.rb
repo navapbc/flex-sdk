@@ -10,11 +10,6 @@ module Strata
   class Engine < ::Rails::Engine
     isolate_namespace Strata
 
-    # Registered as a to_prepare hook rather than an initializer: the
-    # :action_controller load hook can fire while initializers are still
-    # running, which is before Zeitwerk takes over and can autoload
-    # Strata::ApplicationHelper. to_prepare runs after the autoloaders are
-    # set up, and re-runs on reload.
     config.to_prepare do
       ActiveSupport.on_load :action_controller do
         helper Strata::ApplicationHelper
